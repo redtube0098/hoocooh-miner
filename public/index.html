@@ -839,13 +839,37 @@
 
   /* Watch & Earn Card matching screenshot */
   .watch-card {
-    background: linear-gradient(135deg, #74ebd7 0%, #3ecdb8 50%, #20b8a4 100%);
+    background: radial-gradient(circle at 85% 25%, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0) 55%), linear-gradient(135deg, #8eedde 0%, #5fe1cc 50%, #46dac5 100%);
     border-radius: 22px;
     padding: 16px 18px 14px;
     box-shadow: 0 8px 24px rgba(32, 184, 163, 0.22);
     position: relative;
     overflow: hidden;
     margin-bottom: 12px;
+  }
+  /* Right-to-Left Shimmer Shine Sweep Animation */
+  .watch-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -80%;
+    width: 60%;
+    height: 200%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 25%,
+      rgba(255, 255, 255, 0.45) 50%,
+      rgba(255, 255, 255, 0.08) 75%,
+      transparent 100%
+    );
+    transform: rotate(25deg);
+    pointer-events: none;
+    animation: watchCardShine 4.5s ease-in-out infinite;
+  }
+  @keyframes watchCardShine {
+    0% { transform: translateX(380%) rotate(25deg); }
+    30%, 100% { transform: translateX(-180%) rotate(25deg); }
   }
   .watch-card-top {
     display: flex;
@@ -857,10 +881,10 @@
     width: 48px;
     height: 48px;
     border-radius: 15px;
-    background: rgba(255, 255, 255, 0.65);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1.5px solid rgba(255, 255, 255, 0.85);
+    border: 1.5px solid rgba(255, 255, 255, 0.9);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -882,8 +906,12 @@
   .watch-card-sub {
     font-size: 11.5px;
     font-weight: 600;
-    color: #104e42;
+    color: #0e443a;
     margin-top: 2px;
+  }
+  .watch-card-sub strong {
+    font-weight: 800;
+    color: #072a23;
   }
   .watch-progress-wrap {
     margin-bottom: 12px;
@@ -895,18 +923,18 @@
     font-size: 11px;
     font-weight: 700;
     color: #0c3e34;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
   }
   .watch-progress-bar-bg {
-    height: 5px;
+    height: 8.5px;
     background: rgba(255, 255, 255, 0.45);
-    border-radius: 5px;
+    border-radius: 9px;
     overflow: hidden;
   }
   .watch-progress-bar-fill {
     height: 100%;
     background: #ffffff;
-    border-radius: 5px;
+    border-radius: 9px;
     transition: width 0.3s ease;
   }
   .watch-stats-grid {
@@ -963,10 +991,11 @@
     box-shadow: none;
   }
   [data-theme="dark"] .watch-card {
-    background: linear-gradient(135deg, #1f7265 0%, #135248 50%, #0c3831 100%);
+    background: radial-gradient(circle at 85% 25%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 55%), linear-gradient(135deg, #1f7265 0%, #135248 50%, #0c3831 100%);
   }
   [data-theme="dark"] .watch-card-title { color: #ffffff; }
   [data-theme="dark"] .watch-card-sub { color: #8ee2d5; }
+  [data-theme="dark"] .watch-card-sub strong { color: #ffffff; }
   [data-theme="dark"] .watch-progress-label-row { color: #c4f3eb; }
   [data-theme="dark"] .watch-stat-box {
     background: rgba(255, 255, 255, 0.12);
@@ -983,15 +1012,15 @@
     color: #8ee2d5;
   }
 
-  /* Spin & Earn Banner */
+  /* Spin & Earn Card - Unique Cosmic Indigo-Purple Color */
   .spin-card {
-    background: linear-gradient(135deg, #6ae5d1 0%, #30c7b2 55%, #15a996 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
     border-radius: 22px;
     padding: 16px 18px;
-    box-shadow: 0 8px 24px rgba(32, 184, 163, 0.22);
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.28);
     position: relative;
     overflow: hidden;
-    color: #082d26;
+    color: #ffffff;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -1015,29 +1044,29 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.22);
     padding: 3px 8px;
     border-radius: 100px;
-    color: #0b3830;
+    color: #ffffff;
     margin-bottom: 4px;
   }
   .spin-card-title {
     font-size: 19px;
     font-weight: 800;
     line-height: 1.15;
-    color: #082d26;
+    color: #ffffff;
     letter-spacing: -0.3px;
   }
   .spin-card-sub {
     font-size: 11px;
-    font-weight: 600;
-    color: #0e443a;
+    font-weight: 500;
+    color: #e0e7ff;
     line-height: 1.35;
     margin-top: 3px;
   }
   .spin-now-btn {
     background: #ffffff;
-    color: #09332a;
+    color: #4338ca;
     border: none;
     border-radius: 100px;
     padding: 10px 18px;
@@ -1045,7 +1074,7 @@
     font-weight: 800;
     letter-spacing: 0.2px;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -1057,14 +1086,18 @@
     transform: scale(0.95);
   }
   [data-theme="dark"] .spin-card {
-    background: linear-gradient(135deg, #1c6e61 0%, #134e44 60%, #0a332c 100%);
-    color: #e6faf7;
+    background: linear-gradient(135deg, #4338ca 0%, #312e81 60%, #1e1b4b 100%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
   [data-theme="dark"] .spin-card-title { color: #ffffff; }
-  [data-theme="dark"] .spin-card-sub { color: #8ee2d5; }
+  [data-theme="dark"] .spin-card-sub { color: #c7d2fe; }
   [data-theme="dark"] .spin-card-badge {
-    background: rgba(255, 255, 255, 0.15);
-    color: #8ee2d5;
+    background: rgba(255, 255, 255, 0.2);
+    color: #e0e7ff;
+  }
+  [data-theme="dark"] .spin-now-btn {
+    background: #ffffff;
+    color: #3730a3;
   }
 
   /* Tasks Header & Tabs */
@@ -1705,7 +1738,7 @@
         <div class="watch-icon-box">🎬</div>
         <div class="watch-card-info">
           <div class="watch-card-title">Watch & Earn</div>
-          <div class="watch-card-sub">Earn +20 HOOCOOH Coins per ad watched</div>
+          <div class="watch-card-sub">Earn <strong>+20 HOOCOOH Coins</strong> per ad watched</div>
         </div>
       </div>
 
@@ -1736,6 +1769,11 @@
       <button class="watch-ad-btn" id="watchAdBtn" type="button">
         <span>▶ Watch Ad (+20 HOOCOOH Coins)</span>
       </button>
+    </div>
+
+    <!-- Spin & Earn Section Header -->
+    <div class="tasks-section-header" style="margin: 14px 0 8px;">
+      <div class="tasks-section-title">SPIN & EARN</div>
     </div>
 
     <!-- Spin & Earn Eye-Catching Banner -->
