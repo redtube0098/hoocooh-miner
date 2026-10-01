@@ -139,23 +139,86 @@
   }
   .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-  /* Sub Ticker */
+  /* Sub Ticker / Infinite Marquee */
   .sub-ticker {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 8px 16px;
-    font-size: 11px;
-    color: var(--text-dim);
+    height: 32px;
+    padding: 0 14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    gap: 8px;
+  }
+  .ticker-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    padding-right: 8px;
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+    z-index: 2;
     background: var(--bg);
   }
-  .sub-ticker .rate {
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00e676;
+    box-shadow: 0 0 6px #00e676;
+    animation: livePulse 1.5s infinite ease-in-out;
+  }
+  @keyframes livePulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(0.75); opacity: 0.45; }
+  }
+  .ticker-track-wrap {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    mask-image: linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent);
+  }
+  .ticker-track {
+    display: inline-flex;
+    white-space: nowrap;
+    will-change: transform;
+    animation: tickerScroll 25s linear infinite;
+  }
+  .ticker-track:hover {
+    animation-play-state: paused;
+  }
+  .ticker-item-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    padding-right: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
+  }
+  .ticker-item-group .rate,
+  .ticker-item-group .balance {
     color: var(--accent);
     font-weight: 700;
   }
-  .sub-ticker .balance {
+  .ticker-dot {
+    display: inline-block;
     color: var(--accent);
-    font-weight: 700;
+    opacity: 0.5;
+    font-size: 9px;
+  }
+  @keyframes tickerScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 
   /* Main Scroll Container */
@@ -223,18 +286,21 @@
     margin-top: 1px;
   }
   .balance-display {
-    margin: 2px 0 10px;
+    margin: 4px 0 10px;
   }
   .balance-amount {
-    font-size: 32px;
+    font-size: 44px;
     font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -0.5px;
-    color: #092e27;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    color: var(--balance-text);
+    display: flex;
+    align-items: baseline;
+    gap: 1px;
   }
   .balance-amount .cents {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 22px;
+    font-weight: 700;
     opacity: 0.85;
   }
   .balance-label {
@@ -774,10 +840,36 @@
     </div>
   </header>
 
-  <!-- Sub Ticker -->
+  <!-- Sub Ticker / Live Marquee -->
   <div class="sub-ticker">
-    <span>LIVE HOOCOOH/USDT: <span class="rate" id="liveRate">$0.00004</span></span>
-    <span>Your Balance: <span class="balance" id="liveBalanceTag">0</span> HOOCOOH Coins</span>
+    <div class="ticker-live-badge">
+      <span class="live-dot"></span>
+      <span>LIVE</span>
+    </div>
+    <div class="ticker-track-wrap">
+      <div class="ticker-track">
+        <div class="ticker-item-group">
+          <span>HOOCOOH/USDT: <strong class="rate" id="liveRate">$0.00004</strong></span>
+          <span class="ticker-dot">•</span>
+          <span>Your Balance: <strong class="balance ticker-balance" id="liveBalanceTag">0</strong> HOOCOOH Coins</span>
+          <span class="ticker-dot">•</span>
+          <span>STARLIGHT PROTOCOL · SEASON 1</span>
+          <span class="ticker-dot">•</span>
+          <span>SPEED: <strong class="rate">80 / 2h</strong></span>
+          <span class="ticker-dot">•</span>
+        </div>
+        <div class="ticker-item-group" aria-hidden="true">
+          <span>HOOCOOH/USDT: <strong class="rate">$0.00004</strong></span>
+          <span class="ticker-dot">•</span>
+          <span>Your Balance: <strong class="balance ticker-balance">0</strong> HOOCOOH Coins</span>
+          <span class="ticker-dot">•</span>
+          <span>STARLIGHT PROTOCOL · SEASON 1</span>
+          <span class="ticker-dot">•</span>
+          <span>SPEED: <strong class="rate">80 / 2h</strong></span>
+          <span class="ticker-dot">•</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Tab 1: HOME (Dashboard) -->
@@ -1232,9 +1324,16 @@
   function renderBalance() {
     var balance = Number(user.balance) || 0;
     var whole = Math.floor(balance);
-    document.getElementById("balanceAmount").innerHTML = whole.toLocaleString() + '<span class="cents">.00</span>';
-    document.getElementById("liveBalanceTag").textContent = whole.toLocaleString();
-    document.getElementById("balanceUsd").textContent = "$" + (balance * COIN_USD).toFixed(2);
+    var formattedWhole = whole.toLocaleString();
+    var balEl = document.getElementById("balanceAmount");
+    if (balEl) balEl.innerHTML = formattedWhole + '<span class="cents">.00</span>';
+    var liveTag = document.getElementById("liveBalanceTag");
+    if (liveTag) liveTag.textContent = formattedWhole;
+    document.querySelectorAll(".ticker-balance").forEach(function(el) {
+      el.textContent = formattedWhole;
+    });
+    var usdEl = document.getElementById("balanceUsd");
+    if (usdEl) usdEl.textContent = "$" + (balance * COIN_USD).toFixed(2);
 
     var level = Number(user.level) || Math.max(1, Math.floor(balance / 1000) + 1);
     document.getElementById("levelBadgeNum").textContent = level;
