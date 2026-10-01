@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>HOOCOOH Mine</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root{
+    --bg:#f3f6fb;
+    --card-bg:#ffffff;
+    --text:#0f1b2d;
+    --text-dim:#6b7686;
+    --border:rgba(15,27,45,0.08);
+    --nav-bg:#ffffff;
+    --nav-inactive:#9aa4b2;
+    --accent:#2f7dff;
+    --accent-2:#57a6ff;
+    --gradient:linear-gradient(135deg,#57a6ff 0%,#2f7dff 60%,#1e63e8 100%);
+    --pill-bg:#eef3fb;
+    --shadow:0 10px 30px rgba(47,125,255,0.12);
+    --day-done:#2f7dff;
+    --day-todo:#eef3fb;
+    --header-bg:#0f1b2d;
+    --header-text:#ffffff;
+  }
+  [data-theme="dark"]{
+    --bg:#070c14;
+    --card-bg:#101826;
+    --text:#eef3fb;
+    --text-dim:#8592a6;
+    --border:rgba(255,255,255,0.08);
+    --nav-bg:#0c1320;
+    --nav-inactive:#5b6577;
+    --accent:#4c8dff;
+    --accent-2:#79b3ff;
+    --gradient:linear-gradient(135deg,#3c86ff 0%,#2560d9 60%,#173f99 100%);
+    --pill-bg:#182338;
+    --shadow:0 10px 30px rgba(0,0,0,0.35);
+    --day-done:#4c8dff;
+    --day-todo:#182338;
+    --header-bg:#070c14;
+    --header-text:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding-bottom:calc(78px + env(safe-area-inset-bottom,0px));
+    perspective:1200px;
+  }
+  .tilt-card{
+    transform-style:preserve-3d;
+    transition:transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    will-change:transform;
+  }
+  .subrow{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:calc(14px + env(safe-area-inset-top,0px)) 16px 12px;
+    background:var(--card-bg);
+    border-bottom:1px solid var(--border);
+  }
+  .subrow .logo-badge{
+    width:34px;height:34px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    filter:drop-shadow(0 3px 6px rgba(47,125,255,0.35));
+  }
+  .subrow .logo-badge img{
+    width:100%;height:100%;object-fit:contain;
+  }
+  .subrow .info{flex:1;min-width:0;}
+  .subrow .info .name{font-weight:600;font-size:14px;}
+  .subrow .info .sub{font-size:11px;letter-spacing:0.06em;color:var(--text-dim);}
+  .subrow .controls{display:flex;align-items:center;gap:10px;}
+  .theme-btn{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--pill-bg);
+    border:none;
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;
+    color:var(--text);
+    cursor:pointer;
+  }
+  .avatar{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--gradient);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:14px;font-weight:600;
+    overflow:hidden;
+    flex-shrink:0;
+  }
+  .avatar img{width:100%;height:100%;object-fit:cover;}
+
+  .livebar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 16px;
+    font-size:12px;
+    color:var(--text-dim);
+    background:var(--bg);
+  }
+  .livebar .live-dot{
+    display:inline-block;width:6px;height:6px;border-radius:50%;
+    background:#26c07a;margin-right:6px;
+  }
+  .livebar .balance-tag{color:var(--accent);font-weight:600;}
+
+  main{flex:1;padding:4px 16px 20px;display:flex;flex-direction:column;gap:16px;}
+
+  .balance-card{
+    background:var(--gradient);
+    border-radius:20px;
+    padding:20px;
+    color:#fff;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.35) inset,
+      0 -18px 30px rgba(0,0,0,0.15) inset,
+      0 20px 35px rgba(30,99,232,0.35);
+    position:relative;
+  }
+  .balance-card .amount-row{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+  }
+  .balance-card .amount{font-size:38px;font-weight:700;line-height:1;}
+  .balance-card .amount .cents{font-size:20px;font-weight:600;opacity:0.85;}
+  .balance-card .label{font-size:13px;opacity:0.9;margin-top:4px;}
+  .balance-card .usd{font-size:12px;opacity:0.8;margin-top:8px;}
+  .level-badge{
+    width:48px;height:48px;border-radius:50%;
+    background:rgba(255,255,255,0.18);
+    border:1px solid rgba(255,255,255,0.4);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;
+    flex-shrink:0;
+  }
+  .level-badge .num{font-size:16px;}
+  .progress-wrap{
+    margin-top:16px;
+    background:rgba(255,255,255,0.15);
+    border-radius:14px;
+    padding:10px 12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .progress-lvl{
+    width:44px;height:44px;border-radius:50%;
+    background:linear-gradient(160deg,rgba(255,255,255,0.55),rgba(255,255,255,0.12));
+    box-shadow:
+      inset 0 2px 3px rgba(255,255,255,0.6),
+      inset 0 -3px 5px rgba(0,0,0,0.18),
+      0 4px 10px rgba(0,0,0,0.25);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    line-height:1;
+    flex-shrink:0;
+  }
+  .progress-lvl .lvl-num{font-size:16px;font-weight:800;color:#fff;}
+  .progress-lvl .lvl-tag{font-size:7px;font-weight:700;letter-spacing:0.06em;color:rgba(255,255,255,0.85);margin-top:1px;}
+  .progress-body{flex:1;}
+  .progress-title{font-size:13px;font-weight:600;margin-bottom:6px;}
+  .progress-bar-bg{
+    height:6px;border-radius:6px;background:rgba(255,255,255,0.25);overflow:hidden;
+  }
+  .progress-bar-fill{
+    height:100%;background:#fff;border-radius:6px;
+    transition:width 0.4s ease;
+  }
+  .progress-fraction{font-size:11px;opacity:0.85;margin-top:6px;text-align:right;}
+
+  .card{
+    background:var(--card-bg);
+    border-radius:20px;
+    padding:20px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.06) inset,
+      0 18px 32px rgba(0,0,0,0.12);
+    text-align:center;
+  }
+  .status-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:rgba(38,192,122,0.12);
+    color:#1fa968;
+    font-size:12px;
+    font-weight:600;
+    padding:6px 14px;
+    border-radius:100px;
+    margin-bottom:14px;
+  }
+  .status-pill.waiting{
+    background:var(--pill-bg);
+    color:var(--text-dim);
+  }
+  .lvl-row{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--pill-bg);
+    padding:6px 14px 6px 6px;
+    border-radius:100px;
+    font-size:12px;
+    font-weight:600;
+    color:var(--text-dim);
+    margin-bottom:6px;
+  }
+  .lvl-row .lvl-circle{
+    width:22px;height:22px;border-radius:50%;
+    background:var(--gradient);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;font-weight:700;
+  }
+  .mine-title{font-size:15px;font-weight:600;margin-bottom:16px;}
+  .mine-reward{font-size:30px;font-weight:700;color:var(--accent);margin-bottom:18px;}
+  .mine-visual{
+    width:150px;height:150px;margin:0 auto 18px;
+    display:flex;align-items:center;justify-content:center;
+    perspective:600px;
+  }
+  .mine-visual img{
+    width:78%;height:78%;object-fit:contain;
+    filter:drop-shadow(0 10px 22px rgba(47,125,255,0.45));
+    animation:spinLogo 7s linear infinite;
+    transform-style:preserve-3d;
+  }
+  @keyframes spinLogo{
+    from{transform:rotateY(0deg) rotateX(6deg);}
+    to{transform:rotateY(360deg) rotateX(6deg);}
+  }
+  .collect-btn{
+    width:100%;
+    border:none;
+    border-radius:14px;
+    padding:15px;
+    font-size:15px;
+    font-weight:700;
+    color:#fff;
+    background:var(--gradient);
+    cursor:pointer;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.4) inset,
+      0 6px 0 rgba(0,0,0,0.18),
+      0 10px 18px rgba(47,125,255,0.35);
+    transform:translateY(0);
+    transition:transform 0.08s ease, box-shadow 0.08s ease;
+  }
+  .collect-btn:active:not(:disabled){
+    transform:translateY(4px);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.4) inset,
+      0 2px 0 rgba(0,0,0,0.18),
+      0 4px 10px rgba(47,125,255,0.3);
+  }
+  .collect-btn:disabled{
+    opacity:0.55;
+    cursor:default;
+    box-shadow:0 4px 0 rgba(0,0,0,0.12);
+  }
+  .timer-text{
+    margin-top:12px;
+    font-size:12px;
+    color:var(--text-dim);
+  }
+
+  .daily-card{
+    background:var(--card-bg);
+    border-radius:20px;
+    padding:20px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.06) inset,
+      0 18px 32px rgba(0,0,0,0.12);
+  }
+  .daily-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
+  .daily-head .h-title{font-size:16px;font-weight:700;}
+  .daily-head .h-sub{font-size:12px;color:var(--text-dim);margin-top:4px;max-width:220px;}
+  .streak-pill{
+    background:linear-gradient(135deg,#ff9d4d,#ff6b3d);
+    color:#fff;font-size:12px;font-weight:700;
+    padding:6px 12px;border-radius:100px;
+    display:flex;align-items:center;gap:4px;
+    white-space:nowrap;
+  }
+  .days-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .day-cell{
+    aspect-ratio:1/1;
+    border-radius:12px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    font-weight:700;
+    background:var(--day-todo);
+    color:var(--text-dim);
+    gap:2px;
+  }
+  .day-cell.done{background:var(--day-done);color:#fff;}
+  .day-cell.today{outline:2px solid var(--accent);outline-offset:2px;}
+  .day-cell .mark{font-size:13px;}
+  .stats-row{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .stat-box{
+    background:var(--pill-bg);
+    border-radius:12px;
+    padding:10px 6px;
+    text-align:center;
+  }
+  .stat-box .stat-label{font-size:9px;letter-spacing:0.05em;color:var(--text-dim);text-transform:uppercase;margin-bottom:4px;}
+  .stat-box .stat-val{font-size:15px;font-weight:700;}
+  .stat-box .stat-val.accent{color:var(--accent);}
+  .checkin-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:12px;
+    color:var(--text-dim);
+    border-top:1px solid var(--border);
+    padding-top:14px;
+  }
+  .checkin-row .right{font-weight:700;color:var(--text);}
+
+  nav.bottom-nav{
+    position:fixed;
+    left:0;right:0;bottom:0;
+    max-width:480px;
+    margin:0 auto;
+    background:var(--nav-bg);
+    border-top:1px solid var(--border);
+    display:flex;
+    padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));
+  }
+  .nav-item{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    font-size:10px;
+    color:var(--nav-inactive);
+    padding:6px 0;
+  }
+  .nav-item .icon{font-size:18px;}
+  .nav-item.active{color:var(--accent);}
+
+  .toast{
+    position:fixed;
+    left:50%;bottom:100px;
+    transform:translateX(-50%);
+    background:var(--header-bg);
+    color:#fff;
+    padding:10px 18px;
+    border-radius:100px;
+    font-size:12px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.25s ease;
+    z-index:50;
+  }
+  .toast.show{opacity:0.95;}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <div class="subrow">
+    <div class="logo-badge"><img src="assets/logo.webp" alt="HOOCOOH"></div>
+    <div class="info">
+      <div class="name">HOOCOOH Mine</div>
+      <div class="sub">STARLIGHT PROTOCOL · SEASON 1</div>
+    </div>
+    <div class="controls">
+      <button class="theme-btn" id="themeToggle">🌙</button>
+      <div class="avatar" id="avatar">H</div>
+    </div>
+  </div>
+
+  <div class="livebar">
+    <span><span class="live-dot"></span>LIVE HOOCOOH/USDT: <span id="liveRate">$0.00004</span></span>
+    <span>Your Balance: <span class="balance-tag" id="liveBalanceTag">0</span> HOOCOOH Coins</span>
+  </div>
+
+  <main>
+    <div class="balance-card tilt-card">
+      <div class="amount-row">
+        <div>
+          <div class="amount" id="balanceAmount">0<span class="cents">.00</span></div>
+          <div class="label">HOOCOOH Coins</div>
+          <div class="usd">≈ <span id="balanceUsd">$0.00</span> USDT</div>
+        </div>
+        <div class="level-badge"><span class="num" id="levelBadgeNum">1</span><span>Lv.1</span></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-lvl"><span class="lvl-num">1</span><span class="lvl-tag">LVL</span></div>
+        <div class="progress-body">
+          <div class="progress-title">HOOCOOH Starter</div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+          <div class="progress-fraction"><span id="progressFraction">0 / 1000 to Lv.2</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card tilt-card">
+      <span class="status-pill waiting" id="statusPill">MINING...</span>
+      <div class="lvl-row"><span class="lvl-circle">1</span>LV.1 Starter</div>
+      <div class="mine-title" id="mineTitle" style="display:none;">MINING COMPLETE!</div>
+      <div class="mine-reward" id="mineReward" style="display:none;">+80 ⭐</div>
+      <div class="mine-visual"><img src="assets/logo.webp" alt="HOOCOOH"></div>
+      <button class="collect-btn" id="collectBtn" disabled>Collect HOOCOOH</button>
+      <div class="timer-text" id="timerText">Loading...</div>
+    </div>
+
+    <div class="daily-card tilt-card">
+      <div class="daily-head">
+        <div>
+          <div class="h-title">Daily Bonus</div>
+          <div class="h-sub">Keep your streak alive for bigger rewards</div>
+        </div>
+        <div class="streak-pill">🔥 Day <span id="streakDayTag">1</span></div>
+      </div>
+      <div class="days-grid" id="daysGrid"></div>
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-label">Current Streak</div>
+          <div class="stat-val accent" id="currentStreakVal">0 days</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Next Reward</div>
+          <div class="stat-val" id="nextRewardVal">+2</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Total Earned</div>
+          <div class="stat-val" id="totalEarnedVal">0</div>
+        </div>
+      </div>
+      <div class="checkin-row">
+        <span>NEXT CHECK-IN IN</span>
+        <span class="right" id="checkinCountdown">--:--:--</span>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <div class="nav-item active"><span class="icon">🏠</span>Home</div>
+    <div class="nav-item"><span class="icon">✨</span>Earn</div>
+    <div class="nav-item"><span class="icon">⭐</span>Mining</div>
+    <div class="nav-item"><span class="icon">🔗</span>Invite</div>
+    <div class="nav-item"><span class="icon">💳</span>Wallet</div>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Telegram WebApp integration ----------
+  // This app ONLY works when opened from inside Telegram. There is no
+  // fallback ID for browser testing - if Telegram's WebApp bridge or its
+  // signed initData is missing, the app blocks itself below and never
+  // loads any game state.
+  var tg = window.Telegram ? window.Telegram.WebApp : null;
+  var initData = tg && tg.initData ? tg.initData : "";
+
+  if (!tg || !initData) {
+    document.getElementById("app").innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px;text-align:center;">' +
+      '<div>' +
+      '<div style="font-size:40px;margin-bottom:16px;">⭐</div>' +
+      '<div style="font-size:16px;font-weight:600;margin-bottom:8px;">Open this from Telegram</div>' +
+      '<div style="font-size:13px;color:var(--text-dim);">HOOCOOH Mine only works inside the Telegram app. Please open it through your Telegram bot.</div>' +
+      '</div></div>';
+    return; // stop here - no API calls, no state, nothing runs.
+  }
+
+  try {
+    tg.ready();
+    tg.expand();
+    var tgUserUnsafe = tg.initDataUnsafe && tg.initDataUnsafe.user; // display-only, never trusted for auth
+    if (tgUserUnsafe) {
+      var avatarEl = document.getElementById("avatar");
+      if (tgUserUnsafe.photo_url) {
+        avatarEl.innerHTML = '<img src="' + tgUserUnsafe.photo_url + '" alt="profile">';
+      } else {
+        avatarEl.textContent = (tgUserUnsafe.first_name || "H").charAt(0).toUpperCase();
+      }
+    }
+  } catch (e) { /* ignore display-only failures */ }
+
+  // ---------- 3D tilt interaction ----------
+  // Cards gently tilt in 3D following the finger/cursor, then ease back
+  // flat when released - this is what actually drives the perspective
+  // set up in the CSS.
+  function enableTilt(el){
+    var maxTilt = 7;
+    function handleMove(x, y){
+      var rect = el.getBoundingClientRect();
+      var px = (x - rect.left) / rect.width;
+      var py = (y - rect.top) / rect.height;
+      var rotateY = (px - 0.5) * maxTilt * 2;
+      var rotateX = (0.5 - py) * maxTilt * 2;
+      el.style.transform = "rotateX(" + rotateX.toFixed(2) + "deg) rotateY(" + rotateY.toFixed(2) + "deg)";
+    }
+    function reset(){
+      el.style.transform = "rotateX(0deg) rotateY(0deg)";
+    }
+    el.addEventListener("pointermove", function(e){ handleMove(e.clientX, e.clientY); });
+    el.addEventListener("pointerleave", reset);
+    el.addEventListener("touchmove", function(e){
+      if (e.touches && e.touches[0]) handleMove(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+    el.addEventListener("touchend", reset);
+    el.addEventListener("touchcancel", reset);
+  }
+  var tiltCards = document.querySelectorAll(".tilt-card");
+  for (var ti = 0; ti < tiltCards.length; ti++) { enableTilt(tiltCards[ti]); }
+
+  // ---------- Constants (must match lib/gameLogic.js) ----------
+  var COIN_USD = 0.00004;
+  var LEVEL1_TARGET = 1000;
+  var WEEK1_REWARDS = [2, 5, 10, 20, 40, 80, 160];
+  var REPEAT_REWARDS = [10, 10, 10, 15, 15, 15, 30];
+
+  function rewardForCycleDay(cycle, dayIndex){
+    return cycle === 1 ? WEEK1_REWARDS[dayIndex] : REPEAT_REWARDS[dayIndex];
+  }
+
+  // ---------- Theme ----------
+  var THEME_KEY = "hoocooh_theme";
+  function applyTheme(theme){
+    document.documentElement.setAttribute("data-theme", theme);
+    document.getElementById("themeToggle").textContent = theme === "dark" ? "☀️" : "🌙";
+  }
+  var currentTheme = localStorage.getItem(THEME_KEY) || "dark";
+  applyTheme(currentTheme);
+  document.getElementById("themeToggle").addEventListener("click", function(){
+    currentTheme = currentTheme === "dark" ? "light" : "dark";
+    localStorage.setItem(THEME_KEY, currentTheme);
+    applyTheme(currentTheme);
+  });
+
+  // ---------- Toast ----------
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+  function showToast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 2200);
+  }
+
+  // ---------- Server state ----------
+  var user = null; // last known state from the API
+
+  // Every request carries Telegram's raw, signed initData string in a
+  // header. The server verifies the signature with the bot token (kept
+  // only in Vercel env vars) and derives the telegramId itself - the
+  // client never gets to just assert who it is.
+  function apiGet(){
+    return fetch("/api/user", {
+      headers: { "X-Telegram-Init-Data": initData }
+    }).then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); });
+  }
+  function apiCollect(){
+    return fetch("/api/collect", {
+      method: "POST",
+      headers: { "X-Telegram-Init-Data": initData }
+    }).then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); });
+  }
+  function apiCheckin(){
+    return fetch("/api/checkin", {
+      method: "POST",
+      headers: { "X-Telegram-Init-Data": initData }
+    }).then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); });
+  }
+
+  function formatDuration(ms){
+    if (ms < 0) ms = 0;
+    var totalSec = Math.floor(ms / 1000);
+    var h = Math.floor(totalSec / 3600);
+    var m = Math.floor((totalSec % 3600) / 60);
+    var s = totalSec % 60;
+    function pad(n){ return n < 10 ? "0" + n : "" + n; }
+    return pad(h) + ":" + pad(m) + ":" + pad(s);
+  }
+
+  // ---------- Rendering ----------
+  function renderBalance(){
+    var whole = Math.floor(user.balance);
+    document.getElementById("balanceAmount").innerHTML = whole.toLocaleString() + '<span class="cents">.00</span>';
+    document.getElementById("liveBalanceTag").textContent = whole.toLocaleString();
+    document.getElementById("balanceUsd").textContent = "$" + (user.balance * COIN_USD).toFixed(2);
+
+    var progress = Math.min(user.balance, LEVEL1_TARGET);
+    document.getElementById("progressFill").style.width = ((progress / LEVEL1_TARGET) * 100) + "%";
+    document.getElementById("progressFraction").textContent =
+      Math.min(Math.floor(user.balance), LEVEL1_TARGET) + " / " + LEVEL1_TARGET + " to Lv.2";
+  }
+
+  function renderMining(){
+    var now = Date.now();
+    var ready = user.mineReady && (!user.lastMineCollectedAt || (now - user.lastMineCollectedAt) >= user.mineIntervalMs);
+    var pill = document.getElementById("statusPill");
+    var btn = document.getElementById("collectBtn");
+    var titleEl = document.getElementById("mineTitle");
+    var rewardEl = document.getElementById("mineReward");
+    var timerText = document.getElementById("timerText");
+
+    if (ready){
+      pill.textContent = "REWARD READY!";
+      pill.classList.remove("waiting");
+      titleEl.style.display = "block";
+      rewardEl.style.display = "block";
+      rewardEl.textContent = "+80 ⭐";
+      btn.disabled = false;
+      timerText.textContent = "Ready to collect";
+    } else {
+      pill.textContent = "MINING...";
+      pill.classList.add("waiting");
+      titleEl.style.display = "none";
+      rewardEl.style.display = "none";
+      btn.disabled = true;
+      var remaining = user.mineIntervalMs - (now - user.lastMineCollectedAt);
+      timerText.textContent = "Next collection in " + formatDuration(remaining);
+    }
+  }
+
+  function renderDaily(){
+    var grid = document.getElementById("daysGrid");
+    grid.innerHTML = "";
+    for (var i = 0; i < 7; i++){
+      var cell = document.createElement("div");
+      cell.className = "day-cell";
+      var reward = rewardForCycleDay(user.dailyCycle, i);
+      if (i < user.dailyDayIndex){
+        cell.classList.add("done");
+        cell.innerHTML = "✓";
+      } else if (i === user.dailyDayIndex){
+        cell.classList.add(user.lastCheckinAt ? "done" : "today");
+        cell.innerHTML = user.lastCheckinAt ? "✓" : ("D" + (i+1) + "<span class='mark'>+" + reward + "</span>");
+      } else {
+        cell.innerHTML = "D" + (i+1);
+      }
+      grid.appendChild(cell);
+    }
+
+    var streakLen = user.lastCheckinAt ? (user.dailyDayIndex + 1) : 0;
+    document.getElementById("streakDayTag").textContent = streakLen || 1;
+    document.getElementById("currentStreakVal").textContent = streakLen + " day" + (streakLen === 1 ? "" : "s");
+    document.getElementById("totalEarnedVal").textContent = user.totalDailyEarned;
+
+    var now = Date.now();
+    var status = user.lastCheckinAt ? statusFromTimestamp(user.lastCheckinAt, now) : "ready";
+    var checkinEl = document.getElementById("checkinCountdown");
+
+    if (status === "waiting"){
+      var DAY_MS = 24 * 60 * 60 * 1000;
+      checkinEl.textContent = formatDuration(DAY_MS - (now - user.lastCheckinAt));
+      var nextIndex = (user.dailyDayIndex + 1) % 7;
+      var nextCycle = user.dailyDayIndex === 6 ? Math.max(2, user.dailyCycle + 1) : user.dailyCycle;
+      document.getElementById("nextRewardVal").textContent = "+" + rewardForCycleDay(nextCycle, nextIndex);
+    } else {
+      checkinEl.textContent = "Ready now";
+      document.getElementById("nextRewardVal").textContent = "+" + rewardForCycleDay(user.dailyCycle, user.dailyDayIndex);
+    }
+  }
+
+  function statusFromTimestamp(lastCheckinAt, now){
+    var DAY_MS = 24 * 60 * 60 * 1000;
+    var elapsed = now - lastCheckinAt;
+    if (elapsed < DAY_MS) return "waiting";
+    if (elapsed >= 2 * DAY_MS) return "broken";
+    return "ready";
+  }
+
+  function renderAll(){
+    renderBalance();
+    renderMining();
+    renderDaily();
+  }
+
+  // ---------- Actions ----------
+  document.getElementById("collectBtn").addEventListener("click", function(){
+    apiCollect().then(function(res){
+      if (!res.ok){
+        showToast(res.data.error || "Not ready yet");
+        return;
+      }
+      user.balance = res.data.balance;
+      user.lastMineCollectedAt = res.data.lastMineCollectedAt;
+      user.mineReady = false;
+      showToast("+" + res.data.reward + " HOOCOOH collected!");
+      renderAll();
+    }).catch(function(){ showToast("Network error"); });
+  });
+
+  function tryAutoCheckin(){
+    var now = Date.now();
+    var status = user.lastCheckinAt ? statusFromTimestamp(user.lastCheckinAt, now) : "ready";
+    if (status === "waiting") return;
+
+    apiCheckin().then(function(res){
+      if (!res.ok) return;
+      user.balance = res.data.balance;
+      user.dailyCycle = res.data.dailyCycle;
+      user.dailyDayIndex = res.data.dailyDayIndex;
+      user.lastCheckinAt = res.data.lastCheckinAt;
+      user.totalDailyEarned = res.data.totalDailyEarned;
+      showToast("Daily bonus: +" + res.data.reward + " HOOCOOH!");
+      renderAll();
+    }).catch(function(){});
+  }
+
+  // ---------- Init ----------
+  apiGet().then(function(res){
+    if (!res.ok){
+      showToast(res.data.error || "Couldn't verify Telegram session");
+      return;
+    }
+    user = res.data;
+    renderAll();
+    tryAutoCheckin();
+  }).catch(function(){
+    showToast("Couldn't load your data - check your connection");
+  });
+
+  // Local ticking for the visible countdowns; re-sync from the server every 30s
+  // so multiple devices / server-side changes stay in view.
+  setInterval(function(){
+    if (!user) return;
+    renderMining();
+    renderDaily();
+  }, 1000);
+
+  setInterval(function(){
+    if (!user) return;
+    apiGet().then(function(res){ if (res.ok) { user = res.data; renderAll(); } }).catch(function(){});
+  }, 30000);
+
+})();
+</script>
+</body>
+</html>
