@@ -41,6 +41,17 @@
     --balance-text: #e6faf7;
     --balance-sub: #78d6c8;
   }
+  [data-theme="dark"] .floating-lvl {
+    background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 60%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 2px solid rgba(255, 255, 255, 0.35) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.25) !important;
+  }
+  [data-theme="dark"] .floating-lvl .num { color: #e6faf7 !important; }
+  [data-theme="dark"] .floating-lvl .tag { color: #78d6c8 !important; }
+  [data-theme="dark"] .card::before,
+  [data-theme="dark"] .daily-card::before {
+    background: linear-gradient(90deg, #27d4bc 0%, #1db8a2 50%, #27d4bc 100%) !important;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body {
@@ -223,10 +234,10 @@
 
   /* Main Scroll Container */
   main {
-    padding: 4px 16px 20px;
+    padding: 6px 16px 24px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
   }
 
   /* Card 1: Balance Card */
@@ -260,30 +271,33 @@
     flex-shrink: 0;
   }
   .floating-lvl {
-    width: 52px;
-    height: 52px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.42);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 2px solid rgba(255, 255, 255, 0.75);
+    background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.45) 60%, rgba(255, 255, 255, 0.2) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.9);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 16px rgba(12, 60, 50, 0.12), inset 0 2px 4px rgba(255, 255, 255, 0.95);
+    flex-shrink: 0;
   }
   .floating-lvl .num {
-    font-size: 21px;
+    font-size: 26px;
     font-weight: 800;
     line-height: 1;
-    color: #0b3830;
+    color: #083129;
+    letter-spacing: -0.5px;
   }
   .floating-lvl .tag {
-    font-size: 9.5px;
+    font-size: 10px;
     font-weight: 700;
-    color: #144e43;
+    color: #114c41;
     margin-top: 1px;
+    letter-spacing: -0.2px;
   }
   .balance-display {
     margin: 4px 0 10px;
@@ -392,6 +406,18 @@
     text-align: center;
     position: relative;
     border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .card::before, .daily-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3.5px;
+    background: linear-gradient(90deg, #5fe1cc 0%, #20b8a3 50%, #5fe1cc 100%);
+    pointer-events: none;
+    z-index: 2;
   }
   .status-pill {
     display: inline-flex;
@@ -431,24 +457,24 @@
 
   .mine-visual-wrap {
     position: relative;
-    width: 125px;
-    height: 125px;
-    margin: 8px auto 10px;
+    width: 110px;
+    height: 110px;
+    margin: 6px auto 8px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
   .mine-glow {
     position: absolute;
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
     background: radial-gradient(circle, var(--accent-glow) 0%, rgba(32, 184, 163, 0) 70%);
     pointer-events: none;
   }
   .mine-img {
-    width: 110px;
-    height: 110px;
+    width: 98px;
+    height: 98px;
     object-fit: contain;
     filter: drop-shadow(0 8px 18px var(--accent-glow));
     animation: floatLogo 3.6s ease-in-out infinite;
@@ -543,6 +569,8 @@
     padding: 16px 16px 14px;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
     border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
   }
   .daily-header {
     display: flex;
@@ -683,22 +711,33 @@
   .daily-bottom-row {
     background: var(--sub-box-bg);
     border-radius: 12px;
-    padding: 8px 12px;
+    padding: 8px 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 10.5px;
     border: 1px solid var(--border);
   }
+  .daily-bottom-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .daily-bottom-col.right {
+    text-align: right;
+    align-items: flex-end;
+  }
   .daily-bottom-row .lbl {
     font-weight: 700;
     color: var(--text-dim);
     letter-spacing: 0.4px;
     text-transform: uppercase;
+    font-size: 9px;
   }
   .daily-bottom-row .val {
-    font-weight: 700;
+    font-weight: 800;
     color: var(--accent);
+    font-size: 12px;
   }
 
   /* Bottom Navigation Bar */
@@ -979,8 +1018,14 @@
 
       <!-- Bottom Row of Daily Card -->
       <div class="daily-bottom-row">
-        <span class="lbl">NEXT CHECK-IN IN</span>
-        <span class="val" id="checkinCountdown">--:--:--</span>
+        <div class="daily-bottom-col">
+          <span class="lbl">NEXT CHECK-IN IN</span>
+          <span class="val" id="checkinCountdown">--:--:--</span>
+        </div>
+        <div class="daily-bottom-col right">
+          <span class="lbl" id="dayRewardLbl">DAY 1 REWARD</span>
+          <span class="val" id="dayRewardVal">+5</span>
+        </div>
       </div>
     </div>
 
@@ -1421,6 +1466,10 @@
     var nextRewardValEl = document.getElementById("nextRewardVal");
     var checkinEl = document.getElementById("checkinCountdown");
     var dailyBtn = document.getElementById("dailyCollectBtn");
+    var dayRewardLblEl = document.getElementById("dayRewardLbl");
+    var dayRewardValEl = document.getElementById("dayRewardVal");
+    if (dayRewardLblEl) dayRewardLblEl.textContent = "DAY " + (user.dailyDayIndex + 1) + " REWARD";
+    if (dayRewardValEl) dayRewardValEl.textContent = "+" + currentReward;
 
     if (status === "waiting") {
       var DAY_MS = 24 * 60 * 60 * 1000;
