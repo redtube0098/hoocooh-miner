@@ -70,6 +70,21 @@ module.exports = async (req, res) => {
 
     const currentLevel = Math.max(1, Math.floor((user.balance || 0) / 1000) + 1);
 
+    const now = Date.now();
+    const CYCLE_MS = 24 * 60 * 60 * 1000;
+    let cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
+    let watchedToday = Number(user.adsWatchedToday || 0);
+    let earnedToday = Number(user.adsEarnedToday || 0);
+
+    if (cycleStart && (now - cycleStart >= CYCLE_MS)) {
+      watchedToday = 0;
+      earnedToday = 0;
+      cycleStart = null;
+      await users.updateOne({ telegramId }, {
+        $set: { adsWatchedToday: 0, adsEarnedToday: 0, adsCycleStartedAt: null }
+      });
+    }
+
     res.status(200).json({
       telegramId: user.telegramId,
       firstName: user.firstName || tgUser.first_name || "Miner",
@@ -84,7 +99,10 @@ module.exports = async (req, res) => {
       totalDailyEarned: user.totalDailyEarned,
       mineReady: mineIsReady(user.lastMineCollectedAt),
       mineIntervalMs: MINE_INTERVAL_MS,
-      dailyStatusNow: dailyStatus(user.lastCheckinAt)
+      dailyStatusNow: dailyStatus(user.lastCheckinAt),
+      adsWatchedToday: watchedToday,
+      adsEarnedToday: earnedToday,
+      adsCycleStartedAt: cycleStart
     });
   } catch (err) {
     console.error("user.js error:", err);

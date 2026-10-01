@@ -837,6 +837,152 @@
   }
   .action-btn-secondary:active { transform: scale(0.96); }
 
+  /* Watch & Earn Card matching screenshot */
+  .watch-card {
+    background: linear-gradient(135deg, #74ebd7 0%, #3ecdb8 50%, #20b8a4 100%);
+    border-radius: 22px;
+    padding: 16px 18px 14px;
+    box-shadow: 0 8px 24px rgba(32, 184, 163, 0.22);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .watch-card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .watch-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1.5px solid rgba(255, 255, 255, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+  .watch-card-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .watch-card-title {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: #082d26;
+    letter-spacing: -0.3px;
+  }
+  .watch-card-sub {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #104e42;
+    margin-top: 2px;
+  }
+  .watch-progress-wrap {
+    margin-bottom: 12px;
+  }
+  .watch-progress-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 700;
+    color: #0c3e34;
+    margin-bottom: 5px;
+  }
+  .watch-progress-bar-bg {
+    height: 5px;
+    background: rgba(255, 255, 255, 0.45);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .watch-progress-bar-fill {
+    height: 100%;
+    background: #ffffff;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+  }
+  .watch-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .watch-stat-box {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1.5px solid rgba(255, 255, 255, 0.8);
+    border-radius: 14px;
+    padding: 9px 12px;
+  }
+  .watch-stat-box .lbl {
+    font-size: 8.5px;
+    font-weight: 800;
+    color: #134e42;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .watch-stat-box .val {
+    font-size: 14.5px;
+    font-weight: 800;
+    color: #082e27;
+    margin-top: 2px;
+  }
+  .watch-ad-btn {
+    width: 100%;
+    background: #ffffff;
+    color: #108e7b;
+    border: none;
+    border-radius: 100px;
+    padding: 13px;
+    font-size: 13.5px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  }
+  .watch-ad-btn:not(:disabled):active {
+    transform: scale(0.98);
+  }
+  .watch-ad-btn:disabled {
+    background: rgba(255, 255, 255, 0.65);
+    color: #145b50;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  [data-theme="dark"] .watch-card {
+    background: linear-gradient(135deg, #1f7265 0%, #135248 50%, #0c3831 100%);
+  }
+  [data-theme="dark"] .watch-card-title { color: #ffffff; }
+  [data-theme="dark"] .watch-card-sub { color: #8ee2d5; }
+  [data-theme="dark"] .watch-progress-label-row { color: #c4f3eb; }
+  [data-theme="dark"] .watch-stat-box {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  [data-theme="dark"] .watch-stat-box .lbl { color: #8ee2d5; }
+  [data-theme="dark"] .watch-stat-box .val { color: #ffffff; }
+  [data-theme="dark"] .watch-ad-btn {
+    background: #ffffff;
+    color: #0f8573;
+  }
+  [data-theme="dark"] .watch-ad-btn:disabled {
+    background: rgba(255, 255, 255, 0.15);
+    color: #8ee2d5;
+  }
+
   /* Spin & Earn Banner */
   .spin-card {
     background: linear-gradient(135deg, #6ae5d1 0%, #30c7b2 55%, #15a996 100%);
@@ -1394,23 +1540,31 @@
     <div class="ticker-track-wrap">
       <div class="ticker-track">
         <div class="ticker-item-group">
-          <span>HOOCOOH/USDT: <strong class="rate" id="liveRate">$0.00004</strong></span>
+          <span>HOOCOOH: <strong class="rate" id="liveRate">$0.00004</strong></span>
           <span class="ticker-dot">•</span>
-          <span>Your Balance: <strong class="balance ticker-balance" id="liveBalanceTag">0</strong> HOOCOOH Coins</span>
+          <span>Per Ad: <strong class="rate">+20 Coins</strong></span>
+          <span class="ticker-dot">•</span>
+          <span>Per Task: <strong class="rate">+10 Coins</strong></span>
+          <span class="ticker-dot">•</span>
+          <span>Lucky Spin: <strong class="rate">Min 10 Coins</strong></span>
+          <span class="ticker-dot">•</span>
+          <span>Your Balance: <strong class="balance ticker-balance" id="liveBalanceTag">0</strong> HOOCOOH</span>
           <span class="ticker-dot">•</span>
           <span>STARLIGHT PROTOCOL · SEASON 1</span>
-          <span class="ticker-dot">•</span>
-          <span>SPEED: <strong class="rate">80 / 2h</strong></span>
           <span class="ticker-dot">•</span>
         </div>
         <div class="ticker-item-group" aria-hidden="true">
-          <span>HOOCOOH/USDT: <strong class="rate">$0.00004</strong></span>
+          <span>HOOCOOH: <strong class="rate">$0.00004</strong></span>
           <span class="ticker-dot">•</span>
-          <span>Your Balance: <strong class="balance ticker-balance">0</strong> HOOCOOH Coins</span>
+          <span>Per Ad: <strong class="rate">+20 Coins</strong></span>
+          <span class="ticker-dot">•</span>
+          <span>Per Task: <strong class="rate">+10 Coins</strong></span>
+          <span class="ticker-dot">•</span>
+          <span>Lucky Spin: <strong class="rate">Min 10 Coins</strong></span>
+          <span class="ticker-dot">•</span>
+          <span>Your Balance: <strong class="balance ticker-balance">0</strong> HOOCOOH</span>
           <span class="ticker-dot">•</span>
           <span>STARLIGHT PROTOCOL · SEASON 1</span>
-          <span class="ticker-dot">•</span>
-          <span>SPEED: <strong class="rate">80 / 2h</strong></span>
           <span class="ticker-dot">•</span>
         </div>
       </div>
@@ -1539,6 +1693,50 @@
 
   <!-- Tab 2: EARN -->
   <main class="tab-view" id="tab-earn">
+
+    <!-- Watch Ads Section Header -->
+    <div class="tasks-section-header" style="margin: 0 0 8px;">
+      <div class="tasks-section-title">WATCH ADS, EARN HOOCOOH</div>
+    </div>
+
+    <!-- Watch & Earn Card matching media_1790874242060.png -->
+    <div class="watch-card">
+      <div class="watch-card-top">
+        <div class="watch-icon-box">🎬</div>
+        <div class="watch-card-info">
+          <div class="watch-card-title">Watch & Earn</div>
+          <div class="watch-card-sub">Earn +20 HOOCOOH Coins per ad watched</div>
+        </div>
+      </div>
+
+      <!-- Daily Progress -->
+      <div class="watch-progress-wrap">
+        <div class="watch-progress-label-row">
+          <span>Daily Progress</span>
+          <span><strong id="adsWatchedCount">0</strong> / 12 ads</span>
+        </div>
+        <div class="watch-progress-bar-bg">
+          <div class="watch-progress-bar-fill" id="adsProgressFill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- 2 Stats Boxes -->
+      <div class="watch-stats-grid">
+        <div class="watch-stat-box">
+          <div class="lbl">REMAINING TODAY</div>
+          <div class="val"><strong id="adsRemainingVal">12</strong> ads</div>
+        </div>
+        <div class="watch-stat-box">
+          <div class="lbl">EARNED TODAY</div>
+          <div class="val">+<strong id="adsEarnedTodayVal">0</strong> HOOCOOH Coins</div>
+        </div>
+      </div>
+
+      <!-- Action Button with 24h Countdown logic -->
+      <button class="watch-ad-btn" id="watchAdBtn" type="button">
+        <span>▶ Watch Ad (+20 HOOCOOH Coins)</span>
+      </button>
+    </div>
 
     <!-- Spin & Earn Eye-Catching Banner -->
     <div class="spin-card">
@@ -2084,11 +2282,105 @@
     }
   }
 
+  // Watch & Earn Logic
+  function renderAds() {
+    var watched = Number(user.adsWatchedToday) || 0;
+    var maxAds = 12;
+    var remaining = Math.max(0, maxAds - watched);
+    var earned = Number(user.adsEarnedToday) || 0;
+    var percent = Math.min(100, Math.max(0, (watched / maxAds) * 100));
+
+    var countEl = document.getElementById("adsWatchedCount");
+    if (countEl) countEl.textContent = watched;
+    var fillEl = document.getElementById("adsProgressFill");
+    if (fillEl) fillEl.style.width = percent + "%";
+    var remEl = document.getElementById("adsRemainingVal");
+    if (remEl) remEl.textContent = remaining;
+    var earnedEl = document.getElementById("adsEarnedTodayVal");
+    if (earnedEl) earnedEl.textContent = earned;
+
+    var btn = document.getElementById("watchAdBtn");
+    if (!btn) return;
+
+    var now = Date.now();
+    var cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
+    var CYCLE_MS = 24 * 60 * 60 * 1000;
+
+    // Check if 12 ads reached and still in 24h cooldown
+    if (watched >= maxAds && cycleStart && (now - cycleStart < CYCLE_MS)) {
+      btn.disabled = true;
+      var remainingCooldown = CYCLE_MS - (now - cycleStart);
+      btn.innerHTML = '<span>⏳ Next ads in ' + formatDuration(remainingCooldown) + '</span>';
+    } else if (watched >= maxAds && (!cycleStart || (now - cycleStart >= CYCLE_MS))) {
+      user.adsWatchedToday = 0;
+      user.adsEarnedToday = 0;
+      user.adsCycleStartedAt = null;
+      btn.disabled = false;
+      btn.innerHTML = '<span>▶ Watch Ad (+20 HOOCOOH Coins)</span>';
+      if (countEl) countEl.textContent = "0";
+      if (fillEl) fillEl.style.width = "0%";
+      if (remEl) remEl.textContent = "12";
+      if (earnedEl) earnedEl.textContent = "0";
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = '<span>▶ Watch Ad (+20 HOOCOOH Coins)</span>';
+    }
+  }
+
+  var watchAdBtn = document.getElementById("watchAdBtn");
+  if (watchAdBtn) {
+    watchAdBtn.addEventListener("click", function() {
+      watchAdBtn.disabled = true;
+      watchAdBtn.innerHTML = '<span>Loading Ad...</span>';
+
+      setTimeout(function() {
+        fetch("/api/ads", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Telegram-Init-Data": initData
+          }
+        }).then(function(r) {
+          if (r.status === 404) {
+            return fetch("/api/ads.js", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Telegram-Init-Data": initData
+              }
+            });
+          }
+          return r;
+        }).then(handleResponse).then(function(res) {
+          if (!res.ok) {
+            var err = (res.data && res.data.error) ? res.data.error : "Failed to watch ad";
+            showToast(err);
+            renderAds();
+            return;
+          }
+
+          user.balance = res.data.newBalance;
+          user.adsWatchedToday = res.data.adsWatchedToday;
+          user.adsEarnedToday = res.data.adsEarnedToday;
+          user.adsCycleStartedAt = res.data.adsCycleStartedAt;
+
+          renderBalance();
+          renderAds();
+          showToast("🎉 +20 HOOCOOH Coins earned from Ad!");
+        }).catch(function(err) {
+          showToast((err && err.message) ? err.message : "Ad error");
+          renderAds();
+        });
+      }, 1200);
+    });
+  }
+
   function renderAll() {
     renderUserInfo();
     renderBalance();
     renderMining();
     renderDaily();
+    renderAds();
   }
 
   // Initial immediate render so there is zero stuck loading
@@ -2581,6 +2873,7 @@
   setInterval(function(){
     renderMining();
     renderDaily();
+    renderAds();
   }, 1000);
 
   // Sync state from server every 30 seconds
