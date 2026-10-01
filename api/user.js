@@ -25,10 +25,15 @@ module.exports = async (req, res) => {
   // request. We verify it here with the bot token (server-side only,
   // set in Vercel env vars) - a request with no valid initData is
   // rejected, so the app only ever works when opened from Telegram.
+  if (!process.env.TELEGRAM_BOT_TOKEN) {
+    res.status(500).json({ error: "TELEGRAM_BOT_TOKEN is not set in Vercel settings" });
+    return;
+  }
+
   const initData = req.headers["x-telegram-init-data"];
   const tgUser = validateInitData(initData, process.env.TELEGRAM_BOT_TOKEN);
   if (!tgUser) {
-    res.status(401).json({ error: "This app can only be opened from Telegram." });
+    res.status(401).json({ error: "Invalid session - reopen app from Telegram" });
     return;
   }
   const telegramId = String(tgUser.id);

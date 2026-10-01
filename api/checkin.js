@@ -8,10 +8,15 @@ module.exports = async (req, res) => {
     return;
   }
 
+  if (!process.env.TELEGRAM_BOT_TOKEN) {
+    res.status(500).json({ error: "TELEGRAM_BOT_TOKEN is not set in Vercel settings" });
+    return;
+  }
+
   const initData = req.headers["x-telegram-init-data"];
   const tgUser = validateInitData(initData, process.env.TELEGRAM_BOT_TOKEN);
   if (!tgUser) {
-    res.status(401).json({ error: "This app can only be opened from Telegram." });
+    res.status(401).json({ error: "Invalid session - reopen app from Telegram" });
     return;
   }
   const telegramId = String(tgUser.id);
@@ -19,11 +24,23 @@ module.exports = async (req, res) => {
   try {
     const db = await getDb();
     const users = db.collection("users");
-    const user = await users.findOne({ telegramId });
+    let user = await users.findOne({ telegramId });
 
     if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
+      user = {
+        telegramId,
+        firstName: tgUser.first_name || "",
+        username: tgUser.username || "",
+        photoUrl: tgUser.photo_url || "",
+        balance: 0,
+        lastMineCollectedAt: null,
+        dailyCycle: 1,
+        dailyDayIndex: 0,
+        lastCheckinAt: null,
+        totalDailyEarned: 0,
+        createdAt: Date.now()
+      };
+      await users.insertOne(user);
     }
 
     const status = dailyStatus(user.lastCheckinAt);

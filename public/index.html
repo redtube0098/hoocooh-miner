@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>HOOCOOH Mine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
@@ -41,7 +44,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: var(--bg);
     color: var(--text);
     -webkit-tap-highlight-color: transparent;
@@ -1123,24 +1126,42 @@
     totalDailyEarned: 0
   };
 
+  function handleResponse(r) {
+    return r.text().then(function(text) {
+      var data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        data = { error: text || ("Server error (" + r.status + ")") };
+      }
+      return { ok: r.ok, status: r.status, data: data };
+    });
+  }
+
   function apiGet() {
     return fetch("/api/user", {
       headers: { "X-Telegram-Init-Data": initData }
-    }).then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); });
+    }).then(handleResponse);
   }
 
   function apiCollect() {
     return fetch("/api/collect", {
       method: "POST",
-      headers: { "X-Telegram-Init-Data": initData }
-    }).then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); });
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": initData
+      }
+    }).then(handleResponse);
   }
 
   function apiCheckin() {
     return fetch("/api/checkin", {
       method: "POST",
-      headers: { "X-Telegram-Init-Data": initData }
-    }).then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); });
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": initData
+      }
+    }).then(handleResponse);
   }
 
   function statusFromTimestamp(lastCheckinAt, now) {
@@ -1316,7 +1337,8 @@
 
     apiCollect().then(function(res){
       if (!res.ok) {
-        showToast(res.data.error || "Not ready yet");
+        var errText = (res.data && res.data.error) ? res.data.error : ("Error (" + res.status + ")");
+        showToast(errText);
         renderMining();
         return;
       }
@@ -1327,7 +1349,8 @@
       showToast("+" + res.data.reward + " HOOCOOH collected!");
       renderAll();
     }).catch(function(err){
-      showToast("Network error");
+      var msg = (err && err.message) ? err.message : "Connection failed";
+      showToast(msg);
       renderMining();
     });
   });
@@ -1341,7 +1364,8 @@
 
       apiCheckin().then(function(res){
         if (!res.ok) {
-          showToast(res.data.error || "Cannot claim right now");
+          var errText = (res.data && res.data.error) ? res.data.error : ("Error (" + res.status + ")");
+          showToast(errText);
           renderDaily();
           return;
         }
@@ -1354,7 +1378,8 @@
         showToast("+" + res.data.reward + " HOOCOOH Daily Reward claimed!");
         renderAll();
       }).catch(function(err){
-        showToast("Network error");
+        var msg = (err && err.message) ? err.message : "Connection failed";
+        showToast(msg);
         renderDaily();
       });
     });
