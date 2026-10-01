@@ -1476,25 +1476,111 @@
     color: #b91c1c;
     border: 1px solid #fca5a5;
   }
+  /* TON Package Selector Grid */
+  .ton-packages-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .ton-pkg-card {
+    background: var(--sub-box-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 56px;
+    position: relative;
+    user-select: none;
+  }
+  .ton-pkg-card:active {
+    transform: scale(0.97);
+  }
+  .ton-pkg-card.active {
+    border-color: #24bfa6;
+    background: #eafaf6;
+    box-shadow: 0 3px 12px rgba(36, 191, 166, 0.18);
+  }
+  [data-theme="dark"] .ton-pkg-card.active {
+    background: #0f3536;
+    border-color: #38e1c6;
+    box-shadow: 0 3px 12px rgba(56, 225, 198, 0.22);
+  }
+  .pkg-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+  }
+  .pkg-users-count {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.2px;
+  }
+  .pkg-ton-price {
+    font-size: 12px;
+    font-weight: 800;
+    color: #0b806d;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  [data-theme="dark"] .pkg-ton-price {
+    color: #4ce4cd;
+  }
+  .pkg-pill-badge {
+    font-size: 8.5px;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .pkg-pill-badge.popular {
+    background: #fef08a;
+    color: #854d0e;
+  }
+  .pkg-pill-badge.best {
+    background: #dbeafe;
+    color: #1e40af;
+  }
   .cost-summary-box {
     background: var(--sub-box-bg);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 10px 14px;
+    padding: 11px 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 16px;
   }
-  .cost-summary-box .lbl {
-    font-size: 11px;
+  .cost-summary-left .lbl,
+  .cost-summary-right .lbl {
+    font-size: 9.5px;
     font-weight: 700;
     color: var(--text-dim);
+    letter-spacing: 0.3px;
   }
-  .cost-summary-box .val {
-    font-size: 14px;
+  .cost-summary-left .val-sub {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+    margin-top: 2px;
+  }
+  .cost-summary-right {
+    text-align: right;
+  }
+  .cost-summary-right .val {
+    font-size: 15px;
     font-weight: 800;
     color: var(--accent);
+    margin-top: 2px;
   }
   .submit-task-btn {
     width: 100%;
@@ -1944,24 +2030,76 @@
           <div class="form-helper">Enter any Telegram channel, group, bot, or post link.</div>
         </div>
 
+        <!-- Sponsor Package Selector (TON) -->
         <div class="form-group">
-          <label class="form-label">Target Users (How many users to sponsor)</label>
-          <input type="number" class="form-input" id="postTargetUsers" min="5" value="50" step="5" required>
-          <div class="form-helper">Minimum 5 users.</div>
+          <label class="form-label">Sponsor Package (Buy with TON)</label>
+          <div class="ton-packages-grid" id="tonPackagesGrid">
+            <div class="ton-pkg-card active" data-users="100" data-ton="0.15">
+              <div class="pkg-top-row">
+                <span class="pkg-users-count">100 Users</span>
+              </div>
+              <div class="pkg-ton-price">💎 0.15 TON</div>
+            </div>
+
+            <div class="ton-pkg-card" data-users="200" data-ton="0.30">
+              <div class="pkg-top-row">
+                <span class="pkg-users-count">200 Users</span>
+              </div>
+              <div class="pkg-ton-price">💎 0.30 TON</div>
+            </div>
+
+            <div class="ton-pkg-card" data-users="500" data-ton="0.75">
+              <div class="pkg-top-row">
+                <span class="pkg-users-count">500 Users</span>
+                <span class="pkg-pill-badge popular">Popular</span>
+              </div>
+              <div class="pkg-ton-price">💎 0.75 TON</div>
+            </div>
+
+            <div class="ton-pkg-card" data-users="1000" data-ton="1.50">
+              <div class="pkg-top-row">
+                <span class="pkg-users-count">1,000 Users</span>
+              </div>
+              <div class="pkg-ton-price">💎 1.50 TON</div>
+            </div>
+
+            <div class="ton-pkg-card" data-users="1500" data-ton="2.25">
+              <div class="pkg-top-row">
+                <span class="pkg-users-count">1,500 Users</span>
+              </div>
+              <div class="pkg-ton-price">💎 2.25 TON</div>
+            </div>
+
+            <div class="ton-pkg-card" data-users="2000" data-ton="3.00">
+              <div class="pkg-top-row">
+                <span class="pkg-users-count">2,000 Users</span>
+                <span class="pkg-pill-badge best">Best Value</span>
+              </div>
+              <div class="pkg-ton-price">💎 3.00 TON</div>
+            </div>
+          </div>
+          <input type="hidden" id="postTargetUsers" value="100">
+          <input type="hidden" id="postTonCost" value="0.15">
         </div>
 
         <div class="form-group">
-          <label class="form-label">Reward per User</label>
-          <input type="text" class="form-input" value="10 HOOCOOH Coins (Fixed)" disabled readonly>
+          <label class="form-label">User Reward</label>
+          <input type="text" class="form-input" value="10 HOOCOOH Coins (Fixed Reward/User)" disabled readonly>
         </div>
 
         <!-- Total Cost Summary -->
         <div class="cost-summary-box">
-          <span class="lbl">TOTAL BUDGET NEEDED:</span>
-          <span class="val" id="postTotalCostVal">500 HOOCOOH Coins</span>
+          <div class="cost-summary-left">
+            <div class="lbl">SELECTED PACKAGE</div>
+            <div class="val-sub" id="summarySelectedUsers">100 Sponsored Users</div>
+          </div>
+          <div class="cost-summary-right">
+            <div class="lbl">PACKAGE COST</div>
+            <div class="val" id="postTotalCostVal">💎 0.15 TON</div>
+          </div>
         </div>
 
-        <button type="submit" class="submit-task-btn" id="submitPostTaskBtn">Post Task</button>
+        <button type="submit" class="submit-task-btn" id="submitPostTaskBtn">Post Task (0.15 TON)</button>
       </form>
     </div>
   </div>
@@ -2730,25 +2868,47 @@
   var typeNormalBtn = document.getElementById("typeNormalBtn");
   var verifiedChannelGroup = document.getElementById("verifiedChannelGroup");
   var normalLinkGroup = document.getElementById("normalLinkGroup");
-  var postTargetUsers = document.getElementById("postTargetUsers");
-  var postTotalCostVal = document.getElementById("postTotalCostVal");
   var verifyBotActionBtn = document.getElementById("verifyBotActionBtn");
   var postChannelUsername = document.getElementById("postChannelUsername");
   var verifyFeedbackBox = document.getElementById("verifyFeedbackBox");
   var isChannelVerified = false;
   var verifiedChatUsername = "";
 
-  function updatePostCost() {
-    var count = Math.max(5, parseInt(postTargetUsers.value, 10) || 50);
-    var totalCost = count * 10;
+  // TON Packages logic
+  var tonPkgCards = document.querySelectorAll(".ton-pkg-card");
+  var postTargetUsers = document.getElementById("postTargetUsers");
+  var postTonCost = document.getElementById("postTonCost");
+  var summarySelectedUsers = document.getElementById("summarySelectedUsers");
+  var postTotalCostVal = document.getElementById("postTotalCostVal");
+  var submitPostTaskBtn = document.getElementById("submitPostTaskBtn");
+
+  function selectTonPackage(card) {
+    if (!card) return;
+    tonPkgCards.forEach(function(c) { c.classList.remove("active"); });
+    card.classList.add("active");
+
+    var users = card.getAttribute("data-users") || "100";
+    var ton = card.getAttribute("data-ton") || "0.15";
+
+    if (postTargetUsers) postTargetUsers.value = users;
+    if (postTonCost) postTonCost.value = ton;
+
+    if (summarySelectedUsers) {
+      summarySelectedUsers.textContent = Number(users).toLocaleString() + " Sponsored Users";
+    }
     if (postTotalCostVal) {
-      postTotalCostVal.textContent = totalCost.toLocaleString() + " HOOCOOH Coins";
+      postTotalCostVal.textContent = "💎 " + ton + " TON";
+    }
+    if (submitPostTaskBtn) {
+      submitPostTaskBtn.textContent = "Post Task (" + ton + " TON)";
     }
   }
 
-  if (postTargetUsers) {
-    postTargetUsers.addEventListener("input", updatePostCost);
-  }
+  tonPkgCards.forEach(function(card) {
+    card.addEventListener("click", function() {
+      selectTonPackage(card);
+    });
+  });
 
   if (typeVerifiedBtn && typeNormalBtn) {
     typeVerifiedBtn.addEventListener("click", function() {
@@ -2811,14 +2971,14 @@
   }
 
   var postTaskForm = document.getElementById("postTaskForm");
-  var submitPostTaskBtn = document.getElementById("submitPostTaskBtn");
 
   if (postTaskForm) {
     postTaskForm.addEventListener("submit", function(e) {
       e.preventDefault();
 
       var title = document.getElementById("postTaskTitle").value.trim();
-      var targetUsers = Math.max(5, parseInt(postTargetUsers.value, 10) || 50);
+      var targetUsers = parseInt(postTargetUsers ? postTargetUsers.value : "100", 10) || 100;
+      var tonCost = parseFloat(postTonCost ? postTonCost.value : "0.15") || 0.15;
       var link = "";
 
       if (!title) {
@@ -2840,12 +3000,6 @@
         }
       }
 
-      var totalCost = targetUsers * 10;
-      if (Number(user.balance || 0) < totalCost) {
-        showToast("Insufficient balance! Need " + totalCost.toLocaleString() + " HOOCOOH Coins.");
-        return;
-      }
-
       submitPostTaskBtn.disabled = true;
       submitPostTaskBtn.textContent = "Posting Task...";
 
@@ -2853,10 +3007,11 @@
         title: title,
         link: link,
         type: postType,
-        targetUsers: targetUsers
+        targetUsers: targetUsers,
+        tonCost: tonCost
       }).then(function(res) {
         submitPostTaskBtn.disabled = false;
-        submitPostTaskBtn.textContent = "Post Task";
+        submitPostTaskBtn.textContent = "Post Task (" + tonCost + " TON)";
 
         if (!res.ok) {
           var err = (res.data && res.data.error) ? res.data.error : "Failed to post task";
@@ -2864,9 +3019,7 @@
           return;
         }
 
-        user.balance = res.data.newBalance;
-        renderBalance();
-        showToast("🚀 Task posted successfully!");
+        showToast("🚀 Task posted successfully for " + targetUsers.toLocaleString() + " users!");
 
         postTaskForm.reset();
         isChannelVerified = false;
@@ -2876,13 +3029,13 @@
           verifyBotActionBtn.classList.remove("verified");
           verifyBotActionBtn.textContent = "Verify Bot";
         }
-        updatePostCost();
+        if (tonPkgCards[0]) selectTonPackage(tonPkgCards[0]);
         postTaskModal.classList.remove("open");
 
         loadTasks();
       }).catch(function(err) {
         submitPostTaskBtn.disabled = false;
-        submitPostTaskBtn.textContent = "Post Task";
+        submitPostTaskBtn.textContent = "Post Task (" + tonCost + " TON)";
         showToast((err && err.message) ? err.message : "Error posting task");
       });
     });

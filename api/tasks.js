@@ -156,9 +156,9 @@ module.exports = async (req, res) => {
           return;
         }
 
-        const count = Math.max(5, parseInt(targetUsers, 10) || 50);
+        const count = Math.max(100, parseInt(targetUsers, 10) || 100);
         const taskType = type === "verified" ? "verified" : "normal";
-        const cost = count * 10;
+        const tonCost = Number(req.body.tonCost || ((count / 100) * 0.15).toFixed(2));
 
         let cleanLink = link.trim();
         if (!cleanLink.startsWith("http") && !cleanLink.startsWith("t.me")) {
@@ -169,15 +169,6 @@ module.exports = async (req, res) => {
 
         const user = await usersCol.findOne({ telegramId });
         const userBal = user ? Number(user.balance || 0) : 0;
-        if (userBal < cost) {
-          res.status(400).json({
-            error: `Insufficient balance! You need ${cost.toLocaleString()} HOOCOOH Coins to sponsor ${count} users. Current balance: ${userBal.toLocaleString()}`
-          });
-          return;
-        }
-
-        const newBal = userBal - cost;
-        await usersCol.updateOne({ telegramId }, { $set: { balance: newBal } });
 
         const newTask = {
           creatorId: telegramId,
@@ -186,6 +177,8 @@ module.exports = async (req, res) => {
           link: cleanLink,
           reward: 10,
           targetCount: count,
+          tonCost: tonCost,
+          currency: "TON",
           completedBy: [],
           status: "active",
           createdAt: Date.now()
@@ -199,8 +192,8 @@ module.exports = async (req, res) => {
             id: String(insertRes.insertedId),
             ...newTask
           },
-          newBalance: newBal,
-          message: `Task successfully posted! Sponsored ${count} users.`
+          newBalance: userBal,
+          message: `Task successfully posted! Sponsored ${count} users (${tonCost} TON).`
         });
         return;
       }
