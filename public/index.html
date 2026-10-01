@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -7,24 +7,24 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
-    --bg: #f3f7f8;
+    --bg: #eff5f5;
     --card-bg: #ffffff;
     --text: #0e2029;
     --text-dim: #778d99;
-    --border: rgba(14, 32, 41, 0.08);
+    --border: rgba(14, 32, 41, 0.07);
     --nav-bg: #ffffff;
     --nav-inactive: #889ca8;
     --accent: #20b8a3;
     --accent-glow: rgba(32, 184, 163, 0.28);
     --pill-bg: #eaf4f4;
     --sub-box-bg: #f4f8f9;
-    --balance-gradient: linear-gradient(135deg, #6fe8d5 0%, #3dcdb8 50%, #20b8a3 100%);
+    --balance-gradient: linear-gradient(135deg, #74ebd7 0%, #3ecdb8 50%, #20b8a4 100%);
     --balance-text: #092e27;
-    --balance-sub: #124c41;
+    --balance-sub: #144e43;
   }
   [data-theme="dark"] {
-    --bg: #081219;
-    --card-bg: #10212c;
+    --bg: #09131a;
+    --card-bg: #11212b;
     --text: #eaf5f5;
     --text-dim: #7993a0;
     --border: rgba(255, 255, 255, 0.08);
@@ -34,9 +34,9 @@
     --accent-glow: rgba(39, 212, 188, 0.35);
     --pill-bg: #152b38;
     --sub-box-bg: #0b1821;
-    --balance-gradient: linear-gradient(135deg, #1b6c60 0%, #114c43 60%, #0a332d 100%);
+    --balance-gradient: linear-gradient(135deg, #23786b 0%, #17544b 50%, #0d3831 100%);
     --balance-text: #e6faf7;
-    --balance-sub: #82d8cb;
+    --balance-sub: #78d6c8;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
@@ -54,29 +54,29 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
   }
 
   /* Top Header */
   .header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 12px;
+    gap: 10px;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px;
     background: var(--card-bg);
     border-bottom: 1px solid var(--border);
   }
   .header .logo-badge {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
     overflow: hidden;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--sub-box-bg);
-    filter: drop-shadow(0 2px 6px var(--accent-glow));
+    filter: drop-shadow(0 2px 5px var(--accent-glow));
   }
   .header .logo-badge img {
     width: 100%;
@@ -85,15 +85,15 @@
   }
   .header .info { flex: 1; min-width: 0; }
   .header .info .name {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: -0.2px;
     color: var(--text);
   }
   .header .info .sub {
-    font-size: 10.5px;
+    font-size: 9.5px;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     color: var(--text-dim);
     margin-top: 1px;
     text-transform: uppercase;
@@ -104,34 +104,34 @@
     gap: 8px;
   }
   .theme-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
     background: var(--sub-box-bg);
     border: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 14px;
     color: var(--text);
     cursor: pointer;
     transition: transform 0.15s ease;
   }
   .theme-btn:active { transform: scale(0.92); }
   .avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
     background: var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     overflow: hidden;
     flex-shrink: 0;
-    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    border: 2px solid #20b8a3;
     box-shadow: 0 2px 8px var(--accent-glow);
   }
   .avatar img { width: 100%; height: 100%; object-fit: cover; }
@@ -141,8 +141,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 16px;
-    font-size: 11.5px;
+    padding: 8px 16px;
+    font-size: 11px;
     color: var(--text-dim);
     background: var(--bg);
   }
@@ -157,7 +157,7 @@
 
   /* Main Scroll Container */
   main {
-    padding: 6px 16px 24px;
+    padding: 4px 16px 20px;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -166,9 +166,9 @@
   /* Card 1: Balance Card */
   .balance-card {
     background: var(--balance-gradient);
-    border-radius: 24px;
-    padding: 20px 20px 18px;
-    box-shadow: 0 10px 26px var(--accent-glow);
+    border-radius: 22px;
+    padding: 16px 18px 14px;
+    box-shadow: 0 8px 24px rgba(32, 184, 163, 0.22);
     position: relative;
     overflow: hidden;
   }
@@ -183,89 +183,89 @@
     gap: 6px;
     font-size: 13px;
     font-weight: 700;
-    color: var(--balance-text);
+    color: #0b3830;
   }
   .online-dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
     background: #00e676;
-    box-shadow: 0 0 8px #00e676;
+    box-shadow: 0 0 6px #00e676;
     flex-shrink: 0;
   }
   .floating-lvl {
-    width: 58px;
-    height: 58px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.42);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 2px solid rgba(255, 255, 255, 0.65);
+    border: 2px solid rgba(255, 255, 255, 0.75);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   }
   .floating-lvl .num {
-    font-size: 24px;
+    font-size: 21px;
     font-weight: 800;
     line-height: 1;
-    color: var(--balance-text);
+    color: #0b3830;
   }
   .floating-lvl .tag {
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 700;
-    color: var(--balance-sub);
+    color: #144e43;
     margin-top: 1px;
   }
   .balance-display {
-    margin: 8px 0 16px;
+    margin: 2px 0 10px;
   }
   .balance-amount {
-    font-size: 40px;
+    font-size: 32px;
     font-weight: 800;
     line-height: 1.1;
-    letter-spacing: -0.8px;
-    color: var(--balance-text);
+    letter-spacing: -0.5px;
+    color: #092e27;
   }
   .balance-amount .cents {
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 600;
     opacity: 0.85;
   }
   .balance-label {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--balance-sub);
-    margin-top: 2px;
-  }
-  .balance-usd {
     font-size: 12.5px;
     font-weight: 600;
-    color: var(--balance-sub);
-    margin-top: 4px;
+    color: #144e43;
+    margin-top: 1px;
+  }
+  .balance-usd {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #144e43;
+    margin-top: 2px;
   }
   .balance-usd span {
-    color: var(--balance-text);
+    color: #092e27;
     font-weight: 700;
   }
 
   /* Inner Progress Pill inside Balance Card */
   .progress-card {
-    background: rgba(255, 255, 255, 0.32);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.36);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.55);
-    border-radius: 20px;
-    padding: 12px 14px;
+    border-radius: 16px;
+    padding: 9px 12px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }
   .lvl-pill-icon {
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: #ffffff;
     display: flex;
@@ -273,53 +273,53 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
   }
   .lvl-pill-icon .l-num {
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 800;
-    color: #0b3d34;
+    color: #0b3830;
     line-height: 1;
   }
   .lvl-pill-icon .l-tag {
-    font-size: 8.5px;
+    font-size: 7.5px;
     font-weight: 800;
     color: var(--accent);
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
   }
   .progress-details { flex: 1; min-width: 0; }
   .progress-title {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
-    color: var(--balance-text);
+    color: #092e27;
   }
   .progress-bar-bg {
-    height: 6px;
+    height: 5px;
     background: rgba(255, 255, 255, 0.45);
-    border-radius: 6px;
-    margin: 6px 0 4px;
+    border-radius: 5px;
+    margin: 5px 0 3px;
     overflow: hidden;
   }
   .progress-bar-fill {
     height: 100%;
     background: #ffffff;
-    border-radius: 6px;
+    border-radius: 5px;
     width: 0%;
     transition: width 0.4s ease;
   }
   .progress-sub {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
-    color: var(--balance-sub);
+    color: #144e43;
     text-align: right;
   }
 
   /* Card 2: Mining Card */
   .card {
     background: var(--card-bg);
-    border-radius: 24px;
-    padding: 22px 18px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+    border-radius: 22px;
+    padding: 16px 16px 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
     text-align: center;
     position: relative;
     border: 1px solid var(--border);
@@ -327,16 +327,16 @@
   .status-pill {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 16px;
+    gap: 5px;
+    padding: 5px 14px;
     border-radius: 100px;
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 700;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
   }
   .status-pill.ready {
-    background: #e6f9f5;
+    background: #eafaf5;
     border: 1px solid #b6ede2;
     color: #149c85;
   }
@@ -360,91 +360,91 @@
     50% { opacity: 0.4; transform: scale(0.85); }
   }
 
-  .lvl-badge-row {
-    margin-top: 10px;
-  }
-  .lvl-badge-chip {
-    display: inline-block;
-    background: var(--sub-box-bg);
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 700;
-    padding: 4px 14px;
-    border-radius: 100px;
-    border: 1px solid var(--border);
-  }
-
-  .mining-complete-text {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: var(--text-dim);
-    margin-top: 10px;
-    text-transform: uppercase;
-  }
-  .mining-reward-big {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin: 4px 0 10px;
-  }
-  .mining-reward-big img {
-    width: 26px;
-    height: 26px;
-    object-fit: contain;
-  }
-
   .mine-visual-wrap {
     position: relative;
-    width: 170px;
-    height: 170px;
-    margin: 10px auto 18px;
+    width: 125px;
+    height: 125px;
+    margin: 8px auto 10px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
   .mine-glow {
     position: absolute;
-    width: 140px;
-    height: 140px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     background: radial-gradient(circle, var(--accent-glow) 0%, rgba(32, 184, 163, 0) 70%);
     pointer-events: none;
   }
   .mine-img {
-    width: 150px;
-    height: 150px;
+    width: 110px;
+    height: 110px;
     object-fit: contain;
-    filter: drop-shadow(0 10px 24px var(--accent-glow));
+    filter: drop-shadow(0 8px 18px var(--accent-glow));
     animation: floatLogo 3.6s ease-in-out infinite;
   }
   @keyframes floatLogo {
     0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-7px) rotate(1.5deg); }
+    50% { transform: translateY(-6px) rotate(1.5deg); }
+  }
+
+  .lvl-badge-row {
+    margin-top: 4px;
+  }
+  .lvl-badge-chip {
+    display: inline-block;
+    background: var(--sub-box-bg);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+  }
+
+  .mining-complete-text {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+  .mining-reward-big {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 2px 0 8px;
+  }
+  .mining-reward-big img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
   }
 
   .collect-btn {
     width: 100%;
     border: none;
     border-radius: 100px;
-    padding: 15px;
-    font-size: 15.5px;
+    padding: 13px;
+    font-size: 14.5px;
     font-weight: 700;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 9px;
+    gap: 8px;
     transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
   }
   .collect-btn:not(:disabled) {
     background: linear-gradient(135deg, #4ee0cb 0%, #1db8a2 100%);
     color: #ffffff;
-    box-shadow: 0 8px 24px var(--accent-glow);
+    box-shadow: 0 6px 20px var(--accent-glow);
   }
   .collect-btn:not(:disabled):active {
     transform: scale(0.98);
@@ -456,94 +456,85 @@
     border: 1px solid var(--border);
   }
   .collect-btn img {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     object-fit: contain;
   }
   .timer-caption {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-dim);
-    margin-top: 10px;
+    margin-top: 7px;
     font-weight: 600;
   }
 
   /* Card 3: Daily Bonus Card */
   .daily-card {
     background: var(--card-bg);
-    border-radius: 24px;
-    padding: 20px 18px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+    border-radius: 22px;
+    padding: 16px 16px 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
     border: 1px solid var(--border);
   }
   .daily-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
   .daily-header .d-title {
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 800;
     color: var(--text);
   }
   .daily-header .d-sub {
-    font-size: 11.5px;
+    font-size: 11px;
     color: var(--text-dim);
-    margin-top: 2px;
+    margin-top: 1px;
   }
   .streak-pill {
     background: #e8f9f5;
     border: 1px solid #c1eee4;
     color: #169e87;
     border-radius: 100px;
-    padding: 5px 12px;
-    font-size: 12px;
+    padding: 4px 10px;
+    font-size: 11px;
     font-weight: 700;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-  }
-  [data-theme="dark"] .streak-pill {
-    background: #112d26;
-    border-color: #195245;
-    color: #27d4bc;
+    gap: 3px;
   }
 
   /* 7 Days Grid */
   .days-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-    margin-bottom: 14px;
+    gap: 5px;
+    margin-bottom: 10px;
   }
   .day-cell {
     background: var(--sub-box-bg);
-    border-radius: 14px;
-    padding: 10px 2px;
+    border-radius: 11px;
+    padding: 7px 2px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    min-height: 58px;
-    font-size: 10.5px;
+    gap: 3px;
+    min-height: 48px;
+    font-size: 9.5px;
     font-weight: 700;
     color: var(--text-dim);
     border: 1px solid transparent;
     transition: all 0.2s ease;
   }
   .day-cell .icon-mark {
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1;
   }
   .day-cell.done {
     background: #6ce7d4;
     color: #0b3d34;
-    box-shadow: 0 3px 8px var(--accent-glow);
-  }
-  [data-theme="dark"] .day-cell.done {
-    background: #1db8a2;
-    color: #062b24;
+    box-shadow: 0 2px 6px var(--accent-glow);
   }
   .day-cell.today {
     border-color: var(--accent);
@@ -553,35 +544,35 @@
   }
   @keyframes pulseToday {
     0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
-    50% { box-shadow: 0 0 0 6px var(--accent-glow); }
+    50% { box-shadow: 0 0 0 4px var(--accent-glow); }
   }
 
   /* 3 Stats Boxes */
   .stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 12px;
+    gap: 6px;
+    margin-bottom: 8px;
   }
   .stat-card {
     background: var(--sub-box-bg);
-    border-radius: 16px;
-    padding: 12px 6px;
+    border-radius: 13px;
+    padding: 8px 4px;
     text-align: center;
     border: 1px solid var(--border);
   }
   .stat-card .s-lbl {
-    font-size: 9px;
+    font-size: 8.5px;
     font-weight: 700;
     color: var(--text-dim);
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     text-transform: uppercase;
   }
   .stat-card .s-val {
-    font-size: 15px;
+    font-size: 13.5px;
     font-weight: 800;
     color: var(--text);
-    margin-top: 4px;
+    margin-top: 2px;
   }
   .stat-card .s-val.accent {
     color: var(--accent);
@@ -592,22 +583,22 @@
     width: 100%;
     border: none;
     border-radius: 100px;
-    padding: 13px 18px;
-    font-size: 14.5px;
+    padding: 12px 16px;
+    font-size: 13.5px;
     font-weight: 700;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    margin-top: 12px;
+    gap: 6px;
+    margin-top: 4px;
     margin-bottom: 8px;
     transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
   }
   .daily-collect-btn:not(:disabled) {
     background: linear-gradient(135deg, #4ee0cb 0%, #1db8a2 100%);
     color: #ffffff;
-    box-shadow: 0 6px 18px var(--accent-glow);
+    box-shadow: 0 5px 16px var(--accent-glow);
   }
   .daily-collect-btn:not(:disabled):active {
     transform: scale(0.98);
@@ -622,18 +613,18 @@
   /* Bottom Row of Daily Card */
   .daily-bottom-row {
     background: var(--sub-box-bg);
-    border-radius: 14px;
-    padding: 10px 14px;
+    border-radius: 12px;
+    padding: 8px 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 11px;
+    font-size: 10.5px;
     border: 1px solid var(--border);
   }
   .daily-bottom-row .lbl {
     font-weight: 700;
     color: var(--text-dim);
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     text-transform: uppercase;
   }
   .daily-bottom-row .val {
@@ -653,27 +644,27 @@
     border-top: 1px solid var(--border);
     display: flex;
     z-index: 40;
-    padding: 8px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
   }
   .nav-btn {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
-    font-size: 10px;
+    gap: 2px;
+    font-size: 9.5px;
     font-weight: 600;
     color: var(--nav-inactive);
     background: none;
     border: none;
-    padding: 6px 0;
+    padding: 5px 0;
     cursor: pointer;
     position: relative;
     transition: color 0.15s ease;
   }
   .nav-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 19px;
+    height: 19px;
     fill: currentColor;
     transition: transform 0.15s ease;
   }
@@ -689,7 +680,7 @@
     border-radius: 50%;
     background: var(--accent);
     position: absolute;
-    bottom: 0px;
+    bottom: -1px;
     opacity: 0;
   }
   .nav-btn.active .nav-dot {
@@ -700,39 +691,39 @@
   .tab-view { display: none; }
   .tab-view.active { display: block; }
 
-  /* Info / Generic Card for other tabs */
+  /* Sub Page Cards */
   .sub-page-card {
     background: var(--card-bg);
-    border-radius: 24px;
-    padding: 24px 20px;
+    border-radius: 22px;
+    padding: 20px 16px;
     border: 1px solid var(--border);
     text-align: center;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
   }
   .sub-page-card h3 {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 800;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: var(--text);
   }
   .sub-page-card p {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-dim);
     line-height: 1.5;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
   }
   .action-btn-secondary {
     background: var(--sub-box-bg);
     border: 1px solid var(--border);
     color: var(--accent);
     font-weight: 700;
-    font-size: 14px;
+    font-size: 13px;
     border-radius: 100px;
-    padding: 12px 20px;
+    padding: 10px 18px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     transition: transform 0.15s ease;
   }
   .action-btn-secondary:active { transform: scale(0.96); }
@@ -741,28 +732,24 @@
   .toast {
     position: fixed;
     left: 50%;
-    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
     transform: translateX(-50%) translateY(20px);
     background: #0e2029;
     color: #ffffff;
-    padding: 10px 20px;
+    padding: 9px 18px;
     border-radius: 100px;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 600;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease, transform 0.25s ease;
     z-index: 60;
     white-space: nowrap;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
   .toast.show {
     opacity: 0.96;
     transform: translateX(-50%) translateY(0);
-  }
-  [data-theme="dark"] .toast {
-    background: #183344;
-    border: 1px solid rgba(255, 255, 255, 0.12);
   }
 </style>
 </head>
@@ -793,7 +780,7 @@
   <!-- Tab 1: HOME (Dashboard) -->
   <main class="tab-view active" id="tab-home">
 
-    <!-- Balance Card -->
+    <!-- Card 1: Balance Card -->
     <div class="balance-card">
       <div class="top-row">
         <div class="user-badge">
@@ -828,11 +815,17 @@
       </div>
     </div>
 
-    <!-- Mining Card -->
+    <!-- Card 2: Mining Card -->
     <div class="card">
       <div class="status-pill ready" id="statusPill">
         <span class="dot"></span>
         <span id="statusPillText">REWARD READY!</span>
+      </div>
+
+      <!-- 3D Logo positioned directly under status pill, matching Nautilus layout -->
+      <div class="mine-visual-wrap">
+        <div class="mine-glow"></div>
+        <img src="assets/logo.webp" alt="HOOCOOH Mining" class="mine-img">
       </div>
 
       <div class="lvl-badge-row">
@@ -845,11 +838,6 @@
         <img src="assets/logo.webp" alt="Coin">
       </div>
 
-      <div class="mine-visual-wrap">
-        <div class="mine-glow"></div>
-        <img src="assets/logo.webp" alt="HOOCOOH Mining" class="mine-img">
-      </div>
-
       <button class="collect-btn" id="collectBtn">
         <img src="assets/logo.webp" alt="Icon">
         <span>Collect HOOCOOH</span>
@@ -858,7 +846,7 @@
       <div class="timer-caption" id="timerText">Ready to collect</div>
     </div>
 
-    <!-- Daily Bonus Card -->
+    <!-- Card 3: Daily Bonus Card -->
     <div class="daily-card">
       <div class="daily-header">
         <div>
@@ -881,7 +869,7 @@
         </div>
         <div class="stat-card">
           <div class="s-lbl">NEXT REWARD</div>
-          <div class="s-val" id="nextRewardVal">+2</div>
+          <div class="s-val" id="nextRewardVal">+5</div>
         </div>
         <div class="stat-card">
           <div class="s-lbl">TOTAL EARNED</div>
@@ -908,45 +896,45 @@
     <div class="sub-page-card">
       <h3>✨ Earn Tasks</h3>
       <p>Complete tasks to earn more HOOCOOH Coins and level up faster.</p>
-      <div style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
-        <div class="daily-bottom-row" style="padding: 14px;">
+      <div style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
+        <div class="daily-bottom-row" style="padding: 12px;">
           <div>
             <div style="font-weight: 700; color: var(--text);">Join Announcement Channel</div>
             <div style="font-size: 11px; color: var(--accent); margin-top: 2px;">+100 HOOCOOH</div>
           </div>
-          <button class="action-btn-secondary" style="padding: 6px 14px; font-size: 12px;">Join</button>
+          <button class="action-btn-secondary" style="padding: 5px 12px; font-size: 11px;">Join</button>
         </div>
-        <div class="daily-bottom-row" style="padding: 14px;">
+        <div class="daily-bottom-row" style="padding: 12px;">
           <div>
             <div style="font-weight: 700; color: var(--text);">Follow on X (Twitter)</div>
             <div style="font-size: 11px; color: var(--accent); margin-top: 2px;">+100 HOOCOOH</div>
           </div>
-          <button class="action-btn-secondary" style="padding: 6px 14px; font-size: 12px;">Follow</button>
+          <button class="action-btn-secondary" style="padding: 5px 12px; font-size: 11px;">Follow</button>
         </div>
-        <div class="daily-bottom-row" style="padding: 14px;">
+        <div class="daily-bottom-row" style="padding: 12px;">
           <div>
             <div style="font-weight: 700; color: var(--text);">Invite 3 Friends</div>
             <div style="font-size: 11px; color: var(--accent); margin-top: 2px;">+300 HOOCOOH</div>
           </div>
-          <button class="action-btn-secondary" style="padding: 6px 14px; font-size: 12px;">Invite</button>
+          <button class="action-btn-secondary" style="padding: 5px 12px; font-size: 11px;">Invite</button>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Tab 3: MINING (Boosters & Info) -->
+  <!-- Tab 3: MINING -->
   <main class="tab-view" id="tab-mining">
     <div class="sub-page-card">
-      <div class="mine-visual-wrap" style="width: 120px; height: 120px; margin: 0 auto 14px;">
-        <img src="assets/logo.webp" alt="Mining" style="width: 100px; height: 100px; object-fit: contain;">
+      <div class="mine-visual-wrap" style="width: 100px; height: 100px; margin: 0 auto 10px;">
+        <img src="assets/logo.webp" alt="Mining" style="width: 85px; height: 85px; object-fit: contain;">
       </div>
       <h3>⭐ Mining Protocol</h3>
       <p>Your miner automatically gathers 80 HOOCOOH Coins every 2 hours through the Starlight Protocol.</p>
-      <div class="daily-bottom-row" style="margin-bottom: 12px;">
+      <div class="daily-bottom-row" style="margin-bottom: 8px;">
         <span class="lbl">MINE CYCLE</span>
         <span class="val">2 Hours</span>
       </div>
-      <div class="daily-bottom-row" style="margin-bottom: 12px;">
+      <div class="daily-bottom-row" style="margin-bottom: 8px;">
         <span class="lbl">REWARD PER CYCLE</span>
         <span class="val">80 HOOCOOH</span>
       </div>
@@ -962,7 +950,7 @@
     <div class="sub-page-card">
       <h3>🔗 Invite Friends</h3>
       <p>Share your link with friends. You both get bonus HOOCOOH Coins when they join!</p>
-      <button class="action-btn-secondary" id="copyInviteBtn" style="width: 100%; justify-content: center; padding: 14px; margin-bottom: 14px;">
+      <button class="action-btn-secondary" id="copyInviteBtn" style="width: 100%; justify-content: center; padding: 12px; margin-bottom: 12px;">
         <span>📋 Copy Referral Link</span>
       </button>
       <div class="daily-bottom-row">
@@ -977,7 +965,7 @@
     <div class="sub-page-card">
       <h3>💳 Web3 Wallet</h3>
       <p>Connect your TON or USDT wallet to prepare for upcoming token distribution.</p>
-      <button class="action-btn-secondary" id="connectWalletBtn" style="width: 100%; justify-content: center; padding: 14px; margin-bottom: 14px;">
+      <button class="action-btn-secondary" id="connectWalletBtn" style="width: 100%; justify-content: center; padding: 12px; margin-bottom: 12px;">
         <span>💎 Connect TON Wallet</span>
       </button>
       <div class="daily-bottom-row">
@@ -1045,8 +1033,8 @@
     tg.expand();
   } catch (e) {}
 
-  // App Theme: Derived strictly from Telegram or in-memory session (NO localStorage used!)
-  var currentTheme = (tg && tg.colorScheme === "dark") ? "dark" : "light";
+  // App Theme: Default to crisp LIGHT theme matching reference screenshots (no localStorage)
+  var currentTheme = "light";
   function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
     document.getElementById("themeToggle").textContent = theme === "dark" ? "☀️" : "🌙";
@@ -1084,7 +1072,7 @@
     });
   });
 
-  // Sub-tab action listeners
+  // Sub-tab actions
   document.getElementById("copyInviteBtn").addEventListener("click", function(){
     var inviteLink = "https://t.me/share/url?url=" + encodeURIComponent("https://t.me/hoocooh_bot") + "&text=" + encodeURIComponent("Join HOOCOOH Mine and start earning coins!");
     if (tg && tg.openTelegramLink) {
@@ -1098,7 +1086,7 @@
     showToast("Wallet connection coming soon!");
   });
 
-  // Constants
+  // Constants & Rewards
   var COIN_USD = 0.00004;
   var DAILY_REWARDS = [5, 10, 15, 20, 25, 30, 35]; // Increases by 5 every day up to 35
 
@@ -1116,10 +1104,8 @@
     return pad(h) + ":" + pad(m) + ":" + pad(s);
   }
 
-  // Server Communication (Zero localStorage - 100% server backed)
+  // Telegram User Information
   var defaultTgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
-  var initialDisplayName = defaultTgUser.first_name ? (defaultTgUser.first_name + (defaultTgUser.last_name ? (" " + defaultTgUser.last_name) : "")) : (defaultTgUser.username || "Miner");
-
   var user = {
     telegramId: String(defaultTgUser.id || "0"),
     firstName: defaultTgUser.first_name || "",
