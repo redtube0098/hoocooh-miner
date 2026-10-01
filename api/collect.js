@@ -39,10 +39,12 @@ module.exports = async (req, res) => {
       { $set: { balance: newBalance, lastMineCollectedAt: now } }
     );
 
+    const currentLevel = Math.max(1, Math.floor(newBalance / 1000) + 1);
     res.status(200).json({
       balance: newBalance,
       lastMineCollectedAt: now,
-      reward: MINE_REWARD
+      reward: MINE_REWARD,
+      level: currentLevel
     });
   } catch (err) {
     console.error(err);

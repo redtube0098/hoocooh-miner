@@ -6,485 +6,989 @@
 <title>HOOCOOH Mine</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  :root{
-    --bg:#f3f6fb;
-    --card-bg:#ffffff;
-    --text:#0f1b2d;
-    --text-dim:#6b7686;
-    --border:rgba(15,27,45,0.08);
-    --nav-bg:#ffffff;
-    --nav-inactive:#9aa4b2;
-    --accent:#2f7dff;
-    --accent-2:#57a6ff;
-    --gradient:linear-gradient(135deg,#57a6ff 0%,#2f7dff 60%,#1e63e8 100%);
-    --pill-bg:#eef3fb;
-    --shadow:0 10px 30px rgba(47,125,255,0.12);
-    --day-done:#2f7dff;
-    --day-todo:#eef3fb;
-    --header-bg:#0f1b2d;
-    --header-text:#ffffff;
+  :root {
+    --bg: #f3f7f8;
+    --card-bg: #ffffff;
+    --text: #0e2029;
+    --text-dim: #778d99;
+    --border: rgba(14, 32, 41, 0.08);
+    --nav-bg: #ffffff;
+    --nav-inactive: #889ca8;
+    --accent: #20b8a3;
+    --accent-glow: rgba(32, 184, 163, 0.28);
+    --pill-bg: #eaf4f4;
+    --sub-box-bg: #f4f8f9;
+    --balance-gradient: linear-gradient(135deg, #6fe8d5 0%, #3dcdb8 50%, #20b8a3 100%);
+    --balance-text: #092e27;
+    --balance-sub: #124c41;
   }
-  [data-theme="dark"]{
-    --bg:#070c14;
-    --card-bg:#101826;
-    --text:#eef3fb;
-    --text-dim:#8592a6;
-    --border:rgba(255,255,255,0.08);
-    --nav-bg:#0c1320;
-    --nav-inactive:#5b6577;
-    --accent:#4c8dff;
-    --accent-2:#79b3ff;
-    --gradient:linear-gradient(135deg,#3c86ff 0%,#2560d9 60%,#173f99 100%);
-    --pill-bg:#182338;
-    --shadow:0 10px 30px rgba(0,0,0,0.35);
-    --day-done:#4c8dff;
-    --day-todo:#182338;
-    --header-bg:#070c14;
-    --header-text:#ffffff;
+  [data-theme="dark"] {
+    --bg: #081219;
+    --card-bg: #10212c;
+    --text: #eaf5f5;
+    --text-dim: #7993a0;
+    --border: rgba(255, 255, 255, 0.08);
+    --nav-bg: #0c1922;
+    --nav-inactive: #5f7887;
+    --accent: #27d4bc;
+    --accent-glow: rgba(39, 212, 188, 0.35);
+    --pill-bg: #152b38;
+    --sub-box-bg: #0b1821;
+    --balance-gradient: linear-gradient(135deg, #1b6c60 0%, #114c43 60%, #0a332d 100%);
+    --balance-text: #e6faf7;
+    --balance-sub: #82d8cb;
   }
-  *{box-sizing:border-box;}
-  html,body{height:100%;}
-  body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    -webkit-tap-highlight-color:transparent;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
-  .app{
-    max-width:480px;
-    margin:0 auto;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    padding-bottom:calc(78px + env(safe-area-inset-bottom,0px));
-    perspective:1200px;
-  }
-  .tilt-card{
-    transform-style:preserve-3d;
-    transition:transform 0.15s ease-out, box-shadow 0.15s ease-out;
-    will-change:transform;
-  }
-  .subrow{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:calc(14px + env(safe-area-inset-top,0px)) 16px 12px;
-    background:var(--card-bg);
-    border-bottom:1px solid var(--border);
-  }
-  .subrow .logo-badge{
-    width:34px;height:34px;
-    display:flex;align-items:center;justify-content:center;
-    flex-shrink:0;
-    filter:drop-shadow(0 3px 6px rgba(47,125,255,0.35));
-  }
-  .subrow .logo-badge img{
-    width:100%;height:100%;object-fit:contain;
-  }
-  .subrow .info{flex:1;min-width:0;}
-  .subrow .info .name{font-weight:600;font-size:14px;}
-  .subrow .info .sub{font-size:11px;letter-spacing:0.06em;color:var(--text-dim);}
-  .subrow .controls{display:flex;align-items:center;gap:10px;}
-  .theme-btn{
-    width:34px;height:34px;border-radius:50%;
-    background:var(--pill-bg);
-    border:none;
-    display:flex;align-items:center;justify-content:center;
-    font-size:16px;
-    color:var(--text);
-    cursor:pointer;
-  }
-  .avatar{
-    width:34px;height:34px;border-radius:50%;
-    background:var(--gradient);
-    display:flex;align-items:center;justify-content:center;
-    color:#fff;font-size:14px;font-weight:600;
-    overflow:hidden;
-    flex-shrink:0;
-  }
-  .avatar img{width:100%;height:100%;object-fit:cover;}
-
-  .livebar{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:10px 16px;
-    font-size:12px;
-    color:var(--text-dim);
-    background:var(--bg);
-  }
-  .livebar .live-dot{
-    display:inline-block;width:6px;height:6px;border-radius:50%;
-    background:#26c07a;margin-right:6px;
-  }
-  .livebar .balance-tag{color:var(--accent);font-weight:600;}
-
-  main{flex:1;padding:4px 16px 20px;display:flex;flex-direction:column;gap:16px;}
-
-  .balance-card{
-    background:var(--gradient);
-    border-radius:20px;
-    padding:20px;
-    color:#fff;
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.35) inset,
-      0 -18px 30px rgba(0,0,0,0.15) inset,
-      0 20px 35px rgba(30,99,232,0.35);
-    position:relative;
-  }
-  .balance-card .amount-row{
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-  }
-  .balance-card .amount{font-size:38px;font-weight:700;line-height:1;}
-  .balance-card .amount .cents{font-size:20px;font-weight:600;opacity:0.85;}
-  .balance-card .label{font-size:13px;opacity:0.9;margin-top:4px;}
-  .balance-card .usd{font-size:12px;opacity:0.8;margin-top:8px;}
-  .level-badge{
-    width:48px;height:48px;border-radius:50%;
-    background:rgba(255,255,255,0.18);
-    border:1px solid rgba(255,255,255,0.4);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    font-size:11px;font-weight:700;
-    flex-shrink:0;
-  }
-  .level-badge .num{font-size:16px;}
-  .progress-wrap{
-    margin-top:16px;
-    background:rgba(255,255,255,0.15);
-    border-radius:14px;
-    padding:10px 12px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-  }
-  .progress-lvl{
-    width:44px;height:44px;border-radius:50%;
-    background:linear-gradient(160deg,rgba(255,255,255,0.55),rgba(255,255,255,0.12));
-    box-shadow:
-      inset 0 2px 3px rgba(255,255,255,0.6),
-      inset 0 -3px 5px rgba(0,0,0,0.18),
-      0 4px 10px rgba(0,0,0,0.25);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    line-height:1;
-    flex-shrink:0;
-  }
-  .progress-lvl .lvl-num{font-size:16px;font-weight:800;color:#fff;}
-  .progress-lvl .lvl-tag{font-size:7px;font-weight:700;letter-spacing:0.06em;color:rgba(255,255,255,0.85);margin-top:1px;}
-  .progress-body{flex:1;}
-  .progress-title{font-size:13px;font-weight:600;margin-bottom:6px;}
-  .progress-bar-bg{
-    height:6px;border-radius:6px;background:rgba(255,255,255,0.25);overflow:hidden;
-  }
-  .progress-bar-fill{
-    height:100%;background:#fff;border-radius:6px;
-    transition:width 0.4s ease;
-  }
-  .progress-fraction{font-size:11px;opacity:0.85;margin-top:6px;text-align:right;}
-
-  .card{
-    background:var(--card-bg);
-    border-radius:20px;
-    padding:20px;
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.06) inset,
-      0 18px 32px rgba(0,0,0,0.12);
-    text-align:center;
-  }
-  .status-pill{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    background:rgba(38,192,122,0.12);
-    color:#1fa968;
-    font-size:12px;
-    font-weight:600;
-    padding:6px 14px;
-    border-radius:100px;
-    margin-bottom:14px;
-  }
-  .status-pill.waiting{
-    background:var(--pill-bg);
-    color:var(--text-dim);
-  }
-  .lvl-row{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    background:var(--pill-bg);
-    padding:6px 14px 6px 6px;
-    border-radius:100px;
-    font-size:12px;
-    font-weight:600;
-    color:var(--text-dim);
-    margin-bottom:6px;
-  }
-  .lvl-row .lvl-circle{
-    width:22px;height:22px;border-radius:50%;
-    background:var(--gradient);color:#fff;
-    display:flex;align-items:center;justify-content:center;
-    font-size:10px;font-weight:700;
-  }
-  .mine-title{font-size:15px;font-weight:600;margin-bottom:16px;}
-  .mine-reward{font-size:30px;font-weight:700;color:var(--accent);margin-bottom:18px;}
-  .mine-visual{
-    width:150px;height:150px;margin:0 auto 18px;
-    display:flex;align-items:center;justify-content:center;
-    perspective:600px;
-  }
-  .mine-visual img{
-    width:78%;height:78%;object-fit:contain;
-    filter:drop-shadow(0 10px 22px rgba(47,125,255,0.45));
-    animation:spinLogo 7s linear infinite;
-    transform-style:preserve-3d;
-  }
-  @keyframes spinLogo{
-    from{transform:rotateY(0deg) rotateX(6deg);}
-    to{transform:rotateY(360deg) rotateX(6deg);}
-  }
-  .collect-btn{
-    width:100%;
-    border:none;
-    border-radius:14px;
-    padding:15px;
-    font-size:15px;
-    font-weight:700;
-    color:#fff;
-    background:var(--gradient);
-    cursor:pointer;
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.4) inset,
-      0 6px 0 rgba(0,0,0,0.18),
-      0 10px 18px rgba(47,125,255,0.35);
-    transform:translateY(0);
-    transition:transform 0.08s ease, box-shadow 0.08s ease;
-  }
-  .collect-btn:active:not(:disabled){
-    transform:translateY(4px);
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.4) inset,
-      0 2px 0 rgba(0,0,0,0.18),
-      0 4px 10px rgba(47,125,255,0.3);
-  }
-  .collect-btn:disabled{
-    opacity:0.55;
-    cursor:default;
-    box-shadow:0 4px 0 rgba(0,0,0,0.12);
-  }
-  .timer-text{
-    margin-top:12px;
-    font-size:12px;
-    color:var(--text-dim);
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
   }
 
-  .daily-card{
-    background:var(--card-bg);
-    border-radius:20px;
-    padding:20px;
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.06) inset,
-      0 18px 32px rgba(0,0,0,0.12);
+  /* Top Header */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 12px;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
   }
-  .daily-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
-  .daily-head .h-title{font-size:16px;font-weight:700;}
-  .daily-head .h-sub{font-size:12px;color:var(--text-dim);margin-top:4px;max-width:220px;}
-  .streak-pill{
-    background:linear-gradient(135deg,#ff9d4d,#ff6b3d);
-    color:#fff;font-size:12px;font-weight:700;
-    padding:6px 12px;border-radius:100px;
-    display:flex;align-items:center;gap:4px;
-    white-space:nowrap;
+  .header .logo-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--sub-box-bg);
+    filter: drop-shadow(0 2px 6px var(--accent-glow));
   }
-  .days-grid{
-    display:grid;
-    grid-template-columns:repeat(7,1fr);
-    gap:8px;
-    margin-bottom:16px;
+  .header .logo-badge img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
-  .day-cell{
-    aspect-ratio:1/1;
-    border-radius:12px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    font-size:10px;
-    font-weight:700;
-    background:var(--day-todo);
-    color:var(--text-dim);
-    gap:2px;
+  .header .info { flex: 1; min-width: 0; }
+  .header .info .name {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: var(--text);
   }
-  .day-cell.done{background:var(--day-done);color:#fff;}
-  .day-cell.today{outline:2px solid var(--accent);outline-offset:2px;}
-  .day-cell .mark{font-size:13px;}
-  .stats-row{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin-bottom:16px;
+  .header .info .sub {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    margin-top: 1px;
+    text-transform: uppercase;
   }
-  .stat-box{
-    background:var(--pill-bg);
-    border-radius:12px;
-    padding:10px 6px;
-    text-align:center;
+  .header .controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-  .stat-box .stat-label{font-size:9px;letter-spacing:0.05em;color:var(--text-dim);text-transform:uppercase;margin-bottom:4px;}
-  .stat-box .stat-val{font-size:15px;font-weight:700;}
-  .stat-box .stat-val.accent{color:var(--accent);}
-  .checkin-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    font-size:12px;
-    color:var(--text-dim);
-    border-top:1px solid var(--border);
-    padding-top:14px;
+  .theme-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    background: var(--sub-box-bg);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--text);
+    cursor: pointer;
+    transition: transform 0.15s ease;
   }
-  .checkin-row .right{font-weight:700;color:var(--text);}
+  .theme-btn:active { transform: scale(0.92); }
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 2px 8px var(--accent-glow);
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-  nav.bottom-nav{
-    position:fixed;
-    left:0;right:0;bottom:0;
-    max-width:480px;
-    margin:0 auto;
-    background:var(--nav-bg);
-    border-top:1px solid var(--border);
-    display:flex;
-    padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));
+  /* Sub Ticker */
+  .sub-ticker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    font-size: 11.5px;
+    color: var(--text-dim);
+    background: var(--bg);
   }
-  .nav-item{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:3px;
-    font-size:10px;
-    color:var(--nav-inactive);
-    padding:6px 0;
+  .sub-ticker .rate {
+    color: var(--accent);
+    font-weight: 700;
   }
-  .nav-item .icon{font-size:18px;}
-  .nav-item.active{color:var(--accent);}
+  .sub-ticker .balance {
+    color: var(--accent);
+    font-weight: 700;
+  }
 
-  .toast{
-    position:fixed;
-    left:50%;bottom:100px;
-    transform:translateX(-50%);
-    background:var(--header-bg);
-    color:#fff;
-    padding:10px 18px;
-    border-radius:100px;
-    font-size:12px;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity 0.25s ease;
-    z-index:50;
+  /* Main Scroll Container */
+  main {
+    padding: 0 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
-  .toast.show{opacity:0.95;}
+
+  /* Card 1: Balance Card */
+  .balance-card {
+    background: var(--balance-gradient);
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 12px 28px var(--accent-glow);
+    position: relative;
+    overflow: hidden;
+  }
+  .balance-card .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .user-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--balance-text);
+  }
+  .online-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #00e676;
+    box-shadow: 0 0 8px #00e676;
+    flex-shrink: 0;
+  }
+  .floating-lvl {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 2px solid rgba(255, 255, 255, 0.65);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  }
+  .floating-lvl .num {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--balance-text);
+  }
+  .floating-lvl .tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--balance-sub);
+    margin-top: 1px;
+  }
+  .balance-display {
+    margin: 8px 0 16px;
+  }
+  .balance-amount {
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.8px;
+    color: var(--balance-text);
+  }
+  .balance-amount .cents {
+    font-size: 22px;
+    font-weight: 600;
+    opacity: 0.85;
+  }
+  .balance-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--balance-sub);
+    margin-top: 2px;
+  }
+  .balance-usd {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--balance-sub);
+    margin-top: 4px;
+  }
+  .balance-usd span {
+    color: var(--balance-text);
+    font-weight: 700;
+  }
+
+  /* Inner Progress Pill inside Balance Card */
+  .progress-card {
+    background: rgba(255, 255, 255, 0.32);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 20px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .lvl-pill-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  }
+  .lvl-pill-icon .l-num {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0b3d34;
+    line-height: 1;
+  }
+  .lvl-pill-icon .l-tag {
+    font-size: 8.5px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+  .progress-details { flex: 1; min-width: 0; }
+  .progress-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--balance-text);
+  }
+  .progress-bar-bg {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.45);
+    border-radius: 6px;
+    margin: 6px 0 4px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: #ffffff;
+    border-radius: 6px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+  .progress-sub {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--balance-sub);
+    text-align: right;
+  }
+
+  /* Card 2: Mining Card */
+  .card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 22px 18px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+    text-align: center;
+    position: relative;
+    border: 1px solid var(--border);
+  }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+  .status-pill.ready {
+    background: #e6f9f5;
+    border: 1px solid #b6ede2;
+    color: #149c85;
+  }
+  .status-pill.waiting {
+    background: var(--sub-box-bg);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+  .status-pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .status-pill.ready .dot {
+    box-shadow: 0 0 6px #149c85;
+    animation: blinkDot 1.5s infinite;
+  }
+  @keyframes blinkDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  .lvl-badge-row {
+    margin-top: 10px;
+  }
+  .lvl-badge-chip {
+    display: inline-block;
+    background: var(--sub-box-bg);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+  }
+
+  .mining-complete-text {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+  .mining-reward-big {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 4px 0 10px;
+  }
+  .mining-reward-big img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+  }
+
+  .mine-visual-wrap {
+    position: relative;
+    width: 170px;
+    height: 170px;
+    margin: 10px auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mine-glow {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent-glow) 0%, rgba(32, 184, 163, 0) 70%);
+    pointer-events: none;
+  }
+  .mine-img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 24px var(--accent-glow));
+    animation: floatLogo 3.6s ease-in-out infinite;
+  }
+  @keyframes floatLogo {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-7px) rotate(1.5deg); }
+  }
+
+  .collect-btn {
+    width: 100%;
+    border: none;
+    border-radius: 100px;
+    padding: 15px;
+    font-size: 15.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+  .collect-btn:not(:disabled) {
+    background: linear-gradient(135deg, #4ee0cb 0%, #1db8a2 100%);
+    color: #ffffff;
+    box-shadow: 0 8px 24px var(--accent-glow);
+  }
+  .collect-btn:not(:disabled):active {
+    transform: scale(0.98);
+  }
+  .collect-btn:disabled {
+    background: var(--sub-box-bg);
+    color: var(--text-dim);
+    cursor: not-allowed;
+    border: 1px solid var(--border);
+  }
+  .collect-btn img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+  }
+  .timer-caption {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 10px;
+    font-weight: 600;
+  }
+
+  /* Card 3: Daily Bonus Card */
+  .daily-card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 20px 18px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border);
+  }
+  .daily-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .daily-header .d-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .daily-header .d-sub {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .streak-pill {
+    background: #e8f9f5;
+    border: 1px solid #c1eee4;
+    color: #169e87;
+    border-radius: 100px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  [data-theme="dark"] .streak-pill {
+    background: #112d26;
+    border-color: #195245;
+    color: #27d4bc;
+  }
+
+  /* 7 Days Grid */
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .day-cell {
+    background: var(--sub-box-bg);
+    border-radius: 14px;
+    padding: 10px 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 58px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-dim);
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+  }
+  .day-cell .icon-mark {
+    font-size: 13px;
+    line-height: 1;
+  }
+  .day-cell.done {
+    background: #6ce7d4;
+    color: #0b3d34;
+    box-shadow: 0 3px 8px var(--accent-glow);
+  }
+  [data-theme="dark"] .day-cell.done {
+    background: #1db8a2;
+    color: #062b24;
+  }
+  .day-cell.today {
+    border-color: var(--accent);
+    background: #e8faf6;
+    color: var(--accent);
+    animation: pulseToday 2s infinite;
+  }
+  @keyframes pulseToday {
+    0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
+    50% { box-shadow: 0 0 0 6px var(--accent-glow); }
+  }
+
+  /* 3 Stats Boxes */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .stat-card {
+    background: var(--sub-box-bg);
+    border-radius: 16px;
+    padding: 12px 6px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+  .stat-card .s-lbl {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .stat-card .s-val {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+    margin-top: 4px;
+  }
+  .stat-card .s-val.accent {
+    color: var(--accent);
+  }
+
+  /* Bottom Row of Daily Card */
+  .daily-bottom-row {
+    background: var(--sub-box-bg);
+    border-radius: 14px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    border: 1px solid var(--border);
+  }
+  .daily-bottom-row .lbl {
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .daily-bottom-row .val {
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* Bottom Navigation Bar */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--nav-bg);
+    border-top: 1px solid var(--border);
+    display: flex;
+    z-index: 40;
+    padding: 8px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+  .nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--nav-inactive);
+    background: none;
+    border: none;
+    padding: 6px 0;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.15s ease;
+  }
+  .nav-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    transition: transform 0.15s ease;
+  }
+  .nav-btn.active {
+    color: var(--accent);
+  }
+  .nav-btn.active svg {
+    transform: translateY(-1px);
+  }
+  .nav-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    bottom: 0px;
+    opacity: 0;
+  }
+  .nav-btn.active .nav-dot {
+    opacity: 1;
+  }
+
+  /* Views / Tabs */
+  .tab-view { display: none; }
+  .tab-view.active { display: block; }
+
+  /* Info / Generic Card for other tabs */
+  .sub-page-card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 24px 20px;
+    border: 1px solid var(--border);
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+  }
+  .sub-page-card h3 {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .sub-page-card p {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+  .action-btn-secondary {
+    background: var(--sub-box-bg);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+    border-radius: 100px;
+    padding: 12px 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.15s ease;
+  }
+  .action-btn-secondary:active { transform: scale(0.96); }
+
+  /* Toast Notification */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%) translateY(20px);
+    background: #0e2029;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 100px;
+    font-size: 12.5px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 60;
+    white-space: nowrap;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  }
+  .toast.show {
+    opacity: 0.96;
+    transform: translateX(-50%) translateY(0);
+  }
+  [data-theme="dark"] .toast {
+    background: #183344;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
 </style>
 </head>
 <body>
 <div class="app" id="app">
 
-  <div class="subrow">
-    <div class="logo-badge"><img src="assets/logo.webp" alt="HOOCOOH"></div>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo-badge">
+      <img src="assets/logo.webp" alt="HOOCOOH">
+    </div>
     <div class="info">
       <div class="name">HOOCOOH Mine</div>
       <div class="sub">STARLIGHT PROTOCOL · SEASON 1</div>
     </div>
     <div class="controls">
-      <button class="theme-btn" id="themeToggle">🌙</button>
+      <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">🌙</button>
       <div class="avatar" id="avatar">H</div>
     </div>
+  </header>
+
+  <!-- Sub Ticker -->
+  <div class="sub-ticker">
+    <span>LIVE HOOCOOH/USDT: <span class="rate" id="liveRate">$0.00004</span></span>
+    <span>Your Balance: <span class="balance" id="liveBalanceTag">0</span> HOOCOOH Coins</span>
   </div>
 
-  <div class="livebar">
-    <span><span class="live-dot"></span>LIVE HOOCOOH/USDT: <span id="liveRate">$0.00004</span></span>
-    <span>Your Balance: <span class="balance-tag" id="liveBalanceTag">0</span> HOOCOOH Coins</span>
-  </div>
+  <!-- Tab 1: HOME (Dashboard) -->
+  <main class="tab-view active" id="tab-home">
 
-  <main>
-    <div class="balance-card tilt-card">
-      <div class="amount-row">
-        <div>
-          <div class="amount" id="balanceAmount">0<span class="cents">.00</span></div>
-          <div class="label">HOOCOOH Coins</div>
-          <div class="usd">≈ <span id="balanceUsd">$0.00</span> USDT</div>
+    <!-- Balance Card -->
+    <div class="balance-card">
+      <div class="top-row">
+        <div class="user-badge">
+          <span class="online-dot"></span>
+          <span id="userNameTag">Miner</span>
         </div>
-        <div class="level-badge"><span class="num" id="levelBadgeNum">1</span><span>Lv.1</span></div>
+        <div class="floating-lvl">
+          <span class="num" id="levelBadgeNum">1</span>
+          <span class="tag" id="levelBadgeTag">Lv.1</span>
+        </div>
       </div>
-      <div class="progress-wrap">
-        <div class="progress-lvl"><span class="lvl-num">1</span><span class="lvl-tag">LVL</span></div>
-        <div class="progress-body">
-          <div class="progress-title">HOOCOOH Starter</div>
-          <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
-          <div class="progress-fraction"><span id="progressFraction">0 / 1000 to Lv.2</span></div>
+
+      <div class="balance-display">
+        <div class="balance-amount" id="balanceAmount">0<span class="cents">.00</span></div>
+        <div class="balance-label">HOOCOOH Coins</div>
+        <div class="balance-usd">≈ <span id="balanceUsd">$0.00</span> USDT</div>
+      </div>
+
+      <!-- Inner Progress Pill -->
+      <div class="progress-card">
+        <div class="lvl-pill-icon">
+          <span class="l-num" id="progressLvlNum">1</span>
+          <span class="l-tag">LVL</span>
+        </div>
+        <div class="progress-details">
+          <div class="progress-title" id="progressLevelTitle">HOOCOOH Starter</div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressFill" style="width: 0%"></div>
+          </div>
+          <div class="progress-sub" id="progressFraction">0 / 1,000 to Lv.2</div>
         </div>
       </div>
     </div>
 
-    <div class="card tilt-card">
-      <span class="status-pill waiting" id="statusPill">MINING...</span>
-      <div class="lvl-row"><span class="lvl-circle">1</span>LV.1 Starter</div>
-      <div class="mine-title" id="mineTitle" style="display:none;">MINING COMPLETE!</div>
-      <div class="mine-reward" id="mineReward" style="display:none;">+80 ⭐</div>
-      <div class="mine-visual"><img src="assets/logo.webp" alt="HOOCOOH"></div>
-      <button class="collect-btn" id="collectBtn" disabled>Collect HOOCOOH</button>
-      <div class="timer-text" id="timerText">Loading...</div>
+    <!-- Mining Card -->
+    <div class="card">
+      <div class="status-pill waiting" id="statusPill">
+        <span class="dot"></span>
+        <span id="statusPillText">MINING...</span>
+      </div>
+
+      <div class="lvl-badge-row">
+        <span class="lvl-badge-chip" id="minerLvlChip">Lv.1 Starter</span>
+      </div>
+
+      <div class="mining-complete-text" id="mineTitle" style="display: none;">MINING COMPLETE!</div>
+      <div class="mining-reward-big" id="mineReward" style="display: none;">
+        <span>+80</span>
+        <img src="assets/logo.webp" alt="Coin">
+      </div>
+
+      <div class="mine-visual-wrap">
+        <div class="mine-glow"></div>
+        <img src="assets/logo.webp" alt="HOOCOOH Mining" class="mine-img">
+      </div>
+
+      <button class="collect-btn" id="collectBtn" disabled>
+        <img src="assets/logo.webp" alt="Icon">
+        <span>Collect HOOCOOH</span>
+      </button>
+
+      <div class="timer-caption" id="timerText">Loading...</div>
     </div>
 
-    <div class="daily-card tilt-card">
-      <div class="daily-head">
+    <!-- Daily Bonus Card -->
+    <div class="daily-card">
+      <div class="daily-header">
         <div>
-          <div class="h-title">Daily Bonus</div>
-          <div class="h-sub">Keep your streak alive for bigger rewards</div>
+          <div class="d-title">Daily Bonus</div>
+          <div class="d-sub">Keep your streak alive for bigger rewards</div>
         </div>
-        <div class="streak-pill">🔥 Day <span id="streakDayTag">1</span></div>
+        <div class="streak-pill">
+          <span>🔥</span> Day <span id="streakDayTag">1</span>
+        </div>
       </div>
+
+      <!-- 7 Days Grid -->
       <div class="days-grid" id="daysGrid"></div>
-      <div class="stats-row">
-        <div class="stat-box">
-          <div class="stat-label">Current Streak</div>
-          <div class="stat-val accent" id="currentStreakVal">0 days</div>
+
+      <!-- 3 Stats Boxes -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="s-lbl">CURRENT STREAK</div>
+          <div class="s-val accent" id="currentStreakVal">0 days</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-label">Next Reward</div>
-          <div class="stat-val" id="nextRewardVal">+2</div>
+        <div class="stat-card">
+          <div class="s-lbl">NEXT REWARD</div>
+          <div class="s-val" id="nextRewardVal">+2</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-label">Total Earned</div>
-          <div class="stat-val" id="totalEarnedVal">0</div>
+        <div class="stat-card">
+          <div class="s-lbl">TOTAL EARNED</div>
+          <div class="s-val" id="totalEarnedVal">0</div>
         </div>
       </div>
-      <div class="checkin-row">
-        <span>NEXT CHECK-IN IN</span>
-        <span class="right" id="checkinCountdown">--:--:--</span>
+
+      <!-- Bottom Row of Daily Card -->
+      <div class="daily-bottom-row">
+        <span class="lbl">NEXT CHECK-IN IN</span>
+        <span class="val" id="checkinCountdown">--:--:--</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Tab 2: EARN -->
+  <main class="tab-view" id="tab-earn">
+    <div class="sub-page-card">
+      <h3>✨ Earn Tasks</h3>
+      <p>Complete tasks to earn more HOOCOOH Coins and level up faster.</p>
+      <div style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
+        <div class="daily-bottom-row" style="padding: 14px;">
+          <div>
+            <div style="font-weight: 700; color: var(--text);">Join Announcement Channel</div>
+            <div style="font-size: 11px; color: var(--accent); margin-top: 2px;">+100 HOOCOOH</div>
+          </div>
+          <button class="action-btn-secondary" style="padding: 6px 14px; font-size: 12px;">Join</button>
+        </div>
+        <div class="daily-bottom-row" style="padding: 14px;">
+          <div>
+            <div style="font-weight: 700; color: var(--text);">Follow on X (Twitter)</div>
+            <div style="font-size: 11px; color: var(--accent); margin-top: 2px;">+100 HOOCOOH</div>
+          </div>
+          <button class="action-btn-secondary" style="padding: 6px 14px; font-size: 12px;">Follow</button>
+        </div>
+        <div class="daily-bottom-row" style="padding: 14px;">
+          <div>
+            <div style="font-weight: 700; color: var(--text);">Invite 3 Friends</div>
+            <div style="font-size: 11px; color: var(--accent); margin-top: 2px;">+300 HOOCOOH</div>
+          </div>
+          <button class="action-btn-secondary" style="padding: 6px 14px; font-size: 12px;">Invite</button>
+        </div>
       </div>
     </div>
   </main>
 
+  <!-- Tab 3: MINING (Boosters & Info) -->
+  <main class="tab-view" id="tab-mining">
+    <div class="sub-page-card">
+      <div class="mine-visual-wrap" style="width: 120px; height: 120px; margin: 0 auto 14px;">
+        <img src="assets/logo.webp" alt="Mining" style="width: 100px; height: 100px; object-fit: contain;">
+      </div>
+      <h3>⭐ Mining Protocol</h3>
+      <p>Your miner automatically gathers 80 HOOCOOH Coins every 2 hours through the Starlight Protocol.</p>
+      <div class="daily-bottom-row" style="margin-bottom: 12px;">
+        <span class="lbl">MINE CYCLE</span>
+        <span class="val">2 Hours</span>
+      </div>
+      <div class="daily-bottom-row" style="margin-bottom: 12px;">
+        <span class="lbl">REWARD PER CYCLE</span>
+        <span class="val">80 HOOCOOH</span>
+      </div>
+      <div class="daily-bottom-row">
+        <span class="lbl">PROTOCOL EFFICIENCY</span>
+        <span class="val">100% Active</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Tab 4: INVITE -->
+  <main class="tab-view" id="tab-invite">
+    <div class="sub-page-card">
+      <h3>🔗 Invite Friends</h3>
+      <p>Share your link with friends. You both get bonus HOOCOOH Coins when they join!</p>
+      <button class="action-btn-secondary" id="copyInviteBtn" style="width: 100%; justify-content: center; padding: 14px; margin-bottom: 14px;">
+        <span>📋 Copy Referral Link</span>
+      </button>
+      <div class="daily-bottom-row">
+        <span class="lbl">FRIENDS INVITED</span>
+        <span class="val">0 Friends</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Tab 5: WALLET -->
+  <main class="tab-view" id="tab-wallet">
+    <div class="sub-page-card">
+      <h3>💳 Web3 Wallet</h3>
+      <p>Connect your TON or USDT wallet to prepare for upcoming token distribution.</p>
+      <button class="action-btn-secondary" id="connectWalletBtn" style="width: 100%; justify-content: center; padding: 14px; margin-bottom: 14px;">
+        <span>💎 Connect TON Wallet</span>
+      </button>
+      <div class="daily-bottom-row">
+        <span class="lbl">WALLET STATUS</span>
+        <span class="val">Not Connected</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
-    <div class="nav-item active"><span class="icon">🏠</span>Home</div>
-    <div class="nav-item"><span class="icon">✨</span>Earn</div>
-    <div class="nav-item"><span class="icon">⭐</span>Mining</div>
-    <div class="nav-item"><span class="icon">🔗</span>Invite</div>
-    <div class="nav-item"><span class="icon">💳</span>Wallet</div>
+    <button class="nav-btn active" data-tab="tab-home">
+      <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zm-9 9h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg>
+      <span>Home</span>
+      <span class="nav-dot"></span>
+    </button>
+    <button class="nav-btn" data-tab="tab-earn">
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9 6.6 2.1-6.6 2.1L12 20l-2.4-6.9L3 11l6.6-2.1L12 2z"/></svg>
+      <span>Earn</span>
+      <span class="nav-dot"></span>
+    </button>
+    <button class="nav-btn" data-tab="tab-mining">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.2l6.8 3.8L12 11.8 5.2 8 12 4.2zM4.9 9.8L11 13.2v7L4.9 16.8V9.8zm8.1 10.4v-7l6.1-3.4v7L13 20.2z"/></svg>
+      <span>Mining</span>
+      <span class="nav-dot"></span>
+    </button>
+    <button class="nav-btn" data-tab="tab-invite">
+      <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+      <span>Invite</span>
+      <span class="nav-dot"></span>
+    </button>
+    <button class="nav-btn" data-tab="tab-wallet">
+      <svg viewBox="0 0 24 24"><path d="M21 7.28V5c0-1.1-.9-2-2-2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-2.28c.59-.35 1-.99 1-1.72V9c0-.73-.41-1.37-1-1.72zM20 9v6h-7V9h7zM5 19V5h14v2h-6c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h6v2H5z"/></svg>
+      <span>Wallet</span>
+      <span class="nav-dot"></span>
+    </button>
   </nav>
 
+  <!-- Toast Element -->
   <div class="toast" id="toast"></div>
+
 </div>
 
 <script>
 (function(){
   "use strict";
 
-  // ---------- Telegram WebApp integration ----------
-  // This app ONLY works when opened from inside Telegram. There is no
-  // fallback ID for browser testing - if Telegram's WebApp bridge or its
-  // signed initData is missing, the app blocks itself below and never
-  // loads any game state.
+  // Telegram WebApp Setup
   var tg = window.Telegram ? window.Telegram.WebApp : null;
   var initData = tg && tg.initData ? tg.initData : "";
 
@@ -492,194 +996,219 @@
     document.getElementById("app").innerHTML =
       '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px;text-align:center;">' +
       '<div>' +
-      '<div style="font-size:40px;margin-bottom:16px;">⭐</div>' +
-      '<div style="font-size:16px;font-weight:600;margin-bottom:8px;">Open this from Telegram</div>' +
-      '<div style="font-size:13px;color:var(--text-dim);">HOOCOOH Mine only works inside the Telegram app. Please open it through your Telegram bot.</div>' +
+      '<div style="font-size:44px;margin-bottom:16px;">⭐</div>' +
+      '<div style="font-size:17px;font-weight:700;margin-bottom:8px;">Open this from Telegram</div>' +
+      '<div style="font-size:13px;color:var(--text-dim);max-width:320px;line-height:1.5;">HOOCOOH Mine only works inside the Telegram app. Please open it through your Telegram bot.</div>' +
       '</div></div>';
-    return; // stop here - no API calls, no state, nothing runs.
+    return;
   }
 
   try {
     tg.ready();
     tg.expand();
-    var tgUserUnsafe = tg.initDataUnsafe && tg.initDataUnsafe.user; // display-only, never trusted for auth
-    if (tgUserUnsafe) {
-      var avatarEl = document.getElementById("avatar");
-      if (tgUserUnsafe.photo_url) {
-        avatarEl.innerHTML = '<img src="' + tgUserUnsafe.photo_url + '" alt="profile">';
-      } else {
-        avatarEl.textContent = (tgUserUnsafe.first_name || "H").charAt(0).toUpperCase();
-      }
-    }
-  } catch (e) { /* ignore display-only failures */ }
+  } catch (e) {}
 
-  // ---------- 3D tilt interaction ----------
-  // Cards gently tilt in 3D following the finger/cursor, then ease back
-  // flat when released - this is what actually drives the perspective
-  // set up in the CSS.
-  function enableTilt(el){
-    var maxTilt = 7;
-    function handleMove(x, y){
-      var rect = el.getBoundingClientRect();
-      var px = (x - rect.left) / rect.width;
-      var py = (y - rect.top) / rect.height;
-      var rotateY = (px - 0.5) * maxTilt * 2;
-      var rotateX = (0.5 - py) * maxTilt * 2;
-      el.style.transform = "rotateX(" + rotateX.toFixed(2) + "deg) rotateY(" + rotateY.toFixed(2) + "deg)";
-    }
-    function reset(){
-      el.style.transform = "rotateX(0deg) rotateY(0deg)";
-    }
-    el.addEventListener("pointermove", function(e){ handleMove(e.clientX, e.clientY); });
-    el.addEventListener("pointerleave", reset);
-    el.addEventListener("touchmove", function(e){
-      if (e.touches && e.touches[0]) handleMove(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: true });
-    el.addEventListener("touchend", reset);
-    el.addEventListener("touchcancel", reset);
-  }
-  var tiltCards = document.querySelectorAll(".tilt-card");
-  for (var ti = 0; ti < tiltCards.length; ti++) { enableTilt(tiltCards[ti]); }
-
-  // ---------- Constants (must match lib/gameLogic.js) ----------
-  var COIN_USD = 0.00004;
-  var LEVEL1_TARGET = 1000;
-  var WEEK1_REWARDS = [2, 5, 10, 20, 40, 80, 160];
-  var REPEAT_REWARDS = [10, 10, 10, 15, 15, 15, 30];
-
-  function rewardForCycleDay(cycle, dayIndex){
-    return cycle === 1 ? WEEK1_REWARDS[dayIndex] : REPEAT_REWARDS[dayIndex];
-  }
-
-  // ---------- Theme ----------
-  var THEME_KEY = "hoocooh_theme";
-  function applyTheme(theme){
+  // App Theme: Derived strictly from Telegram or in-memory session (NO localStorage used!)
+  var currentTheme = (tg && tg.colorScheme === "dark") ? "dark" : "light";
+  function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
     document.getElementById("themeToggle").textContent = theme === "dark" ? "☀️" : "🌙";
   }
-  var currentTheme = localStorage.getItem(THEME_KEY) || "dark";
   applyTheme(currentTheme);
+
   document.getElementById("themeToggle").addEventListener("click", function(){
-    currentTheme = currentTheme === "dark" ? "light" : "dark";
-    localStorage.setItem(THEME_KEY, currentTheme);
+    currentTheme = (currentTheme === "dark") ? "light" : "dark";
     applyTheme(currentTheme);
   });
 
-  // ---------- Toast ----------
+  // Toast Functionality
   var toastEl = document.getElementById("toast");
   var toastTimer = null;
-  function showToast(msg){
+  function showToast(msg) {
     toastEl.textContent = msg;
     toastEl.classList.add("show");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 2200);
+    toastTimer = setTimeout(function(){
+      toastEl.classList.remove("show");
+    }, 2200);
   }
 
-  // ---------- Server state ----------
-  var user = null; // last known state from the API
+  // Navigation Tabs Switching
+  var navBtns = document.querySelectorAll(".nav-btn");
+  var tabViews = document.querySelectorAll(".tab-view");
+  navBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var targetTab = btn.getAttribute("data-tab");
+      navBtns.forEach(function(b){ b.classList.remove("active"); });
+      tabViews.forEach(function(v){ v.classList.remove("active"); });
+      btn.classList.add("active");
+      var activeView = document.getElementById(targetTab);
+      if (activeView) activeView.classList.add("active");
+    });
+  });
 
-  // Every request carries Telegram's raw, signed initData string in a
-  // header. The server verifies the signature with the bot token (kept
-  // only in Vercel env vars) and derives the telegramId itself - the
-  // client never gets to just assert who it is.
-  function apiGet(){
+  // Sub-tab action listeners
+  document.getElementById("copyInviteBtn").addEventListener("click", function(){
+    var inviteLink = "https://t.me/share/url?url=" + encodeURIComponent("https://t.me/hoocooh_bot") + "&text=" + encodeURIComponent("Join HOOCOOH Mine and start earning coins!");
+    if (tg && tg.openTelegramLink) {
+      tg.openTelegramLink(inviteLink);
+    } else {
+      showToast("Referral link copied!");
+    }
+  });
+
+  document.getElementById("connectWalletBtn").addEventListener("click", function(){
+    showToast("Wallet connection coming soon!");
+  });
+
+  // Constants
+  var COIN_USD = 0.00004;
+  var WEEK1_REWARDS = [2, 5, 10, 20, 40, 80, 160];
+  var REPEAT_REWARDS = [10, 10, 10, 15, 15, 15, 30];
+
+  function rewardForCycleDay(cycle, dayIndex) {
+    return cycle === 1 ? WEEK1_REWARDS[dayIndex] : REPEAT_REWARDS[dayIndex];
+  }
+
+  function formatDuration(ms) {
+    if (ms < 0) ms = 0;
+    var totalSec = Math.floor(ms / 1000);
+    var h = Math.floor(totalSec / 3600);
+    var m = Math.floor((totalSec % 3600) / 60);
+    var s = totalSec % 60;
+    function pad(n) { return n < 10 ? "0" + n : "" + n; }
+    return pad(h) + ":" + pad(m) + ":" + pad(s);
+  }
+
+  // Server Communication (Zero localStorage - 100% server backed)
+  var user = null;
+
+  function apiGet() {
     return fetch("/api/user", {
       headers: { "X-Telegram-Init-Data": initData }
     }).then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); });
   }
-  function apiCollect(){
+
+  function apiCollect() {
     return fetch("/api/collect", {
       method: "POST",
       headers: { "X-Telegram-Init-Data": initData }
     }).then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); });
   }
-  function apiCheckin(){
+
+  function apiCheckin() {
     return fetch("/api/checkin", {
       method: "POST",
       headers: { "X-Telegram-Init-Data": initData }
     }).then(function(r){ return r.json().then(function(data){ return { ok: r.ok, data: data }; }); });
   }
 
-  function formatDuration(ms){
-    if (ms < 0) ms = 0;
-    var totalSec = Math.floor(ms / 1000);
-    var h = Math.floor(totalSec / 3600);
-    var m = Math.floor((totalSec % 3600) / 60);
-    var s = totalSec % 60;
-    function pad(n){ return n < 10 ? "0" + n : "" + n; }
-    return pad(h) + ":" + pad(m) + ":" + pad(s);
+  function statusFromTimestamp(lastCheckinAt, now) {
+    var DAY_MS = 24 * 60 * 60 * 1000;
+    var elapsed = now - lastCheckinAt;
+    if (elapsed < DAY_MS) return "waiting";
+    if (elapsed >= 2 * DAY_MS) return "broken";
+    return "ready";
   }
 
-  // ---------- Rendering ----------
-  function renderBalance(){
-    var whole = Math.floor(user.balance);
+  // Rendering
+  function renderUserInfo() {
+    var displayName = user.firstName || user.username || "Miner";
+    document.getElementById("userNameTag").textContent = displayName;
+
+    var avatarEl = document.getElementById("avatar");
+    if (user.photoUrl) {
+      avatarEl.innerHTML = '<img src="' + user.photoUrl + '" alt="Avatar">';
+    } else {
+      avatarEl.textContent = displayName.charAt(0).toUpperCase();
+    }
+  }
+
+  function renderBalance() {
+    var balance = user.balance || 0;
+    var whole = Math.floor(balance);
     document.getElementById("balanceAmount").innerHTML = whole.toLocaleString() + '<span class="cents">.00</span>';
     document.getElementById("liveBalanceTag").textContent = whole.toLocaleString();
-    document.getElementById("balanceUsd").textContent = "$" + (user.balance * COIN_USD).toFixed(2);
+    document.getElementById("balanceUsd").textContent = "$" + (balance * COIN_USD).toFixed(2);
 
-    var progress = Math.min(user.balance, LEVEL1_TARGET);
-    document.getElementById("progressFill").style.width = ((progress / LEVEL1_TARGET) * 100) + "%";
+    var level = user.level || 1;
+    document.getElementById("levelBadgeNum").textContent = level;
+    document.getElementById("levelBadgeTag").textContent = "Lv." + level;
+    document.getElementById("progressLvlNum").textContent = level;
+    document.getElementById("minerLvlChip").textContent = "Lv." + level + " Starter";
+
+    var target = level * 1000;
+    var currentProgress = balance % 1000;
+    var fillPercent = Math.min(100, Math.max(0, (currentProgress / 1000) * 100));
+    document.getElementById("progressFill").style.width = fillPercent + "%";
     document.getElementById("progressFraction").textContent =
-      Math.min(Math.floor(user.balance), LEVEL1_TARGET) + " / " + LEVEL1_TARGET + " to Lv.2";
+      whole.toLocaleString() + " / " + target.toLocaleString() + " to Lv." + (level + 1);
   }
 
-  function renderMining(){
+  function renderMining() {
     var now = Date.now();
     var ready = user.mineReady && (!user.lastMineCollectedAt || (now - user.lastMineCollectedAt) >= user.mineIntervalMs);
     var pill = document.getElementById("statusPill");
+    var pillText = document.getElementById("statusPillText");
     var btn = document.getElementById("collectBtn");
     var titleEl = document.getElementById("mineTitle");
     var rewardEl = document.getElementById("mineReward");
     var timerText = document.getElementById("timerText");
 
-    if (ready){
-      pill.textContent = "REWARD READY!";
-      pill.classList.remove("waiting");
+    if (ready) {
+      pill.className = "status-pill ready";
+      pillText.textContent = "REWARD READY!";
       titleEl.style.display = "block";
-      rewardEl.style.display = "block";
-      rewardEl.textContent = "+80 ⭐";
+      rewardEl.style.display = "flex";
       btn.disabled = false;
       timerText.textContent = "Ready to collect";
     } else {
-      pill.textContent = "MINING...";
-      pill.classList.add("waiting");
+      pill.className = "status-pill waiting";
+      pillText.textContent = "MINING...";
       titleEl.style.display = "none";
       rewardEl.style.display = "none";
       btn.disabled = true;
-      var remaining = user.mineIntervalMs - (now - user.lastMineCollectedAt);
+      var remaining = user.mineIntervalMs - (now - (user.lastMineCollectedAt || 0));
       timerText.textContent = "Next collection in " + formatDuration(remaining);
     }
   }
 
-  function renderDaily(){
+  function renderDaily() {
     var grid = document.getElementById("daysGrid");
     grid.innerHTML = "";
-    for (var i = 0; i < 7; i++){
+    var now = Date.now();
+    var status = user.lastCheckinAt ? statusFromTimestamp(user.lastCheckinAt, now) : "ready";
+
+    for (var i = 0; i < 7; i++) {
       var cell = document.createElement("div");
       cell.className = "day-cell";
       var reward = rewardForCycleDay(user.dailyCycle, i);
-      if (i < user.dailyDayIndex){
+
+      if (i < user.dailyDayIndex) {
         cell.classList.add("done");
-        cell.innerHTML = "✓";
-      } else if (i === user.dailyDayIndex){
-        cell.classList.add(user.lastCheckinAt ? "done" : "today");
-        cell.innerHTML = user.lastCheckinAt ? "✓" : ("D" + (i+1) + "<span class='mark'>+" + reward + "</span>");
+        cell.innerHTML = '<span class="icon-mark">✓</span><span>D' + (i + 1) + '</span>';
+      } else if (i === user.dailyDayIndex) {
+        if (user.lastCheckinAt && status === "waiting") {
+          cell.classList.add("done");
+          cell.innerHTML = '<span class="icon-mark">✓</span><span>D' + (i + 1) + '</span>';
+        } else {
+          cell.classList.add("today");
+          cell.innerHTML = '<span class="icon-mark">+' + reward + '</span><span>D' + (i + 1) + '</span>';
+        }
       } else {
-        cell.innerHTML = "D" + (i+1);
+        cell.innerHTML = '<span class="icon-mark">○</span><span>D' + (i + 1) + '</span>';
       }
       grid.appendChild(cell);
     }
 
-    var streakLen = user.lastCheckinAt ? (user.dailyDayIndex + 1) : 0;
-    document.getElementById("streakDayTag").textContent = streakLen || 1;
-    document.getElementById("currentStreakVal").textContent = streakLen + " day" + (streakLen === 1 ? "" : "s");
-    document.getElementById("totalEarnedVal").textContent = user.totalDailyEarned;
+    var streakDays = user.lastCheckinAt ? (user.dailyDayIndex + 1) : 0;
+    if (status === "broken") streakDays = 0;
+    document.getElementById("streakDayTag").textContent = Math.max(1, streakDays);
+    document.getElementById("currentStreakVal").textContent = streakDays + " day" + (streakDays === 1 ? "" : "s");
+    document.getElementById("totalEarnedVal").textContent = (user.totalDailyEarned || 0).toLocaleString();
 
-    var now = Date.now();
-    var status = user.lastCheckinAt ? statusFromTimestamp(user.lastCheckinAt, now) : "ready";
     var checkinEl = document.getElementById("checkinCountdown");
-
-    if (status === "waiting"){
+    if (status === "waiting") {
       var DAY_MS = 24 * 60 * 60 * 1000;
       checkinEl.textContent = formatDuration(DAY_MS - (now - user.lastCheckinAt));
       var nextIndex = (user.dailyDayIndex + 1) % 7;
@@ -691,36 +1220,33 @@
     }
   }
 
-  function statusFromTimestamp(lastCheckinAt, now){
-    var DAY_MS = 24 * 60 * 60 * 1000;
-    var elapsed = now - lastCheckinAt;
-    if (elapsed < DAY_MS) return "waiting";
-    if (elapsed >= 2 * DAY_MS) return "broken";
-    return "ready";
-  }
-
-  function renderAll(){
+  function renderAll() {
+    renderUserInfo();
     renderBalance();
     renderMining();
     renderDaily();
   }
 
-  // ---------- Actions ----------
+  // Collect Action
   document.getElementById("collectBtn").addEventListener("click", function(){
     apiCollect().then(function(res){
-      if (!res.ok){
+      if (!res.ok) {
         showToast(res.data.error || "Not ready yet");
         return;
       }
       user.balance = res.data.balance;
       user.lastMineCollectedAt = res.data.lastMineCollectedAt;
       user.mineReady = false;
+      if (res.data.level) user.level = res.data.level;
       showToast("+" + res.data.reward + " HOOCOOH collected!");
       renderAll();
-    }).catch(function(){ showToast("Network error"); });
+    }).catch(function(){
+      showToast("Network error");
+    });
   });
 
-  function tryAutoCheckin(){
+  // Daily Checkin Auto-trigger if ready
+  function tryAutoCheckin() {
     var now = Date.now();
     var status = user.lastCheckinAt ? statusFromTimestamp(user.lastCheckinAt, now) : "ready";
     if (status === "waiting") return;
@@ -732,35 +1258,41 @@
       user.dailyDayIndex = res.data.dailyDayIndex;
       user.lastCheckinAt = res.data.lastCheckinAt;
       user.totalDailyEarned = res.data.totalDailyEarned;
+      if (res.data.level) user.level = res.data.level;
       showToast("Daily bonus: +" + res.data.reward + " HOOCOOH!");
       renderAll();
     }).catch(function(){});
   }
 
-  // ---------- Init ----------
+  // Initialize Data from Server
   apiGet().then(function(res){
-    if (!res.ok){
-      showToast(res.data.error || "Couldn't verify Telegram session");
+    if (!res.ok) {
+      showToast(res.data.error || "Session verification failed");
       return;
     }
     user = res.data;
     renderAll();
     tryAutoCheckin();
   }).catch(function(){
-    showToast("Couldn't load your data - check your connection");
+    showToast("Error connecting to server");
   });
 
-  // Local ticking for the visible countdowns; re-sync from the server every 30s
-  // so multiple devices / server-side changes stay in view.
+  // Timer Tick every 1s
   setInterval(function(){
     if (!user) return;
     renderMining();
     renderDaily();
   }, 1000);
 
+  // Sync state from server every 30 seconds
   setInterval(function(){
     if (!user) return;
-    apiGet().then(function(res){ if (res.ok) { user = res.data; renderAll(); } }).catch(function(){});
+    apiGet().then(function(res){
+      if (res.ok) {
+        user = res.data;
+        renderAll();
+      }
+    }).catch(function(){});
   }, 30000);
 
 })();

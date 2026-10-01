@@ -40,11 +40,37 @@ module.exports = async (req, res) => {
     let user = await users.findOne({ telegramId });
     if (!user) {
       user = defaultUser(telegramId);
+      user.firstName = tgUser.first_name || "";
+      user.username = tgUser.username || "";
+      user.photoUrl = tgUser.photo_url || "";
       await users.insertOne(user);
+    } else {
+      const updateFields = {};
+      if (tgUser.first_name && user.firstName !== tgUser.first_name) {
+        updateFields.firstName = tgUser.first_name;
+        user.firstName = tgUser.first_name;
+      }
+      if (tgUser.username && user.username !== tgUser.username) {
+        updateFields.username = tgUser.username;
+        user.username = tgUser.username;
+      }
+      if (tgUser.photo_url && user.photoUrl !== tgUser.photo_url) {
+        updateFields.photoUrl = tgUser.photo_url;
+        user.photoUrl = tgUser.photo_url;
+      }
+      if (Object.keys(updateFields).length > 0) {
+        await users.updateOne({ telegramId }, { $set: updateFields });
+      }
     }
+
+    const currentLevel = Math.max(1, Math.floor((user.balance || 0) / 1000) + 1);
 
     res.status(200).json({
       telegramId: user.telegramId,
+      firstName: user.firstName || tgUser.first_name || "Miner",
+      username: user.username || tgUser.username || "",
+      photoUrl: user.photoUrl || tgUser.photo_url || "",
+      level: currentLevel,
       balance: user.balance,
       lastMineCollectedAt: user.lastMineCollectedAt,
       dailyCycle: user.dailyCycle,

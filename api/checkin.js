@@ -62,13 +62,15 @@ module.exports = async (req, res) => {
       }
     );
 
+    const currentLevel = Math.max(1, Math.floor(newBalance / 1000) + 1);
     res.status(200).json({
       balance: newBalance,
       dailyCycle,
       dailyDayIndex,
       lastCheckinAt: now,
       totalDailyEarned: newTotal,
-      reward
+      reward,
+      level: currentLevel
     });
   } catch (err) {
     console.error(err);
