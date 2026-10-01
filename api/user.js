@@ -82,7 +82,7 @@ module.exports = async (req, res) => {
       dailyStatusNow: dailyStatus(user.lastCheckinAt)
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
+    console.error("user.js error:", err);
+    res.status(500).json({ error: err.message || "Server error" });
   }
 };

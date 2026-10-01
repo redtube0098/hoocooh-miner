@@ -73,7 +73,7 @@ module.exports = async (req, res) => {
       level: currentLevel
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
+    console.error("checkin.js error:", err);
+    res.status(500).json({ error: err.message || "Server error" });
   }
 };

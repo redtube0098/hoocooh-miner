@@ -157,17 +157,17 @@
 
   /* Main Scroll Container */
   main {
-    padding: 0 16px 20px;
+    padding: 8px 16px 28px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
   }
 
   /* Card 1: Balance Card */
   .balance-card {
     background: var(--balance-gradient);
     border-radius: 24px;
-    padding: 20px;
+    padding: 22px 20px;
     box-shadow: 0 12px 28px var(--accent-glow);
     position: relative;
     overflow: hidden;
@@ -798,17 +798,17 @@
 
     <!-- Mining Card -->
     <div class="card">
-      <div class="status-pill waiting" id="statusPill">
+      <div class="status-pill ready" id="statusPill">
         <span class="dot"></span>
-        <span id="statusPillText">MINING...</span>
+        <span id="statusPillText">REWARD READY!</span>
       </div>
 
       <div class="lvl-badge-row">
         <span class="lvl-badge-chip" id="minerLvlChip">Lv.1 Starter</span>
       </div>
 
-      <div class="mining-complete-text" id="mineTitle" style="display: none;">MINING COMPLETE!</div>
-      <div class="mining-reward-big" id="mineReward" style="display: none;">
+      <div class="mining-complete-text" id="mineTitle">MINING COMPLETE!</div>
+      <div class="mining-reward-big" id="mineReward">
         <span>+80</span>
         <img src="assets/logo.webp" alt="Coin">
       </div>
@@ -818,12 +818,12 @@
         <img src="assets/logo.webp" alt="HOOCOOH Mining" class="mine-img">
       </div>
 
-      <button class="collect-btn" id="collectBtn" disabled>
+      <button class="collect-btn" id="collectBtn">
         <img src="assets/logo.webp" alt="Icon">
         <span>Collect HOOCOOH</span>
       </button>
 
-      <div class="timer-caption" id="timerText">Loading...</div>
+      <div class="timer-caption" id="timerText">Ready to collect</div>
     </div>
 
     <!-- Daily Bonus Card -->
@@ -1081,7 +1081,22 @@
   }
 
   // Server Communication (Zero localStorage - 100% server backed)
-  var user = null;
+  var defaultTgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
+  var user = {
+    telegramId: String(defaultTgUser.id || "0"),
+    firstName: defaultTgUser.first_name || "Miner",
+    username: defaultTgUser.username || "",
+    photoUrl: defaultTgUser.photo_url || "",
+    balance: 0,
+    level: 1,
+    mineReady: true,
+    mineIntervalMs: 2 * 60 * 60 * 1000,
+    lastMineCollectedAt: null,
+    dailyCycle: 1,
+    dailyDayIndex: 0,
+    lastCheckinAt: null,
+    totalDailyEarned: 0
+  };
 
   function apiGet() {
     return fetch("/api/user", {
@@ -1125,13 +1140,13 @@
   }
 
   function renderBalance() {
-    var balance = user.balance || 0;
+    var balance = Number(user.balance) || 0;
     var whole = Math.floor(balance);
     document.getElementById("balanceAmount").innerHTML = whole.toLocaleString() + '<span class="cents">.00</span>';
     document.getElementById("liveBalanceTag").textContent = whole.toLocaleString();
     document.getElementById("balanceUsd").textContent = "$" + (balance * COIN_USD).toFixed(2);
 
-    var level = user.level || 1;
+    var level = Number(user.level) || Math.max(1, Math.floor(balance / 1000) + 1);
     document.getElementById("levelBadgeNum").textContent = level;
     document.getElementById("levelBadgeTag").textContent = "Lv." + level;
     document.getElementById("progressLvlNum").textContent = level;
@@ -1147,7 +1162,10 @@
 
   function renderMining() {
     var now = Date.now();
-    var ready = user.mineReady && (!user.lastMineCollectedAt || (now - user.lastMineCollectedAt) >= user.mineIntervalMs);
+    var interval = Number(user.mineIntervalMs) || (2 * 60 * 60 * 1000);
+    var lastCollected = user.lastMineCollectedAt ? Number(user.lastMineCollectedAt) : 0;
+    var ready = !lastCollected || (now - lastCollected) >= interval;
+
     var pill = document.getElementById("statusPill");
     var pillText = document.getElementById("statusPillText");
     var btn = document.getElementById("collectBtn");
@@ -1161,6 +1179,7 @@
       titleEl.style.display = "block";
       rewardEl.style.display = "flex";
       btn.disabled = false;
+      btn.innerHTML = '<img src="assets/logo.webp" alt="Icon"> <span>Collect HOOCOOH</span>';
       timerText.textContent = "Ready to collect";
     } else {
       pill.className = "status-pill waiting";
@@ -1168,7 +1187,8 @@
       titleEl.style.display = "none";
       rewardEl.style.display = "none";
       btn.disabled = true;
-      var remaining = user.mineIntervalMs - (now - (user.lastMineCollectedAt || 0));
+      btn.innerHTML = '<img src="assets/logo.webp" alt="Icon"> <span>Mining in progress</span>';
+      var remaining = Math.max(0, interval - (now - lastCollected));
       timerText.textContent = "Next collection in " + formatDuration(remaining);
     }
   }
@@ -1177,7 +1197,7 @@
     var grid = document.getElementById("daysGrid");
     grid.innerHTML = "";
     var now = Date.now();
-    var status = user.lastCheckinAt ? statusFromTimestamp(user.lastCheckinAt, now) : "ready";
+    var status = user.lastCheckinAt ? statusFromTimestamp(Number(user.lastCheckinAt), now) : "ready";
 
     for (var i = 0; i < 7; i++) {
       var cell = document.createElement("div");
@@ -1210,7 +1230,7 @@
     var checkinEl = document.getElementById("checkinCountdown");
     if (status === "waiting") {
       var DAY_MS = 24 * 60 * 60 * 1000;
-      checkinEl.textContent = formatDuration(DAY_MS - (now - user.lastCheckinAt));
+      checkinEl.textContent = formatDuration(DAY_MS - (now - Number(user.lastCheckinAt)));
       var nextIndex = (user.dailyDayIndex + 1) % 7;
       var nextCycle = user.dailyDayIndex === 6 ? Math.max(2, user.dailyCycle + 1) : user.dailyCycle;
       document.getElementById("nextRewardVal").textContent = "+" + rewardForCycleDay(nextCycle, nextIndex);
@@ -1227,11 +1247,19 @@
     renderDaily();
   }
 
+  // Initial immediate render so there is zero stuck loading
+  renderAll();
+
   // Collect Action
   document.getElementById("collectBtn").addEventListener("click", function(){
+    var btn = document.getElementById("collectBtn");
+    btn.disabled = true;
+    btn.innerHTML = '<span>Collecting...</span>';
+
     apiCollect().then(function(res){
       if (!res.ok) {
         showToast(res.data.error || "Not ready yet");
+        renderMining();
         return;
       }
       user.balance = res.data.balance;
@@ -1240,15 +1268,16 @@
       if (res.data.level) user.level = res.data.level;
       showToast("+" + res.data.reward + " HOOCOOH collected!");
       renderAll();
-    }).catch(function(){
+    }).catch(function(err){
       showToast("Network error");
+      renderMining();
     });
   });
 
   // Daily Checkin Auto-trigger if ready
   function tryAutoCheckin() {
     var now = Date.now();
-    var status = user.lastCheckinAt ? statusFromTimestamp(user.lastCheckinAt, now) : "ready";
+    var status = user.lastCheckinAt ? statusFromTimestamp(Number(user.lastCheckinAt), now) : "ready";
     if (status === "waiting") return;
 
     apiCheckin().then(function(res){
@@ -1264,32 +1293,30 @@
     }).catch(function(){});
   }
 
-  // Initialize Data from Server
+  // Fetch real server state
   apiGet().then(function(res){
     if (!res.ok) {
-      showToast(res.data.error || "Session verification failed");
+      if (res.data && res.data.error) showToast(res.data.error);
       return;
     }
-    user = res.data;
+    Object.assign(user, res.data);
     renderAll();
     tryAutoCheckin();
-  }).catch(function(){
-    showToast("Error connecting to server");
+  }).catch(function(err){
+    console.error("apiGet failed:", err);
   });
 
   // Timer Tick every 1s
   setInterval(function(){
-    if (!user) return;
     renderMining();
     renderDaily();
   }, 1000);
 
   // Sync state from server every 30 seconds
   setInterval(function(){
-    if (!user) return;
     apiGet().then(function(res){
       if (res.ok) {
-        user = res.data;
+        Object.assign(user, res.data);
         renderAll();
       }
     }).catch(function(){});
