@@ -157,18 +157,18 @@
 
   /* Main Scroll Container */
   main {
-    padding: 8px 16px 28px;
+    padding: 6px 16px 24px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 14px;
   }
 
   /* Card 1: Balance Card */
   .balance-card {
     background: var(--balance-gradient);
     border-radius: 24px;
-    padding: 22px 20px;
-    box-shadow: 0 12px 28px var(--accent-glow);
+    padding: 20px 20px 18px;
+    box-shadow: 0 10px 26px var(--accent-glow);
     position: relative;
     overflow: hidden;
   }
@@ -587,6 +587,38 @@
     color: var(--accent);
   }
 
+  /* Dedicated Daily Collect Button */
+  .daily-collect-btn {
+    width: 100%;
+    border: none;
+    border-radius: 100px;
+    padding: 13px 18px;
+    font-size: 14.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+  .daily-collect-btn:not(:disabled) {
+    background: linear-gradient(135deg, #4ee0cb 0%, #1db8a2 100%);
+    color: #ffffff;
+    box-shadow: 0 6px 18px var(--accent-glow);
+  }
+  .daily-collect-btn:not(:disabled):active {
+    transform: scale(0.98);
+  }
+  .daily-collect-btn:disabled {
+    background: var(--sub-box-bg);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    cursor: not-allowed;
+  }
+
   /* Bottom Row of Daily Card */
   .daily-bottom-row {
     background: var(--sub-box-bg);
@@ -857,6 +889,11 @@
         </div>
       </div>
 
+      <!-- Dedicated Collect Daily Reward Button -->
+      <button class="daily-collect-btn" id="dailyCollectBtn">
+        <span>🎁 Collect Daily Reward (+5 HOOCOOH)</span>
+      </button>
+
       <!-- Bottom Row of Daily Card -->
       <div class="daily-bottom-row">
         <span class="lbl">NEXT CHECK-IN IN</span>
@@ -1063,11 +1100,10 @@
 
   // Constants
   var COIN_USD = 0.00004;
-  var WEEK1_REWARDS = [2, 5, 10, 20, 40, 80, 160];
-  var REPEAT_REWARDS = [10, 10, 10, 15, 15, 15, 30];
+  var DAILY_REWARDS = [5, 10, 15, 20, 25, 30, 35]; // Increases by 5 every day up to 35
 
   function rewardForCycleDay(cycle, dayIndex) {
-    return cycle === 1 ? WEEK1_REWARDS[dayIndex] : REPEAT_REWARDS[dayIndex];
+    return DAILY_REWARDS[dayIndex] || ((dayIndex + 1) * 5);
   }
 
   function formatDuration(ms) {
@@ -1082,9 +1118,12 @@
 
   // Server Communication (Zero localStorage - 100% server backed)
   var defaultTgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
+  var initialDisplayName = defaultTgUser.first_name ? (defaultTgUser.first_name + (defaultTgUser.last_name ? (" " + defaultTgUser.last_name) : "")) : (defaultTgUser.username || "Miner");
+
   var user = {
     telegramId: String(defaultTgUser.id || "0"),
-    firstName: defaultTgUser.first_name || "Miner",
+    firstName: defaultTgUser.first_name || "",
+    lastName: defaultTgUser.last_name || "",
     username: defaultTgUser.username || "",
     photoUrl: defaultTgUser.photo_url || "",
     balance: 0,
@@ -1128,14 +1167,31 @@
 
   // Rendering
   function renderUserInfo() {
-    var displayName = user.firstName || user.username || "Miner";
-    document.getElementById("userNameTag").textContent = displayName;
+    var tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
+    var displayName = "";
+    if (user && user.firstName) {
+      displayName = user.firstName + (user.lastName ? (" " + user.lastName) : "");
+    } else if (tgUser.first_name) {
+      displayName = tgUser.first_name + (tgUser.last_name ? (" " + tgUser.last_name) : "");
+    } else if (user && user.username) {
+      displayName = user.username;
+    } else if (tgUser.username) {
+      displayName = tgUser.username;
+    } else {
+      displayName = "HOOCOOH Miner";
+    }
+
+    var userNameEl = document.getElementById("userNameTag");
+    if (userNameEl) userNameEl.textContent = displayName;
 
     var avatarEl = document.getElementById("avatar");
-    if (user.photoUrl) {
-      avatarEl.innerHTML = '<img src="' + user.photoUrl + '" alt="Avatar">';
-    } else {
-      avatarEl.textContent = displayName.charAt(0).toUpperCase();
+    var photoUrl = (user && user.photoUrl) || tgUser.photo_url;
+    if (avatarEl) {
+      if (photoUrl) {
+        avatarEl.innerHTML = '<img src="' + photoUrl + '" alt="Profile">';
+      } else {
+        avatarEl.textContent = (displayName.charAt(0) || "H").toUpperCase();
+      }
     }
   }
 
@@ -1197,7 +1253,8 @@
     var grid = document.getElementById("daysGrid");
     grid.innerHTML = "";
     var now = Date.now();
-    var status = user.lastCheckinAt ? statusFromTimestamp(Number(user.lastCheckinAt), now) : "ready";
+    var lastCheckin = user.lastCheckinAt ? Number(user.lastCheckinAt) : 0;
+    var status = lastCheckin ? statusFromTimestamp(lastCheckin, now) : "ready";
 
     for (var i = 0; i < 7; i++) {
       var cell = document.createElement("div");
@@ -1208,7 +1265,7 @@
         cell.classList.add("done");
         cell.innerHTML = '<span class="icon-mark">✓</span><span>D' + (i + 1) + '</span>';
       } else if (i === user.dailyDayIndex) {
-        if (user.lastCheckinAt && status === "waiting") {
+        if (lastCheckin && status === "waiting") {
           cell.classList.add("done");
           cell.innerHTML = '<span class="icon-mark">✓</span><span>D' + (i + 1) + '</span>';
         } else {
@@ -1221,22 +1278,37 @@
       grid.appendChild(cell);
     }
 
-    var streakDays = user.lastCheckinAt ? (user.dailyDayIndex + 1) : 0;
-    if (status === "broken") streakDays = 0;
-    document.getElementById("streakDayTag").textContent = Math.max(1, streakDays);
-    document.getElementById("currentStreakVal").textContent = streakDays + " day" + (streakDays === 1 ? "" : "s");
+    var displayStreak = lastCheckin ? (user.dailyDayIndex + (status === "waiting" ? 1 : 0)) : 0;
+    if (status === "broken") displayStreak = 0;
+    document.getElementById("streakDayTag").textContent = Math.max(1, (user.dailyDayIndex || 0) + 1);
+    document.getElementById("currentStreakVal").textContent = displayStreak + " day" + (displayStreak === 1 ? "" : "s");
     document.getElementById("totalEarnedVal").textContent = (user.totalDailyEarned || 0).toLocaleString();
 
+    var currentReward = rewardForCycleDay(user.dailyCycle, user.dailyDayIndex);
+    var nextRewardValEl = document.getElementById("nextRewardVal");
     var checkinEl = document.getElementById("checkinCountdown");
+    var dailyBtn = document.getElementById("dailyCollectBtn");
+
     if (status === "waiting") {
       var DAY_MS = 24 * 60 * 60 * 1000;
-      checkinEl.textContent = formatDuration(DAY_MS - (now - Number(user.lastCheckinAt)));
+      var remaining = Math.max(0, DAY_MS - (now - lastCheckin));
+      checkinEl.textContent = formatDuration(remaining);
       var nextIndex = (user.dailyDayIndex + 1) % 7;
-      var nextCycle = user.dailyDayIndex === 6 ? Math.max(2, user.dailyCycle + 1) : user.dailyCycle;
-      document.getElementById("nextRewardVal").textContent = "+" + rewardForCycleDay(nextCycle, nextIndex);
+      var nextCycle = user.dailyDayIndex === 6 ? Math.max(2, (user.dailyCycle || 1) + 1) : (user.dailyCycle || 1);
+      nextRewardValEl.textContent = "+" + rewardForCycleDay(nextCycle, nextIndex);
+
+      if (dailyBtn) {
+        dailyBtn.disabled = true;
+        dailyBtn.innerHTML = '<span>✓ Claimed for Today (Next in ' + formatDuration(remaining) + ')</span>';
+      }
     } else {
       checkinEl.textContent = "Ready now";
-      document.getElementById("nextRewardVal").textContent = "+" + rewardForCycleDay(user.dailyCycle, user.dailyDayIndex);
+      nextRewardValEl.textContent = "+" + currentReward;
+
+      if (dailyBtn) {
+        dailyBtn.disabled = false;
+        dailyBtn.innerHTML = '<span>🎁 Collect Daily Reward (+' + currentReward + ' HOOCOOH)</span>';
+      }
     }
   }
 
@@ -1250,7 +1322,7 @@
   // Initial immediate render so there is zero stuck loading
   renderAll();
 
-  // Collect Action
+  // Collect Mining Action
   document.getElementById("collectBtn").addEventListener("click", function(){
     var btn = document.getElementById("collectBtn");
     btn.disabled = true;
@@ -1274,23 +1346,32 @@
     });
   });
 
-  // Daily Checkin Auto-trigger if ready
-  function tryAutoCheckin() {
-    var now = Date.now();
-    var status = user.lastCheckinAt ? statusFromTimestamp(Number(user.lastCheckinAt), now) : "ready";
-    if (status === "waiting") return;
+  // Dedicated Collect Daily Reward Action
+  var dailyBtn = document.getElementById("dailyCollectBtn");
+  if (dailyBtn) {
+    dailyBtn.addEventListener("click", function(){
+      dailyBtn.disabled = true;
+      dailyBtn.innerHTML = '<span>Claiming...</span>';
 
-    apiCheckin().then(function(res){
-      if (!res.ok) return;
-      user.balance = res.data.balance;
-      user.dailyCycle = res.data.dailyCycle;
-      user.dailyDayIndex = res.data.dailyDayIndex;
-      user.lastCheckinAt = res.data.lastCheckinAt;
-      user.totalDailyEarned = res.data.totalDailyEarned;
-      if (res.data.level) user.level = res.data.level;
-      showToast("Daily bonus: +" + res.data.reward + " HOOCOOH!");
-      renderAll();
-    }).catch(function(){});
+      apiCheckin().then(function(res){
+        if (!res.ok) {
+          showToast(res.data.error || "Cannot claim right now");
+          renderDaily();
+          return;
+        }
+        user.balance = res.data.balance;
+        user.dailyCycle = res.data.dailyCycle;
+        user.dailyDayIndex = res.data.dailyDayIndex;
+        user.lastCheckinAt = res.data.lastCheckinAt;
+        user.totalDailyEarned = res.data.totalDailyEarned;
+        if (res.data.level) user.level = res.data.level;
+        showToast("+" + res.data.reward + " HOOCOOH Daily Reward claimed!");
+        renderAll();
+      }).catch(function(err){
+        showToast("Network error");
+        renderDaily();
+      });
+    });
   }
 
   // Fetch real server state
@@ -1301,7 +1382,6 @@
     }
     Object.assign(user, res.data);
     renderAll();
-    tryAutoCheckin();
   }).catch(function(err){
     console.error("apiGet failed:", err);
   });
