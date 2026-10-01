@@ -1141,6 +1141,11 @@
   function apiGet() {
     return fetch("/api/user", {
       headers: { "X-Telegram-Init-Data": initData }
+    }).then(function(r) {
+      if (r.status === 404) {
+        return fetch("/api/user.js", { headers: { "X-Telegram-Init-Data": initData } });
+      }
+      return r;
     }).then(handleResponse);
   }
 
@@ -1151,6 +1156,17 @@
         "Content-Type": "application/json",
         "X-Telegram-Init-Data": initData
       }
+    }).then(function(r) {
+      if (r.status === 404) {
+        return fetch("/api/collect.js", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Telegram-Init-Data": initData
+          }
+        });
+      }
+      return r;
     }).then(handleResponse);
   }
 
@@ -1161,6 +1177,17 @@
         "Content-Type": "application/json",
         "X-Telegram-Init-Data": initData
       }
+    }).then(function(r) {
+      if (r.status === 404) {
+        return fetch("/api/checkin.js", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Telegram-Init-Data": initData
+          }
+        });
+      }
+      return r;
     }).then(handleResponse);
   }
 
