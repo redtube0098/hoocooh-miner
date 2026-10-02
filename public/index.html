@@ -2077,6 +2077,678 @@
     box-shadow: none;
     border: 1px solid var(--border);
   }
+  /* ========================================================
+     INVITE & REFERRAL TAB - FULL UI MATCHING REFERENCE
+     ======================================================== */
+  .invite-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-bottom: 24px;
+  }
+  .invite-network-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-dim);
+    padding: 2px 0;
+    letter-spacing: 0.2px;
+  }
+  .invite-network-strip .strip-val {
+    color: #14b8a6;
+    font-weight: 800;
+  }
+  .invite-network-strip .strip-dot {
+    opacity: 0.4;
+  }
+
+  /* Hero Card: Your Network */
+  .invite-hero-card {
+    border-radius: 24px;
+    padding: 18px 16px;
+    background: linear-gradient(135deg, #e6faf7 0%, #d1f7ef 45%, #e0f6fc 100%);
+    border: 1.5px solid rgba(153, 230, 215, 0.6);
+    box-shadow: 0 10px 28px rgba(32, 191, 164, 0.08);
+  }
+  .invite-hero-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .invite-hero-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #14b8a6;
+    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.16);
+    flex-shrink: 0;
+  }
+  .invite-hero-top-text {
+    flex: 1;
+  }
+  .invite-hero-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+  }
+  .invite-hero-sub {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #0d9488;
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+
+  /* 3 Stats Grid inside Hero Card */
+  .invite-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .invite-stat-card {
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 12px 6px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  }
+  .invite-stat-lbl {
+    font-size: 8px;
+    font-weight: 800;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+    line-height: 1.1;
+  }
+  .invite-stat-val {
+    font-size: 17px;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1.1;
+  }
+  .invite-stat-unit {
+    font-size: 9.5px;
+    font-weight: 600;
+    color: #64748b;
+    margin-top: 2px;
+  }
+
+  /* Action Buttons inside Hero Card */
+  .invite-btn-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .btn-invite-telegram {
+    flex: 1;
+    background: #ffffff;
+    color: #0d9488;
+    border: 1.5px solid rgba(153, 230, 215, 0.9);
+    border-radius: 18px;
+    padding: 13px 18px;
+    font-size: 14px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(20, 184, 166, 0.12);
+    transition: transform 0.15s ease;
+  }
+  .btn-invite-telegram:active {
+    transform: scale(0.98);
+  }
+  .btn-invite-copy-sq {
+    width: 48px;
+    height: 48px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1.5px solid rgba(153, 230, 215, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #0d9488;
+    box-shadow: 0 4px 14px rgba(20, 184, 166, 0.08);
+    transition: transform 0.15s ease;
+  }
+  .btn-invite-copy-sq:active {
+    transform: scale(0.95);
+  }
+
+  /* Your Referral Link Card */
+  .invite-link-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 4px 16px var(--card-shadow);
+  }
+  .invite-link-lbl {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .invite-link-pill {
+    background: var(--sub-box-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 6px 6px 6px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .invite-link-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    outline: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .invite-link-btn {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s ease;
+  }
+  .invite-link-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* Pill Navigation Tabs (Rankings, Milestones, Overview) */
+  .invite-pill-nav {
+    display: flex;
+    background: var(--sub-box-bg);
+    padding: 4px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    margin: 4px 0;
+  }
+  .invite-pill-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: 100px;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .invite-pill-tab.active {
+    background: #ffffff;
+    color: var(--text);
+    font-weight: 800;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Sub-tab container */
+  .invite-subtab-view {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .invite-subtab-view.active {
+    display: flex;
+  }
+
+  /* Rankings Summary Card */
+  .invite-rank-summary-bar {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    box-shadow: 0 4px 16px var(--card-shadow);
+  }
+  .rank-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .rank-summary-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rank-summary-icon.recruit {
+    background: #e6f9f5;
+    color: #14b8a6;
+  }
+  .rank-summary-icon.miner {
+    background: #fff7ed;
+    color: #ea580c;
+  }
+  .rank-summary-text {
+    display: flex;
+    flex-direction: column;
+  }
+  .rank-summary-lbl {
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .rank-summary-val {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--text);
+  }
+  .rank-summary-divider {
+    width: 1px;
+    height: 28px;
+    background: var(--border);
+  }
+
+  /* Sub-toggles: Top Recruiters vs Top Miners */
+  .rank-sub-toggles {
+    display: flex;
+    background: var(--sub-box-bg);
+    border-radius: 14px;
+    padding: 4px;
+    border: 1px solid var(--border);
+  }
+  .rank-toggle-btn {
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: 12px;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .rank-toggle-btn.active {
+    background: #ffffff;
+    color: #0d9488;
+    font-weight: 800;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Top 3 Podium (Stage) */
+  .podium-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 20px 14px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 6px 20px var(--card-shadow);
+  }
+  .podium-wrap {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    margin-top: 6px;
+  }
+  .podium-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    max-width: 100px;
+  }
+  .podium-user-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .podium-name {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text);
+    max-width: 90px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .podium-score {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #0d9488;
+    margin: 2px 0 6px;
+  }
+  .podium-avatar-wrap {
+    position: relative;
+    margin-bottom: 6px;
+  }
+  .podium-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    color: #ffffff;
+    border: 2.5px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  .podium-avatar.gold {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  }
+  .podium-avatar.silver {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  }
+  .podium-avatar.bronze {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+  }
+  .podium-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10.5px;
+    font-weight: 900;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+  }
+  .podium-badge.b-gold { background: #14b8a6; }
+  .podium-badge.b-silver { background: #94a3b8; }
+  .podium-badge.b-bronze { background: #cbd5e1; color: #475569; }
+
+  .podium-pedestal {
+    width: 100%;
+    border-radius: 14px 14px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 900;
+    color: #ffffff;
+  }
+  .podium-pedestal.p-first {
+    height: 100px;
+    background: linear-gradient(180deg, #2dd4bf 0%, #14b8a6 100%);
+  }
+  .podium-pedestal.p-second {
+    height: 74px;
+    background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+  }
+  .podium-pedestal.p-third {
+    height: 56px;
+    background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+  }
+
+  /* Leaderboard List (Rank 4 to 20/100) */
+  .leader-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .leader-item-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 10px var(--card-shadow);
+  }
+  .leader-rank-badge {
+    min-width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    background: var(--sub-box-bg);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--text-dim);
+  }
+  .leader-rank-badge.top-1 { background: #2dd4bf; color: #ffffff; border: none; }
+  .leader-rank-badge.top-2 { background: #94a3b8; color: #ffffff; border: none; }
+  .leader-rank-badge.top-3 { background: #cbd5e1; color: #334155; border: none; }
+  .leader-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    flex-shrink: 0;
+  }
+  .leader-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .leader-name {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .leader-user {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .leader-score-col {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .leader-score-num {
+    font-size: 13.5px;
+    font-weight: 900;
+    color: #0d9488;
+  }
+  .leader-score-lbl {
+    font-size: 8.5px;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* Milestones Section */
+  .milestone-progress-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 4px 16px var(--card-shadow);
+  }
+  .milestone-top-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .milestone-main-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .milestone-main-sub {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .milestone-ratio-badge {
+    text-align: right;
+  }
+  .milestone-ratio-num {
+    font-size: 18px;
+    font-weight: 900;
+    color: #14b8a6;
+  }
+  .milestone-ratio-lbl {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .milestone-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--sub-box-bg);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .milestone-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #4ee0cb 0%, #1db8a2 100%);
+    border-radius: 100px;
+    transition: width 0.3s ease;
+  }
+
+  .milestones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .milestone-item-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 10px var(--card-shadow);
+  }
+  .milestone-icon-squircle {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--sub-box-bg);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #14b8a6;
+    flex-shrink: 0;
+  }
+  .milestone-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .milestone-title {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .milestone-reward {
+    font-size: 12px;
+    font-weight: 800;
+    color: #14b8a6;
+    margin-top: 2px;
+  }
+  .milestone-action-btn {
+    border-radius: 100px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .milestone-action-btn.claimed {
+    background: #e6f9f5;
+    color: #0d9488;
+    border: 1px solid #99e6d7;
+    cursor: default;
+  }
+  .milestone-action-btn.ready {
+    background: linear-gradient(135deg, #4ee0cb 0%, #1db8a2 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 12px var(--accent-glow);
+  }
+  .milestone-action-btn.locked {
+    background: var(--sub-box-bg);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  /* Overview placeholder */
+  .overview-placeholder-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 20px;
+    text-align: center;
+    color: var(--text-dim);
+    box-shadow: 0 4px 16px var(--card-shadow);
+  }
 </style>
 </head>
 <body>
@@ -2447,18 +3119,207 @@
     </div>
   </main>
 
-  <!-- Tab 4: INVITE -->
+  <!-- Tab 4: INVITE & EARN (REFERRAL) -->
   <main class="tab-view" id="tab-invite">
-    <div class="sub-page-card">
-      <h3>🔗 Invite Friends</h3>
-      <p>Share your link with friends. You both get bonus HOOCOOH Coins when they join!</p>
-      <button class="action-btn-secondary" id="copyInviteBtn" style="width: 100%; justify-content: center; padding: 12px; margin-bottom: 12px;">
-        <span>📋 Copy Referral Link</span>
-      </button>
-      <div class="daily-bottom-row">
-        <span class="lbl">FRIENDS INVITED</span>
-        <span class="val">0 Friends</span>
+    <div class="invite-container">
+
+      <!-- Header Ticker Strip -->
+      <div class="invite-network-strip">
+        <span>YOUR NETWORK: <span class="strip-val" id="stripFriendsCount">0 friends</span></span>
+        <span class="strip-dot">·</span>
+        <span>Commission: <span class="strip-val">5% lifetime</span></span>
       </div>
+
+      <!-- Hero Card: Your Network -->
+      <div class="invite-hero-card">
+        <div class="invite-hero-top">
+          <div class="invite-hero-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+            </svg>
+          </div>
+          <div class="invite-hero-top-text">
+            <div class="invite-hero-title">Your Network</div>
+            <div class="invite-hero-sub">Earn <strong>+100 HOOCOOH Coins</strong> per recruit · <strong>5%</strong> lifetime commission</div>
+          </div>
+        </div>
+
+        <!-- 3 Stats Cards -->
+        <div class="invite-stats-grid">
+          <div class="invite-stat-card">
+            <div class="invite-stat-lbl">RECRUITED</div>
+            <div class="invite-stat-val" id="refHeroRecruited">0</div>
+            <div class="invite-stat-unit">friends</div>
+          </div>
+          <div class="invite-stat-card">
+            <div class="invite-stat-lbl">HOOCOOH COINS EARNED</div>
+            <div class="invite-stat-val" id="refHeroEarned">0</div>
+            <div class="invite-stat-unit">coins</div>
+          </div>
+          <div class="invite-stat-card">
+            <div class="invite-stat-lbl">MY RANK</div>
+            <div class="invite-stat-val" id="refHeroRank">---</div>
+            <div class="invite-stat-unit">global</div>
+          </div>
+        </div>
+
+        <!-- Invite Buttons -->
+        <div class="invite-btn-row">
+          <button class="btn-invite-telegram" id="inviteViaTelegramBtn" type="button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+            <span>Invite via Telegram</span>
+          </button>
+          <button class="btn-invite-copy-sq" id="quickCopyBtn" type="button" title="Copy Referral Link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Referral Link Box -->
+      <div class="invite-link-card">
+        <div class="invite-link-lbl">YOUR REFERRAL LINK</div>
+        <div class="invite-link-pill">
+          <input type="text" class="invite-link-input" id="refLinkInput" readonly value="https://t.me/hoocooh_miner_bot?start=ref_0">
+          <button class="invite-link-btn" id="copyRefLinkBtn" type="button">Copy</button>
+        </div>
+      </div>
+
+      <!-- 3-Pill Navigation Tabs: Rankings, Milestones, Overview -->
+      <div class="invite-pill-nav">
+        <button class="invite-pill-tab active" data-subtab="rankings" type="button">
+          <span>🏆 Rankings</span>
+        </button>
+        <button class="invite-pill-tab" data-subtab="milestones" type="button">
+          <span>🎯 Milestones</span>
+        </button>
+        <button class="invite-pill-tab" data-subtab="overview" type="button">
+          <span>🏠 Overview</span>
+        </button>
+      </div>
+
+      <!-- SUBTAB 1: RANKINGS -->
+      <div class="invite-subtab-view active" id="inviteSubtabRankings">
+        <!-- Summary Rank Box -->
+        <div class="invite-rank-summary-bar">
+          <div class="rank-summary-item">
+            <div class="rank-summary-icon recruit">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+              </svg>
+            </div>
+            <div class="rank-summary-text">
+              <span class="rank-summary-lbl">RECRUITER RANK</span>
+              <span class="rank-summary-val" id="summaryRecruiterRank">---</span>
+            </div>
+          </div>
+          <div class="rank-summary-divider"></div>
+          <div class="rank-summary-item">
+            <div class="rank-summary-icon miner">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l2.4 6.9 6.6 2.1-6.6 2.1L12 20l-2.4-6.9L3 11l6.6-2.1L12 2z"/>
+              </svg>
+            </div>
+            <div class="rank-summary-text">
+              <span class="rank-summary-lbl">MINER RANK</span>
+              <span class="rank-summary-val" id="summaryMinerRank">---</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toggle: Top Recruiters vs Top Miners -->
+        <div class="rank-sub-toggles">
+          <button class="rank-toggle-btn active" id="toggleRecruitersBtn" type="button">👥 Top Recruiters</button>
+          <button class="rank-toggle-btn" id="toggleMinersBtn" type="button">⛏ Top Miners</button>
+        </div>
+
+        <!-- Top 3 Podium (Stage) -->
+        <div class="podium-card">
+          <div class="podium-wrap">
+            <!-- 2nd Place (Left) -->
+            <div class="podium-col">
+              <div class="podium-user-header">
+                <div class="podium-name" id="podium2Name">Casey Web3</div>
+                <div class="podium-score" id="podium2Score">1,404</div>
+                <div class="podium-avatar-wrap">
+                  <div class="podium-avatar silver" id="podium2Avatar">CW</div>
+                  <div class="podium-badge b-silver">2</div>
+                </div>
+              </div>
+              <div class="podium-pedestal p-second">2</div>
+            </div>
+
+            <!-- 1st Place (Center, Tallest) -->
+            <div class="podium-col">
+              <div class="podium-user-header">
+                <div class="podium-name" id="podium1Name">Rahman Islam</div>
+                <div class="podium-score" id="podium1Score">2,242</div>
+                <div class="podium-avatar-wrap">
+                  <div class="podium-avatar gold" id="podium1Avatar">MR</div>
+                  <div class="podium-badge b-gold">1</div>
+                </div>
+              </div>
+              <div class="podium-pedestal p-first">1</div>
+            </div>
+
+            <!-- 3rd Place (Right) -->
+            <div class="podium-col">
+              <div class="podium-user-header">
+                <div class="podium-name" id="podium3Name">ST TUHIN</div>
+                <div class="podium-score" id="podium3Score">752</div>
+                <div class="podium-avatar-wrap">
+                  <div class="podium-avatar bronze" id="podium3Avatar">ST</div>
+                  <div class="podium-badge b-bronze">3</div>
+                </div>
+              </div>
+              <div class="podium-pedestal p-third">3</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leaderboard List (Rank 4 to 20/100) -->
+        <div class="leader-list" id="leaderboardListContainer">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- SUBTAB 2: MILESTONES -->
+      <div class="invite-subtab-view" id="inviteSubtabMilestones">
+        <!-- Recruitment Progress Card -->
+        <div class="milestone-progress-card">
+          <div class="milestone-top-row">
+            <div>
+              <div class="milestone-main-title">Recruitment Progress</div>
+              <div class="milestone-main-sub"><span id="milestoneFriendsRecruitedTxt">0</span> friends recruited so far</div>
+            </div>
+            <div class="milestone-ratio-badge">
+              <div class="milestone-ratio-num" id="milestoneClaimedRatio">0/4</div>
+              <div class="milestone-ratio-lbl">milestones claimed</div>
+            </div>
+          </div>
+          <div class="milestone-progress-bar">
+            <div class="milestone-progress-fill" id="milestoneProgressFill"></div>
+          </div>
+        </div>
+
+        <!-- Milestones List -->
+        <div class="milestones-list" id="milestonesListContainer">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- SUBTAB 3: OVERVIEW (Placeholder for future update as requested) -->
+      <div class="invite-subtab-view" id="inviteSubtabOverview">
+        <div class="overview-placeholder-card">
+          <div style="font-size: 32px; margin-bottom: 8px;">📊</div>
+          <div style="font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 4px;">Network Analytics</div>
+          <div style="font-size: 12px;">Detailed recruitment tree & downline analytics will be unlocked in the upcoming protocol update.</div>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -3342,6 +4203,7 @@
     renderMining();
     renderDaily();
     renderAds();
+    renderInvite();
   }
 
   // Initial immediate render so there is zero stuck loading
@@ -3909,8 +4771,349 @@
     });
   }
 
+  // ========================================================
+  // INVITE, REFERRAL, RANKINGS & MILESTONES LOGIC
+  // ========================================================
+  var referralData = {
+    recruitsCount: 0,
+    refEarnings: 0,
+    recruiterRank: null,
+    minerRank: null,
+    topRecruiters: [],
+    topMiners: [],
+    milestones: [],
+    claimedMilestonesCount: 0,
+    totalMilestones: 4
+  };
+  var currentRankSubTab = "recruiters";
+
+  function fetchReferralApi() {
+    return fetch("/api/referral", {
+      headers: { "X-Telegram-Init-Data": initData }
+    }).then(function(r) {
+      if (r.status === 404) {
+        return fetch("/api/referral.js", { headers: { "X-Telegram-Init-Data": initData } });
+      }
+      return r;
+    }).then(handleResponse);
+  }
+
+  function claimMilestoneApi(milestoneId) {
+    return fetch("/api/referral", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": initData
+      },
+      body: JSON.stringify({ action: "claim_milestone", milestoneId: milestoneId })
+    }).then(function(r) {
+      if (r.status === 404) {
+        return fetch("/api/referral.js", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Telegram-Init-Data": initData
+          },
+          body: JSON.stringify({ action: "claim_milestone", milestoneId: milestoneId })
+        });
+      }
+      return r;
+    }).then(handleResponse);
+  }
+
+  function getReferralLink() {
+    var botUser = user.botUsername || "hoocooh_miner_bot";
+    return "https://t.me/" + botUser + "?start=ref_" + user.telegramId;
+  }
+
+  function copyReferralLink() {
+    var link = getReferralLink();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(link).then(function() {
+        showToast("📋 Referral link copied to clipboard!");
+      }).catch(function() {
+        fallbackCopyLink(link);
+      });
+    } else {
+      fallbackCopyLink(link);
+    }
+  }
+
+  function fallbackCopyLink(text) {
+    var input = document.getElementById("refLinkInput");
+    if (input) {
+      input.select();
+      document.execCommand("copy");
+      showToast("📋 Referral link copied to clipboard!");
+    }
+  }
+
+  function renderInvite() {
+    var refLink = getReferralLink();
+    var refInput = document.getElementById("refLinkInput");
+    if (refInput && refInput.value !== refLink) {
+      refInput.value = refLink;
+    }
+
+    var recruits = Number(user.recruitsCount || (referralData && referralData.recruitsCount) || 0);
+    var earnings = Number(user.refEarnings || (referralData && referralData.refEarnings) || 0);
+
+    var stripFriendsCount = document.getElementById("stripFriendsCount");
+    if (stripFriendsCount) stripFriendsCount.textContent = recruits + " friends";
+
+    var refHeroRecruited = document.getElementById("refHeroRecruited");
+    if (refHeroRecruited) refHeroRecruited.textContent = recruits.toLocaleString();
+
+    var refHeroEarned = document.getElementById("refHeroEarned");
+    if (refHeroEarned) refHeroEarned.textContent = earnings.toLocaleString();
+
+    var refHeroRank = document.getElementById("refHeroRank");
+    var recruiterRank = referralData ? referralData.recruiterRank : null;
+    if (refHeroRank) {
+      refHeroRank.textContent = (recruiterRank && recruiterRank <= 99) ? ("#" + recruiterRank) : "---";
+    }
+
+    var summaryRecruiterRank = document.getElementById("summaryRecruiterRank");
+    if (summaryRecruiterRank) {
+      summaryRecruiterRank.textContent = (recruiterRank && recruiterRank <= 99) ? ("#" + recruiterRank) : "---";
+    }
+
+    var summaryMinerRank = document.getElementById("summaryMinerRank");
+    var minerRank = referralData ? referralData.minerRank : null;
+    if (summaryMinerRank) {
+      summaryMinerRank.textContent = (minerRank && minerRank <= 100) ? ("#" + minerRank) : "---";
+    }
+
+    renderRankingsView();
+    renderMilestonesView();
+  }
+
+  function renderRankingsView() {
+    var isRecruiters = (currentRankSubTab === "recruiters");
+    var list = isRecruiters ? (referralData.topRecruiters || []) : (referralData.topMiners || []);
+
+    var top1 = list[0] || { name: "Leader 1", score: 0, recruitsCount: 0, avatarText: "1" };
+    var top2 = list[1] || { name: "Leader 2", score: 0, recruitsCount: 0, avatarText: "2" };
+    var top3 = list[2] || { name: "Leader 3", score: 0, recruitsCount: 0, avatarText: "3" };
+
+    var p1Name = document.getElementById("podium1Name");
+    var p1Score = document.getElementById("podium1Score");
+    var p1Avatar = document.getElementById("podium1Avatar");
+    if (p1Name) p1Name.textContent = top1.name;
+    if (p1Score) p1Score.textContent = isRecruiters ? (top1.recruitsCount || 0).toLocaleString() : (top1.score || 0).toLocaleString();
+    if (p1Avatar) p1Avatar.textContent = top1.avatarText || (top1.name ? top1.name.slice(0, 2).toUpperCase() : "1");
+
+    var p2Name = document.getElementById("podium2Name");
+    var p2Score = document.getElementById("podium2Score");
+    var p2Avatar = document.getElementById("podium2Avatar");
+    if (p2Name) p2Name.textContent = top2.name;
+    if (p2Score) p2Score.textContent = isRecruiters ? (top2.recruitsCount || 0).toLocaleString() : (top2.score || 0).toLocaleString();
+    if (p2Avatar) p2Avatar.textContent = top2.avatarText || (top2.name ? top2.name.slice(0, 2).toUpperCase() : "2");
+
+    var p3Name = document.getElementById("podium3Name");
+    var p3Score = document.getElementById("podium3Score");
+    var p3Avatar = document.getElementById("podium3Avatar");
+    if (p3Name) p3Name.textContent = top3.name;
+    if (p3Score) p3Score.textContent = isRecruiters ? (top3.recruitsCount || 0).toLocaleString() : (top3.score || 0).toLocaleString();
+    if (p3Avatar) p3Avatar.textContent = top3.avatarText || (top3.name ? top3.name.slice(0, 2).toUpperCase() : "3");
+
+    var container = document.getElementById("leaderboardListContainer");
+    if (!container) return;
+
+    var rest = list.slice(3);
+    if (rest.length === 0) {
+      container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-dim); font-size: 12px;">No additional rankers yet.</div>';
+      return;
+    }
+
+    var html = "";
+    rest.forEach(function(item) {
+      var initials = item.avatarText || (item.name ? item.name.slice(0, 2).toUpperCase() : "M");
+      var username = item.username || "";
+      var scoreVal = isRecruiters ? (item.recruitsCount || 0).toLocaleString() : (item.score || 0).toLocaleString();
+      var scoreLbl = isRecruiters ? "RECRUITED" : "HC MINED";
+
+      html += '<div class="leader-item-card">' +
+        '<div class="leader-rank-badge">#' + item.rank + '</div>' +
+        '<div class="leader-avatar">' + escapeHtml(initials) + '</div>' +
+        '<div class="leader-info">' +
+          '<div class="leader-name">' + escapeHtml(item.name) + '</div>' +
+          '<div class="leader-user">' + escapeHtml(username) + '</div>' +
+        '</div>' +
+        '<div class="leader-score-col">' +
+          '<div class="leader-score-num">' + scoreVal + '</div>' +
+          '<div class="leader-score-lbl">' + scoreLbl + '</div>' +
+        '</div>' +
+      '</div>';
+    });
+
+    container.innerHTML = html;
+  }
+
+  function renderMilestonesView() {
+    var recruits = Number(user.recruitsCount || (referralData && referralData.recruitsCount) || 0);
+    var friendsTxt = document.getElementById("milestoneFriendsRecruitedTxt");
+    if (friendsTxt) friendsTxt.textContent = recruits;
+
+    var milestones = referralData.milestones || [
+      { id: 1, required: 5, reward: 100, title: "Invite 5 Friends" },
+      { id: 2, required: 10, reward: 200, title: "Invite 10 Friends" },
+      { id: 3, required: 25, reward: 500, title: "Invite 25 Friends" },
+      { id: 4, required: 50, reward: 1500, title: "Invite 50 Friends" }
+    ];
+
+    var claimedCount = 0;
+    milestones.forEach(function(m) {
+      var isClaimed = (user.claimedMilestones && user.claimedMilestones.includes(m.id)) || m.isClaimed;
+      if (isClaimed) claimedCount++;
+    });
+
+    var claimedRatio = document.getElementById("milestoneClaimedRatio");
+    if (claimedRatio) claimedRatio.textContent = claimedCount + "/" + milestones.length;
+
+    var progressFill = document.getElementById("milestoneProgressFill");
+    if (progressFill) {
+      var pct = Math.min(100, Math.max(0, (claimedCount / milestones.length) * 100));
+      progressFill.style.width = pct + "%";
+    }
+
+    var listContainer = document.getElementById("milestonesListContainer");
+    if (!listContainer) return;
+
+    var html = "";
+    milestones.forEach(function(m) {
+      var isClaimed = (user.claimedMilestones && user.claimedMilestones.includes(m.id)) || m.isClaimed;
+      var canClaim = !isClaimed && (recruits >= m.required);
+
+      var btnHtml = "";
+      if (isClaimed) {
+        btnHtml = '<button class="milestone-action-btn claimed" disabled>Claimed ✓</button>';
+      } else if (canClaim) {
+        btnHtml = '<button class="milestone-action-btn ready" data-id="' + m.id + '">Claim (+' + m.reward + ')</button>';
+      } else {
+        btnHtml = '<button class="milestone-action-btn locked" disabled>' + recruits + '/' + m.required + ' Locked</button>';
+      }
+
+      html += '<div class="milestone-item-card">' +
+        '<div class="milestone-icon-squircle">✓</div>' +
+        '<div class="milestone-info">' +
+          '<div class="milestone-title">' + escapeHtml(m.title) + '</div>' +
+          '<div class="milestone-reward">+' + m.reward + ' HOOCOOH Coins</div>' +
+        '</div>' +
+        btnHtml +
+      '</div>';
+    });
+
+    listContainer.innerHTML = html;
+
+    var readyBtns = listContainer.querySelectorAll(".milestone-action-btn.ready");
+    readyBtns.forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        var mId = parseInt(btn.getAttribute("data-id"), 10);
+        btn.disabled = true;
+        btn.textContent = "Claiming...";
+
+        claimMilestoneApi(mId).then(function(res) {
+          if (!res.ok) {
+            var err = (res.data && res.data.error) ? res.data.error : "Failed to claim milestone";
+            showToast(err);
+            btn.disabled = false;
+            btn.textContent = "Claim";
+            return;
+          }
+
+          user.balance = res.data.newBalance;
+          if (!user.claimedMilestones) user.claimedMilestones = [];
+          user.claimedMilestones.push(mId);
+          showToast(res.data.message || ("🎉 +" + res.data.reward + " HOOCOOH Coins claimed!"));
+          renderBalance();
+          loadReferralData();
+        }).catch(function(err) {
+          showToast((err && err.message) ? err.message : "Milestone error");
+          btn.disabled = false;
+          btn.textContent = "Claim";
+        });
+      });
+    });
+  }
+
+  function loadReferralData() {
+    fetchReferralApi().then(function(res) {
+      if (res.ok && res.data) {
+        referralData = res.data;
+        if (typeof res.data.recruitsCount === "number") user.recruitsCount = res.data.recruitsCount;
+        if (typeof res.data.refEarnings === "number") user.refEarnings = res.data.refEarnings;
+        renderInvite();
+      }
+    }).catch(function(err) {
+      console.warn("loadReferralData warning:", err);
+    });
+  }
+
+  // Invite Event Listeners
+  var copyRefBtn = document.getElementById("copyRefLinkBtn");
+  if (copyRefBtn) copyRefBtn.addEventListener("click", copyReferralLink);
+
+  var quickCopyBtn = document.getElementById("quickCopyBtn");
+  if (quickCopyBtn) quickCopyBtn.addEventListener("click", copyReferralLink);
+
+  var inviteTelegramBtn = document.getElementById("inviteViaTelegramBtn");
+  if (inviteTelegramBtn) {
+    inviteTelegramBtn.addEventListener("click", function() {
+      var refLink = getReferralLink();
+      var shareText = "🚀 Join HOOCOOH Mine and start earning HOOCOOH Coins with me!";
+      var shareUrl = "https://t.me/share/url?url=" + encodeURIComponent(refLink) + "&text=" + encodeURIComponent(shareText);
+      if (tg && tg.openTelegramLink) {
+        tg.openTelegramLink(shareUrl);
+      } else {
+        window.open(shareUrl, "_blank");
+      }
+    });
+  }
+
+  var invitePillTabs = document.querySelectorAll(".invite-pill-tab");
+  invitePillTabs.forEach(function(tab) {
+    tab.addEventListener("click", function() {
+      invitePillTabs.forEach(function(t) { t.classList.remove("active"); });
+      tab.classList.add("active");
+      var subtab = tab.getAttribute("data-subtab");
+
+      var vRank = document.getElementById("inviteSubtabRankings");
+      var vMile = document.getElementById("inviteSubtabMilestones");
+      var vOver = document.getElementById("inviteSubtabOverview");
+
+      if (vRank) vRank.classList.remove("active");
+      if (vMile) vMile.classList.remove("active");
+      if (vOver) vOver.classList.remove("active");
+
+      if (subtab === "rankings" && vRank) vRank.classList.add("active");
+      if (subtab === "milestones" && vMile) vMile.classList.add("active");
+      if (subtab === "overview" && vOver) vOver.classList.add("active");
+    });
+  });
+
+  var toggleRecruitersBtn = document.getElementById("toggleRecruitersBtn");
+  var toggleMinersBtn = document.getElementById("toggleMinersBtn");
+
+  if (toggleRecruitersBtn && toggleMinersBtn) {
+    toggleRecruitersBtn.addEventListener("click", function() {
+      currentRankSubTab = "recruiters";
+      toggleRecruitersBtn.classList.add("active");
+      toggleMinersBtn.classList.remove("active");
+      renderRankingsView();
+    });
+
+    toggleMinersBtn.addEventListener("click", function() {
+      currentRankSubTab = "miners";
+      toggleMinersBtn.classList.add("active");
+      toggleRecruitersBtn.classList.remove("active");
+      renderRankingsView();
+    });
+  }
+
   // Load Tasks on startup
   loadTasks();
+  loadReferralData();
 
   // Fetch real server state
   apiGet().then(function(res){
@@ -3949,6 +5152,7 @@
         renderAll();
       }
     }).catch(function(){});
+    loadReferralData();
   }, 30000);
 
 })();

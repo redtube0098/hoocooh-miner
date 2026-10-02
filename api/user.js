@@ -11,8 +11,26 @@ function defaultUser(telegramId) {
     dailyDayIndex: 0,
     lastCheckinAt: null,
     totalDailyEarned: 0,
+    recruitsCount: 0,
+    refEarnings: 0,
+    referredBy: null,
+    claimedMilestones: [],
     createdAt: Date.now()
   };
+}
+
+let cachedBotUsername = null;
+async function fetchBotUsername(token) {
+  if (cachedBotUsername) return cachedBotUsername;
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${token}/getMe`);
+    const data = await res.json();
+    if (data.ok && data.result && data.result.username) {
+      cachedBotUsername = data.result.username;
+      return cachedBotUsername;
+    }
+  } catch(e) {}
+  return "hoocooh_miner_bot";
 }
 
 module.exports = async (req, res) => {
@@ -43,6 +61,7 @@ module.exports = async (req, res) => {
     const users = db.collection("users");
 
     let user = await users.findOne({ telegramId });
+    const isNew = !user;
     if (!user) {
       user = defaultUser(telegramId);
       user.firstName = tgUser.first_name || "";
@@ -68,10 +87,43 @@ module.exports = async (req, res) => {
       }
     }
 
+    // Process Referral if provided and not yet bound
+    const startParam = tgUser.start_param || (req.query && req.query.start_param) || "";
+    if (startParam && startParam.startsWith("ref_") && !user.referredBy) {
+      const inviterId = startParam.replace(/^ref_/, "").trim();
+      if (inviterId && inviterId !== telegramId) {
+        const inviter = await users.findOne({ telegramId: inviterId });
+        if (inviter) {
+          user.referredBy = inviterId;
+          const welcomeBonus = 50; // New user gets 50 HOOCOOH
+          user.balance = (user.balance || 0) + welcomeBonus;
+
+          await users.updateOne(
+            { telegramId },
+            { $set: { referredBy: inviterId, balance: user.balance } }
+          );
+
+          // Reward inviter: +1 recruit, +100 HOOCOOH, +100 to balance
+          await users.updateOne(
+            { telegramId: inviterId },
+            {
+              $inc: {
+                recruitsCount: 1,
+                refEarnings: 100,
+                balance: 100
+              }
+            }
+          );
+        }
+      }
+    }
+
     const { LEVEL_NAMES, getMultiplierForLevel } = require("../lib/gameLogic");
     const minerLevel = Math.max(1, Math.min(10, user.minerLevel || 1));
     const minerMultiplier = getMultiplierForLevel(minerLevel);
     const minerLevelName = LEVEL_NAMES[minerLevel - 1] || "Starter";
+
+    const botUsername = await fetchBotUsername(process.env.TELEGRAM_BOT_TOKEN);
 
     const now = Date.now();
     const CYCLE_MS = 24 * 60 * 60 * 1000;
@@ -108,7 +160,11 @@ module.exports = async (req, res) => {
       dailyStatusNow: dailyStatus(user.lastCheckinAt),
       adsWatchedToday: watchedToday,
       adsEarnedToday: earnedToday,
-      adsCycleStartedAt: cycleStart
+      adsCycleStartedAt: cycleStart,
+      recruitsCount: user.recruitsCount || 0,
+      refEarnings: user.refEarnings || 0,
+      claimedMilestones: user.claimedMilestones || [],
+      botUsername: botUsername
     });
   } catch (err) {
     console.error("user.js error:", err);
