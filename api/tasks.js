@@ -124,6 +124,56 @@ module.exports = async (req, res) => {
           return;
         }
 
+        // Verified task check: User must actually have joined the Telegram channel/group!
+        if (taskObj.type === "verified" && taskObj.link) {
+          let cleanChat = taskObj.link.trim()
+            .replace(/https?:\/\/t\.me\//i, "")
+            .replace(/^@/, "")
+            .split("/")[0]
+            .split("?")[0]
+            .trim();
+
+          if (cleanChat) {
+            const targetChatId = "@" + cleanChat;
+            try {
+              const checkRes = await fetch(
+                `https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${encodeURIComponent(targetChatId)}&user_id=${telegramId}`
+              );
+              const checkData = await checkRes.json();
+
+              if (!checkData.ok) {
+                const desc = (checkData.description || "").toLowerCase();
+                // If user not in chat
+                if (desc.includes("user not found") || desc.includes("user_not_participant")) {
+                  res.status(400).json({
+                    error: `You haven't joined ${targetChatId} yet! Please join first to claim reward.`
+                  });
+                  return;
+                } else if (!desc.includes("chat not found")) {
+                  res.status(400).json({
+                    error: `Please join ${targetChatId} to claim your +10 HOOCOOH reward!`
+                  });
+                  return;
+                }
+              } else {
+                const memberStatus = checkData.result && checkData.result.status;
+                if (memberStatus === "left" || memberStatus === "kicked" || !memberStatus) {
+                  res.status(400).json({
+                    error: `You must join ${targetChatId} first to claim your +10 HOOCOOH reward!`
+                  });
+                  return;
+                }
+              }
+            } catch (checkErr) {
+              console.warn("Telegram membership check warning:", checkErr);
+              res.status(400).json({
+                error: `Could not verify membership for ${targetChatId}. Please make sure you joined and try again.`
+              });
+              return;
+            }
+          }
+        }
+
         if (taskQuery) {
           await tasksCol.updateOne(taskQuery, { $addToSet: { completedBy: telegramId } });
         }

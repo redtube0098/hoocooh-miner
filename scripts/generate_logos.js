@@ -54,10 +54,10 @@ const TIERS = [
   { level: 3, name: "Refined", hue: 215, metalTint: [0.88, 0.96, 1.2], boostSat: 1.2, glowColor: [20, 140, 255] },
   { level: 4, name: "Vanguard", hue: 275, metalTint: [1.1, 0.85, 1.25], boostSat: 1.3, glowColor: [170, 70, 255] },
   { level: 5, name: "Apex", hue: 350, metalTint: [1.25, 0.8, 0.85], boostSat: 1.35, glowColor: [255, 50, 70] },
-  { level: 6, name: "Celestial", hue: 42, metalTint: [1.25, 1.1, 0.8], boostSat: 1.3, glowColor: [255, 180, 20] },
+  { level: 6, name: "Celestial", hue: 24, metalTint: [1.38, 0.78, 0.52], boostSat: 1.5, glowColor: [255, 95, 0] },
   { level: 7, name: "Quantum", hue: 315, metalTint: [1.2, 0.85, 1.15], boostSat: 1.4, glowColor: [240, 40, 180] },
   { level: 8, name: "Mythic", hue: 250, metalTint: [0.9, 0.85, 1.3], boostSat: 1.35, glowColor: [100, 90, 255] },
-  { level: 9, name: "Sovereign", hue: 48, metalTint: [1.35, 1.2, 0.85], boostSat: 1.45, glowColor: [255, 200, 50], goldMetal: true },
+  { level: 9, name: "Sovereign", hue: 52, metalTint: [1.42, 1.25, 0.6], boostSat: 1.5, glowColor: [255, 215, 0], goldMetal: true },
   { level: 10, name: "Transcendent", hue: -1, metalTint: [1.1, 1.1, 1.2], boostSat: 1.5, glowColor: [255, 255, 255], rainbow: true }
 ];
 

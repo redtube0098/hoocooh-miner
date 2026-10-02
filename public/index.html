@@ -1714,14 +1714,14 @@
   }
   .miner-glow-aura {
     position: absolute;
-    width: 135px;
-    height: 135px;
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(94, 225, 204, 0.42) 0%, rgba(94, 225, 204, 0.12) 50%, transparent 72%);
-    filter: blur(8px);
+    background: radial-gradient(circle, rgba(32, 210, 185, 0.45) 0%, rgba(32, 210, 185, 0.12) 50%, transparent 72%);
+    filter: blur(14px);
     pointer-events: none;
-    transition: background 0.4s ease;
-    animation: auraPulse 3s ease-in-out infinite alternate;
+    transition: background 0.45s ease, filter 0.45s ease;
+    animation: auraPulse 3.5s ease-in-out infinite alternate;
   }
   @keyframes auraPulse {
     0% { transform: scale(0.92); opacity: 0.75; }
@@ -2736,6 +2736,12 @@
 
   // Telegram User Information
   var defaultTgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
+  var cachedMinerLevel = 1;
+  try {
+    cachedMinerLevel = parseInt(localStorage.getItem("hoocooh_miner_level") || "1", 10) || 1;
+    if (cachedMinerLevel < 1 || cachedMinerLevel > 10) cachedMinerLevel = 1;
+  } catch(e) {}
+
   var user = {
     telegramId: String(defaultTgUser.id || "0"),
     firstName: defaultTgUser.first_name || "",
@@ -2743,8 +2749,8 @@
     username: defaultTgUser.username || "",
     photoUrl: defaultTgUser.photo_url || "",
     balance: 0,
-    level: 1,
-    minerLevel: 1,
+    level: cachedMinerLevel,
+    minerLevel: cachedMinerLevel,
     mineReady: true,
     mineIntervalMs: 2 * 60 * 60 * 1000,
     lastMineCollectedAt: null,
@@ -2768,6 +2774,20 @@
   ];
   var LEVEL_MULTIPLIERS = [1.0, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0];
   var UPGRADE_COSTS = [1000, 3000, 6500, 13000, 26000, 52000, 104000, 208000, 416000];
+
+  // Specific dynamic color shades and aura glow for each miner tier
+  var LEVEL_THEMES = [
+    { level: 1, glowRgb: "32, 210, 185", dropShadow: "rgba(32, 210, 185, 0.40)", pillColor: "#20bfa4" },  // Starter: Teal Cyan
+    { level: 2, glowRgb: "20, 220, 130", dropShadow: "rgba(20, 220, 130, 0.40)", pillColor: "#14dc82" },  // Developed: Emerald Green
+    { level: 3, glowRgb: "30, 150, 255", dropShadow: "rgba(30, 150, 255, 0.40)", pillColor: "#1e96ff" },  // Refined: Cobalt Blue
+    { level: 4, glowRgb: "170, 70, 255", dropShadow: "rgba(170, 70, 255, 0.40)", pillColor: "#aa46ff" },  // Vanguard: Royal Purple
+    { level: 5, glowRgb: "255, 45, 80",  dropShadow: "rgba(255, 45, 80, 0.40)",  pillColor: "#ff2d50" },  // Apex: Crimson Red
+    { level: 6, glowRgb: "255, 105, 0",  dropShadow: "rgba(255, 105, 0, 0.45)",  pillColor: "#ff6900" },  // Celestial: Fiery Blaze Orange
+    { level: 7, glowRgb: "240, 40, 180", dropShadow: "rgba(240, 40, 180, 0.40)", pillColor: "#f028b4" },  // Quantum: Neon Magenta
+    { level: 8, glowRgb: "90, 80, 255",  dropShadow: "rgba(90, 80, 255, 0.40)",  pillColor: "#5a50ff" },  // Mythic: Royal Sapphire
+    { level: 9, glowRgb: "255, 205, 30", dropShadow: "rgba(255, 205, 30, 0.50)", pillColor: "#ffcd1e" },  // Sovereign: Pure Sun Gold
+    { level: 10, glowRgb: "0, 240, 255", dropShadow: "rgba(0, 240, 255, 0.50)",  pillColor: "#00f0ff", isRainbow: true } // Transcendent: Prismatic Diamond
+  ];
 
   function getLevelLogo(lvl) {
     var l = Math.max(1, Math.min(10, lvl || 1));
@@ -3024,6 +3044,20 @@
     if (mBtnCoinIcon) mBtnCoinIcon.src = currentLogo;
     if (mEvoHeaderIcon) mEvoHeaderIcon.src = currentLogo;
 
+    // Apply dynamic colored aura & shadow matching this miner's tier
+    var theme = LEVEL_THEMES[currentLvl - 1] || LEVEL_THEMES[0];
+    var mGlowAura = document.getElementById("mGlowAura");
+    if (mGlowAura) {
+      if (theme.isRainbow) {
+        mGlowAura.style.background = "radial-gradient(circle, rgba(255, 255, 255, 0.65) 0%, rgba(0, 240, 255, 0.38) 32%, rgba(240, 50, 200, 0.25) 62%, transparent 75%)";
+      } else {
+        mGlowAura.style.background = "radial-gradient(circle, rgba(" + theme.glowRgb + ", 0.54) 0%, rgba(" + theme.glowRgb + ", 0.16) 48%, transparent 72%)";
+      }
+    }
+    if (mHeroImg) {
+      mHeroImg.style.filter = "drop-shadow(0 10px 22px " + theme.dropShadow + ")";
+    }
+
     if (mBadgeLvlTag) mBadgeLvlTag.textContent = "LV." + currentLvl;
     if (mBadgeLvlName) mBadgeLvlName.textContent = lvlName;
     if (mStatLevel) mStatLevel.textContent = "Lv." + currentLvl;
@@ -3060,7 +3094,8 @@
       evoCarousel.setAttribute("data-rendered-lvl", String(currentLvl));
       evoCarousel.innerHTML = "";
 
-      for (var i = 1; i <= 10; i++) {
+      // Only show current level and upcoming levels! Previous levels disappear!
+      for (var i = currentLvl; i <= 10; i++) {
         var card = document.createElement("div");
         var isCurrent = (i === currentLvl);
         card.className = "evo-level-card" + (isCurrent ? " active" : "");
@@ -3075,6 +3110,34 @@
 
         evoCarousel.appendChild(card);
       }
+    }
+
+    if (!evoCarousel.hasAttribute("data-click-bound")) {
+      evoCarousel.setAttribute("data-click-bound", "true");
+      evoCarousel.addEventListener("click", function(e) {
+        var card = e.target.closest(".evo-level-card");
+        if (!card) return;
+        var clickedLvl = parseInt(card.getAttribute("data-level"), 10);
+        var activeLvl = Math.max(1, Math.min(10, user.minerLevel || user.level || 1));
+        if (!clickedLvl || clickedLvl < activeLvl) return;
+
+        document.querySelectorAll(".evo-level-card").forEach(function(c) {
+          c.classList.remove("preview-selected");
+        });
+        card.classList.add("preview-selected");
+
+        var compNextName = document.getElementById("compNextName");
+        var compNextMult = document.getElementById("compNextMult");
+        if (clickedLvl > activeLvl) {
+          if (compNextName) compNextName.textContent = LEVEL_NAMES[clickedLvl - 1] + " (Lv." + clickedLvl + ")";
+          if (compNextMult) compNextMult.textContent = "x" + LEVEL_MULTIPLIERS[clickedLvl - 1] + " reward multiplier";
+        } else {
+          if (activeLvl < 10) {
+            if (compNextName) compNextName.textContent = LEVEL_NAMES[activeLvl];
+            if (compNextMult) compNextMult.textContent = "x" + LEVEL_MULTIPLIERS[activeLvl] + " reward multiplier";
+          }
+        }
+      });
     }
 
     var compCurrName = document.getElementById("compCurrName");
@@ -3308,9 +3371,11 @@
       }
       user.balance = res.data.balance;
       user.lastMineCollectedAt = res.data.lastMineCollectedAt;
-      user.mineReady = false;
-      if (res.data.minerLevel) user.minerLevel = res.data.minerLevel;
-      if (res.data.level) user.level = res.data.level;
+      if (res.data.minerLevel) {
+        user.minerLevel = res.data.minerLevel;
+        user.level = res.data.minerLevel;
+        try { localStorage.setItem("hoocooh_miner_level", String(res.data.minerLevel)); } catch(e){}
+      }
       showToast("+" + res.data.reward + " HOOCOOH collected!");
       renderAll();
     }).catch(function(err){
@@ -3357,6 +3422,7 @@
         user.balance = res.data.balance;
         user.minerLevel = res.data.minerLevel;
         user.level = res.data.minerLevel;
+        try { localStorage.setItem("hoocooh_miner_level", String(res.data.minerLevel)); } catch(e){}
         showToast(res.data.message || ("🎉 Upgraded to Level " + res.data.minerLevel + "!"));
         renderAll();
 
@@ -3556,28 +3622,40 @@
   }
 
   function attachTaskActionListeners() {
-    var goBtns = document.querySelectorAll(".task-action-btn.go");
-    goBtns.forEach(function(btn) {
-      btn.addEventListener("click", function() {
+    var taskBtns = document.querySelectorAll(".task-action-btn");
+    taskBtns.forEach(function(btn) {
+      if (btn.hasAttribute("data-listener-bound")) return;
+      btn.setAttribute("data-listener-bound", "true");
+
+      btn.addEventListener("click", function(e) {
+        e.preventDefault();
         var taskId = btn.getAttribute("data-id");
         var link = btn.getAttribute("data-link");
 
-        if (link) {
-          if (tg && tg.openTelegramLink && (link.includes("t.me") || link.startsWith("@"))) {
-            var tgUrl = link.startsWith("http") ? link : ("https://t.me/" + link.replace(/^@/, ""));
-            tg.openTelegramLink(tgUrl);
-          } else {
-            window.open(link, "_blank");
+        if (btn.classList.contains("done")) return;
+
+        // STEP 1: First click (GO mode) -> Open link ONCE and switch to CLAIM mode
+        if (btn.classList.contains("go")) {
+          if (link) {
+            if (tg && tg.openTelegramLink && (link.includes("t.me") || link.startsWith("@"))) {
+              var tgUrl = link.startsWith("http") ? link : ("https://t.me/" + link.replace(/^@/, ""));
+              tg.openTelegramLink(tgUrl);
+            } else {
+              window.open(link, "_blank");
+            }
           }
+
+          // Switch button to CLAIM mode immediately
+          btn.classList.remove("go");
+          btn.classList.add("claim");
+          btn.textContent = "CLAIM (+10)";
+          return;
         }
 
-        // Switch to CLAIM mode
-        btn.className = "task-action-btn claim";
-        btn.textContent = "CLAIM (+10)";
-
-        btn.onclick = function() {
+        // STEP 2: Second click (CLAIM mode) -> Claim reward ONLY, NEVER re-open link!
+        if (btn.classList.contains("claim")) {
           btn.disabled = true;
-          btn.textContent = "Claiming...";
+          btn.textContent = "Verifying...";
 
           claimTaskApi(taskId).then(function(res) {
             if (!res.ok) {
@@ -3600,7 +3678,7 @@
             btn.disabled = false;
             btn.textContent = "CLAIM (+10)";
           });
-        };
+        }
       });
     });
   }
@@ -3841,8 +3919,11 @@
       return;
     }
     Object.assign(user, res.data);
-    if (res.data.minerLevel) user.minerLevel = res.data.minerLevel;
-    if (res.data.level) user.level = res.data.level;
+    if (res.data.minerLevel) {
+      user.minerLevel = res.data.minerLevel;
+      user.level = res.data.minerLevel;
+      try { localStorage.setItem("hoocooh_miner_level", String(res.data.minerLevel)); } catch(e){}
+    }
     renderAll();
   }).catch(function(err){
     console.error("apiGet failed:", err);
@@ -3860,8 +3941,11 @@
     apiGet().then(function(res){
       if (res.ok) {
         Object.assign(user, res.data);
-        if (res.data.minerLevel) user.minerLevel = res.data.minerLevel;
-        if (res.data.level) user.level = res.data.level;
+        if (res.data.minerLevel) {
+          user.minerLevel = res.data.minerLevel;
+          user.level = res.data.minerLevel;
+          try { localStorage.setItem("hoocooh_miner_level", String(res.data.minerLevel)); } catch(e){}
+        }
         renderAll();
       }
     }).catch(function(){});
