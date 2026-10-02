@@ -48,20 +48,26 @@ module.exports = async (req, res) => {
       return;
     }
 
+    const { getMultiplierForLevel } = require("../lib/gameLogic");
+    const minerLevel = Math.max(1, Math.min(10, user.minerLevel || 1));
+    const multiplier = getMultiplierForLevel(minerLevel);
+    const reward = Math.round(MINE_REWARD * multiplier);
+
     const now = Date.now();
-    const newBalance = user.balance + MINE_REWARD;
+    const newBalance = (user.balance || 0) + reward;
 
     await users.updateOne(
       { telegramId },
       { $set: { balance: newBalance, lastMineCollectedAt: now } }
     );
 
-    const currentLevel = Math.max(1, Math.floor(newBalance / 1000) + 1);
     res.status(200).json({
       balance: newBalance,
       lastMineCollectedAt: now,
-      reward: MINE_REWARD,
-      level: currentLevel
+      reward: reward,
+      multiplier: multiplier,
+      minerLevel: minerLevel,
+      level: minerLevel
     });
   } catch (err) {
     console.error("collect.js error:", err);

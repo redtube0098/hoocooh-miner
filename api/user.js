@@ -68,7 +68,10 @@ module.exports = async (req, res) => {
       }
     }
 
-    const currentLevel = Math.max(1, Math.floor((user.balance || 0) / 1000) + 1);
+    const { LEVEL_NAMES, getMultiplierForLevel } = require("../lib/gameLogic");
+    const minerLevel = Math.max(1, Math.min(10, user.minerLevel || 1));
+    const minerMultiplier = getMultiplierForLevel(minerLevel);
+    const minerLevelName = LEVEL_NAMES[minerLevel - 1] || "Starter";
 
     const now = Date.now();
     const CYCLE_MS = 24 * 60 * 60 * 1000;
@@ -90,7 +93,10 @@ module.exports = async (req, res) => {
       firstName: user.firstName || tgUser.first_name || "Miner",
       username: user.username || tgUser.username || "",
       photoUrl: user.photoUrl || tgUser.photo_url || "",
-      level: currentLevel,
+      level: minerLevel,
+      minerLevel: minerLevel,
+      minerMultiplier: minerMultiplier,
+      minerLevelName: minerLevelName,
       balance: user.balance,
       lastMineCollectedAt: user.lastMineCollectedAt,
       dailyCycle: user.dailyCycle,

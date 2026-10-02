@@ -1623,12 +1623,433 @@
     pointer-events: none;
     transition: opacity 0.25s ease, transform 0.25s ease;
     z-index: 60;
-    white-space: nowrap;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  /* ========================================================
+     MINING TAB - FULL DESIGN MATCHING REFERENCE
+     ======================================================== */
+  .miner-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-bottom: 8px;
   }
-  .toast.show {
-    opacity: 0.96;
-    transform: translateX(-50%) translateY(0);
+
+  /* Mining Main Card */
+  .miner-main-card {
+    background: var(--card-bg);
+    border-radius: 26px;
+    padding: 20px 18px 18px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Status Pill at top */
+  .miner-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .miner-status-pill.ready {
+    background: #e6faf5;
+    color: #0b8370;
+    border: 1px solid #7be8d6;
+  }
+  .miner-status-pill.mining {
+    background: #eef2ff;
+    color: #4f46e5;
+    border: 1px solid #c7d2fe;
+  }
+  .miner-status-pill.idle {
+    background: #f3f4f6;
+    color: #4b5563;
+    border: 1px solid #e5e7eb;
+  }
+  .miner-status-pill .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+    animation: pillDotBlink 1.6s ease-in-out infinite;
+  }
+  [data-theme="dark"] .miner-status-pill.ready {
+    background: rgba(36, 191, 166, 0.16);
+    color: #46e0cb;
+    border-color: rgba(70, 224, 203, 0.35);
+  }
+  [data-theme="dark"] .miner-status-pill.mining {
+    background: rgba(99, 102, 241, 0.16);
+    color: #a5b4fc;
+    border-color: rgba(165, 180, 252, 0.3);
+  }
+
+  /* Miner Hero Visual with Glowing Aura */
+  .miner-hero-wrap {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px 0 10px;
+  }
+  .miner-glow-aura {
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(94, 225, 204, 0.42) 0%, rgba(94, 225, 204, 0.12) 50%, transparent 72%);
+    filter: blur(8px);
+    pointer-events: none;
+    transition: background 0.4s ease;
+    animation: auraPulse 3s ease-in-out infinite alternate;
+  }
+  @keyframes auraPulse {
+    0% { transform: scale(0.92); opacity: 0.75; }
+    100% { transform: scale(1.1); opacity: 1; }
+  }
+  .miner-hero-img {
+    width: 170px;
+    height: 170px;
+    object-fit: contain;
+    z-index: 2;
+    filter: drop-shadow(0 12px 24px rgba(32, 191, 164, 0.25));
+    animation: minerFloating 4s ease-in-out infinite;
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+  @keyframes minerFloating {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-7px) rotate(1.5deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+  }
+
+  /* Level Pill Badge below hero */
+  .miner-lvl-badge-pill {
+    background: var(--sub-box-bg);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    margin-bottom: 16px;
+  }
+  .miner-lvl-badge-pill .lvl-tag {
+    font-size: 12px;
+    font-weight: 800;
+    color: #20bfa4;
+    letter-spacing: 0.3px;
+  }
+  .miner-lvl-badge-pill .lvl-name {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  /* 3 Stat Boxes Row */
+  .miner-stats-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .miner-stat-box {
+    background: var(--sub-box-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .miner-stat-box .lbl {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .miner-stat-box .val {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.1;
+  }
+  .miner-stat-box .val.teal {
+    color: #20bfa4;
+  }
+
+  /* Progress Track */
+  .miner-progress-wrap {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  .miner-progress-track {
+    width: 100%;
+    height: 7.5px;
+    background: #e2f4f1;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  [data-theme="dark"] .miner-progress-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .miner-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #32d6be 0%, #1db8a2 100%);
+    border-radius: 10px;
+    transition: width 0.4s ease;
+  }
+  .miner-progress-status-txt {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  /* Reward Amount Display */
+  .miner-reward-amount-row {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 4px 0 14px;
+  }
+  .miner-reward-amount-row .plus-num {
+    font-size: 32px;
+    font-weight: 900;
+    color: #10b981;
+    letter-spacing: -0.5px;
+  }
+  .miner-reward-amount-row .miner-coin-mini {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+  }
+
+  /* Action Collect / Mining Button */
+  .miner-action-btn {
+    width: 100%;
+    border-radius: 100px;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #46dac5 0%, #20bfa4 50%, #159f88 100%);
+    color: #ffffff;
+    border: none;
+    font-size: 14.5px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(32, 191, 164, 0.28);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .miner-action-btn:active {
+    transform: scale(0.98);
+  }
+  .miner-action-btn:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+    background: var(--sub-box-bg);
+    color: var(--text-dim);
+    box-shadow: none;
+    border: 1px solid var(--border);
+  }
+  .miner-action-btn .btn-coin-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+  }
+
+  /* Evolution Card */
+  .miner-evolution-card {
+    background: var(--card-bg);
+    border-radius: 26px;
+    padding: 18px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border);
+  }
+  .evo-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .evo-header-icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+  }
+  .evo-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.2px;
+  }
+
+  /* Evolution Carousel of 10 Levels */
+  .evo-carousel {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 14px 2px 10px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .evo-carousel::-webkit-scrollbar {
+    display: none;
+  }
+  .evo-level-card {
+    flex: 0 0 96px;
+    scroll-snap-align: center;
+    background: var(--sub-box-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 12px 8px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+  .evo-level-card.active {
+    background: #eefbf7;
+    border: 2px solid #24bfa6;
+    box-shadow: 0 4px 14px rgba(36, 191, 166, 0.2);
+  }
+  [data-theme="dark"] .evo-level-card.active {
+    background: #0f3536;
+    border-color: #38e1c6;
+    box-shadow: 0 4px 14px rgba(56, 225, 198, 0.25);
+  }
+  .evo-level-card .evo-you-badge {
+    position: absolute;
+    top: -9px;
+    background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%);
+    color: #ffffff;
+    font-size: 8.5px;
+    font-weight: 900;
+    padding: 2px 8px;
+    border-radius: 100px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 6px rgba(20, 184, 166, 0.35);
+  }
+  .evo-level-card .evo-card-img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    margin: 4px 0 6px;
+    transition: transform 0.2s ease;
+  }
+  .evo-level-card:hover .evo-card-img,
+  .evo-level-card.active .evo-card-img {
+    transform: scale(1.08);
+  }
+  .evo-level-card .evo-card-lvl {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.1;
+  }
+  .evo-level-card .evo-card-name {
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  /* Evolution Comparison Box */
+  .evo-compare-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--sub-box-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 14px;
+    margin: 10px 0 14px;
+  }
+  .evo-compare-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .evo-compare-col.right {
+    text-align: right;
+  }
+  .evo-compare-col .comp-lbl {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .evo-compare-col .comp-title {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .evo-compare-col .comp-sub {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #20bfa4;
+  }
+  .evo-compare-arrow {
+    font-size: 16px;
+    color: var(--text-dim);
+    padding: 0 4px;
+  }
+
+  /* Upgrade Button */
+  .miner-upgrade-btn {
+    width: 100%;
+    border-radius: 100px;
+    padding: 13.5px 20px;
+    background: linear-gradient(135deg, #4ee0cb 0%, #1db8a2 100%);
+    color: #ffffff;
+    border: none;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 6px 18px var(--accent-glow);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  .miner-upgrade-btn:active {
+    transform: scale(0.98);
+  }
+  .miner-upgrade-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--sub-box-bg);
+    color: var(--text-dim);
+    box-shadow: none;
+    border: 1px solid var(--border);
   }
 </style>
 </head>
@@ -1905,24 +2326,98 @@
 
   <!-- Tab 3: MINING -->
   <main class="tab-view" id="tab-mining">
-    <div class="sub-page-card">
-      <div class="mine-visual-wrap" style="width: 100px; height: 100px; margin: 0 auto 10px;">
-        <img src="assets/logo.webp" alt="Mining" style="width: 85px; height: 85px; object-fit: contain;">
+    <div class="miner-container">
+
+      <!-- Mining Main Card (Matching Screenshot 1) -->
+      <div class="miner-main-card">
+        <!-- Status Pill: REWARD READY! or MINING... -->
+        <div class="miner-status-pill ready" id="mStatusPill">
+          <span class="dot"></span>
+          <span id="mStatusPillTxt">REWARD READY!</span>
+        </div>
+
+        <!-- 3D Miner Hero Visual with Glowing Aura -->
+        <div class="miner-hero-wrap">
+          <div class="miner-glow-aura" id="mGlowAura"></div>
+          <img src="assets/miner_lvl1.webp" alt="Miner Core" class="miner-hero-img" id="mHeroImg">
+        </div>
+
+        <!-- Level Pill Badge: Lv.1 Starter -->
+        <div class="miner-lvl-badge-pill">
+          <span class="lvl-tag" id="mBadgeLvlTag">LV.1</span>
+          <span class="lvl-name" id="mBadgeLvlName">Starter</span>
+        </div>
+
+        <!-- 3 Stat Boxes Row -->
+        <div class="miner-stats-row">
+          <div class="miner-stat-box">
+            <div class="lbl">LEVEL</div>
+            <div class="val teal" id="mStatLevel">Lv.1</div>
+          </div>
+          <div class="miner-stat-box">
+            <div class="lbl">MULTIPLIER</div>
+            <div class="val" id="mStatMultiplier">x1</div>
+          </div>
+          <div class="miner-stat-box">
+            <div class="lbl">PROGRESS</div>
+            <div class="val teal" id="mStatProgress">100%</div>
+          </div>
+        </div>
+
+        <!-- Progress Track -->
+        <div class="miner-progress-wrap">
+          <div class="miner-progress-track">
+            <div class="miner-progress-fill" id="mProgressFill" style="width: 100%;"></div>
+          </div>
+          <div class="miner-progress-status-txt" id="mProgressStatusTxt">MINING COMPLETE — COLLECT NOW!</div>
+        </div>
+
+        <!-- Reward Amount Row -->
+        <div class="miner-reward-amount-row">
+          <span class="plus-num" id="mRewardNum">+80</span>
+          <img src="assets/miner_lvl1.webp" class="miner-coin-mini" id="mCoinMiniImg" alt="Coin">
+        </div>
+
+        <!-- Action Collect / Mining Button (Matching Screenshot 2) -->
+        <button class="miner-action-btn" id="mTabCollectBtn" type="button">
+          <img src="assets/miner_lvl1.webp" class="btn-coin-icon" id="mBtnCoinIcon" alt="Coin">
+          <span id="mTabCollectBtnTxt">Collect HOOCOOH Coins</span>
+        </button>
       </div>
-      <h3>⭐ Mining Protocol</h3>
-      <p>Your miner automatically gathers 80 HOOCOOH Coins every 2 hours through the Starlight Protocol.</p>
-      <div class="daily-bottom-row" style="margin-bottom: 8px;">
-        <span class="lbl">MINE CYCLE</span>
-        <span class="val">2 Hours</span>
+
+      <!-- Evolution Card (Matching Screenshot 2) -->
+      <div class="miner-evolution-card">
+        <div class="evo-header">
+          <img src="assets/miner_lvl1.webp" class="evo-header-icon" id="mEvoHeaderIcon" alt="Evo">
+          <div class="evo-title">HOOCOOH Evolution</div>
+        </div>
+
+        <!-- Carousel of 10 Levels -->
+        <div class="evo-carousel" id="evoCarousel">
+          <!-- Dynamically populated via JS -->
+        </div>
+
+        <!-- Comparison Box -->
+        <div class="evo-compare-box">
+          <div class="evo-compare-col">
+            <div class="comp-lbl">Current Level</div>
+            <div class="comp-title">✨ <span id="compCurrName">Starter</span></div>
+            <div class="comp-sub" id="compCurrMult">x1 reward multiplier</div>
+          </div>
+          <div class="evo-compare-arrow">➔</div>
+          <div class="evo-compare-col right">
+            <div class="comp-lbl">Next Level</div>
+            <div class="comp-title">⚡ <span id="compNextName">Developed</span></div>
+            <div class="comp-sub" id="compNextMult">x1.2 reward multiplier</div>
+          </div>
+        </div>
+
+        <!-- Upgrade Button -->
+        <button class="miner-upgrade-btn" id="minerUpgradeActionBtn" type="button">
+          <span id="minerUpgradeBtnTxt">⬆ Upgrade for 1,000 HOOCOOH</span>
+        </button>
       </div>
-      <div class="daily-bottom-row" style="margin-bottom: 8px;">
-        <span class="lbl">REWARD PER CYCLE</span>
-        <span class="val">80 HOOCOOH</span>
-      </div>
-      <div class="daily-bottom-row">
-        <span class="lbl">PROTOCOL EFFICIENCY</span>
-        <span class="val">100% Active</span>
-      </div>
+
     </div>
   </main>
 
@@ -2169,6 +2664,15 @@
       btn.classList.add("active");
       var activeView = document.getElementById(targetTab);
       if (activeView) activeView.classList.add("active");
+      if (targetTab === "tab-mining") {
+        renderMining();
+        setTimeout(function(){
+          var activeCard = document.querySelector(".evo-level-card.active");
+          if (activeCard && activeCard.scrollIntoView) {
+            activeCard.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+          }
+        }, 60);
+      }
     });
   });
 
@@ -2214,6 +2718,7 @@
     photoUrl: defaultTgUser.photo_url || "",
     balance: 0,
     level: 1,
+    minerLevel: 1,
     mineReady: true,
     mineIntervalMs: 2 * 60 * 60 * 1000,
     lastMineCollectedAt: null,
@@ -2222,6 +2727,26 @@
     lastCheckinAt: null,
     totalDailyEarned: 0
   };
+
+  var LEVEL_NAMES = [
+    "Starter",
+    "Developed",
+    "Refined",
+    "Vanguard",
+    "Apex",
+    "Celestial",
+    "Quantum",
+    "Mythic",
+    "Sovereign",
+    "Transcendent"
+  ];
+  var LEVEL_MULTIPLIERS = [1.0, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0];
+  var UPGRADE_COSTS = [1000, 3000, 6500, 13000, 26000, 52000, 104000, 208000, 416000];
+
+  function getLevelLogo(lvl) {
+    var l = Math.max(1, Math.min(10, lvl || 1));
+    return "assets/miner_lvl" + l + ".webp";
+  }
 
   function handleResponse(r) {
     return r.text().then(function(text) {
@@ -2256,6 +2781,27 @@
     }).then(function(r) {
       if (r.status === 404) {
         return fetch("/api/collect.js", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Telegram-Init-Data": initData
+          }
+        });
+      }
+      return r;
+    }).then(handleResponse);
+  }
+
+  function apiUpgrade() {
+    return fetch("/api/upgrade", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": initData
+      }
+    }).then(function(r) {
+      if (r.status === 404) {
+        return fetch("/api/upgrade.js", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -2340,18 +2886,44 @@
     var usdEl = document.getElementById("balanceUsd");
     if (usdEl) usdEl.textContent = "$" + (balance * COIN_USD).toFixed(2);
 
-    var level = Number(user.level) || Math.max(1, Math.floor(balance / 1000) + 1);
-    document.getElementById("levelBadgeNum").textContent = level;
-    document.getElementById("levelBadgeTag").textContent = "Lv." + level;
-    document.getElementById("progressLvlNum").textContent = level;
-    document.getElementById("minerLvlChip").textContent = "Lv." + level + " Starter";
+    var currentLvl = Math.max(1, Math.min(10, user.minerLevel || user.level || 1));
+    var lvlName = LEVEL_NAMES[currentLvl - 1] || "Starter";
+    var mult = LEVEL_MULTIPLIERS[currentLvl - 1] || 1.0;
 
-    var target = level * 1000;
-    var currentProgress = balance % 1000;
-    var fillPercent = Math.min(100, Math.max(0, (currentProgress / 1000) * 100));
-    document.getElementById("progressFill").style.width = fillPercent + "%";
-    document.getElementById("progressFraction").textContent =
-      whole.toLocaleString() + " / " + target.toLocaleString() + " to Lv." + (level + 1);
+    var lvlBadgeNum = document.getElementById("levelBadgeNum");
+    var lvlBadgeTag = document.getElementById("levelBadgeTag");
+    var progressLvlNum = document.getElementById("progressLvlNum");
+    var progressLevelTitle = document.getElementById("progressLevelTitle");
+    var minerLvlChip = document.getElementById("minerLvlChip");
+    var liveMinerTag = document.getElementById("liveMinerTag");
+
+    if (lvlBadgeNum) lvlBadgeNum.textContent = currentLvl;
+    if (lvlBadgeTag) lvlBadgeTag.textContent = "Lv." + currentLvl;
+    if (progressLvlNum) progressLvlNum.textContent = currentLvl;
+    if (progressLevelTitle) progressLevelTitle.textContent = "HOOCOOH " + lvlName;
+    if (minerLvlChip) minerLvlChip.textContent = "Lv." + currentLvl + " " + lvlName;
+    if (liveMinerTag) liveMinerTag.textContent = "Lv." + currentLvl + " " + lvlName + " (" + mult + "x)";
+
+    var nextCost = UPGRADE_COSTS[currentLvl - 1];
+    var progressFill = document.getElementById("progressFill");
+    var progressFraction = document.getElementById("progressFraction");
+    if (nextCost) {
+      var fillPercent = Math.min(100, Math.max(0, (balance / nextCost) * 100));
+      if (progressFill) progressFill.style.width = fillPercent + "%";
+      if (progressFraction) {
+        progressFraction.textContent =
+          balance.toLocaleString() + " / " + nextCost.toLocaleString() + " to Lv." + (currentLvl + 1);
+      }
+    } else {
+      if (progressFill) progressFill.style.width = "100%";
+      if (progressFraction) progressFraction.textContent = "MAX LEVEL REACHED (Lv.10)";
+    }
+
+    var currentLogo = getLevelLogo(currentLvl);
+    var logoImages = document.querySelectorAll(".header .logo-badge img, .mine-img, #mineLogoImg");
+    logoImages.forEach(function(img) {
+      if (img && img.src !== currentLogo) img.src = currentLogo;
+    });
   }
 
   function renderMining() {
@@ -2360,30 +2932,158 @@
     var lastCollected = user.lastMineCollectedAt ? Number(user.lastMineCollectedAt) : 0;
     var ready = !lastCollected || (now - lastCollected) >= interval;
 
+    var currentLvl = Math.max(1, Math.min(10, user.minerLevel || user.level || 1));
+    var lvlName = LEVEL_NAMES[currentLvl - 1] || "Starter";
+    var mult = LEVEL_MULTIPLIERS[currentLvl - 1] || 1.0;
+    var reward = Math.round(80 * mult);
+    var currentLogo = getLevelLogo(currentLvl);
+
+    var elapsed = lastCollected ? (now - lastCollected) : interval;
+    var progressPercent = ready ? 100 : Math.min(100, Math.max(0, Math.floor((elapsed / interval) * 100)));
+    var remaining = Math.max(0, interval - (now - lastCollected));
+
+    // 1. Home Tab Mining Card
     var pill = document.getElementById("statusPill");
     var pillText = document.getElementById("statusPillText");
     var btn = document.getElementById("collectBtn");
     var titleEl = document.getElementById("mineTitle");
     var rewardEl = document.getElementById("mineReward");
     var timerText = document.getElementById("timerText");
+    var mineRewardAmount = document.getElementById("mineRewardAmount");
+    var mineLogoImg = document.querySelector(".mine-img");
 
-    if (ready) {
-      pill.className = "status-pill ready";
-      pillText.textContent = "REWARD READY!";
-      titleEl.style.display = "block";
-      rewardEl.style.display = "flex";
-      btn.disabled = false;
-      btn.innerHTML = '<img src="assets/logo.webp" alt="Icon"> <span>Collect HOOCOOH</span>';
-      timerText.textContent = "Ready to collect";
+    if (mineLogoImg) mineLogoImg.src = currentLogo;
+    if (mineRewardAmount) mineRewardAmount.textContent = "+" + reward;
+
+    if (pill && pillText && btn) {
+      if (ready) {
+        pill.className = "status-pill ready";
+        pillText.textContent = "REWARD READY!";
+        if (titleEl) titleEl.style.display = "block";
+        if (rewardEl) rewardEl.style.display = "flex";
+        btn.disabled = false;
+        btn.innerHTML = '<img src="' + currentLogo + '" alt="Icon"> <span>Collect HOOCOOH (+' + reward + ')</span>';
+        if (timerText) timerText.textContent = "Ready to collect";
+      } else {
+        pill.className = "status-pill waiting";
+        pillText.textContent = "MINING...";
+        if (titleEl) titleEl.style.display = "none";
+        if (rewardEl) rewardEl.style.display = "none";
+        btn.disabled = true;
+        btn.innerHTML = '<img src="' + currentLogo + '" alt="Icon"> <span>Mining in progress</span>';
+        if (timerText) timerText.textContent = "Next collection in " + formatDuration(remaining);
+      }
+    }
+
+    // 2. Mining Tab (#tab-mining) - Reference UI
+    var mStatusPill = document.getElementById("mStatusPill");
+    var mStatusPillTxt = document.getElementById("mStatusPillTxt");
+    var mHeroImg = document.getElementById("mHeroImg");
+    var mBadgeLvlTag = document.getElementById("mBadgeLvlTag");
+    var mBadgeLvlName = document.getElementById("mBadgeLvlName");
+    var mStatLevel = document.getElementById("mStatLevel");
+    var mStatMultiplier = document.getElementById("mStatMultiplier");
+    var mStatProgress = document.getElementById("mStatProgress");
+    var mProgressFill = document.getElementById("mProgressFill");
+    var mProgressStatusTxt = document.getElementById("mProgressStatusTxt");
+    var mRewardNum = document.getElementById("mRewardNum");
+    var mCoinMiniImg = document.getElementById("mCoinMiniImg");
+    var mTabCollectBtn = document.getElementById("mTabCollectBtn");
+    var mBtnCoinIcon = document.getElementById("mBtnCoinIcon");
+    var mTabCollectBtnTxt = document.getElementById("mTabCollectBtnTxt");
+    var mEvoHeaderIcon = document.getElementById("mEvoHeaderIcon");
+
+    if (mHeroImg) mHeroImg.src = currentLogo;
+    if (mCoinMiniImg) mCoinMiniImg.src = currentLogo;
+    if (mBtnCoinIcon) mBtnCoinIcon.src = currentLogo;
+    if (mEvoHeaderIcon) mEvoHeaderIcon.src = currentLogo;
+
+    if (mBadgeLvlTag) mBadgeLvlTag.textContent = "LV." + currentLvl;
+    if (mBadgeLvlName) mBadgeLvlName.textContent = lvlName;
+    if (mStatLevel) mStatLevel.textContent = "Lv." + currentLvl;
+    if (mStatMultiplier) mStatMultiplier.textContent = "x" + mult;
+    if (mStatProgress) mStatProgress.textContent = progressPercent + "%";
+    if (mProgressFill) mProgressFill.style.width = progressPercent + "%";
+    if (mRewardNum) mRewardNum.textContent = "+" + reward;
+
+    if (mStatusPill && mStatusPillTxt && mTabCollectBtn) {
+      if (ready) {
+        mStatusPill.className = "miner-status-pill ready";
+        mStatusPillTxt.textContent = "REWARD READY!";
+        if (mProgressStatusTxt) mProgressStatusTxt.textContent = "MINING COMPLETE — COLLECT NOW!";
+        mTabCollectBtn.disabled = false;
+        if (mTabCollectBtnTxt) mTabCollectBtnTxt.textContent = "Collect HOOCOOH Coins";
+      } else {
+        mStatusPill.className = "miner-status-pill mining";
+        mStatusPillTxt.textContent = "MINING IN PROGRESS (" + formatDuration(remaining) + ")";
+        if (mProgressStatusTxt) mProgressStatusTxt.textContent = "MINING IN PROGRESS · " + formatDuration(remaining) + " LEFT";
+        mTabCollectBtn.disabled = true;
+        if (mTabCollectBtnTxt) mTabCollectBtnTxt.textContent = "Mining (" + formatDuration(remaining) + ")";
+      }
+    }
+
+    // 3. Render Evolution Carousel & Comparison Box
+    renderEvolution(currentLvl);
+  }
+
+  function renderEvolution(currentLvl) {
+    var evoCarousel = document.getElementById("evoCarousel");
+    if (!evoCarousel) return;
+
+    if (!evoCarousel.hasChildNodes() || evoCarousel.getAttribute("data-rendered-lvl") !== String(currentLvl)) {
+      evoCarousel.setAttribute("data-rendered-lvl", String(currentLvl));
+      evoCarousel.innerHTML = "";
+
+      for (var i = 1; i <= 10; i++) {
+        var card = document.createElement("div");
+        var isCurrent = (i === currentLvl);
+        card.className = "evo-level-card" + (isCurrent ? " active" : "");
+        card.setAttribute("data-level", i);
+
+        var badgeHtml = isCurrent ? '<div class="evo-you-badge">YOU</div>' : '';
+        card.innerHTML =
+          badgeHtml +
+          '<img src="' + getLevelLogo(i) + '" class="evo-card-img" alt="Lv.' + i + '">' +
+          '<div class="evo-card-lvl">Lv.' + i + '</div>' +
+          '<div class="evo-card-name">' + LEVEL_NAMES[i - 1] + '</div>';
+
+        evoCarousel.appendChild(card);
+      }
+    }
+
+    var compCurrName = document.getElementById("compCurrName");
+    var compCurrMult = document.getElementById("compCurrMult");
+    var compNextName = document.getElementById("compNextName");
+    var compNextMult = document.getElementById("compNextMult");
+    var upgradeBtn = document.getElementById("minerUpgradeActionBtn");
+    var upgradeBtnTxt = document.getElementById("minerUpgradeBtnTxt");
+
+    var currName = LEVEL_NAMES[currentLvl - 1] || "Starter";
+    var currMult = LEVEL_MULTIPLIERS[currentLvl - 1] || 1.0;
+
+    if (compCurrName) compCurrName.textContent = currName;
+    if (compCurrMult) compCurrMult.textContent = "x" + currMult + " reward multiplier";
+
+    if (currentLvl < 10) {
+      var nextName = LEVEL_NAMES[currentLvl];
+      var nextMult = LEVEL_MULTIPLIERS[currentLvl];
+      var nextCost = UPGRADE_COSTS[currentLvl - 1];
+
+      if (compNextName) compNextName.textContent = nextName;
+      if (compNextMult) compNextMult.textContent = "x" + nextMult + " reward multiplier";
+
+      if (upgradeBtn && upgradeBtnTxt) {
+        upgradeBtn.disabled = false;
+        upgradeBtnTxt.textContent = "⬆ Upgrade for " + nextCost.toLocaleString() + " HOOCOOH";
+      }
     } else {
-      pill.className = "status-pill waiting";
-      pillText.textContent = "MINING...";
-      titleEl.style.display = "none";
-      rewardEl.style.display = "none";
-      btn.disabled = true;
-      btn.innerHTML = '<img src="assets/logo.webp" alt="Icon"> <span>Mining in progress</span>';
-      var remaining = Math.max(0, interval - (now - lastCollected));
-      timerText.textContent = "Next collection in " + formatDuration(remaining);
+      if (compNextName) compNextName.textContent = "Transcendent (Max)";
+      if (compNextMult) compNextMult.textContent = "x2.0 Maximum Multiplier";
+
+      if (upgradeBtn && upgradeBtnTxt) {
+        upgradeBtn.disabled = true;
+        upgradeBtnTxt.textContent = "🏆 MAX LEVEL REACHED";
+      }
     }
   }
 
@@ -2558,11 +3258,20 @@
   // Initial immediate render so there is zero stuck loading
   renderAll();
 
-  // Collect Mining Action
-  document.getElementById("collectBtn").addEventListener("click", function(){
-    var btn = document.getElementById("collectBtn");
-    btn.disabled = true;
-    btn.innerHTML = '<span>Collecting...</span>';
+  // Shared Mining Collect Function (Synchronized for Home and Mining tabs)
+  function triggerMiningCollect() {
+    var homeBtn = document.getElementById("collectBtn");
+    var tabBtn = document.getElementById("mTabCollectBtn");
+    var tabBtnTxt = document.getElementById("mTabCollectBtnTxt");
+
+    if (homeBtn) {
+      homeBtn.disabled = true;
+      homeBtn.innerHTML = '<span>Collecting...</span>';
+    }
+    if (tabBtn) {
+      tabBtn.disabled = true;
+      if (tabBtnTxt) tabBtnTxt.textContent = "Collecting...";
+    }
 
     apiCollect().then(function(res){
       if (!res.ok) {
@@ -2574,6 +3283,7 @@
       user.balance = res.data.balance;
       user.lastMineCollectedAt = res.data.lastMineCollectedAt;
       user.mineReady = false;
+      if (res.data.minerLevel) user.minerLevel = res.data.minerLevel;
       if (res.data.level) user.level = res.data.level;
       showToast("+" + res.data.reward + " HOOCOOH collected!");
       renderAll();
@@ -2582,7 +3292,61 @@
       showToast(msg);
       renderMining();
     });
-  });
+  }
+
+  var homeCollectBtn = document.getElementById("collectBtn");
+  if (homeCollectBtn) homeCollectBtn.addEventListener("click", triggerMiningCollect);
+
+  var mTabCollectBtn = document.getElementById("mTabCollectBtn");
+  if (mTabCollectBtn) mTabCollectBtn.addEventListener("click", triggerMiningCollect);
+
+  // Upgrade Miner Action
+  var upgradeActionBtn = document.getElementById("minerUpgradeActionBtn");
+  if (upgradeActionBtn) {
+    upgradeActionBtn.addEventListener("click", function(){
+      var currentLvl = Math.max(1, Math.min(10, user.minerLevel || user.level || 1));
+      if (currentLvl >= 10) {
+        showToast("🏆 You are already at maximum level!");
+        return;
+      }
+      var cost = UPGRADE_COSTS[currentLvl - 1];
+      if ((user.balance || 0) < cost) {
+        showToast("Insufficient balance! Need " + cost.toLocaleString() + " HOOCOOH Coins.");
+        return;
+      }
+
+      upgradeActionBtn.disabled = true;
+      var txtEl = document.getElementById("minerUpgradeBtnTxt");
+      if (txtEl) txtEl.textContent = "Upgrading...";
+
+      apiUpgrade().then(function(res){
+        upgradeActionBtn.disabled = false;
+        if (!res.ok) {
+          var err = (res.data && res.data.error) ? res.data.error : "Upgrade failed";
+          showToast(err);
+          renderMining();
+          return;
+        }
+
+        user.balance = res.data.balance;
+        user.minerLevel = res.data.minerLevel;
+        user.level = res.data.minerLevel;
+        showToast(res.data.message || ("🎉 Upgraded to Level " + res.data.minerLevel + "!"));
+        renderAll();
+
+        setTimeout(function(){
+          var activeCard = document.querySelector(".evo-level-card.active");
+          if (activeCard && activeCard.scrollIntoView) {
+            activeCard.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+          }
+        }, 100);
+      }).catch(function(err){
+        upgradeActionBtn.disabled = false;
+        showToast((err && err.message) ? err.message : "Upgrade connection error");
+        renderMining();
+      });
+    });
+  }
 
   // Dedicated Collect Daily Reward Action
   var dailyBtn = document.getElementById("dailyCollectBtn");
@@ -3051,6 +3815,8 @@
       return;
     }
     Object.assign(user, res.data);
+    if (res.data.minerLevel) user.minerLevel = res.data.minerLevel;
+    if (res.data.level) user.level = res.data.level;
     renderAll();
   }).catch(function(err){
     console.error("apiGet failed:", err);
@@ -3068,6 +3834,8 @@
     apiGet().then(function(res){
       if (res.ok) {
         Object.assign(user, res.data);
+        if (res.data.minerLevel) user.minerLevel = res.data.minerLevel;
+        if (res.data.level) user.level = res.data.level;
         renderAll();
       }
     }).catch(function(){});
