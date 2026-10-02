@@ -1,5 +1,6 @@
 const { getDb } = require("../lib/mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
+const { findOrCreateUser } = require("../lib/userHelper");
 const { dailyStatus, rewardForCycleDay } = require("../lib/gameLogic");
 
 module.exports = async (req, res) => {
@@ -19,29 +20,11 @@ module.exports = async (req, res) => {
     res.status(401).json({ error: "Invalid session - reopen app from Telegram" });
     return;
   }
-  const telegramId = String(tgUser.id);
 
   try {
     const db = await getDb();
     const users = db.collection("users");
-    let user = await users.findOne({ telegramId });
-
-    if (!user) {
-      user = {
-        telegramId,
-        firstName: tgUser.first_name || "",
-        username: tgUser.username || "",
-        photoUrl: tgUser.photo_url || "",
-        balance: 0,
-        lastMineCollectedAt: null,
-        dailyCycle: 1,
-        dailyDayIndex: 0,
-        lastCheckinAt: null,
-        totalDailyEarned: 0,
-        createdAt: Date.now()
-      };
-      await users.insertOne(user);
-    }
+    let user = await findOrCreateUser(users, tgUser);
 
     const status = dailyStatus(user.lastCheckinAt);
     if (status === "waiting") {
@@ -49,7 +32,8 @@ module.exports = async (req, res) => {
       return;
     }
 
-    let { dailyCycle, dailyDayIndex } = user;
+    let dailyCycle = Number(user.dailyCycle) || 1;
+    let dailyDayIndex = Number(user.dailyDayIndex) || 0;
 
     if (status === "broken") {
       dailyDayIndex = 0;
@@ -63,11 +47,11 @@ module.exports = async (req, res) => {
 
     const reward = rewardForCycleDay(dailyCycle, dailyDayIndex);
     const now = Date.now();
-    const newBalance = user.balance + reward;
-    const newTotal = (user.totalDailyEarned || 0) + reward;
+    const newBalance = (Number(user.balance) || 0) + reward;
+    const newTotal = (Number(user.totalDailyEarned) || 0) + reward;
 
     await users.updateOne(
-      { telegramId },
+      { _id: user._id },
       {
         $set: {
           balance: newBalance,
@@ -79,7 +63,6 @@ module.exports = async (req, res) => {
       }
     );
 
-    const currentLevel = Math.max(1, Math.floor(newBalance / 1000) + 1);
     res.status(200).json({
       balance: newBalance,
       dailyCycle,
@@ -87,7 +70,7 @@ module.exports = async (req, res) => {
       lastCheckinAt: now,
       totalDailyEarned: newTotal,
       reward,
-      level: currentLevel
+      level: user.minerLevel || 1
     });
   } catch (err) {
     console.error("checkin.js error:", err);

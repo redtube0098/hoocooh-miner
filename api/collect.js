@@ -1,6 +1,7 @@
 const { getDb } = require("../lib/mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
-const { mineIsReady, MINE_REWARD } = require("../lib/gameLogic");
+const { findOrCreateUser } = require("../lib/userHelper");
+const { mineIsReady, MINE_REWARD, getMultiplierForLevel } = require("../lib/gameLogic");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
@@ -19,45 +20,26 @@ module.exports = async (req, res) => {
     res.status(401).json({ error: "Invalid session - reopen app from Telegram" });
     return;
   }
-  const telegramId = String(tgUser.id);
 
   try {
     const db = await getDb();
     const users = db.collection("users");
-    let user = await users.findOne({ telegramId });
-
-    if (!user) {
-      user = {
-        telegramId,
-        firstName: tgUser.first_name || "",
-        username: tgUser.username || "",
-        photoUrl: tgUser.photo_url || "",
-        balance: 0,
-        lastMineCollectedAt: null,
-        dailyCycle: 1,
-        dailyDayIndex: 0,
-        lastCheckinAt: null,
-        totalDailyEarned: 0,
-        createdAt: Date.now()
-      };
-      await users.insertOne(user);
-    }
+    let user = await findOrCreateUser(users, tgUser);
 
     if (!mineIsReady(user.lastMineCollectedAt)) {
       res.status(400).json({ error: "Not ready yet", mineReady: false });
       return;
     }
 
-    const { getMultiplierForLevel } = require("../lib/gameLogic");
     const minerLevel = Math.max(1, Math.min(10, user.minerLevel || 1));
     const multiplier = getMultiplierForLevel(minerLevel);
     const reward = Math.round(MINE_REWARD * multiplier);
 
     const now = Date.now();
-    const newBalance = (user.balance || 0) + reward;
+    const newBalance = (Number(user.balance) || 0) + reward;
 
     await users.updateOne(
-      { telegramId },
+      { _id: user._id },
       { $set: { balance: newBalance, lastMineCollectedAt: now } }
     );
 

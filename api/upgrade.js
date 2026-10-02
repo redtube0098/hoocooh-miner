@@ -1,5 +1,6 @@
 const { getDb } = require("../lib/mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
+const { findOrCreateUser } = require("../lib/userHelper");
 const { LEVEL_NAMES, getMultiplierForLevel, getUpgradeCostForLevel } = require("../lib/gameLogic");
 
 module.exports = async (req, res) => {
@@ -19,17 +20,11 @@ module.exports = async (req, res) => {
     res.status(401).json({ error: "Invalid session - reopen app from Telegram" });
     return;
   }
-  const telegramId = String(tgUser.id);
 
   try {
     const db = await getDb();
     const users = db.collection("users");
-    let user = await users.findOne({ telegramId });
-
-    if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
-    }
+    let user = await findOrCreateUser(users, tgUser);
 
     const currentLevel = Math.max(1, Math.min(10, user.minerLevel || 1));
     if (currentLevel >= 10) {
@@ -55,7 +50,7 @@ module.exports = async (req, res) => {
     const newBal = userBal - cost;
 
     await users.updateOne(
-      { telegramId },
+      { _id: user._id },
       { $set: { balance: newBal, minerLevel: newLevel } }
     );
 

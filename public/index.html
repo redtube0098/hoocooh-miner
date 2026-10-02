@@ -3242,10 +3242,10 @@
             <!-- 2nd Place (Left) -->
             <div class="podium-col">
               <div class="podium-user-header">
-                <div class="podium-name" id="podium2Name">Casey Web3</div>
-                <div class="podium-score" id="podium2Score">1,404</div>
+                <div class="podium-name" id="podium2Name">---</div>
+                <div class="podium-score" id="podium2Score">0</div>
                 <div class="podium-avatar-wrap">
-                  <div class="podium-avatar silver" id="podium2Avatar">CW</div>
+                  <div class="podium-avatar silver" id="podium2Avatar">-</div>
                   <div class="podium-badge b-silver">2</div>
                 </div>
               </div>
@@ -3255,10 +3255,10 @@
             <!-- 1st Place (Center, Tallest) -->
             <div class="podium-col">
               <div class="podium-user-header">
-                <div class="podium-name" id="podium1Name">Rahman Islam</div>
-                <div class="podium-score" id="podium1Score">2,242</div>
+                <div class="podium-name" id="podium1Name">---</div>
+                <div class="podium-score" id="podium1Score">0</div>
                 <div class="podium-avatar-wrap">
-                  <div class="podium-avatar gold" id="podium1Avatar">MR</div>
+                  <div class="podium-avatar gold" id="podium1Avatar">-</div>
                   <div class="podium-badge b-gold">1</div>
                 </div>
               </div>
@@ -3268,10 +3268,10 @@
             <!-- 3rd Place (Right) -->
             <div class="podium-col">
               <div class="podium-user-header">
-                <div class="podium-name" id="podium3Name">ST TUHIN</div>
-                <div class="podium-score" id="podium3Score">752</div>
+                <div class="podium-name" id="podium3Name">---</div>
+                <div class="podium-score" id="podium3Score">0</div>
                 <div class="podium-avatar-wrap">
-                  <div class="podium-avatar bronze" id="podium3Avatar">ST</div>
+                  <div class="podium-avatar bronze" id="podium3Avatar">-</div>
                   <div class="podium-badge b-bronze">3</div>
                 </div>
               </div>
@@ -3559,23 +3559,27 @@
             activeCard.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
           }
         }, 60);
+      } else if (targetTab === "tab-invite") {
+        loadReferralData();
+        renderInvite();
       }
     });
   });
 
   // Sub-tab actions
-  document.getElementById("copyInviteBtn").addEventListener("click", function(){
-    var inviteLink = "https://t.me/share/url?url=" + encodeURIComponent("https://t.me/hoocooh_bot") + "&text=" + encodeURIComponent("Join HOOCOOH Mine and start earning coins!");
-    if (tg && tg.openTelegramLink) {
-      tg.openTelegramLink(inviteLink);
-    } else {
-      showToast("Referral link copied!");
-    }
-  });
+  var copyInviteBtn = document.getElementById("copyInviteBtn");
+  if (copyInviteBtn) {
+    copyInviteBtn.addEventListener("click", function(){
+      copyReferralLink();
+    });
+  }
 
-  document.getElementById("connectWalletBtn").addEventListener("click", function(){
-    showToast("Wallet connection coming soon!");
-  });
+  var connectWalletBtn = document.getElementById("connectWalletBtn");
+  if (connectWalletBtn) {
+    connectWalletBtn.addEventListener("click", function(){
+      showToast("Wallet connection coming soon!");
+    });
+  }
 
   // Constants & Rewards
   var COIN_USD = 0.00004;
@@ -4890,35 +4894,40 @@
 
   function renderRankingsView() {
     var isRecruiters = (currentRankSubTab === "recruiters");
-    var list = isRecruiters ? (referralData.topRecruiters || []) : (referralData.topMiners || []);
+    var list = isRecruiters ? (referralData && referralData.topRecruiters || []) : (referralData && referralData.topMiners || []);
 
-    var top1 = list[0] || { name: "Leader 1", score: 0, recruitsCount: 0, avatarText: "1" };
-    var top2 = list[1] || { name: "Leader 2", score: 0, recruitsCount: 0, avatarText: "2" };
-    var top3 = list[2] || { name: "Leader 3", score: 0, recruitsCount: 0, avatarText: "3" };
+    var top1 = list[0] || null;
+    var top2 = list[1] || null;
+    var top3 = list[2] || null;
 
     var p1Name = document.getElementById("podium1Name");
     var p1Score = document.getElementById("podium1Score");
     var p1Avatar = document.getElementById("podium1Avatar");
-    if (p1Name) p1Name.textContent = top1.name;
-    if (p1Score) p1Score.textContent = isRecruiters ? (top1.recruitsCount || 0).toLocaleString() : (top1.score || 0).toLocaleString();
-    if (p1Avatar) p1Avatar.textContent = top1.avatarText || (top1.name ? top1.name.slice(0, 2).toUpperCase() : "1");
+    if (p1Name) p1Name.textContent = top1 ? top1.name : "---";
+    if (p1Score) p1Score.textContent = top1 ? (isRecruiters ? (top1.recruitsCount || 0).toLocaleString() : (top1.score || 0).toLocaleString()) : "0";
+    if (p1Avatar) p1Avatar.textContent = top1 ? (top1.avatarText || (top1.name ? top1.name.slice(0, 2).toUpperCase() : "1")) : "-";
 
     var p2Name = document.getElementById("podium2Name");
     var p2Score = document.getElementById("podium2Score");
     var p2Avatar = document.getElementById("podium2Avatar");
-    if (p2Name) p2Name.textContent = top2.name;
-    if (p2Score) p2Score.textContent = isRecruiters ? (top2.recruitsCount || 0).toLocaleString() : (top2.score || 0).toLocaleString();
-    if (p2Avatar) p2Avatar.textContent = top2.avatarText || (top2.name ? top2.name.slice(0, 2).toUpperCase() : "2");
+    if (p2Name) p2Name.textContent = top2 ? top2.name : "---";
+    if (p2Score) p2Score.textContent = top2 ? (isRecruiters ? (top2.recruitsCount || 0).toLocaleString() : (top2.score || 0).toLocaleString()) : "0";
+    if (p2Avatar) p2Avatar.textContent = top2 ? (top2.avatarText || (top2.name ? top2.name.slice(0, 2).toUpperCase() : "2")) : "-";
 
     var p3Name = document.getElementById("podium3Name");
     var p3Score = document.getElementById("podium3Score");
     var p3Avatar = document.getElementById("podium3Avatar");
-    if (p3Name) p3Name.textContent = top3.name;
-    if (p3Score) p3Score.textContent = isRecruiters ? (top3.recruitsCount || 0).toLocaleString() : (top3.score || 0).toLocaleString();
-    if (p3Avatar) p3Avatar.textContent = top3.avatarText || (top3.name ? top3.name.slice(0, 2).toUpperCase() : "3");
+    if (p3Name) p3Name.textContent = top3 ? top3.name : "---";
+    if (p3Score) p3Score.textContent = top3 ? (isRecruiters ? (top3.recruitsCount || 0).toLocaleString() : (top3.score || 0).toLocaleString()) : "0";
+    if (p3Avatar) p3Avatar.textContent = top3 ? (top3.avatarText || (top3.name ? top3.name.slice(0, 2).toUpperCase() : "3")) : "-";
 
     var container = document.getElementById("leaderboardListContainer");
     if (!container) return;
+
+    if (list.length === 0) {
+      container.innerHTML = '<div style="text-align: center; padding: 28px 16px; color: var(--text-dim); font-size: 13px;">No real rankers yet.<br><span style="font-size: 11px; opacity: 0.8;">Invite friends or mine coins to claim the top spot!</span></div>';
+      return;
+    }
 
     var rest = list.slice(3);
     if (rest.length === 0) {
@@ -5082,13 +5091,37 @@
       var vMile = document.getElementById("inviteSubtabMilestones");
       var vOver = document.getElementById("inviteSubtabOverview");
 
-      if (vRank) vRank.classList.remove("active");
-      if (vMile) vMile.classList.remove("active");
-      if (vOver) vOver.classList.remove("active");
+      if (vRank) {
+        if (subtab === "rankings") {
+          vRank.classList.add("active");
+          vRank.style.display = "flex";
+          renderRankingsView();
+        } else {
+          vRank.classList.remove("active");
+          vRank.style.display = "none";
+        }
+      }
 
-      if (subtab === "rankings" && vRank) vRank.classList.add("active");
-      if (subtab === "milestones" && vMile) vMile.classList.add("active");
-      if (subtab === "overview" && vOver) vOver.classList.add("active");
+      if (vMile) {
+        if (subtab === "milestones") {
+          vMile.classList.add("active");
+          vMile.style.display = "flex";
+          renderMilestonesView();
+        } else {
+          vMile.classList.remove("active");
+          vMile.style.display = "none";
+        }
+      }
+
+      if (vOver) {
+        if (subtab === "overview") {
+          vOver.classList.add("active");
+          vOver.style.display = "flex";
+        } else {
+          vOver.classList.remove("active");
+          vOver.style.display = "none";
+        }
+      }
     });
   });
 

@@ -1,29 +1,16 @@
 const { getDb } = require("../lib/mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
-const { mineIsReady, dailyStatus, MINE_INTERVAL_MS } = require("../lib/gameLogic");
-
-function defaultUser(telegramId) {
-  return {
-    telegramId,
-    balance: 0,
-    lastMineCollectedAt: null,
-    dailyCycle: 1,
-    dailyDayIndex: 0,
-    lastCheckinAt: null,
-    totalDailyEarned: 0,
-    recruitsCount: 0,
-    refEarnings: 0,
-    referredBy: null,
-    claimedMilestones: [],
-    createdAt: Date.now()
-  };
-}
+const { findOrCreateUser, findUserById } = require("../lib/userHelper");
+const { mineIsReady, dailyStatus, MINE_INTERVAL_MS, LEVEL_NAMES, getMultiplierForLevel } = require("../lib/gameLogic");
 
 let cachedBotUsername = null;
 async function fetchBotUsername(token) {
   if (cachedBotUsername) return cachedBotUsername;
   try {
-    const res = await fetch(`https://api.telegram.org/bot${token}/getMe`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 1500);
+    const res = await fetch(`https://api.telegram.org/bot${token}/getMe`, { signal: controller.signal });
+    clearTimeout(timeout);
     const data = await res.json();
     if (data.ok && data.result && data.result.username) {
       cachedBotUsername = data.result.username;
@@ -39,10 +26,6 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // The frontend sends Telegram's raw, signed initData string on every
-  // request. We verify it here with the bot token (server-side only,
-  // set in Vercel env vars) - a request with no valid initData is
-  // rejected, so the app only ever works when opened from Telegram.
   if (!process.env.TELEGRAM_BOT_TOKEN) {
     res.status(500).json({ error: "TELEGRAM_BOT_TOKEN is not set in Vercel settings" });
     return;
@@ -60,52 +43,28 @@ module.exports = async (req, res) => {
     const db = await getDb();
     const users = db.collection("users");
 
-    let user = await users.findOne({ telegramId });
-    const isNew = !user;
-    if (!user) {
-      user = defaultUser(telegramId);
-      user.firstName = tgUser.first_name || "";
-      user.username = tgUser.username || "";
-      user.photoUrl = tgUser.photo_url || "";
-      await users.insertOne(user);
-    } else {
-      const updateFields = {};
-      if (tgUser.first_name && user.firstName !== tgUser.first_name) {
-        updateFields.firstName = tgUser.first_name;
-        user.firstName = tgUser.first_name;
-      }
-      if (tgUser.username && user.username !== tgUser.username) {
-        updateFields.username = tgUser.username;
-        user.username = tgUser.username;
-      }
-      if (tgUser.photo_url && user.photoUrl !== tgUser.photo_url) {
-        updateFields.photoUrl = tgUser.photo_url;
-        user.photoUrl = tgUser.photo_url;
-      }
-      if (Object.keys(updateFields).length > 0) {
-        await users.updateOne({ telegramId }, { $set: updateFields });
-      }
-    }
+    // Unified user retrieval, multi-type ID lookup, and duplicate merge
+    let user = await findOrCreateUser(users, tgUser);
 
     // Process Referral if provided and not yet bound
     const startParam = tgUser.start_param || (req.query && req.query.start_param) || "";
     if (startParam && startParam.startsWith("ref_") && !user.referredBy) {
       const inviterId = startParam.replace(/^ref_/, "").trim();
-      if (inviterId && inviterId !== telegramId) {
-        const inviter = await users.findOne({ telegramId: inviterId });
-        if (inviter) {
-          user.referredBy = inviterId;
-          const welcomeBonus = 50; // New user gets 50 HOOCOOH
-          user.balance = (user.balance || 0) + welcomeBonus;
+      if (inviterId && String(inviterId) !== telegramId) {
+        const inviter = await findUserById(users, inviterId);
+        if (inviter && String(inviter.telegramId) !== telegramId) {
+          user.referredBy = String(inviter.telegramId);
+          const welcomeBonus = 50; // New recruit gets 50 HOOCOOH
+          user.balance = (Number(user.balance) || 0) + welcomeBonus;
 
           await users.updateOne(
-            { telegramId },
-            { $set: { referredBy: inviterId, balance: user.balance } }
+            { _id: user._id },
+            { $set: { referredBy: user.referredBy, balance: user.balance } }
           );
 
-          // Reward inviter: +1 recruit, +100 HOOCOOH, +100 to balance
+          // Reward inviter: +1 recruit, +100 HOOCOOH to earnings and balance
           await users.updateOne(
-            { telegramId: inviterId },
+            { _id: inviter._id },
             {
               $inc: {
                 recruitsCount: 1,
@@ -118,7 +77,6 @@ module.exports = async (req, res) => {
       }
     }
 
-    const { LEVEL_NAMES, getMultiplierForLevel } = require("../lib/gameLogic");
     const minerLevel = Math.max(1, Math.min(10, user.minerLevel || 1));
     const minerMultiplier = getMultiplierForLevel(minerLevel);
     const minerLevelName = LEVEL_NAMES[minerLevel - 1] || "Starter";
@@ -135,7 +93,7 @@ module.exports = async (req, res) => {
       watchedToday = 0;
       earnedToday = 0;
       cycleStart = null;
-      await users.updateOne({ telegramId }, {
+      await users.updateOne({ _id: user._id }, {
         $set: { adsWatchedToday: 0, adsEarnedToday: 0, adsCycleStartedAt: null }
       });
     }
@@ -151,10 +109,10 @@ module.exports = async (req, res) => {
       minerLevelName: minerLevelName,
       balance: user.balance,
       lastMineCollectedAt: user.lastMineCollectedAt,
-      dailyCycle: user.dailyCycle,
-      dailyDayIndex: user.dailyDayIndex,
+      dailyCycle: user.dailyCycle || 1,
+      dailyDayIndex: user.dailyDayIndex || 0,
       lastCheckinAt: user.lastCheckinAt,
-      totalDailyEarned: user.totalDailyEarned,
+      totalDailyEarned: user.totalDailyEarned || 0,
       mineReady: mineIsReady(user.lastMineCollectedAt),
       mineIntervalMs: MINE_INTERVAL_MS,
       dailyStatusNow: dailyStatus(user.lastCheckinAt),

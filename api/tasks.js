@@ -1,5 +1,6 @@
 const { getDb } = require("../lib/mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
+const { findOrCreateUser } = require("../lib/userHelper");
 const { ObjectId } = require("mongodb");
 
 const DEFAULT_TASKS = [
@@ -61,9 +62,11 @@ module.exports = async (req, res) => {
     const tasksCol = db.collection("tasks");
     const usersCol = db.collection("users");
 
+    // Retrieve or merge unified user record
+    const user = await findOrCreateUser(usersCol, tgUser);
+
     // GET: list tasks
     if (req.method === "GET") {
-      const user = await usersCol.findOne({ telegramId });
       const userCompleted = (user && user.completedTasks) || [];
 
       // Find custom active tasks
@@ -102,7 +105,6 @@ module.exports = async (req, res) => {
           return;
         }
 
-        const user = await usersCol.findOne({ telegramId });
         const userCompleted = (user && user.completedTasks) || [];
         if (userCompleted.includes(String(taskId))) {
           res.status(400).json({ error: "Task already claimed" });
@@ -178,16 +180,15 @@ module.exports = async (req, res) => {
           await tasksCol.updateOne(taskQuery, { $addToSet: { completedBy: telegramId } });
         }
 
-        const currentBal = user ? Number(user.balance || 0) : 0;
+        const currentBal = Number(user.balance || 0);
         const newBal = currentBal + 10;
 
         await usersCol.updateOne(
-          { telegramId },
+          { _id: user._id },
           {
             $set: { balance: newBal },
             $addToSet: { completedTasks: String(taskId) }
-          },
-          { upsert: true }
+          }
         );
 
         res.status(200).json({ ok: true, reward: 10, newBalance: newBal });
@@ -217,8 +218,7 @@ module.exports = async (req, res) => {
           cleanLink = "https://" + cleanLink;
         }
 
-        const user = await usersCol.findOne({ telegramId });
-        const userBal = user ? Number(user.balance || 0) : 0;
+        const userBal = Number(user.balance || 0);
 
         const newTask = {
           creatorId: telegramId,

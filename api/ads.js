@@ -1,5 +1,6 @@
 const { getDb } = require("../lib/mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
+const { findOrCreateUser } = require("../lib/userHelper");
 
 const MAX_ADS_PER_DAY = 12;
 const AD_REWARD = 20;
@@ -23,17 +24,12 @@ module.exports = async (req, res) => {
     res.status(401).json({ error: "Invalid session - reopen app from Telegram" });
     return;
   }
-  const telegramId = String(tgUser.id);
 
   try {
     const db = await getDb();
     const usersCol = db.collection("users");
 
-    let user = await usersCol.findOne({ telegramId });
-    if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
-    }
+    let user = await findOrCreateUser(usersCol, tgUser);
 
     const now = Date.now();
     let cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
@@ -65,7 +61,7 @@ module.exports = async (req, res) => {
     const newBalance = Number(user.balance || 0) + AD_REWARD;
 
     await usersCol.updateOne(
-      { telegramId },
+      { _id: user._id },
       {
         $set: {
           balance: newBalance,
