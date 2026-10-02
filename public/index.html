@@ -1623,6 +1623,14 @@
     pointer-events: none;
     transition: opacity 0.25s ease, transform 0.25s ease;
     z-index: 60;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  .toast.show {
+    opacity: 0.96;
+    transform: translateX(-50%) translateY(0);
+  }
+
   /* ========================================================
      MINING TAB - FULL DESIGN MATCHING REFERENCE
      ======================================================== */
@@ -1697,17 +1705,17 @@
   /* Miner Hero Visual with Glowing Aura */
   .miner-hero-wrap {
     position: relative;
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 4px 0 10px;
+    margin: 4px auto 8px;
   }
   .miner-glow-aura {
     position: absolute;
-    width: 170px;
-    height: 170px;
+    width: 135px;
+    height: 135px;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(94, 225, 204, 0.42) 0%, rgba(94, 225, 204, 0.12) 50%, transparent 72%);
     filter: blur(8px);
@@ -1720,13 +1728,16 @@
     100% { transform: scale(1.1); opacity: 1; }
   }
   .miner-hero-img {
-    width: 170px;
-    height: 170px;
-    object-fit: contain;
+    width: 130px !important;
+    height: 130px !important;
+    max-width: 130px !important;
+    max-height: 130px !important;
+    object-fit: contain !important;
     z-index: 2;
-    filter: drop-shadow(0 12px 24px rgba(32, 191, 164, 0.25));
+    filter: drop-shadow(0 10px 20px rgba(32, 191, 164, 0.25));
     animation: minerFloating 4s ease-in-out infinite;
     transition: transform 0.3s ease, filter 0.3s ease;
+    display: block !important;
   }
   @keyframes minerFloating {
     0% { transform: translateY(0px) rotate(0deg); }
@@ -1906,33 +1917,45 @@
   }
 
   /* Evolution Carousel of 10 Levels */
+  /* Evolution Carousel of 10 Levels */
   .evo-carousel {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding: 14px 2px 10px;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 14px 2px 10px !important;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
   .evo-carousel::-webkit-scrollbar {
     display: none;
   }
   .evo-level-card {
-    flex: 0 0 96px;
+    flex: 0 0 92px !important;
+    min-width: 92px !important;
+    max-width: 92px !important;
+    width: 92px !important;
+    height: 116px !important;
     scroll-snap-align: center;
     background: var(--sub-box-bg);
     border: 1.5px solid var(--border);
     border-radius: 18px;
-    padding: 12px 8px 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    padding: 10px 6px 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
     text-align: center;
     position: relative;
     cursor: pointer;
     transition: all 0.2s ease;
     user-select: none;
+    box-sizing: border-box !important;
   }
   .evo-level-card.active {
     background: #eefbf7;
@@ -1957,10 +1980,13 @@
     box-shadow: 0 2px 6px rgba(20, 184, 166, 0.35);
   }
   .evo-level-card .evo-card-img {
-    width: 44px;
-    height: 44px;
-    object-fit: contain;
-    margin: 4px 0 6px;
+    width: 42px !important;
+    height: 42px !important;
+    max-width: 42px !important;
+    max-height: 42px !important;
+    object-fit: contain !important;
+    margin: 2px 0 5px !important;
+    display: block !important;
     transition: transform 0.2s ease;
   }
   .evo-level-card:hover .evo-card-img,
@@ -2339,7 +2365,7 @@
         <!-- 3D Miner Hero Visual with Glowing Aura -->
         <div class="miner-hero-wrap">
           <div class="miner-glow-aura" id="mGlowAura"></div>
-          <img src="assets/miner_lvl1.webp" alt="Miner Core" class="miner-hero-img" id="mHeroImg">
+          <img src="assets/miner_lvl1.webp" alt="Miner Core" class="miner-hero-img" id="mHeroImg" width="130" height="130" style="width: 130px; height: 130px; max-width: 130px; max-height: 130px; object-fit: contain; display: block;">
         </div>
 
         <!-- Level Pill Badge: Lv.1 Starter -->
@@ -3043,7 +3069,7 @@
         var badgeHtml = isCurrent ? '<div class="evo-you-badge">YOU</div>' : '';
         card.innerHTML =
           badgeHtml +
-          '<img src="' + getLevelLogo(i) + '" class="evo-card-img" alt="Lv.' + i + '">' +
+          '<img src="' + getLevelLogo(i) + '" class="evo-card-img" alt="Lv.' + i + '" width="42" height="42" style="width: 42px; height: 42px; max-width: 42px; max-height: 42px; object-fit: contain; display: block;">' +
           '<div class="evo-card-lvl">Lv.' + i + '</div>' +
           '<div class="evo-card-name">' + LEVEL_NAMES[i - 1] + '</div>';
 
