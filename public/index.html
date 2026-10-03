@@ -2739,15 +2739,143 @@
     opacity: 0.7;
   }
 
-  /* Overview placeholder */
-  .overview-placeholder-card {
+  /* ========================================================
+     OVERVIEW SECTION (MATCHING NAUTILUS MINE 1:1)
+     ======================================================== */
+  .overview-section-header {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin: 8px 4px 4px 4px;
+  }
+
+  /* HOW IT WORKS Container Card */
+  .overview-how-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 20px;
-    padding: 36px 20px;
-    text-align: center;
-    color: var(--text-dim);
+    overflow: hidden;
     box-shadow: 0 4px 16px var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .overview-step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .overview-step-row:last-child {
+    border-bottom: none;
+  }
+
+  .overview-step-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .overview-step-icon.icon-blue {
+    background: rgba(56, 189, 248, 0.12);
+    color: #0284c7;
+    border: 1px solid rgba(56, 189, 248, 0.22);
+  }
+  .overview-step-icon.icon-amber {
+    background: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.22);
+  }
+  .overview-step-icon.icon-gold {
+    background: rgba(234, 179, 8, 0.12);
+    color: #ca8a04;
+    border: 1px solid rgba(234, 179, 8, 0.22);
+  }
+  .overview-step-icon.icon-purple {
+    background: rgba(168, 85, 247, 0.12);
+    color: #9333ea;
+    border: 1px solid rgba(168, 85, 247, 0.22);
+  }
+
+  .overview-step-text {
+    flex: 1;
+    min-width: 0;
+  }
+  .overview-step-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 3px;
+    line-height: 1.35;
+  }
+  .overview-step-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.45;
+  }
+
+  /* YOUR EARNINGS BREAKDOWN Card & 2x2 Grid */
+  .overview-breakdown-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 12px;
+    box-shadow: 0 4px 16px var(--card-shadow);
+  }
+  .overview-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .overview-stat-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .overview-stat-icon-wrap {
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+  }
+  .overview-stat-lbl {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .overview-stat-val {
+    font-size: 21px;
+    font-weight: 900;
+    line-height: 1.2;
+    margin: 1px 0;
+  }
+  .overview-stat-val.val-cyan {
+    color: #0ea5e9;
+  }
+  .overview-stat-val.val-green {
+    color: #10b981;
+  }
+  .overview-stat-val.val-purple {
+    color: #8b5cf6;
+  }
+  .overview-stat-val.val-orange {
+    color: #f97316;
+  }
+  .overview-stat-unit {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
   }
 </style>
 </head>
@@ -3311,13 +3439,133 @@
         </div>
       </div>
 
-      <!-- SUBTAB 3: OVERVIEW (Placeholder for future update as requested) -->
+      <!-- SUBTAB 3: OVERVIEW (1:1 Nautilus Mine UI) -->
       <div class="invite-subtab-view" id="inviteSubtabOverview">
-        <div class="overview-placeholder-card">
-          <div style="font-size: 32px; margin-bottom: 8px;">📊</div>
-          <div style="font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 4px;">Network Analytics</div>
-          <div style="font-size: 12px;">Detailed recruitment tree & downline analytics will be unlocked in the upcoming protocol update.</div>
+
+        <!-- Section 1: HOW IT WORKS -->
+        <div class="overview-section-header">HOW IT WORKS</div>
+        <div class="overview-how-card">
+
+          <!-- Row 1: Share Your Link -->
+          <div class="overview-step-row">
+            <div class="overview-step-icon icon-blue">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+            </div>
+            <div class="overview-step-text">
+              <div class="overview-step-title">Share Your Link</div>
+              <div class="overview-step-sub">Send your unique referral link to friends via Telegram or any platform.</div>
+            </div>
+          </div>
+
+          <!-- Row 2: Friend Joins & Gets +50 HOOCOOH Coins -->
+          <div class="overview-step-row">
+            <div class="overview-step-icon icon-amber">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 12 20 22 4 22 4 12"></polyline>
+                <rect x="2" y="7" width="20" height="5"></rect>
+                <line x1="12" y1="22" x2="12" y2="7"></line>
+                <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+                <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+              </svg>
+            </div>
+            <div class="overview-step-text">
+              <div class="overview-step-title">Friend Joins &amp; Gets +50 HOOCOOH Coins</div>
+              <div class="overview-step-sub">Your friend starts their HOOCOOH Mine journey with a bonus head-start.</div>
+            </div>
+          </div>
+
+          <!-- Row 3: You Earn +100 HOOCOOH Coins -->
+          <div class="overview-step-row">
+            <div class="overview-step-icon icon-gold">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="8" r="6"></circle>
+                <circle cx="16" cy="16" r="6"></circle>
+              </svg>
+            </div>
+            <div class="overview-step-text">
+              <div class="overview-step-title">You Earn +100 HOOCOOH Coins</div>
+              <div class="overview-step-sub">You get 100 HOOCOOH Coins instantly when they join using your link.</div>
+            </div>
+          </div>
+
+          <!-- Row 4: 5% Lifetime Commission -->
+          <div class="overview-step-row">
+            <div class="overview-step-icon icon-purple">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18.178 8c5.096 0 5.096 8 0 8-2.67 0-4.678-2.667-6.178-5-1.5-2.333-3.508-5-6.178-5-5.096 0-5.096 8 0 8 2.67 0 4.678-2.667 6.178-5 1.5-2.333 3.508-5 6.178-5z"></path>
+              </svg>
+            </div>
+            <div class="overview-step-text">
+              <div class="overview-step-title">5% Lifetime Commission</div>
+              <div class="overview-step-sub">Earn a percentage of everything your recruits mine — forever.</div>
+            </div>
+          </div>
+
         </div>
+
+        <!-- Section 2: YOUR EARNINGS BREAKDOWN -->
+        <div class="overview-section-header" style="margin-top: 14px;">YOUR EARNINGS BREAKDOWN</div>
+        <div class="overview-breakdown-card">
+          <div class="overview-stats-grid">
+
+            <!-- Card 1: PER INVITE BONUS -->
+            <div class="overview-stat-box">
+              <div class="overview-stat-icon-wrap" style="color: #f59e0b;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 12 20 22 4 22 4 12"></polyline>
+                  <rect x="2" y="7" width="20" height="5"></rect>
+                  <line x1="12" y1="22" x2="12" y2="7"></line>
+                </svg>
+              </div>
+              <div class="overview-stat-lbl">PER INVITE BONUS</div>
+              <div class="overview-stat-val val-cyan">+100</div>
+              <div class="overview-stat-unit">HOOCOOH Coins each</div>
+            </div>
+
+            <!-- Card 2: TOTAL INVITE BONUS -->
+            <div class="overview-stat-box">
+              <div class="overview-stat-icon-wrap" style="color: #eab308;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="8" cy="8" r="6"></circle>
+                  <circle cx="16" cy="16" r="6"></circle>
+                </svg>
+              </div>
+              <div class="overview-stat-lbl">TOTAL INVITE BONUS</div>
+              <div class="overview-stat-val val-green" id="overviewTotalInviteBonus">+0</div>
+              <div class="overview-stat-unit">HOOCOOH Coins earned</div>
+            </div>
+
+            <!-- Card 3: COMMISSION RATE -->
+            <div class="overview-stat-box">
+              <div class="overview-stat-icon-wrap" style="color: #8b5cf6;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18.178 8c5.096 0 5.096 8 0 8-2.67 0-4.678-2.667-6.178-5-1.5-2.333-3.508-5-6.178-5-5.096 0-5.096 8 0 8 2.67 0 4.678-2.667 6.178-5 1.5-2.333 3.508-5 6.178-5z"></path>
+                </svg>
+              </div>
+              <div class="overview-stat-lbl">COMMISSION RATE</div>
+              <div class="overview-stat-val val-purple">5%</div>
+              <div class="overview-stat-unit">of yields</div>
+            </div>
+
+            <!-- Card 4: NETWORK EARNINGS -->
+            <div class="overview-stat-box">
+              <div class="overview-stat-icon-wrap" style="color: #ef4444;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                  <polyline points="17 6 23 6 23 12"></polyline>
+                </svg>
+              </div>
+              <div class="overview-stat-lbl">NETWORK EARNINGS</div>
+              <div class="overview-stat-val val-orange" id="overviewNetworkEarnings">0</div>
+              <div class="overview-stat-unit">HOOCOOH Coins total</div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -4915,6 +5163,19 @@
 
     renderRankingsView();
     renderMilestonesView();
+    renderOverviewView();
+  }
+
+  function renderOverviewView() {
+    var recruits = Number(user.recruitsCount || (referralData && referralData.recruitsCount) || 0);
+    var earnings = Number(user.refEarnings || (referralData && referralData.refEarnings) || 0);
+
+    var totalBonus = recruits * 100;
+    var elTotalBonus = document.getElementById("overviewTotalInviteBonus");
+    if (elTotalBonus) elTotalBonus.textContent = "+" + totalBonus.toLocaleString();
+
+    var elNetworkEarnings = document.getElementById("overviewNetworkEarnings");
+    if (elNetworkEarnings) elNetworkEarnings.textContent = earnings.toLocaleString();
   }
 
   function renderRankingsView() {
@@ -5142,6 +5403,7 @@
         if (subtab === "overview") {
           vOver.classList.add("active");
           vOver.style.display = "flex";
+          renderOverviewView();
         } else {
           vOver.classList.remove("active");
           vOver.style.display = "none";
