@@ -4572,7 +4572,26 @@
       btn.classList.add("active");
       var activeView = document.getElementById(targetTab);
       if (activeView) activeView.classList.add("active");
-      if (targetTab === "tab-mining") {
+      if (targetTab === "tab-earn") {
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        if (activeView) activeView.scrollTop = 0;
+        var watchCard = document.querySelector("#tab-earn .watch-card") || document.querySelector("#tab-earn");
+        if (watchCard && watchCard.scrollIntoView) {
+          try {
+            watchCard.scrollIntoView({ behavior: "instant", block: "start" });
+          } catch(e) {
+            watchCard.scrollIntoView(true);
+          }
+        }
+        setTimeout(function(){
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          if (activeView) activeView.scrollTop = 0;
+        }, 50);
+      } else if (targetTab === "tab-mining") {
         renderMining();
         setTimeout(function(){
           var activeCard = document.querySelector(".evo-level-card.active");
