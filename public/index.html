@@ -400,9 +400,9 @@
   /* Card 2: Mining Card */
   .card {
     background: var(--card-bg);
-    border-radius: 22px;
-    padding: 16px 16px 14px;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+    border-radius: 24px;
+    padding: 22px 18px 20px;
+    box-shadow: 0 6px 22px var(--card-shadow);
     text-align: center;
     position: relative;
     border: 1px solid var(--border);
@@ -412,8 +412,8 @@
     content: '';
     position: absolute;
     top: 0;
-    left: 24px;
-    right: 24px;
+    left: 28px;
+    right: 28px;
     height: 3px;
     background: linear-gradient(90deg, #5fe1cc 0%, #20b8a3 50%, #5fe1cc 100%);
     border-radius: 0 0 3px 3px;
@@ -423,12 +423,12 @@
   .status-pill {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 5px 14px;
+    gap: 6px;
+    padding: 6px 16px;
     border-radius: 100px;
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
     text-transform: uppercase;
   }
   .status-pill.ready {
@@ -442,8 +442,8 @@
     color: var(--text-dim);
   }
   .status-pill .dot {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: currentColor;
   }
@@ -458,26 +458,26 @@
 
   .mine-visual-wrap {
     position: relative;
-    width: 110px;
-    height: 110px;
-    margin: 6px auto 8px;
+    width: 120px;
+    height: 120px;
+    margin: 8px auto 10px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
   .mine-glow {
     position: absolute;
-    width: 90px;
-    height: 90px;
+    width: 102px;
+    height: 102px;
     border-radius: 50%;
     background: radial-gradient(circle, var(--accent-glow) 0%, rgba(32, 184, 163, 0) 70%);
     pointer-events: none;
   }
   .mine-img {
-    width: 98px;
-    height: 98px;
+    width: 106px;
+    height: 106px;
     object-fit: contain;
-    filter: drop-shadow(0 8px 18px var(--accent-glow));
+    filter: drop-shadow(0 8px 20px var(--accent-glow));
     animation: floatLogo 3.6s ease-in-out infinite;
   }
   @keyframes floatLogo {
@@ -486,40 +486,40 @@
   }
 
   .lvl-badge-row {
-    margin-top: 4px;
+    margin-top: 6px;
   }
   .lvl-badge-chip {
     display: inline-block;
     background: var(--sub-box-bg);
     color: var(--accent);
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 12px;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 4px 14px;
     border-radius: 100px;
     border: 1px solid var(--border);
   }
 
   .mining-complete-text {
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 0.8px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.9px;
     color: var(--text-dim);
-    margin-top: 4px;
+    margin-top: 6px;
     text-transform: uppercase;
   }
   .mining-reward-big {
-    font-size: 26px;
-    font-weight: 800;
+    font-size: 30px;
+    font-weight: 900;
     color: var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    margin: 2px 0 8px;
+    gap: 8px;
+    margin: 3px 0 10px;
   }
   .mining-reward-big img {
-    width: 22px;
-    height: 22px;
+    width: 25px;
+    height: 25px;
     object-fit: contain;
   }
 
@@ -527,14 +527,14 @@
     width: 100%;
     border: none;
     border-radius: 100px;
-    padding: 13px;
-    font-size: 14.5px;
-    font-weight: 700;
+    padding: 14.5px 20px;
+    font-size: 15px;
+    font-weight: 800;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 9px;
     transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
   }
   .collect-btn:not(:disabled) {
@@ -552,23 +552,23 @@
     border: 1px solid var(--border);
   }
   .collect-btn img {
-    width: 20px;
-    height: 20px;
+    width: 21px;
+    height: 21px;
     object-fit: contain;
   }
   .timer-caption {
-    font-size: 11px;
+    font-size: 11.5px;
     color: var(--text-dim);
-    margin-top: 7px;
+    margin-top: 8px;
     font-weight: 600;
   }
 
   /* Card 3: Daily Bonus Card */
   .daily-card {
     background: var(--card-bg);
-    border-radius: 22px;
-    padding: 16px 16px 14px;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+    border-radius: 24px;
+    padding: 22px 18px 18px;
+    box-shadow: 0 6px 22px var(--card-shadow);
     border: 1px solid var(--border);
     position: relative;
     overflow: hidden;
@@ -577,57 +577,59 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
   .daily-header .d-title {
-    font-size: 15px;
+    font-size: 16.5px;
     font-weight: 800;
     color: var(--text);
   }
   .daily-header .d-sub {
-    font-size: 11px;
+    font-size: 11.5px;
     color: var(--text-dim);
-    margin-top: 1px;
+    margin-top: 2px;
+    font-weight: 600;
   }
   .streak-pill {
     background: #e8f9f5;
     border: 1px solid #c1eee4;
     color: #169e87;
     border-radius: 100px;
-    padding: 4px 10px;
-    font-size: 11px;
-    font-weight: 700;
+    padding: 5px 12px;
+    font-size: 11.5px;
+    font-weight: 800;
     display: inline-flex;
     align-items: center;
-    gap: 3px;
+    gap: 4px;
   }
 
   /* 7 Days Grid */
   .days-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    margin-bottom: 10px;
+    gap: 6px;
+    margin-bottom: 12px;
   }
   .day-cell {
     background: var(--sub-box-bg);
-    border-radius: 11px;
-    padding: 7px 2px;
+    border-radius: 13px;
+    padding: 8px 3px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
-    min-height: 48px;
-    font-size: 9.5px;
-    font-weight: 700;
+    gap: 4px;
+    min-height: 52px;
+    font-size: 10px;
+    font-weight: 800;
     color: var(--text-dim);
     border: 1px solid transparent;
     transition: all 0.2s ease;
   }
   .day-cell .icon-mark {
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1;
+    font-weight: 800;
   }
   .day-cell.done {
     background: #6ce7d4;
@@ -649,28 +651,28 @@
   .stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
-    margin-bottom: 8px;
+    gap: 8px;
+    margin-bottom: 10px;
   }
   .stat-card {
     background: var(--sub-box-bg);
-    border-radius: 13px;
-    padding: 8px 4px;
+    border-radius: 15px;
+    padding: 10px 6px;
     text-align: center;
     border: 1px solid var(--border);
   }
   .stat-card .s-lbl {
-    font-size: 8.5px;
-    font-weight: 700;
+    font-size: 9px;
+    font-weight: 800;
     color: var(--text-dim);
-    letter-spacing: 0.4px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
   }
   .stat-card .s-val {
-    font-size: 13.5px;
-    font-weight: 800;
+    font-size: 15px;
+    font-weight: 900;
     color: var(--text);
-    margin-top: 2px;
+    margin-top: 3px;
   }
   .stat-card .s-val.accent {
     color: var(--accent);
@@ -681,16 +683,16 @@
     width: 100%;
     border: none;
     border-radius: 100px;
-    padding: 12px 16px;
-    font-size: 13.5px;
-    font-weight: 700;
+    padding: 14px 20px;
+    font-size: 14.5px;
+    font-weight: 800;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    margin-top: 4px;
-    margin-bottom: 8px;
+    gap: 7px;
+    margin-top: 6px;
+    margin-bottom: 10px;
     transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
   }
   .daily-collect-btn:not(:disabled) {
@@ -711,12 +713,12 @@
   /* Bottom Row of Daily Card */
   .daily-bottom-row {
     background: var(--sub-box-bg);
-    border-radius: 12px;
-    padding: 8px 14px;
+    border-radius: 14px;
+    padding: 10px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 10.5px;
+    font-size: 11px;
     border: 1px solid var(--border);
   }
   .daily-bottom-col {
