@@ -47,10 +47,10 @@ module.exports = async (req, res) => {
     let user = await findOrCreateUser(users, tgUser);
 
     // Process Referral if provided and not yet bound
-    const startParam = tgUser.start_param || (req.query && req.query.start_param) || "";
-    if (startParam && startParam.startsWith("ref_") && !user.referredBy) {
-      const inviterId = startParam.replace(/^ref_/, "").trim();
-      if (inviterId && String(inviterId) !== telegramId) {
+    const rawParam = String(tgUser.start_param || (req.query && req.query.start_param) || "").trim();
+    if (rawParam && !user.referredBy) {
+      const inviterId = rawParam.replace(/^ref_/, "").trim();
+      if (inviterId && /^\d+$/.test(inviterId) && String(inviterId) !== telegramId) {
         const inviter = await findUserById(users, inviterId);
         if (inviter && String(inviter.telegramId) !== telegramId) {
           user.referredBy = String(inviter.telegramId);

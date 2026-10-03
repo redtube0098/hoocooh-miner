@@ -3183,7 +3183,7 @@
       <div class="invite-link-card">
         <div class="invite-link-lbl">YOUR REFERRAL LINK</div>
         <div class="invite-link-pill">
-          <input type="text" class="invite-link-input" id="refLinkInput" readonly value="https://t.me/hoocooh_miner_bot?start=ref_0">
+          <input type="text" class="invite-link-input" id="refLinkInput" readonly value="https://t.me/hoocoohmine_bot/mine?startapp=ref_0">
           <button class="invite-link-btn" id="copyRefLinkBtn" type="button">Copy</button>
         </div>
       </div>
@@ -3689,12 +3689,32 @@
     });
   }
 
+  function getStartParam() {
+    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) {
+      return tg.initDataUnsafe.start_param;
+    }
+    try {
+      var urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("startapp")) return urlParams.get("startapp");
+      if (urlParams.get("tgWebAppStartParam")) return urlParams.get("tgWebAppStartParam");
+      if (urlParams.get("start_param")) return urlParams.get("start_param");
+      if (window.location.hash) {
+        var hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+        if (hashParams.get("tgWebAppStartParam")) return hashParams.get("tgWebAppStartParam");
+        if (hashParams.get("startapp")) return hashParams.get("startapp");
+      }
+    } catch(e) {}
+    return "";
+  }
+
   function apiGet() {
-    return fetch("/api/user", {
+    var sp = getStartParam();
+    var query = sp ? ("?start_param=" + encodeURIComponent(sp)) : "";
+    return fetch("/api/user" + query, {
       headers: { "X-Telegram-Init-Data": initData }
     }).then(function(r) {
       if (r.status === 404) {
-        return fetch("/api/user.js", { headers: { "X-Telegram-Init-Data": initData } });
+        return fetch("/api/user.js" + query, { headers: { "X-Telegram-Init-Data": initData } });
       }
       return r;
     }).then(handleResponse);
@@ -4831,8 +4851,8 @@
   }
 
   function getReferralLink() {
-    var botUser = user.botUsername || "hoocooh_miner_bot";
-    return "https://t.me/" + botUser + "?start=ref_" + user.telegramId;
+    var myId = user.telegramId || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "0";
+    return "https://t.me/hoocoohmine_bot/mine?startapp=ref_" + myId;
   }
 
   function copyReferralLink() {
