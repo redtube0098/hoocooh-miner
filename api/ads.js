@@ -26,9 +26,37 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const db = await getDb();
-    const usersCol = db.collection("users");
+    const { captchaToken } = req.body || {};
+    if (!captchaToken) {
+      res.status(403).json({ error: "Security verification required. Please solve the puzzle." });
+      return;
+    }
 
+    const db = await getDb();
+    const tokensCol = db.collection("captcha_tokens");
+    const tokenDoc = await tokensCol.findOne({
+      token: captchaToken,
+      userId: tgUser.id,
+      used: false
+    });
+
+    if (!tokenDoc) {
+      res.status(403).json({ error: "Invalid or expired verification. Please solve the puzzle again." });
+      return;
+    }
+
+    if (Date.now() - Number(tokenDoc.createdAt || 0) > 90 * 1000) {
+      res.status(403).json({ error: "Verification expired. Please try again." });
+      return;
+    }
+
+    // Burn the token immediately (single use)
+    await tokensCol.updateOne(
+      { _id: tokenDoc._id },
+      { $set: { used: true, usedAt: Date.now() } }
+    );
+
+    const usersCol = db.collection("users");
     let user = await findOrCreateUser(usersCol, tgUser);
 
     const now = Date.now();

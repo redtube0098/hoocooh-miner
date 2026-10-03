@@ -3497,6 +3497,462 @@
   .withdraw-confirm-btn:active {
     transform: scale(0.98);
   }
+  /* ===================================================
+     SECURITY VERIFICATION & SLIDER PUZZLE CAPTCHA (Images 1 & 2)
+     =================================================== */
+  .security-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(5, 8, 16, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  .security-modal-overlay.open {
+    display: flex !important;
+  }
+
+  /* STEP 1: Security verification card (Image 1) */
+  .security-card-view {
+    display: none;
+    width: 100%;
+    max-width: 380px;
+    animation: secFadeIn 0.25s ease-out;
+  }
+  .security-card-view.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  @keyframes secFadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* Step 1 Container */
+  .sec-outer-box {
+    width: 100%;
+    background: #0d131f;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 26px;
+    padding: 24px 22px 28px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .sec-top-bar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .sec-close-text {
+    background: transparent;
+    border: none;
+    color: #4ade80;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+  .sec-header-title {
+    text-align: center;
+  }
+  .sec-app-name {
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.2px;
+  }
+  .sec-app-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+  }
+  .sec-more-dots {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid #22c55e;
+    color: #22c55e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  /* Shield Icon */
+  .sec-shield-wrap {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+  .sec-shield-glow {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.45) 0%, rgba(37, 99, 235, 0.15) 50%, transparent 70%);
+    filter: blur(10px);
+    animation: shieldPulse 2.5s infinite ease-in-out;
+  }
+  @keyframes shieldPulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.15); opacity: 1; }
+  }
+  .sec-shield-icon {
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 8px 20px rgba(37, 99, 235, 0.5));
+  }
+  .sec-sparkle {
+    position: absolute;
+    color: #bfdbfe;
+    font-size: 13px;
+    animation: sparkleTwinkle 2s infinite ease-in-out;
+  }
+  .sec-sparkle.s1 { top: 6px; right: -8px; animation-delay: 0.2s; font-size: 15px; }
+  .sec-sparkle.s2 { bottom: 12px; right: -4px; animation-delay: 0.8s; font-size: 11px; }
+  .sec-sparkle.s3 { top: 20px; left: -8px; animation-delay: 1.4s; font-size: 12px; }
+  @keyframes sparkleTwinkle {
+    0%, 100% { transform: scale(0.7); opacity: 0.4; }
+    50% { transform: scale(1.2); opacity: 1; }
+  }
+
+  .sec-title {
+    font-size: 23px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 8px;
+    text-align: center;
+    letter-spacing: -0.3px;
+  }
+  .sec-subtitle {
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: #94a3b8;
+    text-align: center;
+    margin: 0 0 28px;
+    max-width: 290px;
+  }
+
+  /* Captcha Box */
+  .sec-checkbox-card {
+    width: 100%;
+    background: #151c2a;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .sec-checkbox-card:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    background: #182234;
+  }
+  .sec-checkbox-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .sec-checkbox-square {
+    width: 26px;
+    height: 26px;
+    border-radius: 5px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+  .sec-checkbox-card.checked .sec-checkbox-square {
+    background: #2563eb;
+    border-color: #3b82f6;
+  }
+  .sec-check-icon {
+    display: none;
+    color: #ffffff;
+  }
+  .sec-checkbox-card.checked .sec-check-icon {
+    display: block;
+  }
+  .sec-spinner {
+    display: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: secSpin 0.7s linear infinite;
+  }
+  .sec-checkbox-card.loading .sec-spinner {
+    display: block;
+  }
+  .sec-checkbox-card.loading .sec-check-icon {
+    display: none;
+  }
+  @keyframes secSpin {
+    to { transform: rotate(360deg); }
+  }
+  .sec-checkbox-lbl {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+  .sec-checkbox-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .sec-hcaptcha-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sec-hcaptcha-text {
+    text-align: center;
+  }
+  .sec-h-name {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+  }
+  .sec-h-terms {
+    display: block;
+    font-size: 8.5px;
+    color: #64748b;
+  }
+  .sec-bottom-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #475569;
+    text-transform: uppercase;
+    margin-top: 32px;
+  }
+
+  /* STEP 2: PUZZLE MODAL (Image 2) */
+  .puzzle-modal-card {
+    width: 100%;
+    max-width: 360px;
+    background: #111726;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 26px;
+    padding: 22px 20px 22px;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85);
+    box-sizing: border-box;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .puzzle-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .puzzle-badge {
+    background: #172438;
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    padding: 5px 12px;
+    border-radius: 100px;
+    text-transform: uppercase;
+  }
+  .puzzle-close-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #1a2233;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.15s ease;
+  }
+  .puzzle-close-btn:hover {
+    color: #ffffff;
+    background: #243048;
+  }
+  .puzzle-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 4px;
+    letter-spacing: -0.2px;
+  }
+  .puzzle-subtitle {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 16px;
+  }
+
+  /* Stage Wrap */
+  .puzzle-stage-wrap {
+    width: 100%;
+    height: 160px;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    background: #0b111e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6);
+    margin-bottom: 16px;
+  }
+  #puzzleBgCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  #puzzlePieceCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 5;
+    will-change: transform;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 6px rgba(59, 130, 246, 0.6));
+  }
+  .puzzle-feedback-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 8;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .puzzle-feedback-overlay.success {
+    background: rgba(16, 185, 129, 0.25);
+    opacity: 1;
+  }
+  .puzzle-feedback-overlay.fail {
+    background: rgba(239, 68, 68, 0.25);
+    opacity: 1;
+  }
+
+  /* Slider Track */
+  .puzzle-slider-track {
+    width: 100%;
+    height: 48px;
+    background: #0b111e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+    margin-bottom: 16px;
+  }
+  .puzzle-slider-progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.35) 0%, rgba(59, 130, 246, 0.6) 100%);
+    border-radius: 24px;
+    pointer-events: none;
+  }
+  .puzzle-slider-handle {
+    width: 52px;
+    height: 42px;
+    border-radius: 21px;
+    background: #18263e;
+    border: 1.5px solid #3b82f6;
+    color: #60a5fa;
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    transition: transform 0.05s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    touch-action: none;
+    z-index: 10;
+  }
+  .puzzle-slider-handle:active,
+  .puzzle-slider-handle.dragging {
+    cursor: grabbing;
+    background: #1d3356;
+    border-color: #60a5fa;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.7);
+  }
+  .puzzle-slider-handle.success {
+    background: #059669 !important;
+    border-color: #10b981 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.7) !important;
+  }
+  .puzzle-slider-handle.fail {
+    background: #b91c1c !important;
+    border-color: #ef4444 !important;
+    color: #ffffff !important;
+  }
+
+  .puzzle-footer-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 11.5px;
+    color: #64748b;
+    font-weight: 600;
+  }
+  .puzzle-footer-note svg {
+    color: #64748b;
+  }
+
+  @keyframes puzzleShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+  }
+  .puzzle-shake {
+    animation: puzzleShake 0.4s ease-in-out;
+  }
 </style>
 </head>
 <body>
@@ -4507,6 +4963,109 @@
     </div>
   </div>
 
+  <!-- Security Verification & Slider Puzzle Captcha Modal (Images 1 & 2) -->
+  <div class="security-modal-overlay" id="securityCaptchaModal">
+
+    <!-- STEP 1: Security Verification Screen (Image 1) -->
+    <div class="security-card-view active" id="secStep1">
+      <div class="sec-outer-box">
+        <div class="sec-top-bar">
+          <button type="button" class="sec-close-text" id="secCloseBtn1">Close</button>
+          <div class="sec-header-title">
+            <div class="sec-app-name">HOOCOOH MINER</div>
+            <div class="sec-app-badge">mini app</div>
+          </div>
+          <div class="sec-more-dots">•••</div>
+        </div>
+
+        <div class="sec-shield-wrap">
+          <div class="sec-shield-glow"></div>
+          <div class="sec-shield-icon">
+            <svg width="68" height="68" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L4 5V11.5C4 16.5 7.4 21.1 12 22.3C16.6 21.1 20 16.5 20 11.5V5L12 2Z" fill="url(#secShieldGrad)" stroke="#60a5fa" stroke-width="1.2"/>
+              <path d="M9 11.8L11 13.8L15.5 9.3" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="secShieldGrad" x1="12" y1="2" x2="12" y2="22.3" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#3b82f6"/>
+                  <stop offset="1" stop-color="#1d4ed8"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="sec-sparkle s1">✦</div>
+            <div class="sec-sparkle s2">✦</div>
+            <div class="sec-sparkle s3">✦</div>
+          </div>
+        </div>
+
+        <h2 class="sec-title">Security verification</h2>
+        <p class="sec-subtitle">Confirm you are a real person to continue to HOOCOOH MINER. It only takes a second.</p>
+
+        <!-- I am human Checkbox Card -->
+        <div class="sec-checkbox-card" id="secHumanCheckCard">
+          <div class="sec-checkbox-left">
+            <div class="sec-checkbox-square" id="secHumanSquare">
+              <svg class="sec-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <div class="sec-spinner" id="secHumanSpinner"></div>
+            </div>
+            <span class="sec-checkbox-lbl">I am human</span>
+          </div>
+          <div class="sec-checkbox-right">
+            <div class="sec-hcaptcha-logo">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect width="24" height="24" rx="5" fill="#00adb5"/>
+                <path d="M7 12h2v4H7zm4-4h2v8h-2zm4 2h2v6h-2z" fill="#fff"/>
+              </svg>
+            </div>
+            <div class="sec-hcaptcha-text">
+              <span class="sec-h-name">hCaptcha</span>
+              <span class="sec-h-terms">Privacy - Terms</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-bottom-tag">HOOCOOH MINER · SECURE</div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Access Verification Puzzle Modal (Image 2) -->
+    <div class="security-card-view" id="secStep2">
+      <div class="puzzle-modal-card" id="puzzleModalCard">
+        <div class="puzzle-header-row">
+          <div class="puzzle-badge">HOOCOOH MINER</div>
+          <button type="button" class="puzzle-close-btn" id="secCloseBtn2">✕</button>
+        </div>
+
+        <div class="puzzle-title">Access verification</div>
+        <div class="puzzle-subtitle">Fit the piece into place to continue.</div>
+
+        <div class="puzzle-stage-wrap" id="puzzleStageWrap">
+          <canvas id="puzzleBgCanvas" width="320" height="160"></canvas>
+          <canvas id="puzzlePieceCanvas" width="60" height="160"></canvas>
+          <div class="puzzle-feedback-overlay" id="puzzleFeedbackOverlay"></div>
+        </div>
+
+        <div class="puzzle-slider-track" id="puzzleSliderTrack">
+          <div class="puzzle-slider-progress" id="puzzleSliderProgress"></div>
+          <div class="puzzle-slider-handle" id="puzzleSliderHandle">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="puzzle-footer-note">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <span>Protected against automated traffic</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
   <!-- Toast Element -->
   <div class="toast" id="toast"></div>
 
@@ -5242,19 +5801,412 @@
     }
   }
 
+  // ===================================================
+  // SECURITY VERIFICATION & PUZZLE CAPTCHA (Images 1 & 2)
+  // ===================================================
+  var secModal = document.getElementById("securityCaptchaModal");
+  var secStep1 = document.getElementById("secStep1");
+  var secStep2 = document.getElementById("secStep2");
+  var secCloseBtn1 = document.getElementById("secCloseBtn1");
+  var secCloseBtn2 = document.getElementById("secCloseBtn2");
+  var secHumanCard = document.getElementById("secHumanCheckCard");
+  var puzzleModalCard = document.getElementById("puzzleModalCard");
+
+  var puzzleBgCanvas = document.getElementById("puzzleBgCanvas");
+  var puzzlePieceCanvas = document.getElementById("puzzlePieceCanvas");
+  var puzzleFeedback = document.getElementById("puzzleFeedbackOverlay");
+  var puzzleSliderTrack = document.getElementById("puzzleSliderTrack");
+  var puzzleSliderProgress = document.getElementById("puzzleSliderProgress");
+  var puzzleSliderHandle = document.getElementById("puzzleSliderHandle");
+
+  var activeCaptchaCallback = null;
+  var currentChallenge = null;
+  var isCaptchaSolving = false;
+  var isDraggingSlider = false;
+  var dragStartX = 0;
+  var dragStartTime = 0;
+  var dragTrail = [];
+  var currentSliderX = 0;
+  var maxSliderX = 0;
+  var maxPieceMove = 0;
+  var PUZZLE_SIZE = 44;
+
+  function closeSecurityCaptcha() {
+    if (secModal) secModal.classList.remove("open");
+    isCaptchaSolving = false;
+    isDraggingSlider = false;
+    currentChallenge = null;
+    activeCaptchaCallback = null;
+    if (secHumanCard) secHumanCard.classList.remove("checked", "loading");
+    if (puzzleSliderHandle) {
+      puzzleSliderHandle.classList.remove("dragging", "success", "fail");
+      puzzleSliderHandle.style.transform = "translateX(0px)";
+    }
+    if (puzzleSliderProgress) puzzleSliderProgress.style.width = "0px";
+    if (puzzlePieceCanvas) puzzlePieceCanvas.style.transform = "translateX(0px)";
+  }
+
+  if (secCloseBtn1) secCloseBtn1.addEventListener("click", closeSecurityCaptcha);
+  if (secCloseBtn2) secCloseBtn2.addEventListener("click", closeSecurityCaptcha);
+
+  function openSecurityCaptcha(onSuccess) {
+    activeCaptchaCallback = onSuccess;
+    if (!secModal) return;
+    secModal.classList.add("open");
+    secStep1.classList.add("active");
+    secStep2.classList.remove("active");
+    if (secHumanCard) secHumanCard.classList.remove("checked", "loading");
+  }
+
+  // Draw Jigsaw Notch Path on 2D context
+  function drawJigsawShape(ctx, x, y, size) {
+    var r = size / 5.2;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    // Top edge with protruding tab
+    ctx.lineTo(x + size * 0.35, y);
+    ctx.arc(x + size * 0.5, y - r * 0.7, r, Math.PI * 0.85, Math.PI * 0.15, false);
+    ctx.lineTo(x + size, y);
+    // Right edge with protruding tab
+    ctx.lineTo(x + size, y + size * 0.35);
+    ctx.arc(x + size + r * 0.7, y + size * 0.5, r, -Math.PI * 0.35, Math.PI * 0.35, false);
+    ctx.lineTo(x + size, y + size);
+    // Bottom edge with indented tab
+    ctx.lineTo(x + size * 0.65, y + size);
+    ctx.arc(x + size * 0.5, y + size - r * 0.7, r, Math.PI * 0.15, Math.PI * 0.85, true);
+    ctx.lineTo(x, y + size);
+    // Left edge with indented tab
+    ctx.lineTo(x, y + size * 0.65);
+    ctx.arc(x + r * 0.7, y + size * 0.5, r, Math.PI * 0.65, -Math.PI * 0.65, true);
+    ctx.lineTo(x, y);
+    ctx.closePath();
+  }
+
+  // Generate High-Tech Background Image on Direct Canvas
+  function drawTechBackground(ctx, w, h) {
+    var grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, "#0c1527");
+    grad.addColorStop(0.5, "#10223d");
+    grad.addColorStop(1, "#07101e");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Glowing diagonal lines
+    ctx.strokeStyle = "rgba(59, 130, 246, 0.12)";
+    ctx.lineWidth = 1;
+    for (var x = -h; x < w + h; x += 36) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x + h, h);
+      ctx.stroke();
+    }
+
+    // Tech Circles
+    ctx.strokeStyle = "rgba(96, 165, 250, 0.18)";
+    ctx.beginPath();
+    ctx.arc(w * 0.75, h * 0.45, 60, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(w * 0.75, h * 0.45, 35, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(w * 0.25, h * 0.65, 45, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Floating particles / stars
+    var particles = [
+      [30, 25, 2], [70, 110, 1.5], [140, 45, 2.5], [210, 130, 2],
+      [270, 30, 1.5], [290, 95, 2], [180, 80, 1.2], [115, 135, 1.8]
+    ];
+    ctx.fillStyle = "rgba(147, 197, 253, 0.6)";
+    particles.forEach(function(p){
+      ctx.beginPath();
+      ctx.arc(p[0], p[1], p[2], 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    var orbGrad = ctx.createRadialGradient(w * 0.65, h * 0.5, 5, w * 0.65, h * 0.5, 75);
+    orbGrad.addColorStop(0, "rgba(56, 189, 248, 0.22)");
+    orbGrad.addColorStop(1, "transparent");
+    ctx.fillStyle = orbGrad;
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  // Render Puzzle Stage (Background + Hole + Floating Piece)
+  function setupPuzzle(targetX, targetY) {
+    if (!puzzleBgCanvas || !puzzlePieceCanvas) return;
+    var w = 320;
+    var h = 160;
+    puzzleBgCanvas.width = w;
+    puzzleBgCanvas.height = h;
+
+    var bgCtx = puzzleBgCanvas.getContext("2d");
+    bgCtx.clearRect(0, 0, w, h);
+
+    // 1. Draw Tech Background
+    drawTechBackground(bgCtx, w, h);
+
+    // 2. Cutout target slot with dark shadow and subtle cyan edge highlight
+    bgCtx.save();
+    bgCtx.shadowColor = "rgba(0, 0, 0, 0.9)";
+    bgCtx.shadowBlur = 10;
+    bgCtx.fillStyle = "rgba(5, 10, 20, 0.88)";
+    drawJigsawShape(bgCtx, targetX, targetY, PUZZLE_SIZE);
+    bgCtx.fill();
+    bgCtx.strokeStyle = "rgba(147, 197, 253, 0.45)";
+    bgCtx.lineWidth = 1.8;
+    bgCtx.stroke();
+    bgCtx.restore();
+
+    // 3. Prepare Draggable Piece Canvas
+    puzzlePieceCanvas.width = w;
+    puzzlePieceCanvas.height = h;
+    var pieceCtx = puzzlePieceCanvas.getContext("2d");
+    pieceCtx.clearRect(0, 0, w, h);
+
+    var pieceStartX = 10;
+    pieceCtx.save();
+    drawJigsawShape(pieceCtx, pieceStartX, targetY, PUZZLE_SIZE);
+    pieceCtx.clip();
+
+    // Draw the background slice shifted so when pieceStartX aligns with targetX, image matches seamlessly!
+    pieceCtx.drawImage(puzzleBgCanvas, pieceStartX - targetX, 0);
+
+    pieceCtx.strokeStyle = "#60a5fa";
+    pieceCtx.lineWidth = 2;
+    pieceCtx.shadowColor = "#3b82f6";
+    pieceCtx.shadowBlur = 8;
+    pieceCtx.stroke();
+    pieceCtx.restore();
+
+    // Initial slider state
+    currentSliderX = 0;
+    maxSliderX = (puzzleSliderTrack.clientWidth || 320) - 52 - 4;
+    if (maxSliderX < 100) maxSliderX = 260;
+    maxPieceMove = targetX - pieceStartX;
+
+    puzzleSliderHandle.style.transform = "translateX(0px)";
+    puzzleSliderProgress.style.width = "0px";
+    puzzlePieceCanvas.style.transform = "translateX(0px)";
+    puzzleSliderHandle.classList.remove("dragging", "success", "fail");
+    if (puzzleFeedback) puzzleFeedback.classList.remove("success", "fail");
+  }
+
+  // Handle "I am human" Click -> Fetch Challenge from Server -> Transition to Step 2
+  if (secHumanCard) {
+    secHumanCard.addEventListener("click", function() {
+      if (secHumanCard.classList.contains("loading") || secHumanCard.classList.contains("checked")) return;
+
+      secHumanCard.classList.add("loading");
+
+      fetch("/api/captcha", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Telegram-Init-Data": initData
+        },
+        body: JSON.stringify({ action: "create" })
+      }).then(handleResponse).then(function(res) {
+        if (!res.ok || !res.data || !res.data.challengeId) {
+          showToast((res.data && res.data.error) ? res.data.error : "Failed to initiate verification");
+          secHumanCard.classList.remove("loading");
+          return;
+        }
+
+        currentChallenge = res.data;
+        secHumanCard.classList.remove("loading");
+        secHumanCard.classList.add("checked");
+
+        setTimeout(function() {
+          secStep1.classList.remove("active");
+          secStep2.classList.add("active");
+          setupPuzzle(currentChallenge.targetX, currentChallenge.targetY);
+        }, 320);
+      }).catch(function(err) {
+        secHumanCard.classList.remove("loading");
+        showToast("Network error. Please try again.");
+      });
+    });
+  }
+
+  // Slider Drag Interactions (Mobile Touch + Mouse)
+  function onSliderStart(clientX) {
+    if (isCaptchaSolving || !currentChallenge) return;
+    isDraggingSlider = true;
+    dragStartX = clientX;
+    dragStartTime = Date.now();
+    dragTrail = [{ x: 0, y: 0, t: 0 }];
+    maxSliderX = (puzzleSliderTrack.clientWidth || 320) - 52 - 4;
+    if (maxSliderX < 100) maxSliderX = 260;
+    maxPieceMove = currentChallenge.targetX - 10;
+    puzzleSliderHandle.classList.add("dragging");
+    puzzleSliderHandle.classList.remove("success", "fail");
+    if (puzzleFeedback) puzzleFeedback.classList.remove("success", "fail");
+  }
+
+  function onSliderMove(clientX, clientY) {
+    if (!isDraggingSlider) return;
+    var deltaX = clientX - dragStartX;
+    if (deltaX < 0) deltaX = 0;
+    if (deltaX > maxSliderX) deltaX = maxSliderX;
+
+    currentSliderX = deltaX;
+    puzzleSliderHandle.style.transform = "translateX(" + deltaX + "px)";
+    puzzleSliderProgress.style.width = (deltaX + 26) + "px";
+
+    var pieceShift = (deltaX / maxSliderX) * maxPieceMove;
+    puzzlePieceCanvas.style.transform = "translateX(" + pieceShift + "px)";
+
+    var elapsed = Date.now() - dragStartTime;
+    if (dragTrail.length === 0 || elapsed - dragTrail[dragTrail.length - 1].t >= 15) {
+      dragTrail.push({ x: Math.round(deltaX), y: 0, t: elapsed });
+    }
+  }
+
+  function onSliderEnd() {
+    if (!isDraggingSlider) return;
+    isDraggingSlider = false;
+    puzzleSliderHandle.classList.remove("dragging");
+
+    var timeElapsed = Date.now() - dragStartTime;
+    var solvedPieceShift = (currentSliderX / maxSliderX) * maxPieceMove;
+    var solvedX = 10 + solvedPieceShift;
+
+    var diff = Math.abs(solvedX - currentChallenge.targetX);
+    if (diff <= 8.5) {
+      isCaptchaSolving = true;
+      puzzleSliderHandle.classList.add("success");
+      if (puzzleFeedback) puzzleFeedback.classList.add("success");
+
+      fetch("/api/captcha", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Telegram-Init-Data": initData
+        },
+        body: JSON.stringify({
+          action: "verify",
+          challengeId: currentChallenge.challengeId,
+          solvedX: Math.round(solvedX),
+          timeElapsed: timeElapsed,
+          trail: dragTrail
+        })
+      }).then(handleResponse).then(function(res) {
+        if (!res.ok || !res.data || !res.data.captchaToken) {
+          showToast((res.data && res.data.error) ? res.data.error : "Verification failed. Try again.");
+          onPuzzleFail();
+          return;
+        }
+
+        var token = res.data.captchaToken;
+        if (tg && tg.HapticFeedback) {
+          try { tg.HapticFeedback.notificationOccurred("success"); } catch(e) {}
+        }
+
+        setTimeout(function() {
+          closeSecurityCaptcha();
+          if (typeof activeCaptchaCallback === "function") {
+            activeCaptchaCallback(token);
+          }
+        }, 550);
+      }).catch(function(err) {
+        onPuzzleFail();
+      });
+    } else {
+      onPuzzleFail();
+    }
+  }
+
+  function onPuzzleFail() {
+    isCaptchaSolving = false;
+    puzzleSliderHandle.classList.add("fail");
+    if (puzzleFeedback) puzzleFeedback.classList.add("fail");
+    if (puzzleModalCard) puzzleModalCard.classList.add("puzzle-shake");
+    if (tg && tg.HapticFeedback) {
+      try { tg.HapticFeedback.notificationOccurred("error"); } catch(e) {}
+    }
+
+    setTimeout(function() {
+      if (puzzleModalCard) puzzleModalCard.classList.remove("puzzle-shake");
+      puzzleSliderHandle.classList.remove("fail");
+      if (puzzleFeedback) puzzleFeedback.classList.remove("fail");
+
+      puzzleSliderHandle.style.transition = "transform 0.3s ease";
+      puzzlePieceCanvas.style.transition = "transform 0.3s ease";
+      puzzleSliderProgress.style.transition = "width 0.3s ease";
+
+      puzzleSliderHandle.style.transform = "translateX(0px)";
+      puzzlePieceCanvas.style.transform = "translateX(0px)";
+      puzzleSliderProgress.style.width = "0px";
+
+      setTimeout(function() {
+        puzzleSliderHandle.style.transition = "";
+        puzzlePieceCanvas.style.transition = "";
+        puzzleSliderProgress.style.transition = "";
+        if (secHumanCard) secHumanCard.click();
+      }, 320);
+    }, 450);
+  }
+
+  // Pointer / Touch Listeners for Slider
+  if (puzzleSliderHandle) {
+    puzzleSliderHandle.addEventListener("touchstart", function(e) {
+      if (e.touches && e.touches[0]) {
+        onSliderStart(e.touches[0].clientX);
+      }
+    }, { passive: true });
+
+    window.addEventListener("touchmove", function(e) {
+      if (isDraggingSlider && e.touches && e.touches[0]) {
+        onSliderMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener("touchend", function() {
+      if (isDraggingSlider) onSliderEnd();
+    }, { passive: true });
+
+    puzzleSliderHandle.addEventListener("mousedown", function(e) {
+      onSliderStart(e.clientX);
+    });
+
+    window.addEventListener("mousemove", function(e) {
+      if (isDraggingSlider) onSliderMove(e.clientX, e.clientY);
+    });
+
+    window.addEventListener("mouseup", function() {
+      if (isDraggingSlider) onSliderEnd();
+    });
+  }
+
+  // Watch Ad Button Click -> Opens Security Verification Captcha
   var watchAdBtn = document.getElementById("watchAdBtn");
   if (watchAdBtn) {
     watchAdBtn.addEventListener("click", function() {
-      watchAdBtn.disabled = true;
-      watchAdBtn.innerHTML = '<span>Loading Ad...</span>';
+      var now = Date.now();
+      var cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
+      var CYCLE_MS = 24 * 60 * 60 * 1000;
+      var watched = Number(user.adsWatchedToday || 0);
 
-      setTimeout(function() {
+      // Check daily limit
+      if (watched >= 12 && cycleStart && (now - cycleStart < CYCLE_MS)) {
+        showToast("Daily limit of 12 ads reached! Next ads available in 24 hours.");
+        return;
+      }
+
+      // Open Security Verification Modal
+      openSecurityCaptcha(function(verifiedCaptchaToken) {
+        watchAdBtn.disabled = true;
+        watchAdBtn.innerHTML = '<span>Verifying & Claiming...</span>';
+
         fetch("/api/ads", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "X-Telegram-Init-Data": initData
-          }
+          },
+          body: JSON.stringify({ captchaToken: verifiedCaptchaToken })
         }).then(function(r) {
           if (r.status === 404) {
             return fetch("/api/ads.js", {
@@ -5262,13 +6214,14 @@
               headers: {
                 "Content-Type": "application/json",
                 "X-Telegram-Init-Data": initData
-              }
+              },
+              body: JSON.stringify({ captchaToken: verifiedCaptchaToken })
             });
           }
           return r;
         }).then(handleResponse).then(function(res) {
           if (!res.ok) {
-            var err = (res.data && res.data.error) ? res.data.error : "Failed to watch ad";
+            var err = (res.data && res.data.error) ? res.data.error : "Failed to claim reward";
             showToast(err);
             renderAds();
             return;
@@ -5286,7 +6239,7 @@
           showToast((err && err.message) ? err.message : "Ad error");
           renderAds();
         });
-      }, 1200);
+      });
     });
   }
 
