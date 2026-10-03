@@ -3625,6 +3625,24 @@
     totalDailyEarned: 0
   };
 
+  var referralData = {
+    recruitsCount: 0,
+    refEarnings: 0,
+    recruiterRank: null,
+    minerRank: null,
+    topRecruiters: [],
+    topMiners: [],
+    milestones: [
+      { id: 1, required: 5, reward: 100, title: "Invite 5 Friends" },
+      { id: 2, required: 10, reward: 200, title: "Invite 10 Friends" },
+      { id: 3, required: 25, reward: 500, title: "Invite 25 Friends" },
+      { id: 4, required: 50, reward: 1500, title: "Invite 50 Friends" }
+    ],
+    claimedMilestonesCount: 0,
+    totalMilestones: 4
+  };
+  var currentRankSubTab = "recruiters";
+
   var LEVEL_NAMES = [
     "Starter",
     "Developed",
@@ -4778,19 +4796,6 @@
   // ========================================================
   // INVITE, REFERRAL, RANKINGS & MILESTONES LOGIC
   // ========================================================
-  var referralData = {
-    recruitsCount: 0,
-    refEarnings: 0,
-    recruiterRank: null,
-    minerRank: null,
-    topRecruiters: [],
-    topMiners: [],
-    milestones: [],
-    claimedMilestonesCount: 0,
-    totalMilestones: 4
-  };
-  var currentRankSubTab = "recruiters";
-
   function fetchReferralApi() {
     return fetch("/api/referral", {
       headers: { "X-Telegram-Init-Data": initData }
@@ -4964,7 +4969,7 @@
     var friendsTxt = document.getElementById("milestoneFriendsRecruitedTxt");
     if (friendsTxt) friendsTxt.textContent = recruits;
 
-    var milestones = referralData.milestones || [
+    var milestones = (referralData && referralData.milestones && referralData.milestones.length > 0) ? referralData.milestones : [
       { id: 1, required: 5, reward: 100, title: "Invite 5 Friends" },
       { id: 2, required: 10, reward: 200, title: "Invite 10 Friends" },
       { id: 3, required: 25, reward: 500, title: "Invite 25 Friends" },
