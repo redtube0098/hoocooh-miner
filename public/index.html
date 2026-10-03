@@ -5984,8 +5984,11 @@
     currentSliderX = 0;
     maxSliderX = (puzzleSliderTrack.clientWidth || 320) - 52 - 4;
     if (maxSliderX < 100) maxSliderX = 260;
-    maxPieceMove = targetX - pieceStartX;
+    maxPieceMove = w - PUZZLE_SIZE - 20;
 
+    puzzleSliderHandle.style.transition = "";
+    puzzleSliderProgress.style.transition = "";
+    puzzlePieceCanvas.style.transition = "";
     puzzleSliderHandle.style.transform = "translateX(0px)";
     puzzleSliderProgress.style.width = "0px";
     puzzlePieceCanvas.style.transform = "translateX(0px)";
@@ -6039,7 +6042,11 @@
     dragTrail = [{ x: 0, y: 0, t: 0 }];
     maxSliderX = (puzzleSliderTrack.clientWidth || 320) - 52 - 4;
     if (maxSliderX < 100) maxSliderX = 260;
-    maxPieceMove = currentChallenge.targetX - 10;
+    maxPieceMove = 320 - PUZZLE_SIZE - 20;
+
+    puzzleSliderHandle.style.transition = "";
+    puzzleSliderProgress.style.transition = "";
+    puzzlePieceCanvas.style.transition = "";
     puzzleSliderHandle.classList.add("dragging");
     puzzleSliderHandle.classList.remove("success", "fail");
     if (puzzleFeedback) puzzleFeedback.classList.remove("success", "fail");
@@ -6073,11 +6080,22 @@
     var solvedPieceShift = (currentSliderX / maxSliderX) * maxPieceMove;
     var solvedX = 10 + solvedPieceShift;
 
+    // Tolerance check: relaxed to 18px so nearby placements easily succeed!
     var diff = Math.abs(solvedX - currentChallenge.targetX);
-    if (diff <= 8.5) {
+    if (diff <= 18) {
       isCaptchaSolving = true;
       puzzleSliderHandle.classList.add("success");
       if (puzzleFeedback) puzzleFeedback.classList.add("success");
+
+      // Visually snap piece and slider into exact slot smoothly!
+      var exactShift = currentChallenge.targetX - 10;
+      var exactSliderPos = (exactShift / maxPieceMove) * maxSliderX;
+      puzzlePieceCanvas.style.transition = "transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1)";
+      puzzlePieceCanvas.style.transform = "translateX(" + exactShift + "px)";
+      puzzleSliderHandle.style.transition = "transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1)";
+      puzzleSliderHandle.style.transform = "translateX(" + exactSliderPos + "px)";
+      puzzleSliderProgress.style.transition = "width 0.18s cubic-bezier(0.2, 0.9, 0.3, 1)";
+      puzzleSliderProgress.style.width = (exactSliderPos + 26) + "px";
 
       fetch("/api/captcha", {
         method: "POST",

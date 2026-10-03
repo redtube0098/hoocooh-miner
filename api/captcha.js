@@ -117,9 +117,9 @@ module.exports = async (req, res) => {
         lastT = pt.t;
       }
 
-      // 3. Tolerance Check: puzzle piece must be placed within ±9 pixels of target
+      // 3. Tolerance Check: puzzle piece placed nearby (relaxed to ±18 pixels for easy UX)
       const diff = Math.abs(solvedX - challenge.targetX);
-      if (diff > 9) {
+      if (diff > 18) {
         res.status(400).json({
           error: "Puzzle piece did not fit into place. Try again.",
           diff
