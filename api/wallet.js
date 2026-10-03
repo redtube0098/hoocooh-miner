@@ -85,12 +85,12 @@ module.exports = async (req, res) => {
           return;
         }
 
-        if (!walletAddress || !walletAddress.trim() || walletAddress.trim().length < 8) {
-          res.status(400).json({ error: "Please enter a valid USDT wallet address" });
+        const cleanAddress = (walletAddress || "").trim();
+        const isTon = /^(UQ|EQ|kQ|0Q)[A-Za-z0-9_-]{46}$/.test(cleanAddress) || /^(-1|0):[0-9a-fA-F]{64}$/.test(cleanAddress);
+        if (!isTon) {
+          res.status(400).json({ error: "Invalid TON address! Address must be 48 characters starting with UQ or EQ" });
           return;
         }
-
-        const cleanAddress = walletAddress.trim();
         const usdtVal = Number((numAmount * COIN_RATE).toFixed(4));
         const newBal = currentBal - numAmount;
         const now = Date.now();
