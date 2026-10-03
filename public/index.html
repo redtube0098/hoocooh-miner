@@ -3907,25 +3907,6 @@
   <!-- Tab 5: WALLET (1:1 Nautilus Mine Style) -->
   <main class="tab-view" id="tab-wallet">
 
-    <!-- Header Strip -->
-    <div class="wallet-header-strip">
-      <div class="wallet-header-left">
-        <img src="assets/logo.webp" alt="HOOCOOH" class="wallet-header-logo">
-        <div>
-          <div class="wallet-header-title">Wallet</div>
-          <div class="wallet-header-sub">MANAGE AND WITHDRAW YOUR EARNINGS IN USDT</div>
-        </div>
-      </div>
-      <div class="wallet-header-avatar" id="walletUserAvatar">H</div>
-    </div>
-
-    <!-- Live Ticker Strip -->
-    <div class="wallet-ticker-strip">
-      <span>LIVE HC/USDT: <span class="strip-val">$0.00004</span></span>
-      <span class="strip-divider">|</span>
-      <span>Your Balance: <span class="strip-val" id="walletTickerBal">0.00</span> HOOCOOH Coins</span>
-    </div>
-
     <!-- Vault Balance Hero Card -->
     <div class="vault-hero-card">
       <div class="vault-hero-badge">
@@ -4557,9 +4538,6 @@
     });
     var usdEl = document.getElementById("balanceUsd");
     if (usdEl) usdEl.textContent = "$" + (balance * COIN_USD).toFixed(2);
-
-    var walletTickerBal = document.getElementById("walletTickerBal");
-    if (walletTickerBal) walletTickerBal.textContent = formattedWhole + ".00";
 
     var walletVaultNum = document.getElementById("walletVaultNum");
     if (walletVaultNum) walletVaultNum.innerHTML = formattedWhole + '<span class="cents">.00</span>';
@@ -5985,22 +5963,7 @@
     var whole = Math.floor(bal);
     var formattedWhole = whole.toLocaleString();
 
-    // 1. Header user avatar
-    var walletAvatarEl = document.getElementById("walletUserAvatar");
-    if (walletAvatarEl) {
-      if (user.photoUrl) {
-        walletAvatarEl.innerHTML = '<img src="' + user.photoUrl + '" alt="Avatar">';
-      } else {
-        var dn = user.firstName || user.username || "User";
-        walletAvatarEl.textContent = (dn.charAt(0) || "H").toUpperCase();
-      }
-    }
-
-    // 2. Ticker balance
-    var tickerBalEl = document.getElementById("walletTickerBal");
-    if (tickerBalEl) tickerBalEl.textContent = formattedWhole + ".00";
-
-    // 3. Vault balance hero card
+    // 1. Vault balance hero card
     var vaultNumEl = document.getElementById("walletVaultNum");
     if (vaultNumEl) vaultNumEl.innerHTML = formattedWhole + '<span class="cents">.00</span>';
 
