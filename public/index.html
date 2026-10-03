@@ -2877,6 +2877,339 @@
     font-weight: 600;
     color: var(--text-dim);
   }
+
+  /* ========================================================
+     WALLET SECTION (MATCHING NAUTILUS MINE 1:1)
+     ======================================================== */
+  .wallet-header-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 2px 10px 2px;
+  }
+  .wallet-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .wallet-header-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+  .wallet-header-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .wallet-header-sub {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+  .wallet-header-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: var(--sub-box-bg);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .wallet-header-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Live Ticker Bar */
+  .wallet-ticker-strip {
+    background: var(--sub-box-bg);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 7px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .wallet-ticker-strip .strip-val {
+    font-weight: 800;
+    color: #0d9488;
+  }
+  .wallet-ticker-strip .strip-divider {
+    opacity: 0.4;
+  }
+
+  /* Vault Balance Hero Card */
+  .vault-hero-card {
+    background: linear-gradient(135deg, #a7f3d0 0%, #5eead4 45%, #2dd4bf 100%);
+    border-radius: 24px;
+    padding: 22px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 26px rgba(45, 212, 191, 0.28);
+    position: relative;
+    overflow: hidden;
+  }
+  .vault-hero-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #042f2e;
+    margin-bottom: 10px;
+  }
+  .vault-hero-badge .dot {
+    width: 8px;
+    height: 8px;
+    background: #059669;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .vault-balance-num {
+    font-size: 40px;
+    font-weight: 900;
+    color: #042f2e;
+    line-height: 1.05;
+    letter-spacing: -0.5px;
+  }
+  .vault-balance-num .cents {
+    font-size: 24px;
+    font-weight: 800;
+    opacity: 0.85;
+  }
+  .vault-coin-label {
+    font-size: 15px;
+    font-weight: 800;
+    color: #115e59;
+    margin-top: 4px;
+  }
+  .vault-usd-amount {
+    font-size: 13px;
+    font-weight: 700;
+    color: #134e4a;
+    margin-top: 2px;
+    margin-bottom: 18px;
+  }
+  .vault-withdraw-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 100px;
+    padding: 13px 20px;
+    font-size: 15px;
+    font-weight: 800;
+    color: #042f2e;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  }
+  .vault-withdraw-btn:active {
+    background: rgba(255, 255, 255, 0.75);
+    transform: scale(0.98);
+  }
+
+  /* Two Stats Cards (Referrals, Total Mined) */
+  .wallet-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .wallet-stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 4px 16px var(--card-shadow);
+  }
+  .wallet-stat-icon-box {
+    color: #042f2e;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .wallet-stat-lbl {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .wallet-stat-val {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--text);
+  }
+
+  /* Payout Logs Banner */
+  .wallet-payout-banner {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    box-shadow: 0 4px 16px var(--card-shadow);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .wallet-payout-banner:active {
+    transform: scale(0.99);
+  }
+  .payout-banner-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .payout-banner-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .payout-banner-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.25;
+  }
+  .payout-banner-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .payout-banner-arrow {
+    font-size: 20px;
+    font-weight: 800;
+    color: #14b8a6;
+    flex-shrink: 0;
+  }
+
+  /* Transaction History Section */
+  .wallet-section-header {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin: 20px 4px 8px 4px;
+  }
+  .wallet-tx-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .wallet-tx-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 16px var(--card-shadow);
+  }
+  .wallet-tx-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .wallet-tx-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(16, 185, 129, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .wallet-tx-info {
+    min-width: 0;
+  }
+  .wallet-tx-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.25;
+  }
+  .wallet-tx-date {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .wallet-tx-right {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .wallet-tx-status {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #059669;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+  }
+  .wallet-tx-link {
+    font-size: 11px;
+    font-weight: 800;
+    color: #0d9488;
+    margin-top: 3px;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .vault-avail-box {
+    background: var(--sub-box-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .vault-avail-val {
+    color: #0d9488;
+    font-size: 16px;
+    font-weight: 900;
+  }
+  .vault-avail-usd {
+    color: var(--text-dim);
+    font-size: 12px;
+  }
 </style>
 </head>
 <body>
@@ -3571,19 +3904,94 @@
     </div>
   </main>
 
-  <!-- Tab 5: WALLET -->
+  <!-- Tab 5: WALLET (1:1 Nautilus Mine Style) -->
   <main class="tab-view" id="tab-wallet">
-    <div class="sub-page-card">
-      <h3>💳 Web3 Wallet</h3>
-      <p>Connect your TON or USDT wallet to prepare for upcoming token distribution.</p>
-      <button class="action-btn-secondary" id="connectWalletBtn" style="width: 100%; justify-content: center; padding: 12px; margin-bottom: 12px;">
-        <span>💎 Connect TON Wallet</span>
+
+    <!-- Header Strip -->
+    <div class="wallet-header-strip">
+      <div class="wallet-header-left">
+        <img src="assets/logo.webp" alt="HOOCOOH" class="wallet-header-logo">
+        <div>
+          <div class="wallet-header-title">Wallet</div>
+          <div class="wallet-header-sub">MANAGE AND WITHDRAW YOUR EARNINGS IN USDT</div>
+        </div>
+      </div>
+      <div class="wallet-header-avatar" id="walletUserAvatar">H</div>
+    </div>
+
+    <!-- Live Ticker Strip -->
+    <div class="wallet-ticker-strip">
+      <span>LIVE HC/USDT: <span class="strip-val">$0.00004</span></span>
+      <span class="strip-divider">|</span>
+      <span>Your Balance: <span class="strip-val" id="walletTickerBal">0.00</span> HOOCOOH Coins</span>
+    </div>
+
+    <!-- Vault Balance Hero Card -->
+    <div class="vault-hero-card">
+      <div class="vault-hero-badge">
+        <span class="dot"></span>
+        <span>Vault Balance</span>
+      </div>
+      <div class="vault-balance-num" id="walletVaultNum">
+        0<span class="cents">.00</span>
+      </div>
+      <div class="vault-coin-label">HOOCOOH Coins</div>
+      <div class="vault-usd-amount" id="walletVaultUsd">≈ $0.00 USDT</div>
+      <button class="vault-withdraw-btn" id="openWithdrawModalBtn" type="button">
+        <span>💸 Withdraw USDT</span>
       </button>
-      <div class="daily-bottom-row">
-        <span class="lbl">WALLET STATUS</span>
-        <span class="val">Not Connected</span>
+    </div>
+
+    <!-- 2 Stats Cards (Referrals, Total Mined) -->
+    <div class="wallet-stats-grid">
+      <!-- Card 1: REFERRALS -->
+      <div class="wallet-stat-card">
+        <div class="wallet-stat-icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <div class="wallet-stat-lbl">REFERRALS</div>
+        <div class="wallet-stat-val" id="walletStatReferrals">0</div>
+      </div>
+
+      <!-- Card 2: TOTAL MINED -->
+      <div class="wallet-stat-card">
+        <div class="wallet-stat-icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="6" x2="12" y2="18"></line>
+            <path d="M15 9.5a3 3 0 0 0-3-2.5h-1a2.5 2.5 0 0 0 0 5h2a2.5 2.5 0 0 1 0 5h-1a3 3 0 0 1-3-2.5"></path>
+          </svg>
+        </div>
+        <div class="wallet-stat-lbl">TOTAL MINED</div>
+        <div class="wallet-stat-val" id="walletStatTotalMined">0</div>
       </div>
     </div>
+
+    <!-- Live Payout Logs Banner -->
+    <a href="https://t.me/hoocoohpaylogs" target="_blank" class="wallet-payout-banner" id="walletPayoutLogsBanner" style="text-decoration: none;">
+      <div class="payout-banner-icon">📢</div>
+      <div class="payout-banner-info">
+        <div class="payout-banner-title">View live payout logs</div>
+        <div class="payout-banner-sub">@hoocoohpaylogs</div>
+      </div>
+      <div class="payout-banner-arrow">➔</div>
+    </a>
+
+    <!-- Transaction History Section -->
+    <div class="wallet-section-header">TRANSACTION HISTORY</div>
+    <div class="wallet-tx-list" id="walletTxList">
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:18px;padding:24px 16px;text-align:center;box-shadow:0 4px 16px var(--card-shadow);">
+        <div style="font-size:28px;margin-bottom:8px;">📭</div>
+        <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px;">No withdrawal transactions yet</div>
+        <div style="font-size:11.5px;color:var(--text-dim);font-weight:600;line-height:1.4;">Mine coins and invite friends to earn and request payouts!</div>
+      </div>
+    </div>
+
   </main>
 
   <!-- Bottom Navigation Bar -->
@@ -3734,6 +4142,68 @@
     </div>
   </div>
 
+  <!-- Modal: Withdraw USDT -->
+  <div class="modal-overlay" id="withdrawModal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div class="modal-title">💸 Withdraw USDT</div>
+        <button class="modal-close-btn" id="closeWithdrawModalBtn" type="button">✕</button>
+      </div>
+
+      <!-- Available Balance Box -->
+      <div class="vault-avail-box" style="margin-bottom: 12px; justify-content: space-between;">
+        <div>
+          <span style="font-size: 11px; color: var(--text-dim); display: block; margin-bottom: 2px;">VAULT BALANCE</span>
+          <span class="vault-avail-val" id="withdrawAvailBal">0</span>
+          <span style="font-size: 12px; font-weight: 700; color: var(--text-dim); margin-left: 4px;">HOOCOOH</span>
+        </div>
+        <div class="vault-avail-usd" id="withdrawAvailUsd" style="font-weight: 800; font-size: 13.5px; color: #059669;">
+          ≈ $0.00 USDT
+        </div>
+      </div>
+
+      <div style="font-size: 11px; font-weight: 700; color: var(--text-dim); margin-bottom: 14px; background: rgba(13,148,136,0.08); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(13,148,136,0.2);">
+        ⚡ 1 HOOCOOH Coin = 0.00004 USDT · Min: 100 HOOCOOH Coins
+      </div>
+
+      <form id="withdrawForm" onsubmit="return false;">
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin-bottom: 0;">Withdraw Amount (Coins)</label>
+            <button type="button" id="withdrawMaxBtn" style="background: none; border: none; font-size: 11px; font-weight: 800; color: #0d9488; cursor: pointer; padding: 2px 6px;">MAX</button>
+          </div>
+          <input type="number" class="form-input" id="withdrawAmountInput" placeholder="Min 100 coins" min="100" step="1">
+          <div style="font-size: 12px; font-weight: 800; color: #059669; margin-top: 6px;" id="withdrawEstUsdtBox">
+            You will receive: <span id="withdrawEstUsdtVal">$0.00</span> USDT
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Network</label>
+          <div class="post-type-selector" style="margin-bottom: 0;">
+            <button class="post-type-btn active" id="netTonBtn" type="button">
+              <div>💎 TON (USDT)</div>
+              <div style="font-size: 9.5px; opacity: 0.8; margin-top: 2px;">Instant Payout</div>
+            </button>
+            <button class="post-type-btn" id="netTrcBtn" type="button">
+              <div>⚡ TRC-20 (USDT)</div>
+              <div style="font-size: 9.5px; opacity: 0.8; margin-top: 2px;">Tron Network</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">USDT Wallet Address</label>
+          <input type="text" class="form-input" id="withdrawAddressInput" placeholder="Enter your TON or TRC20 wallet address" required>
+        </div>
+
+        <div class="verify-feedback-box" id="withdrawFeedbackBox" style="display: none; margin-bottom: 12px;"></div>
+
+        <button type="button" class="submit-task-btn" id="confirmWithdrawBtn">Confirm & Withdraw</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Element -->
   <div class="toast" id="toast"></div>
 
@@ -3810,6 +4280,9 @@
       } else if (targetTab === "tab-invite") {
         loadReferralData();
         renderInvite();
+      } else if (targetTab === "tab-wallet") {
+        loadWalletData();
+        renderWallet();
       }
     });
   });
@@ -3819,13 +4292,6 @@
   if (copyInviteBtn) {
     copyInviteBtn.addEventListener("click", function(){
       copyReferralLink();
-    });
-  }
-
-  var connectWalletBtn = document.getElementById("connectWalletBtn");
-  if (connectWalletBtn) {
-    connectWalletBtn.addEventListener("click", function(){
-      showToast("Wallet connection coming soon!");
     });
   }
 
@@ -3890,6 +4356,15 @@
     totalMilestones: 4
   };
   var currentRankSubTab = "recruiters";
+
+  var walletData = {
+    balance: 0,
+    usdtEquivalent: 0,
+    coinRate: 0.00004,
+    recruitsCount: 0,
+    totalMined: 0,
+    transactions: []
+  };
 
   var LEVEL_NAMES = [
     "Starter",
@@ -4082,6 +4557,15 @@
     });
     var usdEl = document.getElementById("balanceUsd");
     if (usdEl) usdEl.textContent = "$" + (balance * COIN_USD).toFixed(2);
+
+    var walletTickerBal = document.getElementById("walletTickerBal");
+    if (walletTickerBal) walletTickerBal.textContent = formattedWhole + ".00";
+
+    var walletVaultNum = document.getElementById("walletVaultNum");
+    if (walletVaultNum) walletVaultNum.innerHTML = formattedWhole + '<span class="cents">.00</span>';
+
+    var walletVaultUsd = document.getElementById("walletVaultUsd");
+    if (walletVaultUsd) walletVaultUsd.textContent = "≈ $" + (balance * COIN_USD).toFixed(2) + " USDT";
 
     var currentLvl = Math.max(1, Math.min(10, user.minerLevel || user.level || 1));
     var lvlName = LEVEL_NAMES[currentLvl - 1] || "Starter";
@@ -4494,6 +4978,7 @@
     renderDaily();
     renderAds();
     renderInvite();
+    renderWallet();
   }
 
   // Initial immediate render so there is zero stuck loading
@@ -5431,9 +5916,315 @@
     });
   }
 
-  // Load Tasks on startup
+  // ========================================================
+  // WALLET & WITHDRAW LOGIC (1:1 NAUTILUS MINE STYLE)
+  // ========================================================
+  var selectedWithdrawNetwork = "USDT (TON)";
+
+  function fetchWalletApi() {
+    return fetch("/api/wallet", {
+      headers: { "X-Telegram-Init-Data": initData }
+    }).then(function(r) {
+      if (r.status === 404) {
+        return fetch("/api/wallet.js", { headers: { "X-Telegram-Init-Data": initData } });
+      }
+      return r;
+    }).then(handleResponse);
+  }
+
+  function requestWithdrawApi(amount, walletAddress, network) {
+    return fetch("/api/wallet", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": initData
+      },
+      body: JSON.stringify({
+        action: "withdraw",
+        amount: amount,
+        walletAddress: walletAddress,
+        network: network
+      })
+    }).then(function(r) {
+      if (r.status === 404) {
+        return fetch("/api/wallet.js", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Telegram-Init-Data": initData
+          },
+          body: JSON.stringify({
+            action: "withdraw",
+            amount: amount,
+            walletAddress: walletAddress,
+            network: network
+          })
+        });
+      }
+      return r;
+    }).then(handleResponse);
+  }
+
+  function loadWalletData() {
+    return fetchWalletApi().then(function(res) {
+      if (res.ok && res.data) {
+        walletData = res.data;
+        if (typeof res.data.balance === "number") {
+          user.balance = res.data.balance;
+          renderBalance();
+        }
+        renderWallet();
+      }
+    }).catch(function(err) {
+      console.warn("loadWalletData error:", err);
+    });
+  }
+
+  function renderWallet() {
+    var bal = Number(user.balance) || 0;
+    var whole = Math.floor(bal);
+    var formattedWhole = whole.toLocaleString();
+
+    // 1. Header user avatar
+    var walletAvatarEl = document.getElementById("walletUserAvatar");
+    if (walletAvatarEl) {
+      if (user.photoUrl) {
+        walletAvatarEl.innerHTML = '<img src="' + user.photoUrl + '" alt="Avatar">';
+      } else {
+        var dn = user.firstName || user.username || "User";
+        walletAvatarEl.textContent = (dn.charAt(0) || "H").toUpperCase();
+      }
+    }
+
+    // 2. Ticker balance
+    var tickerBalEl = document.getElementById("walletTickerBal");
+    if (tickerBalEl) tickerBalEl.textContent = formattedWhole + ".00";
+
+    // 3. Vault balance hero card
+    var vaultNumEl = document.getElementById("walletVaultNum");
+    if (vaultNumEl) vaultNumEl.innerHTML = formattedWhole + '<span class="cents">.00</span>';
+
+    var vaultUsdEl = document.getElementById("walletVaultUsd");
+    var usdtVal = (bal * COIN_USD).toFixed(2);
+    if (vaultUsdEl) vaultUsdEl.textContent = "≈ $" + usdtVal + " USDT";
+
+    // 4. Two Stats Cards (Referrals, Total Mined)
+    var recruitsEl = document.getElementById("walletStatReferrals");
+    if (recruitsEl) {
+      recruitsEl.textContent = Number(user.recruitsCount || walletData.recruitsCount || 0).toLocaleString();
+    }
+
+    var totalMinedEl = document.getElementById("walletStatTotalMined");
+    if (totalMinedEl) {
+      var totalCoins = Number(walletData.totalMined) || (bal + (Number(user.totalDailyEarned) || 0) + (Number(user.refEarnings) || 0));
+      totalMinedEl.textContent = Math.round(totalCoins).toLocaleString();
+    }
+
+    // 5. Transaction History list
+    var txListEl = document.getElementById("walletTxList");
+    if (txListEl) {
+      var txs = (walletData && walletData.transactions) ? walletData.transactions : [];
+      if (txs.length === 0) {
+        txListEl.innerHTML =
+          '<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:18px;padding:24px 16px;text-align:center;box-shadow:0 4px 16px var(--card-shadow);">' +
+          '<div style="font-size:28px;margin-bottom:8px;">📭</div>' +
+          '<div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px;">No withdrawal transactions yet</div>' +
+          '<div style="font-size:11.5px;color:var(--text-dim);font-weight:600;line-height:1.4;">Mine coins and invite friends to earn and request payouts!</div>' +
+          '</div>';
+      } else {
+        var html = "";
+        txs.forEach(function(tx) {
+          var dateStr = tx.createdAt ? new Date(tx.createdAt).toLocaleDateString() : "Recent";
+          var amtStr = Number(tx.amount || 0).toLocaleString() + ".00 HOOCOOH Coins";
+          var statusStr = (tx.status || "APPROVED").toUpperCase();
+          var hashStr = tx.txHash || "";
+          var shortHash = hashStr ? (hashStr.substring(0, 8) + "..." + hashStr.substring(hashStr.length - 4)) : "";
+          html +=
+            '<div class="wallet-tx-card">' +
+              '<div class="wallet-tx-left">' +
+                '<div class="wallet-tx-icon">💸</div>' +
+                '<div class="wallet-tx-info">' +
+                  '<div class="wallet-tx-title">' + amtStr + '</div>' +
+                  '<div class="wallet-tx-date">' + dateStr + (shortHash ? ' · ' + shortHash : '') + '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="wallet-tx-right">' +
+                '<div class="wallet-tx-status">✓ ' + statusStr + '</div>' +
+                '<a href="#" class="wallet-tx-link" data-txhash="' + hashStr + '" data-txamt="' + tx.amount + '" data-txusdt="' + tx.usdtAmount + '" data-txnet="' + (tx.network || 'USDT') + '">VIEW TX ↗</a>' +
+              '</div>' +
+            '</div>';
+        });
+        txListEl.innerHTML = html;
+
+        txListEl.querySelectorAll(".wallet-tx-link").forEach(function(a) {
+          a.addEventListener("click", function(e) {
+            e.preventDefault();
+            var h = a.getAttribute("data-txhash");
+            var aVal = a.getAttribute("data-txamt");
+            var uVal = a.getAttribute("data-txusdt");
+            var net = a.getAttribute("data-txnet");
+            showToast("Tx: " + (h ? h.substring(0, 16) + "..." : "Pending") + " (" + net + ": $" + uVal + " USDT)");
+          });
+        });
+      }
+    }
+  }
+
+  // Withdraw Modal Setup
+  var withdrawModal = document.getElementById("withdrawModal");
+  var openWithdrawModalBtn = document.getElementById("openWithdrawModalBtn");
+  var closeWithdrawModalBtn = document.getElementById("closeWithdrawModalBtn");
+  var withdrawAmountInput = document.getElementById("withdrawAmountInput");
+  var withdrawMaxBtn = document.getElementById("withdrawMaxBtn");
+  var withdrawEstUsdtVal = document.getElementById("withdrawEstUsdtVal");
+  var withdrawAvailBal = document.getElementById("withdrawAvailBal");
+  var withdrawAvailUsd = document.getElementById("withdrawAvailUsd");
+  var withdrawAddressInput = document.getElementById("withdrawAddressInput");
+  var withdrawFeedbackBox = document.getElementById("withdrawFeedbackBox");
+  var confirmWithdrawBtn = document.getElementById("confirmWithdrawBtn");
+  var netTonBtn = document.getElementById("netTonBtn");
+  var netTrcBtn = document.getElementById("netTrcBtn");
+
+  function updateWithdrawEstimate() {
+    var amt = parseInt(withdrawAmountInput ? withdrawAmountInput.value : 0, 10);
+    if (isNaN(amt) || amt < 0) amt = 0;
+    var est = (amt * COIN_USD).toFixed(2);
+    if (withdrawEstUsdtVal) withdrawEstUsdtVal.textContent = "$" + est;
+  }
+
+  if (openWithdrawModalBtn && withdrawModal) {
+    openWithdrawModalBtn.addEventListener("click", function() {
+      var bal = Number(user.balance) || 0;
+      if (withdrawAvailBal) withdrawAvailBal.textContent = Math.floor(bal).toLocaleString();
+      if (withdrawAvailUsd) withdrawAvailUsd.textContent = "≈ $" + (bal * COIN_USD).toFixed(2) + " USDT";
+      if (withdrawAmountInput) withdrawAmountInput.value = "";
+      if (withdrawFeedbackBox) {
+        withdrawFeedbackBox.style.display = "none";
+        withdrawFeedbackBox.textContent = "";
+        withdrawFeedbackBox.className = "verify-feedback-box";
+      }
+      updateWithdrawEstimate();
+      withdrawModal.classList.add("active");
+    });
+  }
+
+  if (closeWithdrawModalBtn && withdrawModal) {
+    closeWithdrawModalBtn.addEventListener("click", function() {
+      withdrawModal.classList.remove("active");
+    });
+  }
+
+  if (withdrawModal) {
+    withdrawModal.addEventListener("click", function(e) {
+      if (e.target === withdrawModal) withdrawModal.classList.remove("active");
+    });
+  }
+
+  if (withdrawMaxBtn && withdrawAmountInput) {
+    withdrawMaxBtn.addEventListener("click", function() {
+      var bal = Math.floor(Number(user.balance) || 0);
+      withdrawAmountInput.value = bal > 0 ? bal : 0;
+      updateWithdrawEstimate();
+    });
+  }
+
+  if (withdrawAmountInput) {
+    withdrawAmountInput.addEventListener("input", updateWithdrawEstimate);
+  }
+
+  if (netTonBtn && netTrcBtn) {
+    netTonBtn.addEventListener("click", function() {
+      selectedWithdrawNetwork = "USDT (TON)";
+      netTonBtn.classList.add("active");
+      netTrcBtn.classList.remove("active");
+    });
+    netTrcBtn.addEventListener("click", function() {
+      selectedWithdrawNetwork = "USDT (TRC20)";
+      netTrcBtn.classList.add("active");
+      netTonBtn.classList.remove("active");
+    });
+  }
+
+  if (confirmWithdrawBtn) {
+    confirmWithdrawBtn.addEventListener("click", function() {
+      var amt = parseInt(withdrawAmountInput ? withdrawAmountInput.value : 0, 10);
+      var addr = withdrawAddressInput ? withdrawAddressInput.value.trim() : "";
+
+      if (isNaN(amt) || amt < 100) {
+        if (withdrawFeedbackBox) {
+          withdrawFeedbackBox.style.display = "block";
+          withdrawFeedbackBox.className = "verify-feedback-box error";
+          withdrawFeedbackBox.textContent = "⚠️ Minimum withdrawal is 100 HOOCOOH Coins.";
+        }
+        return;
+      }
+
+      var currentBal = Number(user.balance || 0);
+      if (currentBal < amt) {
+        if (withdrawFeedbackBox) {
+          withdrawFeedbackBox.style.display = "block";
+          withdrawFeedbackBox.className = "verify-feedback-box error";
+          withdrawFeedbackBox.textContent = "⚠️ Insufficient balance! You have " + currentBal.toLocaleString() + " coins.";
+        }
+        return;
+      }
+
+      if (!addr || addr.length < 8) {
+        if (withdrawFeedbackBox) {
+          withdrawFeedbackBox.style.display = "block";
+          withdrawFeedbackBox.className = "verify-feedback-box error";
+          withdrawFeedbackBox.textContent = "⚠️ Please enter a valid wallet address.";
+        }
+        return;
+      }
+
+      confirmWithdrawBtn.disabled = true;
+      confirmWithdrawBtn.textContent = "Processing...";
+
+      requestWithdrawApi(amt, addr, selectedWithdrawNetwork).then(function(res) {
+        confirmWithdrawBtn.disabled = false;
+        confirmWithdrawBtn.textContent = "Confirm & Withdraw";
+
+        if (!res.ok) {
+          var errMsg = (res.data && res.data.error) ? res.data.error : "Withdrawal failed";
+          if (withdrawFeedbackBox) {
+            withdrawFeedbackBox.style.display = "block";
+            withdrawFeedbackBox.className = "verify-feedback-box error";
+            withdrawFeedbackBox.textContent = "❌ " + errMsg;
+          }
+          return;
+        }
+
+        user.balance = res.data.newBalance;
+        renderBalance();
+        loadWalletData();
+
+        if (withdrawFeedbackBox) {
+          withdrawFeedbackBox.style.display = "block";
+          withdrawFeedbackBox.className = "verify-feedback-box success";
+          withdrawFeedbackBox.textContent = "✅ " + (res.data.message || "Withdrawal approved!");
+        }
+        showToast("🎉 Withdrawal of " + amt.toLocaleString() + " Coins approved!");
+
+        setTimeout(function() {
+          if (withdrawModal) withdrawModal.classList.remove("active");
+        }, 1800);
+      }).catch(function(err) {
+        confirmWithdrawBtn.disabled = false;
+        confirmWithdrawBtn.textContent = "Confirm & Withdraw";
+        if (withdrawFeedbackBox) {
+          withdrawFeedbackBox.style.display = "block";
+          withdrawFeedbackBox.className = "verify-feedback-box error";
+          withdrawFeedbackBox.textContent = "❌ " + ((err && err.message) ? err.message : "Network error");
+        }
+      });
+    });
+  }
+
+  // Load Tasks, Referrals & Wallet on startup
   loadTasks();
   loadReferralData();
+  loadWalletData();
 
   // Fetch real server state
   apiGet().then(function(res){
@@ -5473,6 +6264,7 @@
       }
     }).catch(function(){});
     loadReferralData();
+    loadWalletData();
   }, 30000);
 
 })();
