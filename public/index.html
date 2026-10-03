@@ -397,12 +397,12 @@
     text-align: right;
   }
 
-  /* Card 2: Mining Card */
+  /* Card 2: Mining Card (Enlarged Hero Centerpiece matching media_1790863998027.png) */
   .card {
     background: var(--card-bg);
-    border-radius: 24px;
-    padding: 22px 18px 20px;
-    box-shadow: 0 6px 22px var(--card-shadow);
+    border-radius: 28px;
+    padding: 28px 22px 26px;
+    box-shadow: 0 10px 30px var(--card-shadow);
     text-align: center;
     position: relative;
     border: 1px solid var(--border);
@@ -424,9 +424,9 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 16px;
+    padding: 7px 18px;
     border-radius: 100px;
-    font-size: 11px;
+    font-size: 11.5px;
     font-weight: 800;
     letter-spacing: 0.6px;
     text-transform: uppercase;
@@ -458,68 +458,68 @@
 
   .mine-visual-wrap {
     position: relative;
-    width: 120px;
-    height: 120px;
-    margin: 8px auto 10px;
+    width: 190px;
+    height: 185px;
+    margin: 16px auto 14px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
   .mine-glow {
     position: absolute;
-    width: 102px;
-    height: 102px;
+    width: 165px;
+    height: 165px;
     border-radius: 50%;
     background: radial-gradient(circle, var(--accent-glow) 0%, rgba(32, 184, 163, 0) 70%);
     pointer-events: none;
   }
   .mine-img {
-    width: 106px;
-    height: 106px;
+    width: 170px;
+    height: 170px;
     object-fit: contain;
-    filter: drop-shadow(0 8px 20px var(--accent-glow));
+    filter: drop-shadow(0 12px 28px var(--accent-glow));
     animation: floatLogo 3.6s ease-in-out infinite;
   }
   @keyframes floatLogo {
     0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-6px) rotate(1.5deg); }
+    50% { transform: translateY(-8px) rotate(1.5deg); }
   }
 
   .lvl-badge-row {
-    margin-top: 6px;
+    margin-top: 10px;
   }
   .lvl-badge-chip {
     display: inline-block;
     background: var(--sub-box-bg);
     color: var(--accent);
-    font-size: 11.5px;
+    font-size: 12px;
     font-weight: 800;
-    padding: 4px 14px;
+    padding: 5px 16px;
     border-radius: 100px;
     border: 1px solid var(--border);
   }
 
   .mining-complete-text {
-    font-size: 11px;
+    font-size: 11.5px;
     font-weight: 800;
-    letter-spacing: 0.9px;
+    letter-spacing: 1px;
     color: var(--text-dim);
-    margin-top: 6px;
+    margin-top: 8px;
     text-transform: uppercase;
   }
   .mining-reward-big {
-    font-size: 30px;
+    font-size: 36px;
     font-weight: 900;
     color: var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin: 3px 0 10px;
+    margin: 4px 0 14px;
   }
   .mining-reward-big img {
-    width: 25px;
-    height: 25px;
+    width: 28px;
+    height: 28px;
     object-fit: contain;
   }
 
@@ -527,14 +527,15 @@
     width: 100%;
     border: none;
     border-radius: 100px;
-    padding: 14.5px 20px;
-    font-size: 15px;
+    padding: 16px 24px;
+    font-size: 16px;
     font-weight: 800;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 9px;
+    gap: 10px;
+    box-shadow: 0 8px 24px var(--accent-glow);
     transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
   }
   .collect-btn:not(:disabled) {
@@ -552,15 +553,15 @@
     border: 1px solid var(--border);
   }
   .collect-btn img {
-    width: 21px;
-    height: 21px;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
   }
   .timer-caption {
-    font-size: 11.5px;
+    font-size: 12px;
     color: var(--text-dim);
-    margin-top: 8px;
-    font-weight: 600;
+    margin-top: 10px;
+    font-weight: 700;
   }
 
   /* Card 3: Daily Bonus Card */
