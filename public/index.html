@@ -4254,6 +4254,113 @@
     border-color: rgba(255, 255, 255, 0.08);
     color: #f1f5f9;
   }
+  /* Ad Player Mock View */
+  .ad-player-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  .ad-sponsor-badge {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #14b8a6;
+    background: rgba(20, 184, 166, 0.12);
+    padding: 4px 10px;
+    border-radius: 100px;
+    text-transform: uppercase;
+  }
+  .ad-countdown-pill {
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffffff;
+    background: #0f172a;
+    padding: 4px 10px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  [data-theme="dark"] .ad-countdown-pill {
+    background: #1e293b;
+  }
+  .ad-player-mock-box {
+    width: 100%;
+    height: 180px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #090d16 0%, #111a2e 50%, #0d1527 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.2);
+    margin-bottom: 14px;
+    box-sizing: border-box;
+  }
+  .ad-mock-center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 2;
+    padding: 12px;
+    text-align: center;
+  }
+  .ad-mock-play-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(45, 212, 191, 0.25);
+    border: 2px solid #2dd4bf;
+    color: #2dd4bf;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+    animation: pulsePlay 2s infinite ease-in-out;
+  }
+  @keyframes pulsePlay {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.4); }
+    50% { transform: scale(1.06); box-shadow: 0 0 16px rgba(45, 212, 191, 0.6); }
+  }
+  .ad-mock-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.2px;
+  }
+  .ad-mock-desc {
+    font-size: 11.5px;
+    color: #94a3b8;
+    max-width: 250px;
+    line-height: 1.35;
+  }
+  .ad-mock-progress-track {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.15);
+  }
+  .ad-mock-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2dd4bf 0%, #14b8a6 100%);
+    transition: width 0.25s linear;
+  }
+  .ad-player-status-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+  }
+  [data-theme="dark"] .ad-player-status-text {
+    color: #94a3b8;
+  }
 </style>
 </head>
 <body>
@@ -5412,6 +5519,35 @@
           <button type="button" class="watch-flow-btn-secondary" id="sheetCancelBtn">
             <span>Cancel</span>
           </button>
+        </div>
+      </div>
+
+      <!-- VIEW 1.5: Ad Playing Screen (Gap / Placeholder for future Ads SDK) -->
+      <div class="watch-flow-view" id="watchFlowAdPlayingView">
+        <div class="ad-player-header-row">
+          <div class="ad-sponsor-badge">⚡ SPONSOR AD</div>
+          <div class="ad-countdown-pill" id="adCountdownPill">
+            <span>⏳ </span><strong id="adSecondsLeft">5</strong>s
+          </div>
+        </div>
+
+        <div class="ad-player-mock-box">
+          <div class="ad-mock-center-content">
+            <div class="ad-mock-play-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+            <div class="ad-mock-title">HOOCOOH Partner Network</div>
+            <div class="ad-mock-desc">Watch this short message to unlock your +15 HOOCOOH reward.</div>
+          </div>
+          <div class="ad-mock-progress-track">
+            <div class="ad-mock-progress-fill" id="adMockProgressFill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <div class="ad-player-status-text" id="adPlayerStatusText">
+          Playing video ad... Verification will unlock upon completion.
         </div>
       </div>
 
@@ -6588,6 +6724,7 @@
   // ===================================================
   var watchEarnFlowModal = document.getElementById("watchEarnFlowModal");
   var watchFlowPreView = document.getElementById("watchFlowPreView");
+  var watchFlowAdPlayingView = document.getElementById("watchFlowAdPlayingView");
   var watchFlowSuccessView = document.getElementById("watchFlowSuccessView");
   var sheetWatchedTodayEl = document.getElementById("sheetWatchedToday");
   var sheetRemainingEl = document.getElementById("sheetRemaining");
@@ -6597,6 +6734,44 @@
   var sheetCollectContinueBtn = document.getElementById("sheetCollectContinueBtn");
 
   var pendingCaptchaToken = null;
+  var adPlaybackTimer = null;
+
+  // ========================================================
+  // AD PROVIDER HOOK (Adsgram / Monetag / Telegram Ads SDK)
+  // Apatoto 5-second placeholder simulation kora holo.
+  // Pore real Ads SDK add korar somoi eikhane SDK call korlei hobe!
+  // ========================================================
+  function startAdPlayback(onFinished) {
+    var duration = 5; // 5 seconds ad simulation
+    var elapsed = 0;
+    var fillEl = document.getElementById("adMockProgressFill");
+    var secEl = document.getElementById("adSecondsLeft");
+    var statusEl = document.getElementById("adPlayerStatusText");
+
+    if (fillEl) fillEl.style.width = "0%";
+    if (secEl) secEl.textContent = duration;
+    if (statusEl) statusEl.textContent = "Playing sponsor ad... Verification unlocks upon completion.";
+
+    clearInterval(adPlaybackTimer);
+    adPlaybackTimer = setInterval(function() {
+      elapsed++;
+      var remaining = Math.max(0, duration - elapsed);
+      var pct = Math.min(100, (elapsed / duration) * 100);
+
+      if (secEl) secEl.textContent = remaining;
+      if (fillEl) fillEl.style.width = pct + "%";
+
+      if (elapsed >= duration) {
+        clearInterval(adPlaybackTimer);
+        if (statusEl) statusEl.textContent = "Ad completed! Opening verification...";
+        setTimeout(function() {
+          if (typeof onFinished === "function") {
+            onFinished();
+          }
+        }, 500);
+      }
+    }, 1000);
+  }
 
   function updateWatchSheetView1() {
     var watched = Number(user.adsWatchedToday) || 0;
@@ -6623,12 +6798,14 @@
   function openWatchEarnFlowModal() {
     updateWatchSheetView1();
     if (watchFlowPreView) watchFlowPreView.classList.add("active");
+    if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
     if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
     if (watchEarnFlowModal) watchEarnFlowModal.classList.add("open");
   }
 
   function closeWatchEarnFlowModal() {
     if (watchEarnFlowModal) watchEarnFlowModal.classList.remove("open");
+    clearInterval(adPlaybackTimer);
     pendingCaptchaToken = null;
     if (sheetStartAdBtn) {
       sheetStartAdBtn.disabled = false;
@@ -6661,7 +6838,7 @@
     });
   }
 
-  // Image 1 Sheet Primary Button: "▶ Watch Ad & Earn" -> Loading Ad -> Opens Verification Captcha
+  // Image 1 Sheet Primary Button: "▶ Watch Ad & Earn" -> Plays Ad first -> Then triggers Verification Captcha
   if (sheetStartAdBtn) {
     sheetStartAdBtn.addEventListener("click", function() {
       var watched = Number(user.adsWatchedToday) || 0;
@@ -6674,15 +6851,20 @@
         return;
       }
 
-      sheetStartAdBtn.disabled = true;
-      sheetStartAdBtn.innerHTML = '<span>Loading Ad...</span>';
+      // 1. Switch to Ad Playing View (ad gap / placeholder)
+      if (watchFlowPreView) watchFlowPreView.classList.remove("active");
+      if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
+      if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.add("active");
 
-      setTimeout(function() {
+      // 2. Start Ad Playback
+      startAdPlayback(function onAdComplete() {
+        // 3. Ad is finished! Now open the security verification before reward
         openSecurityCaptcha(function(verifiedCaptchaToken) {
           pendingCaptchaToken = verifiedCaptchaToken;
 
-          // Verification succeeded! Show Image 2: Reward Claimed!
+          // 4. Verification succeeded! Show Image 2: Reward Claimed!
           if (watchFlowPreView) watchFlowPreView.classList.remove("active");
+          if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
           if (watchFlowSuccessView) watchFlowSuccessView.classList.add("active");
           if (sheetSuccessWatchedEl) {
             sheetSuccessWatchedEl.textContent = Math.min(10, watched + 1);
@@ -6692,7 +6874,7 @@
             sheetCollectContinueBtn.innerHTML = '<span>COLLECT & CONTINUE</span>';
           }
         });
-      }, 1000);
+      });
     });
   }
 
@@ -6755,6 +6937,7 @@
         // Switch smoothly back to Image 1 View (continuous up to 10 times daily!)
         updateWatchSheetView1();
         if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
+        if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
         if (watchFlowPreView) watchFlowPreView.classList.add("active");
 
         if (user.adsWatchedToday >= 10) {
