@@ -505,8 +505,12 @@
       <div class="val accent" id="statTotalUsers">0</div>
     </div>
     <div class="stat-card">
-      <div class="lbl">Pending Withdrawals</div>
+      <div class="lbl">Pending Requests</div>
       <div class="val warning" id="statPendingW">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="lbl">Pending Amount (USDT)</div>
+      <div class="val warning" id="statPendingUsdt" style="color: #f59e0b;">$0.00</div>
     </div>
     <div class="stat-card">
       <div class="lbl">Total Paid (USDT)</div>
@@ -540,7 +544,12 @@
   <section class="view-panel active" id="tabWithdrawals">
     <div class="panel-card">
       <div class="panel-title">
-        <span>Withdrawal Requests Review</span>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <span>Withdrawal Requests Review</span>
+          <span id="pendingUsdtHeaderBadge" style="font-size: 12px; background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); padding: 3px 10px; border-radius: 8px; font-weight: 700;">
+            Pending: $0.00 USDT
+          </span>
+        </div>
         <button class="btn-success" id="bulkApproveBtn" style="font-size: 12px; padding: 6px 12px;">⚡ Approve All Pending</button>
       </div>
 
@@ -994,6 +1003,14 @@
       if (data.ok) {
         document.getElementById("statTotalUsers").textContent = (data.totalUsers || 0).toLocaleString();
         document.getElementById("statPendingW").textContent = (data.pendingWithdrawals || 0).toLocaleString();
+        
+        var pendingUsdtStr = "$" + (data.totalPendingUsdt || 0).toFixed(2);
+        var pendingUsdtEl = document.getElementById("statPendingUsdt");
+        if (pendingUsdtEl) pendingUsdtEl.textContent = pendingUsdtStr;
+
+        var headerBadge = document.getElementById("pendingUsdtHeaderBadge");
+        if (headerBadge) headerBadge.textContent = "Pending: " + pendingUsdtStr + " USDT";
+
         document.getElementById("statPaidUsdt").textContent = "$" + (data.totalPaidUsdt || 0).toFixed(2);
         document.getElementById("statTotalCoins").textContent = (data.totalCoinsInCirculation || 0).toLocaleString();
         document.getElementById("statBannedUsers").textContent = (data.bannedUsers || 0).toLocaleString();

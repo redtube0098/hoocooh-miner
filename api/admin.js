@@ -180,11 +180,18 @@ module.exports = async (req, res) => {
         ]).toArray();
         const totalPaidUsdt = paidAgg[0] ? paidAgg[0].totalUsdt : 0;
 
+        const pendingUsdtAgg = await withdrawalsCol.aggregate([
+          { $match: { status: "PENDING" } },
+          { $group: { _id: null, totalUsdt: { $sum: "$usdtAmount" } } }
+        ]).toArray();
+        const totalPendingUsdt = pendingUsdtAgg[0] ? pendingUsdtAgg[0].totalUsdt : 0;
+
         res.status(200).json({
           ok: true,
           totalUsers,
           bannedUsers,
           pendingWithdrawals: pendingW,
+          totalPendingUsdt: Number(totalPendingUsdt.toFixed(2)),
           approvedWithdrawals: approvedW,
           totalCoinsInCirculation: Math.round(totalCoins),
           totalPaidUsdt: Number(totalPaidUsdt.toFixed(2))
