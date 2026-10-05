@@ -46,30 +46,44 @@ async function getAdminTelegramIds(db) {
 async function sendTelegramMsg(botToken, chatId, text, options = {}) {
   if (!botToken || !chatId) return false;
   try {
-    const payload = {
+    const basePayload = {
       chat_id: String(chatId),
       parse_mode: "HTML",
       disable_web_page_preview: false
     };
 
-    let url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-
-    if (options.photoUrl) {
-      url = `https://api.telegram.org/bot${botToken}/sendPhoto`;
-      payload.photo = options.photoUrl;
-      payload.caption = text;
-    } else {
-      payload.text = text;
-    }
-
     if (options.reply_markup) {
-      payload.reply_markup = options.reply_markup;
+      basePayload.reply_markup = options.reply_markup;
     }
 
-    const res = await fetch(url, {
+    // If photoUrl is provided, send as photo with caption
+    if (options.photoUrl) {
+      try {
+        const photoPayload = Object.assign({}, basePayload, {
+          photo: options.photoUrl,
+          caption: text
+        });
+        const res = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(photoPayload)
+        });
+        const data = await res.json();
+        if (data && data.ok) return data;
+        console.warn("sendPhoto was not ok, falling back to sendMessage:", data);
+      } catch (photoErr) {
+        console.warn("sendPhoto error, falling back to sendMessage:", photoErr);
+      }
+    }
+
+    // Fallback: send text message
+    const textPayload = Object.assign({}, basePayload, {
+      text: text
+    });
+    const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(textPayload)
     });
     const data = await res.json();
     return data;
@@ -262,18 +276,38 @@ module.exports = async (req, res) => {
     // Command: /start
     // ----------------------------------------------------
     if (command === "/start") {
-      const appUrl = `${baseUrl}/index.html`;
+      let appUrl = `${baseUrl}/index.html`;
+      const startParam = parts[1] || "";
+      if (startParam) {
+        appUrl += `?tgWebAppStartParam=${encodeURIComponent(startParam)}`;
+      }
+
+      const photoUrl = `${baseUrl}/assets/botfather_banner.jpg`;
+
       const replyText = 
-        `⛏️ <b>Welcome to HOOCOOH Miner!</b>\n\n` +
-        `Start mining HOOCOOH coins, complete community tasks, upgrade your miners up to Level 10, and withdraw your earnings directly in USDT (TRC-20)!\n\n` +
-        `Tap the button below to launch the Miner app 👇`;
+`⛏️ <b>Welcome to HOOCOOH Miner!</b>
+
+🌕 <b>Mine the depths, earn HOOCOOH Coins, invite your crew, and withdraw real USDT!</b>
+
+🎮 <b>How it works:</b>
+
+• Dive deep to Mine & Earn
+• Complete tasks to stack more HOOCOOH Coins
+• Upgrade your mining gear for bigger rewards
+• Invite friends to expand your crew & Earn
+• Withdraw your earnings directly as USDT!
+
+<b>Convert HOOCOOH Coins ➔ USDT 💲</b>
+
+👇 <b>Tap the button below to start your dive!</b> 👇`;
 
       await sendTelegramMsg(botToken, chatId, replyText, {
+        photoUrl: photoUrl,
         reply_markup: {
           inline_keyboard: [
             [
               {
-                text: "🚀 Play HOOCOOH Miner",
+                text: "⛏️ Start hoocooh miner",
                 web_app: { url: appUrl }
               }
             ],
