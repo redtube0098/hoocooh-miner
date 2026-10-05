@@ -26,6 +26,8 @@ module.exports = async (req, res) => {
 
   const { action } = req.body || {};
 
+  const uid = String(tgUser.id);
+
   try {
     const db = await getDb();
     const challengesCol = db.collection("captcha_challenges");
@@ -34,22 +36,20 @@ module.exports = async (req, res) => {
     // Action 1: Create a fresh challenge
     if (action === "create") {
       const challengeId = crypto.randomBytes(16).toString("hex");
-      // Puzzle canvas is typically 300px wide. Valid slot range between 80px and 230px.
+      // Puzzle canvas is typically 320px wide. Valid slot range between 80px and 230px.
       const targetX = Math.floor(Math.random() * (230 - 80 + 1)) + 80;
       const targetY = Math.floor(Math.random() * (85 - 25 + 1)) + 25;
       const now = Date.now();
 
       await challengesCol.insertOne({
         challengeId,
-        userId: tgUser.id,
+        userId: uid,
         targetX,
         targetY,
         createdAt: now,
         used: false
       });
 
-      // We send targetX and targetY for the client to draw the hole slot and piece.
-      // But server validates human motion biometrics (duration, human drag trail, tolerance, single-use nonce).
       res.status(200).json({
         ok: true,
         challengeId,
@@ -70,7 +70,7 @@ module.exports = async (req, res) => {
 
       const challenge = await challengesCol.findOne({
         challengeId,
-        userId: tgUser.id,
+        userId: { $in: [uid, Number(uid), tgUser.id] },
         used: false
       });
 
@@ -91,35 +91,16 @@ module.exports = async (req, res) => {
         return;
       }
 
-      // 1. Anti-Bot Check: Human response time must be at least 500ms
-      // Termux/DevTools scripts typically solve instantly (0 - 100ms)
+      // 1. Anti-Bot Check: Instant automated scripts take 0-100ms
       const elapsed = Number(timeElapsed) || 0;
-      if (elapsed < 500) {
-        res.status(400).json({ error: "Solving too fast. Please slide naturally like a human." });
+      if (elapsed < 200) {
+        res.status(400).json({ error: "Solving too fast. Please slide naturally." });
         return;
       }
 
-      // 2. Anti-Bot Check: Human trail analysis
-      // A real touch or mouse drag generates multiple intermediate movement coordinates
-      if (!Array.isArray(trail) || trail.length < 5) {
-        res.status(400).json({ error: "Human interaction trail verification failed." });
-        return;
-      }
-
-      // Check monotonicity of timestamps in trail
-      let lastT = 0;
-      for (let i = 0; i < trail.length; i++) {
-        const pt = trail[i];
-        if (typeof pt.x !== "number" || typeof pt.t !== "number" || pt.t < lastT) {
-          res.status(400).json({ error: "Invalid gesture trajectory." });
-          return;
-        }
-        lastT = pt.t;
-      }
-
-      // 3. Tolerance Check: puzzle piece placed nearby (relaxed to ±18 pixels for easy UX)
+      // 2. Tolerance Check: puzzle piece placed nearby (relaxed to ±20 pixels for easy UX)
       const diff = Math.abs(solvedX - challenge.targetX);
-      if (diff > 18) {
+      if (diff > 20) {
         res.status(400).json({
           error: "Puzzle piece did not fit into place. Try again.",
           diff
@@ -131,7 +112,7 @@ module.exports = async (req, res) => {
       const captchaToken = crypto.randomBytes(24).toString("hex");
       await tokensCol.insertOne({
         token: captchaToken,
-        userId: tgUser.id,
+        userId: uid,
         createdAt: now,
         used: false
       });

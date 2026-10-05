@@ -34,9 +34,10 @@ module.exports = async (req, res) => {
 
     const db = await getDb();
     const tokensCol = db.collection("captcha_tokens");
+    const uid = String(tgUser.id);
     const tokenDoc = await tokensCol.findOne({
       token: captchaToken,
-      userId: tgUser.id,
+      userId: { $in: [uid, Number(uid), tgUser.id] },
       used: false
     });
 

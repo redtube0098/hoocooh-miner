@@ -6644,9 +6644,10 @@
         }
 
         setTimeout(function() {
+          var cb = activeCaptchaCallback;
           closeSecurityCaptcha();
-          if (typeof activeCaptchaCallback === "function") {
-            activeCaptchaCallback(token);
+          if (typeof cb === "function") {
+            cb(token);
           }
         }, 550);
       }).catch(function(err) {
@@ -6860,94 +6861,89 @@
       startAdPlayback(function onAdComplete() {
         // 3. Ad is finished! Now open the security verification before reward
         openSecurityCaptcha(function(verifiedCaptchaToken) {
-          pendingCaptchaToken = verifiedCaptchaToken;
-
-          // 4. Verification succeeded! Show Image 2: Reward Claimed!
-          if (watchFlowPreView) watchFlowPreView.classList.remove("active");
-          if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
-          if (watchFlowSuccessView) watchFlowSuccessView.classList.add("active");
-          if (sheetSuccessWatchedEl) {
-            sheetSuccessWatchedEl.textContent = Math.min(10, watched + 1);
-          }
-          if (sheetCollectContinueBtn) {
-            sheetCollectContinueBtn.disabled = false;
-            sheetCollectContinueBtn.innerHTML = '<span>COLLECT & CONTINUE</span>';
-          }
-        });
-      });
-    });
-  }
-
-  // Image 2 Sheet: "COLLECT & CONTINUE" -> Claims Reward, Updates DB & Balances -> Returns to Image 1 Sheet
-  if (sheetCollectContinueBtn) {
-    sheetCollectContinueBtn.addEventListener("click", function() {
-      if (!pendingCaptchaToken) {
-        showToast("Session expired. Please watch ad again.");
-        updateWatchSheetView1();
-        if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
-        if (watchFlowPreView) watchFlowPreView.classList.add("active");
-        return;
-      }
-
-      sheetCollectContinueBtn.disabled = true;
-      sheetCollectContinueBtn.innerHTML = '<span>Collecting...</span>';
-
-      fetch("/api/ads", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Telegram-Init-Data": initData
-        },
-        body: JSON.stringify({ captchaToken: pendingCaptchaToken })
-      }).then(function(r) {
-        if (r.status === 404) {
-          return fetch("/api/ads.js", {
+          // Immediately credit reward into DB and user balance!
+          fetch("/api/ads", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               "X-Telegram-Init-Data": initData
             },
-            body: JSON.stringify({ captchaToken: pendingCaptchaToken })
+            body: JSON.stringify({ captchaToken: verifiedCaptchaToken })
+          }).then(function(r) {
+            if (r.status === 404) {
+              return fetch("/api/ads.js", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-Telegram-Init-Data": initData
+                },
+                body: JSON.stringify({ captchaToken: verifiedCaptchaToken })
+              });
+            }
+            return r;
+          }).then(handleResponse).then(function(res) {
+            if (!res.ok) {
+              var err = (res.data && res.data.error) ? res.data.error : "Failed to claim reward";
+              showToast(err);
+              updateWatchSheetView1();
+              if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
+              if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
+              if (watchFlowPreView) watchFlowPreView.classList.add("active");
+              return;
+            }
+
+            // Successfully credited in DB & UI!
+            user.balance = res.data.newBalance;
+            user.adsWatchedToday = res.data.adsWatchedToday;
+            user.adsEarnedToday = res.data.adsEarnedToday;
+            user.adsCycleStartedAt = res.data.adsCycleStartedAt;
+
+            renderBalance();
+            renderAds();
+            if (tg && tg.HapticFeedback) {
+              try { tg.HapticFeedback.notificationOccurred("success"); } catch(e) {}
+            }
+
+            // 4. Show Image 2: Reward Claimed!
+            if (watchFlowPreView) watchFlowPreView.classList.remove("active");
+            if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
+            if (watchFlowSuccessView) watchFlowSuccessView.classList.add("active");
+            if (sheetSuccessWatchedEl) {
+              sheetSuccessWatchedEl.textContent = user.adsWatchedToday;
+            }
+            if (sheetCollectContinueBtn) {
+              sheetCollectContinueBtn.disabled = false;
+              sheetCollectContinueBtn.innerHTML = '<span>COLLECT & CONTINUE</span>';
+            }
+          }).catch(function(err) {
+            showToast("Network error. Please try again.");
+            updateWatchSheetView1();
+            if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
+            if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
+            if (watchFlowPreView) watchFlowPreView.classList.add("active");
           });
-        }
-        return r;
-      }).then(handleResponse).then(function(res) {
-        if (!res.ok) {
-          var err = (res.data && res.data.error) ? res.data.error : "Failed to claim reward";
-          showToast(err);
-          sheetCollectContinueBtn.disabled = false;
-          sheetCollectContinueBtn.innerHTML = '<span>COLLECT & CONTINUE</span>';
-          return;
-        }
-
-        user.balance = res.data.newBalance;
-        user.adsWatchedToday = res.data.adsWatchedToday;
-        user.adsEarnedToday = res.data.adsEarnedToday;
-        user.adsCycleStartedAt = res.data.adsCycleStartedAt;
-
-        renderBalance();
-        renderAds();
-        showToast("🎉 +15 HOOCOOH Coins collected!");
-        if (tg && tg.HapticFeedback) {
-          try { tg.HapticFeedback.notificationOccurred("success"); } catch(e) {}
-        }
-
-        pendingCaptchaToken = null;
-
-        // Switch smoothly back to Image 1 View (continuous up to 10 times daily!)
-        updateWatchSheetView1();
-        if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
-        if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
-        if (watchFlowPreView) watchFlowPreView.classList.add("active");
-
-        if (user.adsWatchedToday >= 10) {
-          showToast("🎉 All 10 daily ads completed! Next ads available in 24 hours.");
-        }
-      }).catch(function(err) {
-        showToast((err && err.message) ? err.message : "Network error");
-        sheetCollectContinueBtn.disabled = false;
-        sheetCollectContinueBtn.innerHTML = '<span>COLLECT & CONTINUE</span>';
+        });
       });
+    });
+  }
+
+  // Image 2 Sheet: "COLLECT & CONTINUE" -> Returns to Image 1 Sheet with updated counts
+  if (sheetCollectContinueBtn) {
+    sheetCollectContinueBtn.addEventListener("click", function() {
+      showToast("🎉 +15 HOOCOOH Coins added to balance!");
+      if (tg && tg.HapticFeedback) {
+        try { tg.HapticFeedback.notificationOccurred("success"); } catch(e) {}
+      }
+
+      // Switch smoothly back to Image 1 View (continuous up to 10 times daily!)
+      updateWatchSheetView1();
+      if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
+      if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
+      if (watchFlowPreView) watchFlowPreView.classList.add("active");
+
+      if (user.adsWatchedToday >= 10) {
+        showToast("🎉 All 10 daily ads completed! Next ads available in 24 hours.");
+      }
     });
   }
 
