@@ -15,7 +15,7 @@
     --text: #0e2029;
     --text-dim: #778d99;
     --border: rgba(14, 32, 41, 0.07);
-    --nav-bg: #ffffff;
+    --nav-bg: rgba(255, 255, 255, 0.78);
     --nav-inactive: #889ca8;
     --accent: #20b8a3;
     --accent-glow: rgba(32, 184, 163, 0.28);
@@ -31,7 +31,7 @@
     --text: #eaf5f5;
     --text-dim: #7993a0;
     --border: rgba(255, 255, 255, 0.08);
-    --nav-bg: #0c1922;
+    --nav-bg: rgba(12, 25, 34, 0.80);
     --nav-inactive: #5f7887;
     --accent: #27d4bc;
     --accent-glow: rgba(39, 212, 188, 0.35);
@@ -816,7 +816,7 @@
     font-size: 12px;
   }
 
-  /* Bottom Navigation Bar */
+  /* Bottom Navigation Bar with Translucent Frosted Glass Effect */
   .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -825,7 +825,10 @@
     max-width: 480px;
     margin: 0 auto;
     background: var(--nav-bg);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
     border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
     display: flex;
     z-index: 40;
     padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
