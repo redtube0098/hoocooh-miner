@@ -3,45 +3,6 @@ const { validateInitData } = require("../lib/telegramAuth");
 const { findOrCreateUser } = require("../lib/userHelper");
 const { ObjectId } = require("mongodb");
 
-const DEFAULT_TASKS = [
-  {
-    _id: "default_1",
-    type: "verified",
-    title: "HOOCOOH Announcement",
-    link: "https://t.me/hoocooh_miner",
-    reward: 10,
-    targetCount: 10000,
-    completedBy: []
-  },
-  {
-    _id: "default_2",
-    type: "verified",
-    title: "HOOCOOH Community Chat",
-    link: "https://t.me/hoocooh_chat",
-    reward: 10,
-    targetCount: 10000,
-    completedBy: []
-  },
-  {
-    _id: "default_3",
-    type: "normal",
-    title: "Crypto Binaca Airdrop",
-    link: "https://t.me/CryptoBinaca",
-    reward: 10,
-    targetCount: 5000,
-    completedBy: []
-  },
-  {
-    _id: "default_4",
-    type: "normal",
-    title: "Airdrop Titans Community",
-    link: "https://t.me/AirdropTitans",
-    reward: 10,
-    targetCount: 5000,
-    completedBy: []
-  }
-];
-
 module.exports = async (req, res) => {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   if (!botToken) {
@@ -70,27 +31,42 @@ module.exports = async (req, res) => {
       return;
     }
 
-    // GET: list tasks
+    // GET: list tasks (Only show tasks that the user hasn't completed yet!)
     if (req.method === "GET") {
       const userCompleted = (user && user.completedTasks) || [];
 
-      // Find custom active tasks
+      // Find active tasks from database
       const customTasks = await tasksCol.find({ status: { $ne: "disabled" } }).sort({ createdAt: -1 }).toArray();
-      const allTasks = [...DEFAULT_TASKS, ...customTasks];
 
-      const mapped = allTasks.map(t => {
+      // Filter out tasks already completed/claimed by this user OR target limit reached
+      const activeTasks = customTasks.filter(t => {
         const idStr = String(t._id);
         const completedArr = t.completedBy || [];
         const isCompleted = userCompleted.includes(idStr) || completedArr.includes(telegramId);
+        
+        // If user already claimed this task, it disappears!
+        if (isCompleted) return false;
+
+        // If target limit reached (and not unlimited), hide from new users
+        if (!t.isUnlimited && t.targetCount && completedArr.length >= t.targetCount) {
+          return false;
+        }
+
+        return true;
+      });
+
+      const mapped = activeTasks.map(t => {
+        const idStr = String(t._id);
+        const completedArr = t.completedBy || [];
         return {
           id: idStr,
           type: t.type || "normal",
           title: t.title,
           link: t.link,
           reward: 10,
-          targetCount: t.targetCount || 100,
+          targetCount: t.targetCount === 99999999 || !t.targetCount || t.isUnlimited ? "Unlimited" : t.targetCount,
           completedCount: completedArr.length,
-          isCompleted
+          isCompleted: false
         };
       });
 
@@ -116,15 +92,10 @@ module.exports = async (req, res) => {
           return;
         }
 
-        let taskObj = DEFAULT_TASKS.find(d => d._id === taskId);
-        let taskQuery = null;
-
-        if (!taskObj) {
-          let objId;
-          try { objId = new ObjectId(taskId); } catch(e) { objId = null; }
-          taskQuery = objId ? { _id: objId } : { _id: taskId };
-          taskObj = await tasksCol.findOne(taskQuery);
-        }
+        let objId;
+        try { objId = new ObjectId(taskId); } catch(e) { objId = null; }
+        const taskQuery = objId ? { _id: objId } : { _id: taskId };
+        const taskObj = await tasksCol.findOne(taskQuery);
 
         if (!taskObj) {
           res.status(404).json({ error: "Task not found" });
