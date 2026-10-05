@@ -423,23 +423,25 @@
   .status-pill {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
-    padding: 7px 18px;
+    padding: 6px 18px;
     border-radius: 100px;
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 800;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
+    transition: all 0.25s ease;
   }
   .status-pill.ready {
     background: #eafaf5;
     border: 1px solid #b6ede2;
     color: #149c85;
   }
-  .status-pill.waiting {
-    background: var(--sub-box-bg);
-    border: 1px solid var(--border);
-    color: var(--text-dim);
+  .status-pill.waiting, .status-pill.in-progress {
+    background: #e6fcf8;
+    border: 1px solid rgba(20, 184, 166, 0.35);
+    color: #0d9488;
   }
   .status-pill .dot {
     width: 7px;
@@ -448,19 +450,24 @@
     background: currentColor;
   }
   .status-pill.ready .dot {
-    box-shadow: 0 0 6px #149c85;
-    animation: blinkDot 1.5s infinite;
+    box-shadow: 0 0 7px #149c85;
+    animation: blinkDot 1.4s infinite ease-in-out;
+  }
+  .status-pill.waiting .dot, .status-pill.in-progress .dot {
+    background: #00d2b4;
+    box-shadow: 0 0 7px #00d2b4;
+    animation: blinkDot 1.8s infinite ease-in-out;
   }
   @keyframes blinkDot {
     0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.85); }
+    50% { opacity: 0.35; transform: scale(0.85); }
   }
 
   .mine-visual-wrap {
     position: relative;
     width: 190px;
     height: 185px;
-    margin: 16px auto 14px;
+    margin: 16px auto 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -486,25 +493,73 @@
   }
 
   .lvl-badge-row {
-    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    margin-top: 4px;
+    margin-bottom: 2px;
   }
   .lvl-badge-chip {
-    display: inline-block;
-    background: var(--sub-box-bg);
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 800;
-    padding: 5px 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: #ffffff;
+    padding: 7px 22px;
     border-radius: 100px;
-    border: 1px solid var(--border);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  }
+  .lvl-badge-chip .lvl-tag {
+    color: #06b6d4;
+    font-size: 13.5px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+  }
+  .lvl-badge-chip .lvl-name {
+    color: #1e293b;
+    font-size: 13.5px;
+    font-weight: 800;
   }
 
+  /* In-Progress / Charging Countdown View (matched to Nautilus media_1791210582153.png) */
+  .mining-charging-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .next-yield-label {
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    user-select: none;
+  }
+  .countdown-clock-big {
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: 0.5px;
+    color: #0f172a;
+    margin-bottom: 22px;
+    font-variant-numeric: tabular-nums;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    user-select: none;
+  }
+
+  /* Ready View */
+  .mining-ready-view {
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
   .mining-complete-text {
     font-size: 11.5px;
     font-weight: 800;
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
     color: var(--text-dim);
-    margin-top: 8px;
+    margin-bottom: 4px;
     text-transform: uppercase;
   }
   .mining-reward-big {
@@ -515,9 +570,9 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin: 4px 0 14px;
+    margin: 2px 0 6px;
   }
-  .mining-reward-big img {
+  .mining-reward-big img, .mine-reward-coin-icon {
     width: 28px;
     height: 28px;
     object-fit: contain;
@@ -525,32 +580,43 @@
 
   .collect-btn {
     width: 100%;
-    border: none;
-    border-radius: 100px;
-    padding: 16px 24px;
-    font-size: 16px;
-    font-weight: 800;
-    cursor: pointer;
+    border-radius: 20px;
+    padding: 16px 20px;
+    font-size: 15.5px;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    box-shadow: 0 8px 24px var(--accent-glow);
-    transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    gap: 8px;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease, background 0.2s ease;
   }
+  /* Disabled / Charging State (⚡ Mining Active...) */
+  .collect-btn:disabled, .collect-btn.mining-active {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #94a3b8;
+    box-shadow: none;
+    cursor: default;
+    pointer-events: none;
+  }
+  .collect-btn .bolt-icon {
+    color: #f59e0b;
+    font-size: 16px;
+    line-height: 1;
+  }
+  /* Active / Collect Ready State */
   .collect-btn:not(:disabled) {
+    border: none;
     background: linear-gradient(135deg, #4ee0cb 0%, #1db8a2 100%);
     color: #ffffff;
-    box-shadow: 0 6px 20px var(--accent-glow);
+    font-weight: 800;
+    font-size: 16px;
+    box-shadow: 0 8px 24px var(--accent-glow);
+    cursor: pointer;
+    pointer-events: auto;
   }
   .collect-btn:not(:disabled):active {
     transform: scale(0.98);
-  }
-  .collect-btn:disabled {
-    background: var(--sub-box-bg);
-    color: var(--text-dim);
-    cursor: not-allowed;
-    border: 1px solid var(--border);
   }
   .collect-btn img {
     width: 24px;
@@ -4455,35 +4521,49 @@
       </div>
     </div>
 
-    <!-- Card 2: Mining Card -->
-    <div class="card">
-      <div class="status-pill ready" id="statusPill">
+    <!-- Card 2: Mining Card (Nautilus layout matching media_1791210582153.png) -->
+    <div class="card mine-center-card">
+      <div class="status-pill waiting" id="statusPill">
         <span class="dot"></span>
-        <span id="statusPillText">REWARD READY!</span>
+        <span id="statusPillText">MINING IN PROGRESS</span>
       </div>
 
       <!-- 3D Logo positioned directly under status pill, matching Nautilus layout -->
       <div class="mine-visual-wrap">
-        <div class="mine-glow"></div>
-        <img src="assets/logo.webp" alt="HOOCOOH Mining" class="mine-img">
+        <div class="mine-glow" id="homeMineGlow"></div>
+        <img src="assets/logo.webp" alt="HOOCOOH Mining" class="mine-img" id="homeMineImg">
       </div>
 
+      <!-- Level Badge Pill: LV.1 Starter -->
       <div class="lvl-badge-row">
-        <span class="lvl-badge-chip" id="minerLvlChip">Lv.1 Starter</span>
+        <div class="lvl-badge-chip" id="minerLvlChip">
+          <span class="lvl-tag" id="minerLvlTag">LV.1</span>
+          <span class="lvl-name" id="minerLvlName">Starter</span>
+        </div>
       </div>
 
-      <div class="mining-complete-text" id="mineTitle">MINING COMPLETE!</div>
-      <div class="mining-reward-big" id="mineReward">
-        <span>+80</span>
-        <img src="assets/logo.webp" alt="Coin">
+      <!-- In-Progress / Charging State (media_1791210582153.png) -->
+      <div class="mining-charging-view" id="mineChargingView">
+        <div class="next-yield-label">NEXT YIELD IN</div>
+        <div class="countdown-clock-big" id="mineCountdownClock">02:00:00</div>
       </div>
 
-      <button class="collect-btn" id="collectBtn">
-        <img src="assets/logo.webp" alt="Icon">
-        <span>Collect HOOCOOH</span>
+      <!-- Ready State (Hidden while charging) -->
+      <div class="mining-ready-view" id="mineReadyView" style="display: none;">
+        <div class="mining-complete-text" id="mineTitle">MINING COMPLETE!</div>
+        <div class="mining-reward-big" id="mineReward">
+          <span id="mineRewardAmount">+80</span>
+          <img src="assets/logo.webp" alt="Coin" class="mine-reward-coin-icon">
+        </div>
+      </div>
+
+      <!-- Action Button / State Pill -->
+      <button class="collect-btn mining-active" id="collectBtn" disabled>
+        <span class="bolt-icon" style="color: #f59e0b; font-size: 16px; margin-right: 4px;">⚡</span>
+        <span>Mining Active...</span>
       </button>
 
-      <div class="timer-caption" id="timerText">Ready to collect</div>
+      <div class="timer-caption" id="timerText" style="display: none;">Ready to collect</div>
     </div>
 
     <!-- Card 3: Daily Bonus Card -->
@@ -5968,6 +6048,8 @@
     var lvlBadgeTag = document.getElementById("levelBadgeTag");
     var progressLvlNum = document.getElementById("progressLvlNum");
     var progressLevelTitle = document.getElementById("progressLevelTitle");
+    var minerLvlTag = document.getElementById("minerLvlTag");
+    var minerLvlName = document.getElementById("minerLvlName");
     var minerLvlChip = document.getElementById("minerLvlChip");
     var liveMinerTag = document.getElementById("liveMinerTag");
 
@@ -5975,7 +6057,9 @@
     if (lvlBadgeTag) lvlBadgeTag.textContent = "Lv." + currentLvl;
     if (progressLvlNum) progressLvlNum.textContent = currentLvl;
     if (progressLevelTitle) progressLevelTitle.textContent = "HOOCOOH " + lvlName;
-    if (minerLvlChip) minerLvlChip.textContent = "Lv." + currentLvl + " " + lvlName;
+    if (minerLvlTag) minerLvlTag.textContent = "LV." + currentLvl;
+    if (minerLvlName) minerLvlName.textContent = lvlName;
+    if (!minerLvlTag && minerLvlChip) minerLvlChip.textContent = "LV." + currentLvl + " " + lvlName;
     if (liveMinerTag) liveMinerTag.textContent = "Lv." + currentLvl + " " + lvlName + " (" + mult + "x)";
 
     var nextCost = UPGRADE_COSTS[currentLvl - 1];
@@ -6016,36 +6100,47 @@
     var progressPercent = ready ? 100 : Math.min(100, Math.max(0, Math.floor((elapsed / interval) * 100)));
     var remaining = Math.max(0, interval - (now - lastCollected));
 
-    // 1. Home Tab Mining Card
+    // 1. Home Tab Mining Card (matched to Nautilus media_1791210582153.png)
     var pill = document.getElementById("statusPill");
     var pillText = document.getElementById("statusPillText");
     var btn = document.getElementById("collectBtn");
-    var titleEl = document.getElementById("mineTitle");
-    var rewardEl = document.getElementById("mineReward");
+    var chargingView = document.getElementById("mineChargingView");
+    var readyView = document.getElementById("mineReadyView");
+    var clockEl = document.getElementById("mineCountdownClock");
     var timerText = document.getElementById("timerText");
     var mineRewardAmount = document.getElementById("mineRewardAmount");
-    var mineLogoImg = document.querySelector(".mine-img");
+    var mineLogoImg = document.getElementById("homeMineImg") || document.querySelector(".mine-img");
+    var minerLvlTag = document.getElementById("minerLvlTag");
+    var minerLvlName = document.getElementById("minerLvlName");
 
-    if (mineLogoImg) mineLogoImg.src = currentLogo;
+    if (mineLogoImg && mineLogoImg.src !== currentLogo) mineLogoImg.src = currentLogo;
+    if (minerLvlTag) minerLvlTag.textContent = "LV." + currentLvl;
+    if (minerLvlName) minerLvlName.textContent = lvlName;
     if (mineRewardAmount) mineRewardAmount.textContent = "+" + reward;
 
     if (pill && pillText && btn) {
       if (ready) {
         pill.className = "status-pill ready";
         pillText.textContent = "REWARD READY!";
-        if (titleEl) titleEl.style.display = "block";
-        if (rewardEl) rewardEl.style.display = "flex";
+        if (chargingView) chargingView.style.display = "none";
+        if (readyView) readyView.style.display = "block";
         btn.disabled = false;
-        btn.innerHTML = '<img src="' + currentLogo + '" alt="Icon"> <span>Collect HOOCOOH (+' + reward + ')</span>';
-        if (timerText) timerText.textContent = "Ready to collect";
+        btn.className = "collect-btn";
+        btn.innerHTML = '<img src="' + currentLogo + '" alt="Icon" style="width:24px;height:24px;object-fit:contain;"> <span>Collect HOOCOOH (+' + reward + ')</span>';
+        if (timerText) {
+          timerText.textContent = "Ready to collect";
+          timerText.style.display = "block";
+        }
       } else {
-        pill.className = "status-pill waiting";
-        pillText.textContent = "MINING...";
-        if (titleEl) titleEl.style.display = "none";
-        if (rewardEl) rewardEl.style.display = "none";
+        pill.className = "status-pill waiting in-progress";
+        pillText.textContent = "MINING IN PROGRESS";
+        if (chargingView) chargingView.style.display = "flex";
+        if (readyView) readyView.style.display = "none";
+        if (clockEl) clockEl.textContent = formatDuration(remaining);
         btn.disabled = true;
-        btn.innerHTML = '<img src="' + currentLogo + '" alt="Icon"> <span>Mining in progress</span>';
-        if (timerText) timerText.textContent = "Next collection in " + formatDuration(remaining);
+        btn.className = "collect-btn mining-active";
+        btn.innerHTML = '<span class="bolt-icon" style="color: #f59e0b; font-size: 16px; margin-right: 4px;">⚡</span> <span>Mining Active...</span>';
+        if (timerText) timerText.style.display = "none";
       }
     }
 
