@@ -6,7 +6,7 @@
 <title>HOOCOOH Mine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
@@ -421,6 +421,7 @@
     z-index: 2;
   }
   .status-pill {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -429,7 +430,7 @@
     border-radius: 100px;
     font-size: 11px;
     font-weight: 800;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.9px;
     text-transform: uppercase;
     transition: all 0.25s ease;
   }
@@ -499,6 +500,7 @@
     margin-bottom: 2px;
   }
   .lvl-badge-chip {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -510,15 +512,17 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
   }
   .lvl-badge-chip .lvl-tag {
+    font-family: 'Outfit', sans-serif;
     color: #06b6d4;
     font-size: 13.5px;
     font-weight: 800;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.3px;
   }
   .lvl-badge-chip .lvl-name {
+    font-family: 'Outfit', sans-serif;
     color: #1e293b;
     font-size: 13.5px;
-    font-weight: 800;
+    font-weight: 700;
   }
 
   /* In-Progress / Charging Countdown View (matched to Nautilus media_1791210582153.png) */
@@ -528,9 +532,10 @@
     align-items: center;
   }
   .next-yield-label {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
     font-size: 11.5px;
     font-weight: 800;
-    letter-spacing: 1.6px;
+    letter-spacing: 2px;
     color: #64748b;
     text-transform: uppercase;
     margin-top: 18px;
@@ -538,19 +543,20 @@
     user-select: none;
   }
   .countdown-clock-big {
-    font-size: 38px;
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    font-size: 40px;
     font-weight: 800;
     line-height: 1.1;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     color: #0f172a;
     margin-bottom: 22px;
     font-variant-numeric: tabular-nums;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     user-select: none;
   }
 
   /* Ready View */
   .mining-ready-view {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
     margin-top: 12px;
     margin-bottom: 12px;
   }
@@ -5855,7 +5861,7 @@
     "Transcendent"
   ];
   var LEVEL_MULTIPLIERS = [1.0, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0];
-  var UPGRADE_COSTS = [1000, 3000, 6500, 13000, 26000, 52000, 104000, 208000, 416000];
+  var UPGRADE_COSTS = [1000, 4500, 7000, 10000, 20000, 40000, 80000, 100000, 200000];
 
   // Specific dynamic color shades and aura glow for each miner tier
   var LEVEL_THEMES = [
