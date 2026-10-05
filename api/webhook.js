@@ -349,7 +349,7 @@ module.exports = async (req, res) => {
           if (db) {
             await db.collection("users").updateOne(
               { telegramId: cbSenderId },
-              { $set: { language: finalLang, updatedAt: Date.now() } },
+              { $set: { language: finalLang, languageSelected: true, updatedAt: Date.now() } },
               { upsert: true }
             );
           }
@@ -453,16 +453,23 @@ module.exports = async (req, res) => {
     // ----------------------------------------------------
     if (command === "/start") {
       let userLang = "en";
+      let hasSelected = false;
       let db = null;
       try {
         db = await getDb();
         if (db) {
           const u = await db.collection("users").findOne({ telegramId: senderId });
-          if (u && u.language) userLang = u.language;
+          if (u) {
+            if (u.language) userLang = u.language;
+            if (u.languageSelected === true) hasSelected = true;
+          }
         }
       } catch(e){}
 
       let appUrl = `${baseUrl}/index.html?lang=${userLang}`;
+      if (!hasSelected) {
+        appUrl += `&needLang=1`;
+      }
       const startParam = parts[1] || "";
       if (startParam) {
         appUrl += `&tgWebAppStartParam=${encodeURIComponent(startParam)}`;

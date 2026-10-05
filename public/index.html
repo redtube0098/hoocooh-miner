@@ -6293,8 +6293,13 @@
 
   var currentLang = "en";
   try {
+    localStorage.removeItem("hoocooh_language");
+    localStorage.removeItem("hoocooh_language_selected");
+  } catch(e){}
+
+  try {
     var _initParams = new URLSearchParams(window.location.search);
-    var _initLang = _initParams.get("lang") || localStorage.getItem("hoocooh_language");
+    var _initLang = _initParams.get("lang");
     if (_initLang && ["en", "ru", "ar"].indexOf(_initLang) !== -1) {
       currentLang = _initLang;
     }
@@ -6302,13 +6307,19 @@
 
   var I18N = {
     en: {
+      // Bottom Nav
       nav_home: "Home",
       nav_earn: "Earn",
       nav_mining: "Mining",
       nav_invite: "Invite",
       nav_wallet: "Wallet",
+
+      // Language modal
       lang_title: "Language",
       lang_subtitle: "Choose your language",
+
+      // Home Dashboard
+      miner_user: "Miner",
       balance_label: "HOOCOOH Coins",
       next_yield_in: "NEXT YIELD IN",
       mining_in_progress: "MINING IN PROGRESS",
@@ -6317,28 +6328,86 @@
       reward_ready: "REWARD READY!",
       ready_to_collect: "Ready to collect",
       collect_hoocooh: "Collect HOOCOOH",
+
+      // Mining Tab
+      stat_level: "LEVEL",
+      stat_multiplier: "MULTIPLIER",
+      stat_progress: "PROGRESS",
+      mining_complete_collect: "MINING COMPLETE — COLLECT NOW!",
       collect_coins: "Collect HOOCOOH Coins",
+      evo_title: "HOOCOOH Evolution",
+      curr_level_lbl: "Current Level",
+      next_level_lbl: "Next Level",
+      mult_sub: "x{x} reward multiplier",
       upgrade_for: "⬆ Upgrade for {cost} HOOCOOH",
       max_level: "🏆 MAX LEVEL REACHED",
-      watch_earn: "Watch & Earn",
-      tasks: "Tasks",
-      post_task: "➕ Post Task",
-      invite_friends: "Invite Friends & Earn",
-      copy_link: "Copy Link",
-      copied: "Copied to clipboard!",
-      total_balance: "TOTAL BALANCE",
-      withdraw: "Withdraw",
-      deposit: "Deposit",
-      confirm_withdraw: "Confirm Withdrawal"
+
+      // Earn Tab
+      header_watch_ads: "WATCH ADS, EARN HOOCOOH",
+      watch_earn_title: "Watch & Earn",
+      watch_earn_sub: "Earn +15 HOOCOOH Coins per ad watched",
+      daily_progress: "Daily Progress",
+      remaining_today: "REMAINING TODAY",
+      earned_today: "EARNED TODAY",
+      watch_btn: "▶ Watch Ad (+15 HOOCOOH Coins)",
+      header_spin: "SPIN & EARN",
+      spin_badge: "🎡 Lucky Wheel",
+      spin_title: "Spin & Earn",
+      spin_sub: "Spin the lucky wheel daily & win up to 1,000+ HOOCOOH Coins instantly!",
+      spin_btn: "SPIN NOW ➔",
+      header_tasks: "COMPLETE TASKS",
+      tab_tasks: "Tasks",
+      post_task_btn: "➕ Post Task",
+      filter_all: "All",
+      filter_verified: "✓ Verified",
+      filter_normal: "Normal",
+
+      // Invite Tab
+      your_network: "YOUR NETWORK:",
+      friends_unit: "friends",
+      commission_strip: "Commission: 5% lifetime",
+      invite_hero_title: "Your Network",
+      invite_hero_sub: "Earn <strong>+100 HOOCOOH Coins</strong> per recruit · <strong>5%</strong> lifetime commission",
+      stat_recruited: "RECRUITED",
+      stat_coins_earned: "HOOCOOH COINS EARNED",
+      stat_my_rank: "MY RANK",
+      invite_telegram_btn: "Invite via Telegram",
+      ref_link_lbl: "YOUR REFERRAL LINK",
+      copy_btn: "Copy",
+      tab_rankings: "🏆 Rankings",
+      tab_milestones: "🎯 Milestones",
+      tab_overview: "🏠 Overview",
+
+      // Wallet Tab
+      vault_balance_badge: "Vault Balance",
+      vault_coins_lbl: "HOOCOOH Coins",
+      withdraw_btn: "💸 Withdraw USDT",
+      stat_referrals: "REFERRALS",
+      stat_total_mined: "TOTAL MINED",
+      payout_logs_title: "View live payout logs",
+      tx_history_header: "TRANSACTION HISTORY",
+      no_tx_title: "No withdrawal transactions yet",
+      no_tx_sub: "Mine coins and invite friends to earn and request payouts!",
+
+      // Banned Screen
+      banned_title: "Your account has been suspended",
+      banned_desc: "Your account has been permanently restricted by administration for violating terms of service. You can no longer access HOOCOOH Miner."
     },
+
     ru: {
+      // Bottom Nav
       nav_home: "Главная",
       nav_earn: "Заработок",
       nav_mining: "Майнинг",
       nav_invite: "Друзья",
       nav_wallet: "Кошелек",
+
+      // Language modal
       lang_title: "Язык",
       lang_subtitle: "Выберите язык",
+
+      // Home Dashboard
+      miner_user: "Шахтер",
       balance_label: "Монеты HOOCOOH",
       next_yield_in: "СЛЕДУЮЩИЙ СБОР ЧЕРЕЗ",
       mining_in_progress: "МАЙНИНГ АКТИВЕН",
@@ -6347,28 +6416,86 @@
       reward_ready: "НАГРАДА ГОТОВА!",
       ready_to_collect: "Готово к сбору",
       collect_hoocooh: "Собрать HOOCOOH",
+
+      // Mining Tab
+      stat_level: "УРОВЕНЬ",
+      stat_multiplier: "МНОЖИТЕЛЬ",
+      stat_progress: "ПРОГРЕСС",
+      mining_complete_collect: "МАЙНИНГ ЗАВЕРШЕН — ЗАБЕРИТЕ!",
       collect_coins: "Собрать монеты HOOCOOH",
+      evo_title: "Эволюция майнера",
+      curr_level_lbl: "Текущий уровень",
+      next_level_lbl: "Следующий уровень",
+      mult_sub: "x{x} множитель наград",
       upgrade_for: "⬆ Улучшить за {cost} HOOCOOH",
       max_level: "🏆 МАКСИМАЛЬНЫЙ УРОВЕНЬ",
-      watch_earn: "Смотри и зарабатывай",
-      tasks: "Задания",
-      post_task: "➕ Создать задание",
-      invite_friends: "Приглашай друзей и зарабатывай",
-      copy_link: "Копировать",
-      copied: "Скопировано в буфер!",
-      total_balance: "ОБЩИЙ БАЛАНС",
-      withdraw: "Вывод",
-      deposit: "Пополнение",
-      confirm_withdraw: "Подтвердить вывод"
+
+      // Earn Tab
+      header_watch_ads: "СМОТРИ РЕКЛАМУ, ПОЛУЧАЙ HOOCOOH",
+      watch_earn_title: "Смотри и зарабатывай",
+      watch_earn_sub: "Получайте +15 монет HOOCOOH за просмотр",
+      daily_progress: "Дневной прогресс",
+      remaining_today: "ОСТАЛОСЬ СЕГОДНЯ",
+      earned_today: "ЗАРАБОТАНО СЕГОДНЯ",
+      watch_btn: "▶ Смотреть рекламу (+15 HOOCOOH)",
+      header_spin: "КРУТИ И ВЫИГРЫВАЙ",
+      spin_badge: "🎡 Колесо удачи",
+      spin_title: "Крути и выигрывай",
+      spin_sub: "Крутите колесо удачи и выигрывайте до 1,000+ монет HOOCOOH!",
+      spin_btn: "КРУТИТЬ ➔",
+      header_tasks: "ВЫПОЛНЯЙТЕ ЗАДАНИЯ",
+      tab_tasks: "Задания",
+      post_task_btn: "➕ Создать задание",
+      filter_all: "Все",
+      filter_verified: "✓ Проверенные",
+      filter_normal: "Обычные",
+
+      // Invite Tab
+      your_network: "ВАША СЕТЬ:",
+      friends_unit: "друзей",
+      commission_strip: "Комиссия: 5% навсегда",
+      invite_hero_title: "Ваша сеть",
+      invite_hero_sub: "Получайте <strong>+100 монет</strong> за друга · <strong>5%</strong> пожизненная комиссия",
+      stat_recruited: "ПРИГЛАШЕНО",
+      stat_coins_earned: "ЗАРАБОТАНО МОНЕТ",
+      stat_my_rank: "МОЙ РАНГ",
+      invite_telegram_btn: "Пригласить через Telegram",
+      ref_link_lbl: "ВАША РЕФЕРАЛЬНАЯ ССЫЛКА",
+      copy_btn: "Копировать",
+      tab_rankings: "🏆 Рейтинг",
+      tab_milestones: "🎯 Награды",
+      tab_overview: "🏠 Обзор",
+
+      // Wallet Tab
+      vault_balance_badge: "Баланс хранилища",
+      vault_coins_lbl: "Монеты HOOCOOH",
+      withdraw_btn: "💸 Вывести USDT",
+      stat_referrals: "РЕФЕРАЛЫ",
+      stat_total_mined: "ВСЕГО ДОБЫТО",
+      payout_logs_title: "Смотреть журнал выплат",
+      tx_history_header: "ИСТОРИЯ ТРАНЗАКЦИЙ",
+      no_tx_title: "Пока нет транзакций на вывод",
+      no_tx_sub: "Добывайте монеты и приглашайте друзей, чтобы выводить средства!",
+
+      // Banned Screen
+      banned_title: "Ваш аккаунт заблокирован",
+      banned_desc: "Ваш аккаунт был заблокирован администрацией за нарушение правил. Доступ к HOOCOOH Miner ограничен."
     },
+
     ar: {
+      // Bottom Nav
       nav_home: "الرئيسية",
       nav_earn: "كسب",
       nav_mining: "تعدين",
       nav_invite: "دعوة",
       nav_wallet: "محفظة",
+
+      // Language modal
       lang_title: "اللغة",
       lang_subtitle: "اختر لغتك",
+
+      // Home Dashboard
+      miner_user: "منقب",
       balance_label: "عملات HOOCOOH",
       next_yield_in: "المحصول القادم خلال",
       mining_in_progress: "التعدين قيد التشغيل",
@@ -6377,19 +6504,70 @@
       reward_ready: "المكافأة جاهزة!",
       ready_to_collect: "جاهز للجمع",
       collect_hoocooh: "جمع HOOCOOH",
+
+      // Mining Tab
+      stat_level: "المستوى",
+      stat_multiplier: "المضاعف",
+      stat_progress: "التقدم",
+      mining_complete_collect: "اكتمل التعدين — اجمع الآن!",
       collect_coins: "جمع عملات HOOCOOH",
+      evo_title: "تطور المنجم",
+      curr_level_lbl: "المستوى الحالي",
+      next_level_lbl: "المستوى التالي",
+      mult_sub: "مضاعف المكافأة x{x}",
       upgrade_for: "⬆ ترقية مقابل {cost} HOOCOOH",
       max_level: "🏆 تم الوصول للحد الأقصى",
-      watch_earn: "شاهد واربح",
-      tasks: "المهام",
-      post_task: "➕ نشر مهمة",
-      invite_friends: "ادعُ الأصدقاء واكسب",
-      copy_link: "نسخ الرابط",
-      copied: "تم النسخ إلى الحافظة!",
-      total_balance: "الرصيد الإجمالي",
-      withdraw: "سحب",
-      deposit: "إيداع",
-      confirm_withdraw: "تأكيد طلب السحب"
+
+      // Earn Tab
+      header_watch_ads: "شاهد الإعلانات، واكسب HOOCOOH",
+      watch_earn_title: "شاهد واربح",
+      watch_earn_sub: "اربح +15 عملة HOOCOOH لكل إعلان تشاهده",
+      daily_progress: "التقدم اليومي",
+      remaining_today: "المتبقي اليوم",
+      earned_today: "المكتسب اليوم",
+      watch_btn: "▶ مشاهدة الإعلان (+15 HOOCOOH)",
+      header_spin: "أدر العجلة واربح",
+      spin_badge: "🎡 عجلة الحظ",
+      spin_title: "أدر واربح",
+      spin_sub: "أدر عجلة الحظ يوميًا واربح ما يصل إلى 1000+ عملة HOOCOOH!",
+      spin_btn: "أدر الآن ➔",
+      header_tasks: "أكمل المهام",
+      tab_tasks: "المهام",
+      post_task_btn: "➕ نشر مهمة",
+      filter_all: "الكل",
+      filter_verified: "✓ موثق",
+      filter_normal: "عادي",
+
+      // Invite Tab
+      your_network: "شبكتك:",
+      friends_unit: "أصدقاء",
+      commission_strip: "العمولة: 5% مدى الحياة",
+      invite_hero_title: "شبكتك",
+      invite_hero_sub: "اربح <strong>+100 عملة</strong> لكل صديق · عمولة <strong>5%</strong> مدى الحياة",
+      stat_recruited: "تمت دعوتهم",
+      stat_coins_earned: "عملات HOOCOOH المكتسبة",
+      stat_my_rank: "ترتيبي",
+      invite_telegram_btn: "دعوة عبر تيليجرام",
+      ref_link_lbl: "رابط الإحالة الخاص بك",
+      copy_btn: "نسخ",
+      tab_rankings: "🏆 الترتيب",
+      tab_milestones: "🎯 الإنجازات",
+      tab_overview: "🏠 نظرة عامة",
+
+      // Wallet Tab
+      vault_balance_badge: "رصيد الخزينة",
+      vault_coins_lbl: "عملات HOOCOOH",
+      withdraw_btn: "💸 سحب USDT",
+      stat_referrals: "الإحالات",
+      stat_total_mined: "إجمالي التعدين",
+      payout_logs_title: "عرض سجلات الدفع المباشرة",
+      tx_history_header: "سجل المعاملات",
+      no_tx_title: "لا توجد معاملات سحب بعد",
+      no_tx_sub: "قم بتعدين العملات ودعوة الأصدقاء لكسب وسحب الأرباح!",
+
+      // Banned Screen
+      banned_title: "تم تعليق حسابك",
+      banned_desc: "تم تقييد حسابك بشكل دائم من قِبل الإدارة لانتهاك شروط الخدمة. لم يعد بإمكانك الوصول إلى HOOCOOH Miner."
     }
   };
 
@@ -6414,11 +6592,13 @@
       document.body.classList.remove("lang-rtl");
     }
 
+    // Modal
     var modalTitle = document.getElementById("langModalTitleTxt");
     if (modalTitle) modalTitle.textContent = t("lang_title");
     var modalSub = document.getElementById("langModalSubtitleTxt");
     if (modalSub) modalSub.textContent = t("lang_subtitle");
 
+    // Nav
     var nHome = document.getElementById("navHomeLabel");
     if (nHome) nHome.textContent = t("nav_home");
     var nEarn = document.getElementById("navEarnLabel");
@@ -6430,6 +6610,7 @@
     var nWallet = document.getElementById("navWalletLabel");
     if (nWallet) nWallet.textContent = t("nav_wallet");
 
+    // Home
     var balLabel = document.querySelector(".balance-label");
     if (balLabel) balLabel.textContent = t("balance_label");
     var nextYield = document.querySelector(".next-yield-label");
@@ -6437,13 +6618,119 @@
     var mineTitle = document.getElementById("mineTitle");
     if (mineTitle) mineTitle.textContent = t("mining_complete");
 
-    var tasksBtnSpan = document.querySelector("#tabTasksBtn span");
-    if (tasksBtnSpan) tasksBtnSpan.textContent = t("tasks");
-    var postTaskBtnSpan = document.querySelector("#openPostTaskModalBtn span");
-    if (postTaskBtnSpan) postTaskBtnSpan.textContent = t("post_task");
-    var watchCardTitle = document.querySelector(".watch-card-title");
-    if (watchCardTitle) watchCardTitle.textContent = t("watch_earn");
+    // Mining Tab
+    var mStatLvl = document.querySelector(".miner-stats-row .miner-stat-box:nth-child(1) .lbl");
+    if (mStatLvl) mStatLvl.textContent = t("stat_level");
+    var mStatMult = document.querySelector(".miner-stats-row .miner-stat-box:nth-child(2) .lbl");
+    if (mStatMult) mStatMult.textContent = t("stat_multiplier");
+    var mStatProg = document.querySelector(".miner-stats-row .miner-stat-box:nth-child(3) .lbl");
+    if (mStatProg) mStatProg.textContent = t("stat_progress");
+    var evoTitle = document.querySelector(".evo-title");
+    if (evoTitle) evoTitle.textContent = t("evo_title");
+    var compCurrLbl = document.querySelector(".evo-compare-col:not(.right) .comp-lbl");
+    if (compCurrLbl) compCurrLbl.textContent = t("curr_level_lbl");
+    var compNextLbl = document.querySelector(".evo-compare-col.right .comp-lbl");
+    if (compNextLbl) compNextLbl.textContent = t("next_level_lbl");
 
+    // Earn Tab
+    var earnSectionHeaders = document.querySelectorAll("#tab-earn .tasks-section-title");
+    if (earnSectionHeaders[0]) earnSectionHeaders[0].textContent = t("header_watch_ads");
+    if (earnSectionHeaders[1]) earnSectionHeaders[1].textContent = t("header_spin");
+    if (earnSectionHeaders[2]) earnSectionHeaders[2].textContent = t("header_tasks");
+
+    var watchCardTitle = document.querySelector(".watch-card-title");
+    if (watchCardTitle) watchCardTitle.textContent = t("watch_earn_title");
+    var watchCardSub = document.querySelector(".watch-card-sub");
+    if (watchCardSub) watchCardSub.textContent = t("watch_earn_sub");
+    var watchProgLbl = document.querySelector(".watch-progress-label-row span:first-child");
+    if (watchProgLbl) watchProgLbl.textContent = t("daily_progress");
+    var watchStatLbl1 = document.querySelector(".watch-stats-grid .watch-stat-box:nth-child(1) .lbl");
+    if (watchStatLbl1) watchStatLbl1.textContent = t("remaining_today");
+    var watchStatLbl2 = document.querySelector(".watch-stats-grid .watch-stat-box:nth-child(2) .lbl");
+    if (watchStatLbl2) watchStatLbl2.textContent = t("earned_today");
+    var watchAdBtnSpan = document.querySelector("#watchAdBtn span");
+    if (watchAdBtnSpan) watchAdBtnSpan.textContent = t("watch_btn");
+
+    var spinBadge = document.querySelector(".spin-card-badge");
+    if (spinBadge) spinBadge.textContent = t("spin_badge");
+    var spinTitle = document.querySelector(".spin-card-title");
+    if (spinTitle) spinTitle.textContent = t("spin_title");
+    var spinSub = document.querySelector(".spin-card-sub");
+    if (spinSub) spinSub.textContent = t("spin_sub");
+    var spinBtnSpan = document.querySelector("#spinNowBtn span");
+    if (spinBtnSpan) spinBtnSpan.textContent = t("spin_btn");
+
+    var tasksBtnSpan = document.querySelector("#tabTasksBtn span");
+    if (tasksBtnSpan) tasksBtnSpan.textContent = t("tab_tasks");
+    var postTaskBtnSpan = document.querySelector("#openPostTaskModalBtn span");
+    if (postTaskBtnSpan) postTaskBtnSpan.textContent = t("post_task_btn");
+
+    var fAll = document.querySelector('button[data-filter="all"]');
+    if (fAll) fAll.textContent = t("filter_all");
+    var fVer = document.querySelector('button[data-filter="verified"]');
+    if (fVer) fVer.textContent = t("filter_verified");
+    var fNorm = document.querySelector('button[data-filter="normal"]');
+    if (fNorm) fNorm.textContent = t("filter_normal");
+
+    // Invite Tab
+    var invNetStrip = document.querySelector(".invite-network-strip span:first-child");
+    if (invNetStrip) invNetStrip.innerHTML = t("your_network") + ' <span class="strip-val" id="stripFriendsCount">' + (user.recruitsCount || 0) + ' ' + t("friends_unit") + '</span>';
+    var invCommStrip = document.querySelector(".invite-network-strip span:last-child");
+    if (invCommStrip) invCommStrip.innerHTML = t("commission_strip");
+
+    var invHeroTitle = document.querySelector(".invite-hero-title");
+    if (invHeroTitle) invHeroTitle.textContent = t("invite_hero_title");
+    var invHeroSub = document.querySelector(".invite-hero-sub");
+    if (invHeroSub) invHeroSub.innerHTML = t("invite_hero_sub");
+
+    var invStatLbl1 = document.querySelector(".invite-stats-grid .invite-stat-card:nth-child(1) .invite-stat-lbl");
+    if (invStatLbl1) invStatLbl1.textContent = t("stat_recruited");
+    var invStatLbl2 = document.querySelector(".invite-stats-grid .invite-stat-card:nth-child(2) .invite-stat-lbl");
+    if (invStatLbl2) invStatLbl2.textContent = t("stat_coins_earned");
+    var invStatLbl3 = document.querySelector(".invite-stats-grid .invite-stat-card:nth-child(3) .invite-stat-lbl");
+    if (invStatLbl3) invStatLbl3.textContent = t("stat_my_rank");
+
+    var invTgBtnSpan = document.querySelector("#inviteViaTelegramBtn span");
+    if (invTgBtnSpan) invTgBtnSpan.textContent = t("invite_telegram_btn");
+    var refLinkLbl = document.querySelector(".invite-link-lbl");
+    if (refLinkLbl) refLinkLbl.textContent = t("ref_link_lbl");
+    var copyRefBtn = document.getElementById("copyRefLinkBtn");
+    if (copyRefBtn) copyRefBtn.textContent = t("copy_btn");
+
+    var tabRankSpan = document.querySelector('button[data-subtab="rankings"] span');
+    if (tabRankSpan) tabRankSpan.textContent = t("tab_rankings");
+    var tabMileSpan = document.querySelector('button[data-subtab="milestones"] span');
+    if (tabMileSpan) tabMileSpan.textContent = t("tab_milestones");
+    var tabOverSpan = document.querySelector('button[data-subtab="overview"] span');
+    if (tabOverSpan) tabOverSpan.textContent = t("tab_overview");
+
+    // Wallet Tab
+    var vaultBadgeSpan = document.querySelector(".vault-hero-badge span:last-child");
+    if (vaultBadgeSpan) vaultBadgeSpan.textContent = t("vault_balance_badge");
+    var vaultCoinLbl = document.querySelector(".vault-coin-label");
+    if (vaultCoinLbl) vaultCoinLbl.textContent = t("vault_coins_lbl");
+    var withdrawBtnSpan = document.querySelector("#openWithdrawModalBtn span");
+    if (withdrawBtnSpan) withdrawBtnSpan.textContent = t("withdraw_btn");
+
+    var wStatLbl1 = document.querySelector(".wallet-stats-grid .wallet-stat-card:nth-child(1) .wallet-stat-lbl");
+    if (wStatLbl1) wStatLbl1.textContent = t("stat_referrals");
+    var wStatLbl2 = document.querySelector(".wallet-stats-grid .wallet-stat-card:nth-child(2) .wallet-stat-lbl");
+    if (wStatLbl2) wStatLbl2.textContent = t("stat_total_mined");
+
+    var payoutBannerTitle = document.querySelector(".payout-banner-title");
+    if (payoutBannerTitle) payoutBannerTitle.textContent = t("payout_logs_title");
+    var walletSectionHeader = document.querySelector(".wallet-section-header");
+    if (walletSectionHeader) walletSectionHeader.textContent = t("tx_history_header");
+
+    // Banned Overlay
+    var bannedTitle = document.querySelector(".banned-title");
+    if (bannedTitle) bannedTitle.textContent = t("banned_title");
+    var bannedDesc = document.getElementById("bannedReasonTxt");
+    if (bannedDesc && (!user.banReason || user.banReason === "Your account has been suspended")) {
+      bannedDesc.textContent = t("banned_desc");
+    }
+
+    // Modal Active Pill
     var modal = document.getElementById("languageModal");
     if (modal) {
       var pills = modal.querySelectorAll(".lang-option-pill");
@@ -6485,13 +6772,11 @@
         pills.forEach(function(p){ p.classList.remove("active"); });
         pill.classList.add("active");
 
-        try {
-          localStorage.setItem("hoocooh_language", chosenLang);
-          localStorage.setItem("hoocooh_language_selected", "true");
-        } catch(e){}
-
+        // Mark user as having selected language on server
+        user.languageSelected = true;
         applyLanguage(chosenLang);
 
+        // Save directly to MongoDB via backend API
         if (typeof apiPost === "function") {
           apiPost({ action: "set_language", language: chosenLang }).catch(function(){});
         }
@@ -6510,40 +6795,11 @@
   }
 
   function checkLanguagePrompt() {
-    var urlParams = new URLSearchParams(window.location.search);
-    var urlLang = urlParams.get("lang");
-    var validLangs = ["en", "ru", "ar"];
-
-    if (urlLang && validLangs.indexOf(urlLang) !== -1) {
-      applyLanguage(urlLang);
-      try {
-        localStorage.setItem("hoocooh_language", urlLang);
-        localStorage.setItem("hoocooh_language_selected", "true");
-      } catch(e){}
+    // If the user already has languageSelected: true in MongoDB, do nothing
+    if (user && user.languageSelected === true) {
       return;
     }
-
-    var storedLang = null;
-    var wasSelected = false;
-    try {
-      storedLang = localStorage.getItem("hoocooh_language");
-      wasSelected = localStorage.getItem("hoocooh_language_selected") === "true";
-    } catch(e){}
-
-    if (wasSelected && storedLang && validLangs.indexOf(storedLang) !== -1) {
-      applyLanguage(storedLang);
-      return;
-    }
-
-    if (user && user.language && validLangs.indexOf(user.language) !== -1) {
-      applyLanguage(user.language);
-      try {
-        localStorage.setItem("hoocooh_language", user.language);
-        localStorage.setItem("hoocooh_language_selected", "true");
-      } catch(e){}
-      return;
-    }
-
+    // New user or has not selected language: popup appears immediately after loading
     openLanguageModal();
   }
 
@@ -9120,8 +9376,13 @@
       return;
     }
     Object.assign(user, res.data);
-    if (res.data.language && !localStorage.getItem("hoocooh_language_selected")) {
+    user.languageSelected = res.data.languageSelected === true;
+    if (res.data.language) {
+      user.language = res.data.language;
       applyLanguage(res.data.language);
+    }
+    if (loadingDone && user.languageSelected !== true) {
+      openLanguageModal();
     }
     if (res.data.minerLevel) {
       user.minerLevel = res.data.minerLevel;
@@ -9147,6 +9408,10 @@
     apiGet().then(function(res){
       if (res.ok) {
         Object.assign(user, res.data);
+        user.languageSelected = res.data.languageSelected === true;
+        if (res.data.language && res.data.language !== currentLang) {
+          applyLanguage(res.data.language);
+        }
         if (res.data.minerLevel) {
           user.minerLevel = res.data.minerLevel;
           user.level = res.data.minerLevel;

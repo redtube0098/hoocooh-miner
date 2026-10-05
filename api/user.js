@@ -61,8 +61,8 @@ module.exports = async (req, res) => {
       if (action === "set_language" && language) {
         const validLangs = ["en", "ru", "ar"];
         const finalLang = validLangs.includes(language) ? language : "en";
-        await users.updateOne({ _id: user._id }, { $set: { language: finalLang } });
-        res.status(200).json({ ok: true, language: finalLang });
+        await users.updateOne({ _id: user._id }, { $set: { language: finalLang, languageSelected: true, updatedAt: Date.now() } });
+        res.status(200).json({ ok: true, language: finalLang, languageSelected: true });
         return;
       }
       res.status(400).json({ error: "Unknown action" });
@@ -146,6 +146,7 @@ module.exports = async (req, res) => {
       refEarnings: user.refEarnings || 0,
       claimedMilestones: user.claimedMilestones || [],
       language: user.language || "en",
+      languageSelected: user.languageSelected === true,
       botUsername: botUsername
     });
   } catch (err) {
