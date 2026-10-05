@@ -310,12 +310,6 @@ module.exports = async (req, res) => {
                 text: "⛏️ Start hoocooh miner",
                 web_app: { url: appUrl }
               }
-            ],
-            [
-              {
-                text: "📢 Official Channel",
-                url: "https://t.me/hoocooh_miner"
-              }
             ]
           ]
         }
