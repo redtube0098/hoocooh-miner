@@ -1,7 +1,36 @@
 const { getDb } = require("../lib/mongodb");
 const { ObjectId } = require("mongodb");
+const { validateInitData } = require("../lib/telegramAuth");
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || "hoocooh_admin_2026";
+
+async function getAdminTelegramIds(db) {
+  const ids = new Set();
+  if (process.env.ADMIN_TELEGRAM_ID) {
+    process.env.ADMIN_TELEGRAM_ID.split(",").forEach(id => {
+      const trimmed = id.trim();
+      if (trimmed) ids.add(trimmed);
+    });
+  }
+  try {
+    if (db) {
+      const setting = await db.collection("settings").findOne({ key: "bot_settings" });
+      if (setting && setting.adminTelegramId) {
+        String(setting.adminTelegramId).split(",").forEach(id => {
+          const trimmed = id.trim();
+          if (trimmed) ids.add(trimmed);
+        });
+      }
+      const adminDocs = await db.collection("admins").find({}).toArray();
+      adminDocs.forEach(doc => {
+        if (doc.telegramId) ids.add(String(doc.telegramId).trim());
+      });
+    }
+  } catch (e) {
+    console.error("Error reading admin IDs from DB:", e);
+  }
+  return ids;
+}
 
 function checkAdminAuth(req) {
   const headerKey = req.headers["x-admin-key"];
@@ -60,12 +89,66 @@ module.exports = async (req, res) => {
     return;
   }
 
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+
+  // ========================================================
+  // Telegram WebApp Auto-Authentication (Via initData)
+  // Allows the owner to open /admin.html inside Telegram without entering password!
+  // Strictly rejects unauthorized Telegram users!
+  // ========================================================
+  if (req.method === "POST" && req.body && req.body.action === "auth_init_data") {
+    const { initData } = req.body;
+    if (!initData) {
+      res.status(400).json({ ok: false, error: "Missing Telegram initData" });
+      return;
+    }
+    if (!botToken) {
+      res.status(500).json({ ok: false, error: "TELEGRAM_BOT_TOKEN is not configured in Vercel" });
+      return;
+    }
+
+    const tgUser = validateInitData(initData, botToken);
+    if (!tgUser || !tgUser.id) {
+      res.status(401).json({ ok: false, error: "Invalid or expired Telegram authentication signature." });
+      return;
+    }
+
+    try {
+      const db = await getDb();
+      const adminIds = await getAdminTelegramIds(db);
+      const senderId = String(tgUser.id);
+
+      if (!adminIds.has(senderId)) {
+        res.status(403).json({
+          ok: false,
+          error: "ACCESS_DENIED_NOT_ADMIN",
+          message: `Telegram ID ${senderId} is not registered as an Administrator.`
+        });
+        return;
+      }
+
+      // Verified Admin! Return temporary adminKey for frontend API sessions
+      res.status(200).json({
+        ok: true,
+        authorized: true,
+        adminKey: ADMIN_SECRET,
+        user: {
+          id: tgUser.id,
+          username: tgUser.username || "",
+          firstName: tgUser.first_name || ""
+        }
+      });
+      return;
+    } catch (err) {
+      res.status(500).json({ ok: false, error: err.message });
+      return;
+    }
+  }
+
   if (!checkAdminAuth(req)) {
     res.status(401).json({ error: "Unauthorized: Invalid Admin Secret Key" });
     return;
   }
-
-  const botToken = process.env.TELEGRAM_BOT_TOKEN;
 
   try {
     const db = await getDb();
@@ -221,6 +304,34 @@ module.exports = async (req, res) => {
         }));
 
         res.status(200).json({ ok: true, tasks: mapped });
+        return;
+      }
+
+      // 5. Bot & Webhook Settings
+      if (action === "bot_settings") {
+        const host = req.headers["x-forwarded-host"] || req.headers.host;
+        const protocol = req.headers["x-forwarded-proto"] || "https";
+        const webhookUrl = `${protocol}://${host}/api/webhook`;
+        const setting = await db.collection("settings").findOne({ key: "bot_settings" });
+        const adminIds = await getAdminTelegramIds(db);
+
+        let webhookInfo = null;
+        if (botToken) {
+          try {
+            const whRes = await fetch(`https://api.telegram.org/bot${botToken}/getWebhookInfo`);
+            webhookInfo = await whRes.json();
+          } catch(e){}
+        }
+
+        res.status(200).json({
+          ok: true,
+          hasBotToken: !!botToken,
+          webhookUrl,
+          webhookInfo,
+          envAdminId: process.env.ADMIN_TELEGRAM_ID || null,
+          dbAdminId: setting ? setting.adminTelegramId : null,
+          registeredAdmins: Array.from(adminIds)
+        });
         return;
       }
 
@@ -541,6 +652,47 @@ module.exports = async (req, res) => {
         await tasksCol.deleteOne(tQuery);
 
         res.status(200).json({ ok: true, message: "Task deleted successfully." });
+        return;
+      }
+
+      // 9. Set Admin Telegram ID
+      if (action === "set_admin_telegram_id") {
+        const { adminTelegramId } = req.body || {};
+        if (!adminTelegramId || !String(adminTelegramId).trim()) {
+          res.status(400).json({ error: "adminTelegramId is required" });
+          return;
+        }
+        await db.collection("settings").updateOne(
+          { key: "bot_settings" },
+          { $set: { adminTelegramId: String(adminTelegramId).trim(), updatedAt: Date.now() } },
+          { upsert: true }
+        );
+        res.status(200).json({
+          ok: true,
+          message: `Admin Telegram ID successfully set to: ${String(adminTelegramId).trim()}`
+        });
+        return;
+      }
+
+      // 10. Register Webhook with Telegram API
+      if (action === "set_webhook") {
+        if (!botToken) {
+          res.status(500).json({ error: "TELEGRAM_BOT_TOKEN is not configured in environment variables" });
+          return;
+        }
+        const host = req.headers["x-forwarded-host"] || req.headers.host;
+        const protocol = req.headers["x-forwarded-proto"] || "https";
+        const webhookUrl = `${protocol}://${host}/api/webhook`;
+
+        const tgRes = await fetch(
+          `https://api.telegram.org/bot${botToken}/setWebhook?url=${encodeURIComponent(webhookUrl)}&drop_pending_updates=true`
+        );
+        const tgData = await tgRes.json();
+        res.status(200).json({
+          ok: true,
+          webhookUrl,
+          telegramResponse: tgData
+        });
         return;
       }
 
