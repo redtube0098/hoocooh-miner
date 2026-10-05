@@ -5732,11 +5732,14 @@
       btn.classList.add("active");
       var activeView = document.getElementById(targetTab);
       if (activeView) activeView.classList.add("active");
+
+      // Universal Scroll-To-Top on ANY tab click
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      if (activeView) activeView.scrollTop = 0;
+
       if (targetTab === "tab-earn") {
-        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-        if (activeView) activeView.scrollTop = 0;
         var watchCard = document.querySelector("#tab-earn .watch-card") || document.querySelector("#tab-earn");
         if (watchCard && watchCard.scrollIntoView) {
           try {
@@ -5760,11 +5763,44 @@
           }
         }, 60);
       } else if (targetTab === "tab-invite") {
+        var inviteTop = document.querySelector("#tab-invite .invite-network-strip") || document.querySelector("#tab-invite .invite-hero-card") || document.getElementById("tab-invite");
+        if (inviteTop && inviteTop.scrollIntoView) {
+          try {
+            inviteTop.scrollIntoView({ behavior: "instant", block: "start" });
+          } catch(e) {
+            inviteTop.scrollIntoView(true);
+          }
+        }
         loadReferralData();
         renderInvite();
+        setTimeout(function(){
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          if (activeView) activeView.scrollTop = 0;
+        }, 20);
+        setTimeout(function(){
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          if (activeView) activeView.scrollTop = 0;
+        }, 80);
       } else if (targetTab === "tab-wallet") {
         loadWalletData();
         renderWallet();
+        setTimeout(function(){
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          if (activeView) activeView.scrollTop = 0;
+        }, 30);
+      } else if (targetTab === "tab-home") {
+        setTimeout(function(){
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          if (activeView) activeView.scrollTop = 0;
+        }, 30);
       }
     });
   });
