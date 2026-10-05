@@ -4433,9 +4433,202 @@
   [data-theme="dark"] .ad-player-status-text {
     color: #94a3b8;
   }
+
+  /* Full-Screen Loading Screen (Matched to Nautilus media_1791212619324.png) */
+  .loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: #f7f9fb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: opacity 0.45s ease, transform 0.45s ease, visibility 0.45s;
+  }
+  .loading-screen.fade-out {
+    opacity: 0;
+    transform: scale(1.02);
+    pointer-events: none;
+    visibility: hidden;
+  }
+  [data-theme="dark"] .loading-screen {
+    background: #0b141a;
+  }
+
+  /* Faint concentric circular rings watermark background pattern */
+  .loading-bg-circles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: 
+      radial-gradient(circle at 50% 45%, transparent 0, transparent 40px, rgba(14, 32, 41, 0.025) 41px, transparent 42px),
+      radial-gradient(circle at 50% 45%, transparent 0, transparent 90px, rgba(14, 32, 41, 0.025) 91px, transparent 92px),
+      radial-gradient(circle at 50% 45%, transparent 0, transparent 150px, rgba(14, 32, 41, 0.025) 151px, transparent 152px),
+      radial-gradient(circle at 50% 45%, transparent 0, transparent 220px, rgba(14, 32, 41, 0.025) 221px, transparent 222px),
+      radial-gradient(circle at 50% 45%, transparent 0, transparent 300px, rgba(14, 32, 41, 0.025) 301px, transparent 302px);
+    opacity: 0.9;
+  }
+  [data-theme="dark"] .loading-bg-circles {
+    background-image: 
+      radial-gradient(circle at 50% 45%, transparent 0, transparent 40px, rgba(255, 255, 255, 0.03) 41px, transparent 42px),
+      radial-gradient(circle at 50% 45%, transparent 0, transparent 90px, rgba(255, 255, 255, 0.03) 91px, transparent 92px),
+      radial-gradient(circle at 50% 45%, transparent 0, transparent 150px, rgba(255, 255, 255, 0.03) 151px, transparent 152px),
+      radial-gradient(circle at 50% 45%, transparent 0, transparent 220px, rgba(255, 255, 255, 0.03) 221px, transparent 222px);
+  }
+
+  .loading-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    margin-top: -30px;
+  }
+
+  /* Center Circular Emblem */
+  .loading-emblem-wrap {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .loading-emblem-glow {
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(45, 212, 191, 0.35) 0%, rgba(45, 212, 191, 0) 70%);
+    pointer-events: none;
+    animation: emblemPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes emblemPulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.12); opacity: 0.45; }
+  }
+  .loading-emblem-disc {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 45% 40%, #c6f6ef 0%, #a2ebe0 100%);
+    border: 3.5px solid #ffffff;
+    box-shadow: 0 10px 30px rgba(32, 184, 163, 0.22), inset 0 2px 6px rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  [data-theme="dark"] .loading-emblem-disc {
+    background: radial-gradient(circle at 45% 40%, #174843 0%, #0d2b27 100%);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 3px rgba(255, 255, 255, 0.1);
+  }
+  .loading-logo-img {
+    width: 82px;
+    height: 82px;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 14px rgba(13, 148, 136, 0.3));
+    animation: logoFloatLoading 3.2s ease-in-out infinite;
+  }
+  @keyframes logoFloatLoading {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-5px) rotate(2deg); }
+  }
+
+  /* Title & Subtitle */
+  .loading-title {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: #1e293b;
+    letter-spacing: -0.4px;
+    text-align: center;
+  }
+  [data-theme="dark"] .loading-title {
+    color: #f1f5f9;
+  }
+  .loading-subtitle {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-top: 6px;
+    text-align: center;
+  }
+
+  /* Progress Bar */
+  .loading-progress-bar {
+    width: 230px;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    margin-top: 36px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    position: relative;
+  }
+  [data-theme="dark"] .loading-progress-bar {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .loading-progress-fill {
+    height: 100%;
+    width: 15%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #38d1be 0%, #1db8a2 100%);
+    box-shadow: 0 0 10px rgba(32, 184, 163, 0.5);
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Caption */
+  .loading-caption {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #94a3b8;
+    text-align: center;
+    max-width: 260px;
+    line-height: 1.45;
+  }
 </style>
 </head>
 <body>
+
+<!-- Full-Screen Loading Splash (media_1791212619324.png) -->
+<div class="loading-screen" id="appLoadingScreen">
+  <div class="loading-bg-circles"></div>
+  <div class="loading-content">
+    <!-- Circular Mint/Cyan Emblem with 3D Miner Logo -->
+    <div class="loading-emblem-wrap">
+      <div class="loading-emblem-glow"></div>
+      <div class="loading-emblem-disc">
+        <img src="assets/logo.webp" alt="HOOCOOH Miner" class="loading-logo-img">
+      </div>
+    </div>
+
+    <!-- Title & Subtitle -->
+    <div class="loading-title">HOOCOOH Mine</div>
+    <div class="loading-subtitle">STARLIGHT PROTOCOL</div>
+
+    <!-- Loading Progress Bar -->
+    <div class="loading-progress-bar">
+      <div class="loading-progress-fill" id="loadingProgressFill"></div>
+    </div>
+
+    <!-- Hint Caption -->
+    <div class="loading-caption" id="loadingCaption">Complete missions for instant bonus rewards 🎯</div>
+  </div>
+</div>
+
 <div class="app" id="app">
 
   <!-- Header -->
@@ -8389,6 +8582,46 @@
     });
   }
 
+  // Loading Screen Controller (Nautilus media_1791212619324.png)
+  var loadingScreenEl = document.getElementById("appLoadingScreen");
+  var loadingProgressFill = document.getElementById("loadingProgressFill");
+  var loadingProgress = 15;
+  var loadingDone = false;
+
+  var loadingInterval = setInterval(function(){
+    if (!loadingDone && loadingProgress < 85) {
+      loadingProgress += Math.floor(Math.random() * 8) + 4;
+      if (loadingProgress > 85) loadingProgress = 85;
+      if (loadingProgressFill) loadingProgressFill.style.width = loadingProgress + "%";
+    }
+  }, 100);
+
+  function dismissLoadingScreen() {
+    if (loadingDone) return;
+    loadingDone = true;
+    clearInterval(loadingInterval);
+    if (loadingProgressFill) loadingProgressFill.style.width = "100%";
+    setTimeout(function(){
+      if (loadingScreenEl) {
+        loadingScreenEl.classList.add("fade-out");
+        setTimeout(function(){
+          loadingScreenEl.style.display = "none";
+        }, 480);
+      }
+    }, 350);
+  }
+
+  // Minimum splash display time so user enjoys the loading experience
+  var splashLaunchTime = Date.now();
+  function triggerDismissWhenReady() {
+    var elapsed = Date.now() - splashLaunchTime;
+    var waitMs = Math.max(0, 1100 - elapsed);
+    setTimeout(dismissLoadingScreen, waitMs);
+  }
+
+  // Fallback safety timeout (maximum 3.5s)
+  setTimeout(dismissLoadingScreen, 3500);
+
   // Load Tasks, Referrals & Wallet on startup
   loadTasks();
   loadReferralData();
@@ -8398,6 +8631,7 @@
   apiGet().then(function(res){
     if (!res.ok) {
       if (res.data && res.data.error) showToast(res.data.error);
+      triggerDismissWhenReady();
       return;
     }
     Object.assign(user, res.data);
@@ -8407,8 +8641,10 @@
       try { localStorage.setItem("hoocooh_miner_level", String(res.data.minerLevel)); } catch(e){}
     }
     renderAll();
+    triggerDismissWhenReady();
   }).catch(function(err){
     console.error("apiGet failed:", err);
+    triggerDismissWhenReady();
   });
 
   // Timer Tick every 1s
