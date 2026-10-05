@@ -2,8 +2,8 @@ const { getDb } = require("../lib/mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
 const { findOrCreateUser } = require("../lib/userHelper");
 
-const MAX_ADS_PER_DAY = 12;
-const AD_REWARD = 20;
+const MAX_ADS_PER_DAY = 10;
+const AD_REWARD = 15;
 const CYCLE_MS = 24 * 60 * 60 * 1000;
 
 module.exports = async (req, res) => {
@@ -71,11 +71,11 @@ module.exports = async (req, res) => {
       cycleStart = now;
     }
 
-    // Check if 12 ads already watched
+    // Check if 10 ads already watched
     if (watchedToday >= MAX_ADS_PER_DAY) {
       const remainingMs = Math.max(0, CYCLE_MS - (now - cycleStart));
       res.status(400).json({
-        error: "Daily limit of 12 ads reached! Next ads available in 24 hours.",
+        error: "Daily limit of 10 ads reached! Next ads available in 24 hours.",
         remainingMs: remainingMs,
         adsWatchedToday: watchedToday,
         adsEarnedToday: earnedToday,

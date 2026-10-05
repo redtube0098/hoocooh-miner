@@ -3953,6 +3953,307 @@
   .puzzle-shake {
     animation: puzzleShake 0.4s ease-in-out;
   }
+  /* ===================================================
+     WATCH & EARN FLOW MODAL (Images 1 & 2)
+     =================================================== */
+  .watch-sheet-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(8, 12, 22, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 9998;
+    box-sizing: border-box;
+  }
+  .watch-sheet-modal-overlay.open {
+    display: flex !important;
+  }
+
+  .watch-flow-sheet {
+    width: 100%;
+    max-width: 440px;
+    background: #ffffff;
+    border-radius: 28px 28px 0 0;
+    padding: 12px 20px 28px;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.35);
+    animation: sheetSlideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+    text-align: center;
+    position: relative;
+  }
+  [data-theme="dark"] .watch-flow-sheet {
+    background: #111a2c;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  @keyframes sheetSlideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .watch-flow-handle {
+    width: 38px;
+    height: 4.5px;
+    border-radius: 3px;
+    background: #cbd5e1;
+    margin: 0 auto 16px;
+  }
+  [data-theme="dark"] .watch-flow-handle {
+    background: #334155;
+  }
+
+  .watch-flow-view {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    animation: viewFadeIn 0.2s ease-out;
+  }
+  .watch-flow-view.active {
+    display: flex;
+  }
+  @keyframes viewFadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* Clapperboard / Party Popper Icon Circle */
+  .watch-flow-icon-circle {
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #a7f3d0 0%, #6ee7b7 55%, #34d399 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    box-shadow: 0 8px 24px rgba(45, 212, 191, 0.32);
+  }
+  .watch-flow-icon-circle.success {
+    background: radial-gradient(circle at 35% 30%, #bae6fd 0%, #7dd3fc 55%, #38bdf8 100%);
+    box-shadow: 0 8px 24px rgba(56, 189, 248, 0.32);
+  }
+  .watch-flow-icon-circle .clapper-icon,
+  .watch-flow-icon-circle .popper-icon {
+    font-size: 36px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+  }
+
+  .watch-flow-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 6px;
+    letter-spacing: -0.3px;
+  }
+  [data-theme="dark"] .watch-flow-title {
+    color: #ffffff;
+  }
+
+  .watch-flow-sub {
+    font-size: 13px;
+    line-height: 1.45;
+    color: #64748b;
+    margin: 0 auto 16px;
+    max-width: 290px;
+  }
+  [data-theme="dark"] .watch-flow-sub {
+    color: #94a3b8;
+  }
+
+  /* 3 Stats Box */
+  .watch-flow-stats-box {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 13px 8px;
+    margin-bottom: 14px;
+    box-sizing: border-box;
+  }
+  [data-theme="dark"] .watch-flow-stats-box {
+    background: #172236;
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .watch-flow-stat-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+  }
+  .watch-flow-stat-divider {
+    width: 1px;
+    height: 36px;
+    background: #e2e8f0;
+  }
+  [data-theme="dark"] .watch-flow-stat-divider {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .w-stat-lbl {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #94a3b8;
+    text-transform: uppercase;
+  }
+  .w-stat-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+  }
+  [data-theme="dark"] .w-stat-val {
+    color: #ffffff;
+  }
+  .w-stat-val.accent {
+    color: #0d9488 !important;
+  }
+  [data-theme="dark"] .w-stat-val.accent {
+    color: #2dd4bf !important;
+  }
+  .w-stat-unit {
+    font-size: 10px;
+    font-weight: 600;
+    color: #94a3b8;
+  }
+
+  .watch-flow-warning {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-bottom: 18px;
+    font-weight: 500;
+  }
+  [data-theme="dark"] .watch-flow-warning {
+    color: #94a3b8;
+  }
+
+  .watch-flow-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .watch-flow-btn-primary {
+    width: 100%;
+    height: 50px;
+    border-radius: 25px;
+    border: none;
+    background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%);
+    color: #ffffff;
+    font-size: 15.5px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 8px 22px rgba(20, 184, 166, 0.35);
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .watch-flow-btn-primary:active {
+    transform: scale(0.98);
+  }
+  .watch-flow-btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .watch-flow-btn-secondary {
+    width: 100%;
+    height: 46px;
+    border-radius: 23px;
+    border: 1.5px solid #e2e8f0;
+    background: #ffffff;
+    color: #334155;
+    font-size: 14.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .watch-flow-btn-secondary:active {
+    transform: scale(0.98);
+  }
+  [data-theme="dark"] .watch-flow-btn-secondary {
+    background: #172236;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f1f5f9;
+  }
+
+  /* View 2: Reward Claimed styles */
+  .watch-flow-reward-card {
+    width: 100%;
+    max-width: 320px;
+    background: #ecfdf5;
+    border: 1.5px solid #a7f3d0;
+    border-radius: 18px;
+    padding: 15px 18px;
+    margin: 0 auto 14px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  [data-theme="dark"] .watch-flow-reward-card {
+    background: rgba(6, 78, 59, 0.3);
+    border-color: #059669;
+  }
+  .w-reward-card-lbl {
+    font-size: 11px;
+    font-weight: 800;
+    color: #059669;
+    letter-spacing: 0.06em;
+    margin-bottom: 2px;
+  }
+  [data-theme="dark"] .w-reward-card-lbl {
+    color: #34d399;
+  }
+  .w-reward-card-val {
+    font-size: 34px;
+    font-weight: 900;
+    color: #059669;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  [data-theme="dark"] .w-reward-card-val {
+    color: #34d399;
+  }
+  .w-reward-card-sub {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #047857;
+  }
+  [data-theme="dark"] .w-reward-card-sub {
+    color: #6ee7b7;
+  }
+
+  .watch-flow-progress-badge {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 9px 18px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #0f172a;
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+  [data-theme="dark"] .watch-flow-progress-badge {
+    background: #172236;
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #f1f5f9;
+  }
 </style>
 </head>
 <body>
@@ -4143,7 +4444,7 @@
         <div class="watch-icon-box">🎬</div>
         <div class="watch-card-info">
           <div class="watch-card-title">Watch & Earn</div>
-          <div class="watch-card-sub">Earn <strong>+20 HOOCOOH Coins</strong> per ad watched</div>
+          <div class="watch-card-sub">Earn <strong>+15 HOOCOOH Coins</strong> per ad watched</div>
         </div>
       </div>
 
@@ -4151,7 +4452,7 @@
       <div class="watch-progress-wrap">
         <div class="watch-progress-label-row">
           <span>Daily Progress</span>
-          <span><strong id="adsWatchedCount">0</strong> / 12 ads</span>
+          <span><strong id="adsWatchedCount">0</strong> / 10 ads</span>
         </div>
         <div class="watch-progress-bar-bg">
           <div class="watch-progress-bar-fill" id="adsProgressFill" style="width: 0%;"></div>
@@ -4162,7 +4463,7 @@
       <div class="watch-stats-grid">
         <div class="watch-stat-box">
           <div class="lbl">REMAINING TODAY</div>
-          <div class="val"><strong id="adsRemainingVal">12</strong> ads</div>
+          <div class="val"><strong id="adsRemainingVal">10</strong> ads</div>
         </div>
         <div class="watch-stat-box">
           <div class="lbl">EARNED TODAY</div>
@@ -4172,7 +4473,7 @@
 
       <!-- Action Button with 24h Countdown logic -->
       <button class="watch-ad-btn" id="watchAdBtn" type="button">
-        <span>▶ Watch Ad (+20 HOOCOOH Coins)</span>
+        <span>▶ Watch Ad (+15 HOOCOOH Coins)</span>
       </button>
     </div>
 
@@ -5066,6 +5367,84 @@
 
   </div>
 
+  <!-- Watch & Earn Flow Modal (Images 1 & 2: media_1791207364746.png & media_1791207701560.png) -->
+  <div class="watch-sheet-modal-overlay" id="watchEarnFlowModal">
+    <div class="watch-flow-sheet" id="watchFlowSheet">
+      <div class="watch-flow-handle"></div>
+
+      <!-- VIEW 1: Watch & Earn Overview (Image 1) -->
+      <div class="watch-flow-view active" id="watchFlowPreView">
+        <div class="watch-flow-icon-circle">
+          <span class="clapper-icon">🎬</span>
+        </div>
+        <h3 class="watch-flow-title">Watch & Earn</h3>
+        <p class="watch-flow-sub">Watch a short ad to earn HOOCOOH Coins instantly. Your support keeps the protocol running!</p>
+
+        <!-- 3 Stats Box -->
+        <div class="watch-flow-stats-box">
+          <div class="watch-flow-stat-col">
+            <div class="w-stat-lbl">REWARD</div>
+            <div class="w-stat-val accent">+15</div>
+            <div class="w-stat-unit">HOOCOOH Coins</div>
+          </div>
+          <div class="watch-flow-stat-divider"></div>
+          <div class="watch-flow-stat-col">
+            <div class="w-stat-lbl">WATCHED TODAY</div>
+            <div class="w-stat-val" id="sheetWatchedToday">0</div>
+            <div class="w-stat-unit">of 10</div>
+          </div>
+          <div class="watch-flow-stat-divider"></div>
+          <div class="watch-flow-stat-col">
+            <div class="w-stat-lbl">REMAINING</div>
+            <div class="w-stat-val accent" id="sheetRemaining">10</div>
+            <div class="w-stat-unit">ads left</div>
+          </div>
+        </div>
+
+        <div class="watch-flow-warning">
+          <span>⚠️ You <strong>must watch full ad</strong> to earn your reward.</span>
+        </div>
+
+        <div class="watch-flow-actions">
+          <button type="button" class="watch-flow-btn-primary" id="sheetStartAdBtn">
+            <span>▶ Watch Ad & Earn</span>
+          </button>
+          <button type="button" class="watch-flow-btn-secondary" id="sheetCancelBtn">
+            <span>Cancel</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- VIEW 2: Reward Claimed! (Image 2) -->
+      <div class="watch-flow-view" id="watchFlowSuccessView">
+        <div class="watch-flow-icon-circle success">
+          <span class="popper-icon">🎉</span>
+        </div>
+        <h3 class="watch-flow-title">Reward Claimed!</h3>
+        <p class="watch-flow-sub">You completed sponsor ad in this session!</p>
+
+        <!-- Reward Card (Click ads / tap bonuses completely removed as user requested) -->
+        <div class="watch-flow-reward-card">
+          <div class="w-reward-card-lbl">YOU GOT</div>
+          <div class="w-reward-card-val">+15</div>
+          <div class="w-reward-card-sub">Base: +15 HOOCOOH Coins</div>
+        </div>
+
+        <!-- Progress Status Badge -->
+        <div class="watch-flow-progress-badge">
+          <span>Ads Watched: <strong id="sheetSuccessWatched">1</strong>/10 ✅</span>
+        </div>
+
+        <div class="watch-flow-actions" style="margin-top: 20px;">
+          <button type="button" class="watch-flow-btn-primary" id="sheetCollectContinueBtn">
+            <span>COLLECT & CONTINUE</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Toast Element -->
   <div class="toast" id="toast"></div>
 
@@ -5759,7 +6138,7 @@
   // Watch & Earn Logic
   function renderAds() {
     var watched = Number(user.adsWatchedToday) || 0;
-    var maxAds = 12;
+    var maxAds = 10;
     var remaining = Math.max(0, maxAds - watched);
     var earned = Number(user.adsEarnedToday) || 0;
     var percent = Math.min(100, Math.max(0, (watched / maxAds) * 100));
@@ -5773,6 +6152,12 @@
     var earnedEl = document.getElementById("adsEarnedTodayVal");
     if (earnedEl) earnedEl.textContent = earned;
 
+    // Update Sheet elements if modal is present
+    var sheetWatchedEl = document.getElementById("sheetWatchedToday");
+    if (sheetWatchedEl) sheetWatchedEl.textContent = watched;
+    var sheetRemEl = document.getElementById("sheetRemaining");
+    if (sheetRemEl) sheetRemEl.textContent = remaining;
+
     var btn = document.getElementById("watchAdBtn");
     if (!btn) return;
 
@@ -5780,7 +6165,7 @@
     var cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
     var CYCLE_MS = 24 * 60 * 60 * 1000;
 
-    // Check if 12 ads reached and still in 24h cooldown
+    // Check if 10 ads reached and still in 24h cooldown
     if (watched >= maxAds && cycleStart && (now - cycleStart < CYCLE_MS)) {
       btn.disabled = true;
       var remainingCooldown = CYCLE_MS - (now - cycleStart);
@@ -5790,14 +6175,14 @@
       user.adsEarnedToday = 0;
       user.adsCycleStartedAt = null;
       btn.disabled = false;
-      btn.innerHTML = '<span>▶ Watch Ad (+20 HOOCOOH Coins)</span>';
+      btn.innerHTML = '<span>▶ Watch Ad (+15 HOOCOOH Coins)</span>';
       if (countEl) countEl.textContent = "0";
       if (fillEl) fillEl.style.width = "0%";
-      if (remEl) remEl.textContent = "12";
+      if (remEl) remEl.textContent = "10";
       if (earnedEl) earnedEl.textContent = "0";
     } else {
       btn.disabled = false;
-      btn.innerHTML = '<span>▶ Watch Ad (+20 HOOCOOH Coins)</span>';
+      btn.innerHTML = '<span>▶ Watch Ad (+15 HOOCOOH Coins)</span>';
     }
   }
 
@@ -6198,65 +6583,187 @@
     });
   }
 
-  // Watch Ad Button Click -> Opens Security Verification Captcha
+  // ===================================================
+  // WATCH & EARN 2-STEP FLOW CONTROLLER (Images 1 & 2)
+  // ===================================================
+  var watchEarnFlowModal = document.getElementById("watchEarnFlowModal");
+  var watchFlowPreView = document.getElementById("watchFlowPreView");
+  var watchFlowSuccessView = document.getElementById("watchFlowSuccessView");
+  var sheetWatchedTodayEl = document.getElementById("sheetWatchedToday");
+  var sheetRemainingEl = document.getElementById("sheetRemaining");
+  var sheetSuccessWatchedEl = document.getElementById("sheetSuccessWatched");
+  var sheetStartAdBtn = document.getElementById("sheetStartAdBtn");
+  var sheetCancelBtn = document.getElementById("sheetCancelBtn");
+  var sheetCollectContinueBtn = document.getElementById("sheetCollectContinueBtn");
+
+  var pendingCaptchaToken = null;
+
+  function updateWatchSheetView1() {
+    var watched = Number(user.adsWatchedToday) || 0;
+    var maxAds = 10;
+    var remaining = Math.max(0, maxAds - watched);
+    if (sheetWatchedTodayEl) sheetWatchedTodayEl.textContent = watched;
+    if (sheetRemainingEl) sheetRemainingEl.textContent = remaining;
+
+    var now = Date.now();
+    var cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
+    var CYCLE_MS = 24 * 60 * 60 * 1000;
+
+    if (sheetStartAdBtn) {
+      if (watched >= maxAds && cycleStart && (now - cycleStart < CYCLE_MS)) {
+        sheetStartAdBtn.disabled = true;
+        sheetStartAdBtn.innerHTML = '<span>Daily Limit Reached (10/10)</span>';
+      } else {
+        sheetStartAdBtn.disabled = false;
+        sheetStartAdBtn.innerHTML = '<span>▶ Watch Ad & Earn</span>';
+      }
+    }
+  }
+
+  function openWatchEarnFlowModal() {
+    updateWatchSheetView1();
+    if (watchFlowPreView) watchFlowPreView.classList.add("active");
+    if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
+    if (watchEarnFlowModal) watchEarnFlowModal.classList.add("open");
+  }
+
+  function closeWatchEarnFlowModal() {
+    if (watchEarnFlowModal) watchEarnFlowModal.classList.remove("open");
+    pendingCaptchaToken = null;
+    if (sheetStartAdBtn) {
+      sheetStartAdBtn.disabled = false;
+      sheetStartAdBtn.innerHTML = '<span>▶ Watch Ad & Earn</span>';
+    }
+    if (sheetCollectContinueBtn) {
+      sheetCollectContinueBtn.disabled = false;
+      sheetCollectContinueBtn.innerHTML = '<span>COLLECT & CONTINUE</span>';
+    }
+  }
+
+  if (sheetCancelBtn) {
+    sheetCancelBtn.addEventListener("click", closeWatchEarnFlowModal);
+  }
+
+  // Earn Page "Watch Ad" Button -> Opens Image 1 Bottom Sheet
   var watchAdBtn = document.getElementById("watchAdBtn");
   if (watchAdBtn) {
     watchAdBtn.addEventListener("click", function() {
+      var watched = Number(user.adsWatchedToday) || 0;
       var now = Date.now();
       var cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
       var CYCLE_MS = 24 * 60 * 60 * 1000;
-      var watched = Number(user.adsWatchedToday || 0);
 
-      // Check daily limit
-      if (watched >= 12 && cycleStart && (now - cycleStart < CYCLE_MS)) {
-        showToast("Daily limit of 12 ads reached! Next ads available in 24 hours.");
+      if (watched >= 10 && cycleStart && (now - cycleStart < CYCLE_MS)) {
+        showToast("Daily limit of 10 ads reached! Next ads available in 24 hours.");
+        return;
+      }
+      openWatchEarnFlowModal();
+    });
+  }
+
+  // Image 1 Sheet Primary Button: "▶ Watch Ad & Earn" -> Loading Ad -> Opens Verification Captcha
+  if (sheetStartAdBtn) {
+    sheetStartAdBtn.addEventListener("click", function() {
+      var watched = Number(user.adsWatchedToday) || 0;
+      var now = Date.now();
+      var cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
+      var CYCLE_MS = 24 * 60 * 60 * 1000;
+
+      if (watched >= 10 && cycleStart && (now - cycleStart < CYCLE_MS)) {
+        showToast("Daily limit of 10 ads reached! Next ads available in 24 hours.");
         return;
       }
 
-      // Open Security Verification Modal
-      openSecurityCaptcha(function(verifiedCaptchaToken) {
-        watchAdBtn.disabled = true;
-        watchAdBtn.innerHTML = '<span>Verifying & Claiming...</span>';
+      sheetStartAdBtn.disabled = true;
+      sheetStartAdBtn.innerHTML = '<span>Loading Ad...</span>';
 
-        fetch("/api/ads", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Telegram-Init-Data": initData
-          },
-          body: JSON.stringify({ captchaToken: verifiedCaptchaToken })
-        }).then(function(r) {
-          if (r.status === 404) {
-            return fetch("/api/ads.js", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "X-Telegram-Init-Data": initData
-              },
-              body: JSON.stringify({ captchaToken: verifiedCaptchaToken })
-            });
+      setTimeout(function() {
+        openSecurityCaptcha(function(verifiedCaptchaToken) {
+          pendingCaptchaToken = verifiedCaptchaToken;
+
+          // Verification succeeded! Show Image 2: Reward Claimed!
+          if (watchFlowPreView) watchFlowPreView.classList.remove("active");
+          if (watchFlowSuccessView) watchFlowSuccessView.classList.add("active");
+          if (sheetSuccessWatchedEl) {
+            sheetSuccessWatchedEl.textContent = Math.min(10, watched + 1);
           }
-          return r;
-        }).then(handleResponse).then(function(res) {
-          if (!res.ok) {
-            var err = (res.data && res.data.error) ? res.data.error : "Failed to claim reward";
-            showToast(err);
-            renderAds();
-            return;
+          if (sheetCollectContinueBtn) {
+            sheetCollectContinueBtn.disabled = false;
+            sheetCollectContinueBtn.innerHTML = '<span>COLLECT & CONTINUE</span>';
           }
-
-          user.balance = res.data.newBalance;
-          user.adsWatchedToday = res.data.adsWatchedToday;
-          user.adsEarnedToday = res.data.adsEarnedToday;
-          user.adsCycleStartedAt = res.data.adsCycleStartedAt;
-
-          renderBalance();
-          renderAds();
-          showToast("🎉 +20 HOOCOOH Coins earned from Ad!");
-        }).catch(function(err) {
-          showToast((err && err.message) ? err.message : "Ad error");
-          renderAds();
         });
+      }, 1000);
+    });
+  }
+
+  // Image 2 Sheet: "COLLECT & CONTINUE" -> Claims Reward, Updates DB & Balances -> Returns to Image 1 Sheet
+  if (sheetCollectContinueBtn) {
+    sheetCollectContinueBtn.addEventListener("click", function() {
+      if (!pendingCaptchaToken) {
+        showToast("Session expired. Please watch ad again.");
+        updateWatchSheetView1();
+        if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
+        if (watchFlowPreView) watchFlowPreView.classList.add("active");
+        return;
+      }
+
+      sheetCollectContinueBtn.disabled = true;
+      sheetCollectContinueBtn.innerHTML = '<span>Collecting...</span>';
+
+      fetch("/api/ads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Telegram-Init-Data": initData
+        },
+        body: JSON.stringify({ captchaToken: pendingCaptchaToken })
+      }).then(function(r) {
+        if (r.status === 404) {
+          return fetch("/api/ads.js", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Telegram-Init-Data": initData
+            },
+            body: JSON.stringify({ captchaToken: pendingCaptchaToken })
+          });
+        }
+        return r;
+      }).then(handleResponse).then(function(res) {
+        if (!res.ok) {
+          var err = (res.data && res.data.error) ? res.data.error : "Failed to claim reward";
+          showToast(err);
+          sheetCollectContinueBtn.disabled = false;
+          sheetCollectContinueBtn.innerHTML = '<span>COLLECT & CONTINUE</span>';
+          return;
+        }
+
+        user.balance = res.data.newBalance;
+        user.adsWatchedToday = res.data.adsWatchedToday;
+        user.adsEarnedToday = res.data.adsEarnedToday;
+        user.adsCycleStartedAt = res.data.adsCycleStartedAt;
+
+        renderBalance();
+        renderAds();
+        showToast("🎉 +15 HOOCOOH Coins collected!");
+        if (tg && tg.HapticFeedback) {
+          try { tg.HapticFeedback.notificationOccurred("success"); } catch(e) {}
+        }
+
+        pendingCaptchaToken = null;
+
+        // Switch smoothly back to Image 1 View (continuous up to 10 times daily!)
+        updateWatchSheetView1();
+        if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
+        if (watchFlowPreView) watchFlowPreView.classList.add("active");
+
+        if (user.adsWatchedToday >= 10) {
+          showToast("🎉 All 10 daily ads completed! Next ads available in 24 hours.");
+        }
+      }).catch(function(err) {
+        showToast((err && err.message) ? err.message : "Network error");
+        sheetCollectContinueBtn.disabled = false;
+        sheetCollectContinueBtn.innerHTML = '<span>COLLECT & CONTINUE</span>';
       });
     });
   }
