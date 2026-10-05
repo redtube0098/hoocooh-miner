@@ -26,6 +26,11 @@ module.exports = async (req, res) => {
     const users = db.collection("users");
     let user = await findOrCreateUser(users, tgUser);
 
+    if (user && user.isBanned) {
+      res.status(403).json({ error: "Your account has been suspended" });
+      return;
+    }
+
     const currentLevel = Math.max(1, Math.min(10, user.minerLevel || 1));
     if (currentLevel >= 10) {
       res.status(400).json({ error: "Your miner is already at the maximum level (Level 10 Transcendent)!" });

@@ -46,6 +46,15 @@ module.exports = async (req, res) => {
     // Unified user retrieval, multi-type ID lookup, and duplicate merge
     let user = await findOrCreateUser(users, tgUser);
 
+    if (user && user.isBanned) {
+      res.status(200).json({
+        isBanned: true,
+        banReason: user.banReason || "Your account has been suspended",
+        telegramId: user.telegramId
+      });
+      return;
+    }
+
     // Process Referral if provided and not yet bound
     const rawParam = String(tgUser.start_param || (req.query && req.query.start_param) || "").trim();
     if (rawParam && !user.referredBy) {

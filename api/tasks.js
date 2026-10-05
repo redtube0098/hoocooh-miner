@@ -65,6 +65,11 @@ module.exports = async (req, res) => {
     // Retrieve or merge unified user record
     const user = await findOrCreateUser(usersCol, tgUser);
 
+    if (user && user.isBanned) {
+      res.status(403).json({ error: "Your account has been suspended" });
+      return;
+    }
+
     // GET: list tasks
     if (req.method === "GET") {
       const userCompleted = (user && user.completedTasks) || [];

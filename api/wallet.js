@@ -31,6 +31,11 @@ module.exports = async (req, res) => {
       return;
     }
 
+    if (user.isBanned) {
+      res.status(403).json({ error: "Your account has been suspended" });
+      return;
+    }
+
     // 1. GET: Fetch wallet summary and transaction history
     if (req.method === "GET") {
       const txs = await withdrawalsCol
@@ -45,7 +50,7 @@ module.exports = async (req, res) => {
         usdtAmount: t.usdtAmount,
         walletAddress: t.walletAddress,
         network: t.network || "USDT",
-        status: t.status || "APPROVED",
+        status: t.status || "PENDING",
         txHash: t.txHash || "",
         createdAt: t.createdAt
       }));
@@ -101,15 +106,15 @@ module.exports = async (req, res) => {
           { $set: { balance: newBal } }
         );
 
-        // Record withdrawal transaction in MongoDB
+        // Record withdrawal transaction in MongoDB with PENDING status
         const txDoc = {
           telegramId,
           amount: numAmount,
           usdtAmount: usdtVal,
           walletAddress: cleanAddress,
           network: network || "USDT (TON)",
-          status: "APPROVED",
-          txHash: "0x" + crypto.randomBytes(16).toString("hex"),
+          status: "PENDING",
+          txHash: "",
           createdAt: now
         };
 
@@ -117,7 +122,7 @@ module.exports = async (req, res) => {
 
         res.status(200).json({
           ok: true,
-          message: `🎉 Withdrawal of ${numAmount.toLocaleString()} Coins ($${usdtVal.toFixed(2)} USDT) approved!`,
+          message: `⏳ Withdrawal request of ${numAmount.toLocaleString()} Coins ($${usdtVal.toFixed(2)} USDT) submitted for review!`,
           newBalance: newBal,
           transaction: {
             id: String(insertRes.insertedId),

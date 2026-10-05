@@ -26,6 +26,11 @@ module.exports = async (req, res) => {
     const users = db.collection("users");
     let user = await findOrCreateUser(users, tgUser);
 
+    if (user && user.isBanned) {
+      res.status(403).json({ error: "Your account has been suspended" });
+      return;
+    }
+
     const status = dailyStatus(user.lastCheckinAt);
     if (status === "waiting") {
       res.status(400).json({ error: "Already checked in today", status });

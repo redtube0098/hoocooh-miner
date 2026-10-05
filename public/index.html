@@ -4602,9 +4602,76 @@
     max-width: 260px;
     line-height: 1.45;
   }
+
+  /* Banned / Suspended Account Screen */
+  .banned-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999999;
+    background: #081017;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .banned-card {
+    background: #111e28;
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    box-shadow: 0 16px 50px rgba(239, 68, 68, 0.2);
+    border-radius: 28px;
+    padding: 36px 24px 30px;
+    text-align: center;
+    max-width: 360px;
+    width: 100%;
+    animation: banCardPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes banCardPop {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .banned-icon {
+    font-size: 58px;
+    line-height: 1;
+    margin-bottom: 18px;
+  }
+  .banned-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 21px;
+    font-weight: 800;
+    color: #ef4444;
+    margin-bottom: 12px;
+    letter-spacing: -0.3px;
+  }
+  .banned-desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: #94a3b8;
+    margin-bottom: 20px;
+  }
+  .banned-uid {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    background: rgba(0, 0, 0, 0.35);
+    padding: 7px 16px;
+    border-radius: 100px;
+    display: inline-block;
+  }
 </style>
 </head>
 <body>
+
+<!-- Account Suspended Block Screen -->
+<div class="banned-overlay" id="bannedOverlay" style="display: none;">
+  <div class="banned-card">
+    <div class="banned-icon">⛔</div>
+    <div class="banned-title">Your account has been suspended</div>
+    <div class="banned-desc" id="bannedReasonTxt">Your account has been permanently restricted by administration for violating terms of service. You can no longer access HOOCOOH Miner.</div>
+    <div class="banned-uid">User ID: <span id="bannedUidTxt">---</span></div>
+  </div>
+</div>
 
 <!-- Full-Screen Loading Splash (media_1791212619324.png) -->
 <div class="loading-screen" id="appLoadingScreen">
@@ -8632,6 +8699,16 @@
 
   // Fetch real server state
   apiGet().then(function(res){
+    if (res.data && res.data.isBanned) {
+      var bOverlay = document.getElementById("bannedOverlay");
+      var bReason = document.getElementById("bannedReasonTxt");
+      var bUid = document.getElementById("bannedUidTxt");
+      if (bOverlay) bOverlay.style.display = "flex";
+      if (bReason && res.data.banReason) bReason.textContent = res.data.banReason;
+      if (bUid) bUid.textContent = res.data.telegramId || (user && user.telegramId) || "---";
+      dismissLoadingScreen();
+      return;
+    }
     if (!res.ok) {
       if (res.data && res.data.error) showToast(res.data.error);
       triggerDismissWhenReady();

@@ -60,6 +60,11 @@ module.exports = async (req, res) => {
     const usersCol = db.collection("users");
     let user = await findOrCreateUser(usersCol, tgUser);
 
+    if (user && user.isBanned) {
+      res.status(403).json({ error: "Your account has been suspended" });
+      return;
+    }
+
     const now = Date.now();
     let cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
     let watchedToday = Number(user.adsWatchedToday || 0);
