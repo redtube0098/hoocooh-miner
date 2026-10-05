@@ -4659,6 +4659,105 @@
     border-radius: 100px;
     display: inline-block;
   }
+
+  /* Language Selection Modal (Exact match to reference image) */
+  .lang-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(5, 10, 16, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .lang-modal-box {
+    width: 100%;
+    max-width: 380px;
+    background: #0c141f;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 26px 20px 22px 20px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+    animation: langFadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+  }
+  @keyframes langFadeUp {
+    from { opacity: 0; transform: translateY(24px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .lang-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .lang-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #00b4d8;
+    box-shadow: 0 0 10px #00b4d8;
+    display: inline-block;
+  }
+  .lang-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    font-family: inherit;
+    letter-spacing: -0.2px;
+  }
+  .lang-subtitle {
+    font-size: 13.5px;
+    color: #8ba2b5;
+    margin-bottom: 20px;
+  }
+  .lang-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .lang-option-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: #111c29;
+    border: 1.5px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .lang-option-pill:active {
+    transform: scale(0.98);
+  }
+  .lang-option-pill .lang-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #f1f5f9;
+  }
+  .lang-option-pill .lang-check {
+    font-size: 17px;
+    font-weight: 800;
+    color: #00b4d8;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.2s ease;
+  }
+  .lang-option-pill.active {
+    border-color: #00b4d8;
+    background: rgba(0, 180, 216, 0.08);
+    box-shadow: 0 0 20px rgba(0, 180, 216, 0.15);
+  }
+  .lang-option-pill.active .lang-check {
+    opacity: 1;
+    transform: scale(1);
+  }
 </style>
 </head>
 <body>
@@ -5479,27 +5578,27 @@
   <nav class="bottom-nav">
     <button class="nav-btn active" data-tab="tab-home">
       <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zm-9 9h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg>
-      <span>Home</span>
+      <span id="navHomeLabel">Home</span>
       <span class="nav-dot"></span>
     </button>
     <button class="nav-btn" data-tab="tab-earn">
       <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9 6.6 2.1-6.6 2.1L12 20l-2.4-6.9L3 11l6.6-2.1L12 2z"/></svg>
-      <span>Earn</span>
+      <span id="navEarnLabel">Earn</span>
       <span class="nav-dot"></span>
     </button>
     <button class="nav-btn" data-tab="tab-mining">
       <svg viewBox="0 0 24 24"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.2l6.8 3.8L12 11.8 5.2 8 12 4.2zM4.9 9.8L11 13.2v7L4.9 16.8V9.8zm8.1 10.4v-7l6.1-3.4v7L13 20.2z"/></svg>
-      <span>Mining</span>
+      <span id="navMiningLabel">Mining</span>
       <span class="nav-dot"></span>
     </button>
     <button class="nav-btn" data-tab="tab-invite">
       <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
-      <span>Invite</span>
+      <span id="navInviteLabel">Invite</span>
       <span class="nav-dot"></span>
     </button>
     <button class="nav-btn" data-tab="tab-wallet">
       <svg viewBox="0 0 24 24"><path d="M21 7.28V5c0-1.1-.9-2-2-2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-2.28c.59-.35 1-.99 1-1.72V9c0-.73-.41-1.37-1-1.72zM20 9v6h-7V9h7zM5 19V5h14v2h-6c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h6v2H5z"/></svg>
-      <span>Wallet</span>
+      <span id="navWalletLabel">Wallet</span>
       <span class="nav-dot"></span>
     </button>
   </nav>
@@ -5930,6 +6029,32 @@
     </div>
   </div>
 
+  <!-- Language Selection Modal (Exact match to reference image) -->
+  <div id="languageModal" class="lang-modal-overlay">
+    <div class="lang-modal-box">
+      <div class="lang-header">
+        <span class="lang-dot"></span>
+        <span class="lang-title" id="langModalTitleTxt">Language</span>
+      </div>
+      <div class="lang-subtitle" id="langModalSubtitleTxt">Choose your language</div>
+      
+      <div class="lang-options">
+        <div class="lang-option-pill" data-lang="en">
+          <span class="lang-name">English</span>
+          <span class="lang-check">✓</span>
+        </div>
+        <div class="lang-option-pill" data-lang="ru">
+          <span class="lang-name">Русский</span>
+          <span class="lang-check">✓</span>
+        </div>
+        <div class="lang-option-pill" data-lang="ar">
+          <span class="lang-name">العربية</span>
+          <span class="lang-check">✓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Element -->
   <div class="toast" id="toast"></div>
 
@@ -6159,6 +6284,269 @@
     "Sovereign",
     "Transcendent"
   ];
+
+  var LEVEL_NAMES_I18N = {
+    en: ["Starter", "Developed", "Refined", "Vanguard", "Apex", "Celestial", "Quantum", "Mythic", "Sovereign", "Transcendent"],
+    ru: ["Новичок", "Опытный", "Улучшенный", "Авангард", "Апекс", "Селестиал", "Квантум", "Мифический", "Суверен", "Трансцендент"],
+    ar: ["مبتدئ", "مطور", "متقدم", "طليعي", "ذروة", "سماوي", "كمومي", "خرافي", "سيادي", "متسامي"]
+  };
+
+  var currentLang = "en";
+  try {
+    var _initParams = new URLSearchParams(window.location.search);
+    var _initLang = _initParams.get("lang") || localStorage.getItem("hoocooh_language");
+    if (_initLang && ["en", "ru", "ar"].indexOf(_initLang) !== -1) {
+      currentLang = _initLang;
+    }
+  } catch(e){}
+
+  var I18N = {
+    en: {
+      nav_home: "Home",
+      nav_earn: "Earn",
+      nav_mining: "Mining",
+      nav_invite: "Invite",
+      nav_wallet: "Wallet",
+      lang_title: "Language",
+      lang_subtitle: "Choose your language",
+      balance_label: "HOOCOOH Coins",
+      next_yield_in: "NEXT YIELD IN",
+      mining_in_progress: "MINING IN PROGRESS",
+      mining_active: "Mining Active...",
+      mining_complete: "MINING COMPLETE!",
+      reward_ready: "REWARD READY!",
+      ready_to_collect: "Ready to collect",
+      collect_hoocooh: "Collect HOOCOOH",
+      collect_coins: "Collect HOOCOOH Coins",
+      upgrade_for: "⬆ Upgrade for {cost} HOOCOOH",
+      max_level: "🏆 MAX LEVEL REACHED",
+      watch_earn: "Watch & Earn",
+      tasks: "Tasks",
+      post_task: "➕ Post Task",
+      invite_friends: "Invite Friends & Earn",
+      copy_link: "Copy Link",
+      copied: "Copied to clipboard!",
+      total_balance: "TOTAL BALANCE",
+      withdraw: "Withdraw",
+      deposit: "Deposit",
+      confirm_withdraw: "Confirm Withdrawal"
+    },
+    ru: {
+      nav_home: "Главная",
+      nav_earn: "Заработок",
+      nav_mining: "Майнинг",
+      nav_invite: "Друзья",
+      nav_wallet: "Кошелек",
+      lang_title: "Язык",
+      lang_subtitle: "Выберите язык",
+      balance_label: "Монеты HOOCOOH",
+      next_yield_in: "СЛЕДУЮЩИЙ СБОР ЧЕРЕЗ",
+      mining_in_progress: "МАЙНИНГ АКТИВЕН",
+      mining_active: "Майнинг активен...",
+      mining_complete: "МАЙНИНГ ЗАВЕРШЕН!",
+      reward_ready: "НАГРАДА ГОТОВА!",
+      ready_to_collect: "Готово к сбору",
+      collect_hoocooh: "Собрать HOOCOOH",
+      collect_coins: "Собрать монеты HOOCOOH",
+      upgrade_for: "⬆ Улучшить за {cost} HOOCOOH",
+      max_level: "🏆 МАКСИМАЛЬНЫЙ УРОВЕНЬ",
+      watch_earn: "Смотри и зарабатывай",
+      tasks: "Задания",
+      post_task: "➕ Создать задание",
+      invite_friends: "Приглашай друзей и зарабатывай",
+      copy_link: "Копировать",
+      copied: "Скопировано в буфер!",
+      total_balance: "ОБЩИЙ БАЛАНС",
+      withdraw: "Вывод",
+      deposit: "Пополнение",
+      confirm_withdraw: "Подтвердить вывод"
+    },
+    ar: {
+      nav_home: "الرئيسية",
+      nav_earn: "كسب",
+      nav_mining: "تعدين",
+      nav_invite: "دعوة",
+      nav_wallet: "محفظة",
+      lang_title: "اللغة",
+      lang_subtitle: "اختر لغتك",
+      balance_label: "عملات HOOCOOH",
+      next_yield_in: "المحصول القادم خلال",
+      mining_in_progress: "التعدين قيد التشغيل",
+      mining_active: "التعدين نشط...",
+      mining_complete: "اكتمل التعدين!",
+      reward_ready: "المكافأة جاهزة!",
+      ready_to_collect: "جاهز للجمع",
+      collect_hoocooh: "جمع HOOCOOH",
+      collect_coins: "جمع عملات HOOCOOH",
+      upgrade_for: "⬆ ترقية مقابل {cost} HOOCOOH",
+      max_level: "🏆 تم الوصول للحد الأقصى",
+      watch_earn: "شاهد واربح",
+      tasks: "المهام",
+      post_task: "➕ نشر مهمة",
+      invite_friends: "ادعُ الأصدقاء واكسب",
+      copy_link: "نسخ الرابط",
+      copied: "تم النسخ إلى الحافظة!",
+      total_balance: "الرصيد الإجمالي",
+      withdraw: "سحب",
+      deposit: "إيداع",
+      confirm_withdraw: "تأكيد طلب السحب"
+    }
+  };
+
+  function t(key, def) {
+    var dict = I18N[currentLang] || I18N.en;
+    return (dict && dict[key] !== undefined) ? dict[key] : (def || key);
+  }
+
+  function getLevelName(lvl) {
+    var l = Math.max(1, Math.min(10, lvl || 1));
+    var list = (LEVEL_NAMES_I18N && LEVEL_NAMES_I18N[currentLang]) ? LEVEL_NAMES_I18N[currentLang] : LEVEL_NAMES;
+    return list[l - 1] || LEVEL_NAMES[l - 1] || "Starter";
+  }
+
+  function applyLanguage(lang) {
+    if (!lang || !I18N[lang]) lang = "en";
+    currentLang = lang;
+
+    if (lang === "ar") {
+      document.body.classList.add("lang-rtl");
+    } else {
+      document.body.classList.remove("lang-rtl");
+    }
+
+    var modalTitle = document.getElementById("langModalTitleTxt");
+    if (modalTitle) modalTitle.textContent = t("lang_title");
+    var modalSub = document.getElementById("langModalSubtitleTxt");
+    if (modalSub) modalSub.textContent = t("lang_subtitle");
+
+    var nHome = document.getElementById("navHomeLabel");
+    if (nHome) nHome.textContent = t("nav_home");
+    var nEarn = document.getElementById("navEarnLabel");
+    if (nEarn) nEarn.textContent = t("nav_earn");
+    var nMining = document.getElementById("navMiningLabel");
+    if (nMining) nMining.textContent = t("nav_mining");
+    var nInvite = document.getElementById("navInviteLabel");
+    if (nInvite) nInvite.textContent = t("nav_invite");
+    var nWallet = document.getElementById("navWalletLabel");
+    if (nWallet) nWallet.textContent = t("nav_wallet");
+
+    var balLabel = document.querySelector(".balance-label");
+    if (balLabel) balLabel.textContent = t("balance_label");
+    var nextYield = document.querySelector(".next-yield-label");
+    if (nextYield) nextYield.textContent = t("next_yield_in");
+    var mineTitle = document.getElementById("mineTitle");
+    if (mineTitle) mineTitle.textContent = t("mining_complete");
+
+    var tasksBtnSpan = document.querySelector("#tabTasksBtn span");
+    if (tasksBtnSpan) tasksBtnSpan.textContent = t("tasks");
+    var postTaskBtnSpan = document.querySelector("#openPostTaskModalBtn span");
+    if (postTaskBtnSpan) postTaskBtnSpan.textContent = t("post_task");
+    var watchCardTitle = document.querySelector(".watch-card-title");
+    if (watchCardTitle) watchCardTitle.textContent = t("watch_earn");
+
+    var modal = document.getElementById("languageModal");
+    if (modal) {
+      var pills = modal.querySelectorAll(".lang-option-pill");
+      pills.forEach(function(pill){
+        if (pill.getAttribute("data-lang") === lang) {
+          pill.classList.add("active");
+        } else {
+          pill.classList.remove("active");
+        }
+      });
+    }
+
+    if (typeof renderAll === "function") {
+      renderAll();
+    }
+  }
+
+  function openLanguageModal() {
+    var modal = document.getElementById("languageModal");
+    if (!modal) return;
+    var pills = modal.querySelectorAll(".lang-option-pill");
+    pills.forEach(function(pill){
+      if (pill.getAttribute("data-lang") === currentLang) {
+        pill.classList.add("active");
+      } else {
+        pill.classList.remove("active");
+      }
+    });
+    modal.style.display = "flex";
+  }
+
+  function setupLanguageModal() {
+    var modal = document.getElementById("languageModal");
+    if (!modal) return;
+    var pills = modal.querySelectorAll(".lang-option-pill");
+    pills.forEach(function(pill){
+      pill.addEventListener("click", function(){
+        var chosenLang = pill.getAttribute("data-lang") || "en";
+        pills.forEach(function(p){ p.classList.remove("active"); });
+        pill.classList.add("active");
+
+        try {
+          localStorage.setItem("hoocooh_language", chosenLang);
+          localStorage.setItem("hoocooh_language_selected", "true");
+        } catch(e){}
+
+        applyLanguage(chosenLang);
+
+        if (typeof apiPost === "function") {
+          apiPost({ action: "set_language", language: chosenLang }).catch(function(){});
+        }
+
+        setTimeout(function(){
+          modal.style.opacity = "0";
+          modal.style.transition = "opacity 0.22s ease";
+          setTimeout(function(){
+            modal.style.display = "none";
+            modal.style.opacity = "";
+            modal.style.transition = "";
+          }, 240);
+        }, 220);
+      });
+    });
+  }
+
+  function checkLanguagePrompt() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var urlLang = urlParams.get("lang");
+    var validLangs = ["en", "ru", "ar"];
+
+    if (urlLang && validLangs.indexOf(urlLang) !== -1) {
+      applyLanguage(urlLang);
+      try {
+        localStorage.setItem("hoocooh_language", urlLang);
+        localStorage.setItem("hoocooh_language_selected", "true");
+      } catch(e){}
+      return;
+    }
+
+    var storedLang = null;
+    var wasSelected = false;
+    try {
+      storedLang = localStorage.getItem("hoocooh_language");
+      wasSelected = localStorage.getItem("hoocooh_language_selected") === "true";
+    } catch(e){}
+
+    if (wasSelected && storedLang && validLangs.indexOf(storedLang) !== -1) {
+      applyLanguage(storedLang);
+      return;
+    }
+
+    if (user && user.language && validLangs.indexOf(user.language) !== -1) {
+      applyLanguage(user.language);
+      try {
+        localStorage.setItem("hoocooh_language", user.language);
+        localStorage.setItem("hoocooh_language_selected", "true");
+      } catch(e){}
+      return;
+    }
+
+    openLanguageModal();
+  }
+
   var LEVEL_MULTIPLIERS = [1.0, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0];
   var UPGRADE_COSTS = [1000, 4500, 7000, 10000, 20000, 40000, 80000, 100000, 200000];
 
@@ -6346,7 +6734,7 @@
     if (walletVaultUsd) walletVaultUsd.textContent = "≈ $" + (balance * COIN_USD).toFixed(2) + " USDT";
 
     var currentLvl = Math.max(1, Math.min(10, user.minerLevel || user.level || 1));
-    var lvlName = LEVEL_NAMES[currentLvl - 1] || "Starter";
+    var lvlName = getLevelName(currentLvl);
     var mult = LEVEL_MULTIPLIERS[currentLvl - 1] || 1.0;
 
     var lvlBadgeNum = document.getElementById("levelBadgeNum");
@@ -6396,7 +6784,7 @@
     var ready = !lastCollected || (now - lastCollected) >= interval;
 
     var currentLvl = Math.max(1, Math.min(10, user.minerLevel || user.level || 1));
-    var lvlName = LEVEL_NAMES[currentLvl - 1] || "Starter";
+    var lvlName = getLevelName(currentLvl);
     var mult = LEVEL_MULTIPLIERS[currentLvl - 1] || 1.0;
     var reward = Math.round(80 * mult);
     var currentLogo = getLevelLogo(currentLvl);
@@ -6426,25 +6814,25 @@
     if (pill && pillText && btn) {
       if (ready) {
         pill.className = "status-pill ready";
-        pillText.textContent = "REWARD READY!";
+        pillText.textContent = t("reward_ready");
         if (chargingView) chargingView.style.display = "none";
         if (readyView) readyView.style.display = "block";
         btn.disabled = false;
         btn.className = "collect-btn";
-        btn.innerHTML = '<img src="' + currentLogo + '" alt="Icon" style="width:24px;height:24px;object-fit:contain;"> <span>Collect HOOCOOH (+' + reward + ')</span>';
+        btn.innerHTML = '<img src="' + currentLogo + '" alt="Icon" style="width:24px;height:24px;object-fit:contain;"> <span>' + t("collect_hoocooh") + ' (+' + reward + ')</span>';
         if (timerText) {
-          timerText.textContent = "Ready to collect";
+          timerText.textContent = t("ready_to_collect");
           timerText.style.display = "block";
         }
       } else {
         pill.className = "status-pill waiting in-progress";
-        pillText.textContent = "MINING IN PROGRESS";
+        pillText.textContent = t("mining_in_progress");
         if (chargingView) chargingView.style.display = "flex";
         if (readyView) readyView.style.display = "none";
         if (clockEl) clockEl.textContent = formatDuration(remaining);
         btn.disabled = true;
         btn.className = "collect-btn mining-active";
-        btn.innerHTML = '<span class="bolt-icon" style="color: #f59e0b; font-size: 16px; margin-right: 4px;">⚡</span> <span>Mining Active...</span>';
+        btn.innerHTML = '<span class="bolt-icon" style="color: #f59e0b; font-size: 16px; margin-right: 4px;">⚡</span> <span>' + t("mining_active") + '</span>';
         if (timerText) timerText.style.display = "none";
       }
     }
@@ -6497,16 +6885,16 @@
     if (mStatusPill && mStatusPillTxt && mTabCollectBtn) {
       if (ready) {
         mStatusPill.className = "miner-status-pill ready";
-        mStatusPillTxt.textContent = "REWARD READY!";
-        if (mProgressStatusTxt) mProgressStatusTxt.textContent = "MINING COMPLETE — COLLECT NOW!";
+        mStatusPillTxt.textContent = t("reward_ready");
+        if (mProgressStatusTxt) mProgressStatusTxt.textContent = t("mining_complete");
         mTabCollectBtn.disabled = false;
-        if (mTabCollectBtnTxt) mTabCollectBtnTxt.textContent = "Collect HOOCOOH Coins";
+        if (mTabCollectBtnTxt) mTabCollectBtnTxt.textContent = t("collect_coins");
       } else {
         mStatusPill.className = "miner-status-pill mining";
-        mStatusPillTxt.textContent = "MINING IN PROGRESS (" + formatDuration(remaining) + ")";
-        if (mProgressStatusTxt) mProgressStatusTxt.textContent = "MINING IN PROGRESS · " + formatDuration(remaining) + " LEFT";
+        mStatusPillTxt.textContent = t("mining_in_progress") + " (" + formatDuration(remaining) + ")";
+        if (mProgressStatusTxt) mProgressStatusTxt.textContent = t("mining_in_progress") + " · " + formatDuration(remaining);
         mTabCollectBtn.disabled = true;
-        if (mTabCollectBtnTxt) mTabCollectBtnTxt.textContent = "Mining (" + formatDuration(remaining) + ")";
+        if (mTabCollectBtnTxt) mTabCollectBtnTxt.textContent = t("mining_active") + " (" + formatDuration(remaining) + ")";
       }
     }
 
@@ -6534,7 +6922,7 @@
           badgeHtml +
           '<img src="' + getLevelLogo(i) + '" class="evo-card-img" alt="Lv.' + i + '" width="42" height="42" style="width: 42px; height: 42px; max-width: 42px; max-height: 42px; object-fit: contain; display: block;">' +
           '<div class="evo-card-lvl">Lv.' + i + '</div>' +
-          '<div class="evo-card-name">' + LEVEL_NAMES[i - 1] + '</div>';
+          '<div class="evo-card-name">' + getLevelName(i) + '</div>';
 
         evoCarousel.appendChild(card);
       }
@@ -6557,11 +6945,11 @@
         var compNextName = document.getElementById("compNextName");
         var compNextMult = document.getElementById("compNextMult");
         if (clickedLvl > activeLvl) {
-          if (compNextName) compNextName.textContent = LEVEL_NAMES[clickedLvl - 1] + " (Lv." + clickedLvl + ")";
+          if (compNextName) compNextName.textContent = getLevelName(clickedLvl) + " (Lv." + clickedLvl + ")";
           if (compNextMult) compNextMult.textContent = "x" + LEVEL_MULTIPLIERS[clickedLvl - 1] + " reward multiplier";
         } else {
           if (activeLvl < 10) {
-            if (compNextName) compNextName.textContent = LEVEL_NAMES[activeLvl];
+            if (compNextName) compNextName.textContent = getLevelName(activeLvl + 1);
             if (compNextMult) compNextMult.textContent = "x" + LEVEL_MULTIPLIERS[activeLvl] + " reward multiplier";
           }
         }
@@ -6575,14 +6963,14 @@
     var upgradeBtn = document.getElementById("minerUpgradeActionBtn");
     var upgradeBtnTxt = document.getElementById("minerUpgradeBtnTxt");
 
-    var currName = LEVEL_NAMES[currentLvl - 1] || "Starter";
+    var currName = getLevelName(currentLvl);
     var currMult = LEVEL_MULTIPLIERS[currentLvl - 1] || 1.0;
 
     if (compCurrName) compCurrName.textContent = currName;
     if (compCurrMult) compCurrMult.textContent = "x" + currMult + " reward multiplier";
 
     if (currentLvl < 10) {
-      var nextName = LEVEL_NAMES[currentLvl];
+      var nextName = getLevelName(currentLvl + 1);
       var nextMult = LEVEL_MULTIPLIERS[currentLvl];
       var nextCost = UPGRADE_COSTS[currentLvl - 1];
 
@@ -6594,7 +6982,7 @@
         upgradeBtnTxt.textContent = "⬆ Upgrade for " + nextCost.toLocaleString() + " HOOCOOH";
       }
     } else {
-      if (compNextName) compNextName.textContent = "Transcendent (Max)";
+      if (compNextName) compNextName.textContent = getLevelName(10) + " (Max)";
       if (compNextMult) compNextMult.textContent = "x2.0 Maximum Multiplier";
 
       if (upgradeBtn && upgradeBtnTxt) {
@@ -8686,7 +9074,10 @@
         loadingScreenEl.classList.add("fade-out");
         setTimeout(function(){
           loadingScreenEl.style.display = "none";
+          checkLanguagePrompt();
         }, 480);
+      } else {
+        checkLanguagePrompt();
       }
     }, 350);
   }
@@ -8701,6 +9092,10 @@
 
   // Fallback safety timeout (maximum 3.5s)
   setTimeout(dismissLoadingScreen, 3500);
+
+  // Initialize Language selector modal and active language
+  setupLanguageModal();
+  applyLanguage(currentLang);
 
   // Load Tasks, Referrals & Wallet on startup
   loadTasks();
@@ -8725,6 +9120,9 @@
       return;
     }
     Object.assign(user, res.data);
+    if (res.data.language && !localStorage.getItem("hoocooh_language_selected")) {
+      applyLanguage(res.data.language);
+    }
     if (res.data.minerLevel) {
       user.minerLevel = res.data.minerLevel;
       user.level = res.data.minerLevel;

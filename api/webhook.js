@@ -93,6 +93,92 @@ async function sendTelegramMsg(botToken, chatId, text, options = {}) {
   }
 }
 
+const WELCOME_MESSAGES = {
+  en: {
+    name: "English",
+    text: 
+`⛏️ <b>Welcome to HOOCOOH Miner!</b>
+
+🌕 <b>Mine the depths, earn HOOCOOH Coins, invite your crew, and withdraw real USDT!</b>
+
+🎮 <b>How it works:</b>
+
+• Dive deep to Mine & Earn
+• Complete tasks to stack more HOOCOOH Coins
+• Upgrade your mining gear for bigger rewards
+• Invite friends to expand your crew & Earn
+• Withdraw your earnings directly as USDT!
+
+<b>Convert HOOCOOH Coins ➔ USDT 💲</b>
+
+👇 <b>Tap the button below to start your dive!</b> 👇`,
+    btnStart: "⛏️ Start hoocooh miner",
+    btnLang: "🌐 Select your language",
+    promptLang: "• <b>Language</b>\nChoose your language:",
+    toastChanged: "✅ Language set to English!"
+  },
+  ru: {
+    name: "Русский",
+    text: 
+`⛏️ <b>Добро пожаловать в HOOCOOH Miner!</b>
+
+🌕 <b>Добывайте в глубинах, зарабатывайте HOOCOOH Coins, приглашайте друзей и выводите реальные USDT!</b>
+
+🎮 <b>Как это работает:</b>
+
+• Погружайтесь в шахту, чтобы майнить и зарабатывать
+• Выполняйте задания, чтобы получить больше монет
+• Улучшайте снаряжение для максимальных наград
+• Приглашайте друзей в свою команду и зарабатывайте вместе
+• Выводите заработанные средства прямо в USDT!
+
+<b>Конвертируйте HOOCOOH Coins ➔ USDT 💲</b>
+
+👇 <b>Нажмите кнопку ниже, чтобы начать погружение!</b> 👇`,
+    btnStart: "⛏️ Начать майнинг hoocooh",
+    btnLang: "🌐 Выбрать язык",
+    promptLang: "• <b>Язык</b>\nВыберите ваш язык:",
+    toastChanged: "✅ Язык изменен на Русский!"
+  },
+  ar: {
+    name: "العربية",
+    text: 
+`⛏️ <b>مرحبًا بك في HOOCOOH Miner!</b>
+
+🌕 <b>قم بالتعدين في الأعماق، واكسب عملات HOOCOOH، وادعُ أصدقاءك، واسحب عملات USDT حقيقية!</b>
+
+🎮 <b>كيف يعمل:</b>
+
+• انغمس в الأعماق للتعدين والربح
+• أكمل المهام لجمع المزيد من عملات HOOCOOH
+• قم بترقية معدات التعدين للحصول على أكبر المكافآت
+• ادعُ أصدقاءك للانضمام إلى فريقك والربح معًا
+• اسحب أرباحك مباشرة كعملة USDT!
+
+<b>تحويل عملات HOOCOOH ➔ USDT 💲</b>
+
+👇 <b>اضغط على الزر أدناه لبدء التعدين!</b> 👇`,
+    btnStart: "⛏️ ابدأ تعدين hoocooh",
+    btnLang: "🌐 اختر لغتك",
+    promptLang: "• <b>اللغة</b>\nاختر لغتك:",
+    toastChanged: "✅ تم تعيين اللغة إلى العربية!"
+  }
+};
+
+async function answerCallbackQuery(botToken, callbackQueryId, text) {
+  if (!botToken || !callbackQueryId) return;
+  try {
+    await fetch(`https://api.telegram.org/bot${botToken}/answerCallbackQuery`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        callback_query_id: String(callbackQueryId),
+        text: text || ""
+      })
+    });
+  } catch(e){}
+}
+
 module.exports = async (req, res) => {
   // CORS / Preflight
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -215,6 +301,96 @@ module.exports = async (req, res) => {
       return;
     }
 
+    // ----------------------------------------------------
+    // Callback Query Handler (Language Selection)
+    // ----------------------------------------------------
+    if (update.callback_query) {
+      const cb = update.callback_query;
+      const cbData = cb.data || "";
+      const cbChatId = cb.message?.chat?.id;
+      const cbSenderId = cb.from?.id ? String(cb.from.id) : "";
+
+      let db = null;
+      try { db = await getDb(); } catch(e){}
+
+      // Open Language Selection menu
+      if (cbData === "choose_lang") {
+        let userLang = "en";
+        try {
+          if (db) {
+            const u = await db.collection("users").findOne({ telegramId: cbSenderId });
+            if (u && u.language) userLang = u.language;
+          }
+        } catch(e){}
+
+        const langDict = WELCOME_MESSAGES[userLang] || WELCOME_MESSAGES.en;
+
+        await sendTelegramMsg(botToken, cbChatId, langDict.promptLang, {
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: userLang === "en" ? "English ✓" : "English", callback_data: "set_lang_en" }],
+              [{ text: userLang === "ru" ? "Русский ✓" : "Русский", callback_data: "set_lang_ru" }],
+              [{ text: userLang === "ar" ? "العربية ✓" : "العربية", callback_data: "set_lang_ar" }]
+            ]
+          }
+        });
+        await answerCallbackQuery(botToken, cb.id);
+        res.status(200).json({ ok: true });
+        return;
+      }
+
+      // User selected a language option
+      if (cbData.startsWith("set_lang_")) {
+        const chosenLang = cbData.replace("set_lang_", "");
+        const validLangs = ["en", "ru", "ar"];
+        const finalLang = validLangs.includes(chosenLang) ? chosenLang : "en";
+
+        try {
+          if (db) {
+            await db.collection("users").updateOne(
+              { telegramId: cbSenderId },
+              { $set: { language: finalLang, updatedAt: Date.now() } },
+              { upsert: true }
+            );
+          }
+        } catch(e){}
+
+        const langDict = WELCOME_MESSAGES[finalLang] || WELCOME_MESSAGES.en;
+        await answerCallbackQuery(botToken, cb.id, langDict.toastChanged);
+
+        // Send updated welcome message in newly selected language
+        const appUrl = `${baseUrl}/index.html?lang=${finalLang}`;
+        const photoUrl = `${baseUrl}/assets/botfather_banner.jpg`;
+
+        await sendTelegramMsg(botToken, cbChatId, langDict.text, {
+          photoUrl: photoUrl,
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: langDict.btnStart,
+                  web_app: { url: appUrl }
+                }
+              ],
+              [
+                {
+                  text: langDict.btnLang,
+                  callback_data: "choose_lang"
+                }
+              ]
+            ]
+          }
+        });
+
+        res.status(200).json({ ok: true, language: finalLang });
+        return;
+      }
+
+      await answerCallbackQuery(botToken, cb.id);
+      res.status(200).send("OK");
+      return;
+    }
+
     const message = update.message || update.edited_message;
     if (!message || !message.text) {
       // Not a text message, ignore silently
@@ -276,39 +452,39 @@ module.exports = async (req, res) => {
     // Command: /start
     // ----------------------------------------------------
     if (command === "/start") {
-      let appUrl = `${baseUrl}/index.html`;
+      let userLang = "en";
+      let db = null;
+      try {
+        db = await getDb();
+        if (db) {
+          const u = await db.collection("users").findOne({ telegramId: senderId });
+          if (u && u.language) userLang = u.language;
+        }
+      } catch(e){}
+
+      let appUrl = `${baseUrl}/index.html?lang=${userLang}`;
       const startParam = parts[1] || "";
       if (startParam) {
-        appUrl += `?tgWebAppStartParam=${encodeURIComponent(startParam)}`;
+        appUrl += `&tgWebAppStartParam=${encodeURIComponent(startParam)}`;
       }
 
       const photoUrl = `${baseUrl}/assets/botfather_banner.jpg`;
+      const langDict = WELCOME_MESSAGES[userLang] || WELCOME_MESSAGES.en;
 
-      const replyText = 
-`⛏️ <b>Welcome to HOOCOOH Miner!</b>
-
-🌕 <b>Mine the depths, earn HOOCOOH Coins, invite your crew, and withdraw real USDT!</b>
-
-🎮 <b>How it works:</b>
-
-• Dive deep to Mine & Earn
-• Complete tasks to stack more HOOCOOH Coins
-• Upgrade your mining gear for bigger rewards
-• Invite friends to expand your crew & Earn
-• Withdraw your earnings directly as USDT!
-
-<b>Convert HOOCOOH Coins ➔ USDT 💲</b>
-
-👇 <b>Tap the button below to start your dive!</b> 👇`;
-
-      await sendTelegramMsg(botToken, chatId, replyText, {
+      await sendTelegramMsg(botToken, chatId, langDict.text, {
         photoUrl: photoUrl,
         reply_markup: {
           inline_keyboard: [
             [
               {
-                text: "⛏️ Start hoocooh miner",
+                text: langDict.btnStart,
                 web_app: { url: appUrl }
+              }
+            ],
+            [
+              {
+                text: langDict.btnLang,
+                callback_data: "choose_lang"
               }
             ]
           ]

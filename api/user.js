@@ -21,7 +21,7 @@ async function fetchBotUsername(token) {
 }
 
 module.exports = async (req, res) => {
-  if (req.method !== "GET") {
+  if (req.method !== "GET" && req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
     return;
   }
@@ -52,6 +52,20 @@ module.exports = async (req, res) => {
         banReason: user.banReason || "Your account has been suspended",
         telegramId: user.telegramId
       });
+      return;
+    }
+
+    // POST request handling (e.g. set_language)
+    if (req.method === "POST") {
+      const { action, language } = req.body || {};
+      if (action === "set_language" && language) {
+        const validLangs = ["en", "ru", "ar"];
+        const finalLang = validLangs.includes(language) ? language : "en";
+        await users.updateOne({ _id: user._id }, { $set: { language: finalLang } });
+        res.status(200).json({ ok: true, language: finalLang });
+        return;
+      }
+      res.status(400).json({ error: "Unknown action" });
       return;
     }
 
@@ -131,6 +145,7 @@ module.exports = async (req, res) => {
       recruitsCount: user.recruitsCount || 0,
       refEarnings: user.refEarnings || 0,
       claimedMilestones: user.claimedMilestones || [],
+      language: user.language || "en",
       botUsername: botUsername
     });
   } catch (err) {
