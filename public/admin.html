@@ -550,7 +550,29 @@
             Pending: $0.00 USDT
           </span>
         </div>
-        <button class="btn-success" id="bulkApproveBtn" style="font-size: 12px; padding: 6px 12px;">⚡ Approve All Pending</button>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="btn-success" id="bulkApproveBtn" style="font-size: 12px; padding: 6px 14px; font-weight: 800;">⚡ Approve All Pending</button>
+          <button class="btn-danger" id="stopAutoPayBtn" style="display: none; font-size: 12px; padding: 6px 14px; font-weight: 800;">⏹️ Turn OFF Auto-Pay</button>
+        </div>
+      </div>
+
+      <!-- Auto Pay Live Progress Banner -->
+      <div id="autoPayProgressBox" style="display: none; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 12px 16px; margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #10b981;"></span>
+            <strong id="autoPayStatusText" style="color: #10b981; font-size: 13px;">Auto-Pay is running...</strong>
+          </div>
+          <span id="autoPayCounterBadge" style="font-size: 11px; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 6px; font-weight: 700;">
+            0 / 0 Completed
+          </span>
+        </div>
+        <div id="autoPayCurrentDetail" style="font-size: 12px; color: var(--text-dim); margin-bottom: 8px;">
+          Preparing queue...
+        </div>
+        <div style="background: rgba(255, 255, 255, 0.08); height: 6px; border-radius: 3px; overflow: hidden;">
+          <div id="autoPayProgressBar" style="width: 0%; height: 100%; background: #10b981; transition: width 0.3s ease;"></div>
+        </div>
       </div>
 
       <div class="filter-row">
@@ -1158,21 +1180,163 @@
     } catch(e){ alert(e.message); }
   };
 
-  // Bulk Approve
-  document.getElementById("bulkApproveBtn").addEventListener("click", async function(){
-    if (!confirm("Approve all currently displayed pending withdrawals?")) return;
-    try {
-      var data = await apiAdmin("GET", { action: "withdrawals", status: "PENDING" });
-      if (data.ok && data.withdrawals) {
-        for (const w of data.withdrawals) {
-          await apiAdmin("POST", null, { action: "approve_withdrawal", withdrawalId: w.id });
+  // Bulk Auto-Pay Queue State
+  var isAutoPayRunning = false;
+  var stopAutoPayRequested = false;
+
+  var bulkApproveBtn = document.getElementById("bulkApproveBtn");
+  var stopAutoPayBtn = document.getElementById("stopAutoPayBtn");
+  var autoPayProgressBox = document.getElementById("autoPayProgressBox");
+  var autoPayStatusText = document.getElementById("autoPayStatusText");
+  var autoPayCounterBadge = document.getElementById("autoPayCounterBadge");
+  var autoPayCurrentDetail = document.getElementById("autoPayCurrentDetail");
+  var autoPayProgressBar = document.getElementById("autoPayProgressBar");
+
+  // Handler for Stop / Turn OFF Auto-Pay
+  if (stopAutoPayBtn) {
+    stopAutoPayBtn.addEventListener("click", function(){
+      if (!isAutoPayRunning) return;
+      stopAutoPayRequested = true;
+      stopAutoPayBtn.disabled = true;
+      stopAutoPayBtn.innerHTML = "<span>⏳ Stopping after current...</span>";
+      if (autoPayStatusText) {
+        autoPayStatusText.innerHTML = "⚠️ Stop requested! Finishing current transaction...";
+        autoPayStatusText.style.color = "#f59e0b";
+      }
+      showToast("⚠️ Stopping Auto-Pay... finishing current transaction first.");
+    });
+  }
+
+  // Handler for Start / Approve All
+  if (bulkApproveBtn) {
+    bulkApproveBtn.addEventListener("click", async function(){
+      if (isAutoPayRunning) return;
+
+      var data;
+      try {
+        data = await apiAdmin("GET", { action: "withdrawals", status: "PENDING" });
+      } catch(err) {
+        alert("Failed to fetch pending withdrawals: " + (err.message || err));
+        return;
+      }
+
+      if (!data.ok || !data.withdrawals || data.withdrawals.length === 0) {
+        alert("No pending withdrawals to approve!");
+        return;
+      }
+
+      var list = data.withdrawals;
+      var totalCount = list.length;
+      var totalTonEst = list.reduce(function(sum, w){ return sum + (parseFloat(w.tonAmount) || 0); }, 0);
+
+      var confirmMsg = `⚡ Start Automated Payout for ALL Pending Requests?\n\n` +
+        `📋 Total Queue: ${totalCount} request(s)\n` +
+        `💎 Total TON: ~${totalTonEst.toFixed(4)} TON\n\n` +
+        `Each payout will be sent on-chain one by one.\n` +
+        `You can click 'Turn OFF Auto-Pay' at ANY time to safely stop after the current transaction finishes.\n\n` +
+        `Start Auto-Pay now?`;
+
+      if (!confirm(confirmMsg)) return;
+
+      // Enter running state
+      isAutoPayRunning = true;
+      stopAutoPayRequested = false;
+
+      bulkApproveBtn.style.display = "none";
+      stopAutoPayBtn.style.display = "inline-block";
+      stopAutoPayBtn.disabled = false;
+      stopAutoPayBtn.innerHTML = "<span>⏹️ Turn OFF Auto-Pay</span>";
+
+      autoPayProgressBox.style.display = "block";
+      autoPayStatusText.innerHTML = "🟢 Auto-Paying in progress...";
+      autoPayStatusText.style.color = "#10b981";
+      autoPayCounterBadge.textContent = `0 / ${totalCount} Completed`;
+      autoPayProgressBar.style.width = "0%";
+
+      var successCount = 0;
+      var failCount = 0;
+
+      for (var i = 0; i < totalCount; i++) {
+        // If stop requested before beginning this item, exit queue immediately
+        if (stopAutoPayRequested) {
+          break;
         }
-        showToast("⚡ All pending withdrawals approved!");
+
+        var w = list[i];
+        var userLabel = w.username ? ('@' + w.username) : (w.userFirstName || ('UID: ' + w.userId));
+        var tonAmtStr = w.tonAmount ? (w.tonAmount + ' TON') : '';
+
+        autoPayCurrentDetail.innerHTML = `Paying <strong>${i + 1} of ${totalCount}</strong>: ${userLabel} (<code>${tonAmtStr}</code>) &rarr; <span style="font-family: monospace; font-size: 11px;">${w.walletAddress ? (w.walletAddress.slice(0, 8) + '...' + w.walletAddress.slice(-6)) : ''}</span>`;
+        autoPayStatusText.innerHTML = `🟢 Processing ${i + 1} of ${totalCount}...`;
+
+        try {
+          var res = await apiAdmin("POST", null, { action: "approve_withdrawal", withdrawalId: w.id });
+          if (res.ok) {
+            successCount++;
+          } else {
+            failCount++;
+            if (res.error && res.error.includes("INSUFFICIENT_HOT_WALLET_BALANCE")) {
+              alert("⚠️ Auto-pay halted: Hot wallet balance is insufficient!\n" + res.error);
+              break;
+            }
+          }
+        } catch(e) {
+          failCount++;
+          console.error("Auto-pay error on item " + w.id, e);
+        }
+
+        var completedSoFar = i + 1;
+        autoPayCounterBadge.textContent = `${completedSoFar} / ${totalCount} Completed`;
+        var pct = Math.round((completedSoFar / totalCount) * 100);
+        autoPayProgressBar.style.width = pct + "%";
+
+        // Refresh table and stats in real time so admin sees approved items live
         loadWithdrawals();
         loadStats();
+
+        // If stop was requested while this transaction was executing, exit now!
+        if (stopAutoPayRequested) {
+          break;
+        }
+
+        // Polite pause between on-chain transactions to respect RPC limits
+        if (i < totalCount - 1) {
+          await new Promise(function(resolve){ setTimeout(resolve, 2500); });
+        }
       }
-    } catch(e){ alert(e.message); }
-  });
+
+      // Finalize
+      var wasStoppedEarly = stopAutoPayRequested && (successCount + failCount < totalCount);
+
+      isAutoPayRunning = false;
+      stopAutoPayRequested = false;
+
+      bulkApproveBtn.style.display = "inline-block";
+      stopAutoPayBtn.style.display = "none";
+
+      if (wasStoppedEarly) {
+        autoPayStatusText.innerHTML = `⏹️ Auto-Pay Stopped!`;
+        autoPayStatusText.style.color = "#f59e0b";
+        autoPayCurrentDetail.innerHTML = `Stopped by admin. Completed: <strong>${successCount}</strong>, Failed: <strong>${failCount}</strong>, Remaining: <strong>${totalCount - (successCount + failCount)}</strong>.`;
+        showToast(`⏹️ Auto-Pay stopped! Processed ${successCount + failCount} of ${totalCount}.`);
+      } else {
+        autoPayStatusText.innerHTML = `✅ Auto-Pay Finished!`;
+        autoPayStatusText.style.color = "#10b981";
+        autoPayCurrentDetail.innerHTML = `Queue complete. Successfully approved: <strong>${successCount}</strong>, Failed: <strong>${failCount}</strong>.`;
+        showToast(`⚡ Finished! ${successCount} approved.`);
+      }
+
+      // Hide progress box after 8s
+      setTimeout(function(){
+        if (!isAutoPayRunning && autoPayProgressBox) {
+          autoPayProgressBox.style.display = "none";
+        }
+      }, 8000);
+
+      loadWithdrawals();
+      loadStats();
+    });
+  }
 
   // 3. Broadcast
   var sendBroadcastBtn = document.getElementById("sendBroadcastBtn");
