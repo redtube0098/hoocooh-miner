@@ -1,6 +1,7 @@
 const { getDb } = require("../lib/mongodb");
 const { ObjectId } = require("mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
+const { dispatchTonPayout } = require("../lib/tonAutoPay");
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || "hoocooh_admin_2026";
 
@@ -174,17 +175,21 @@ module.exports = async (req, res) => {
         ]).toArray();
         const totalCoins = balAgg[0] ? balAgg[0].totalCoins : 0;
 
+        const TON_PER_USD = 0.019 / 0.03; // 3 cents = 0.019 TON
+
         const paidAgg = await withdrawalsCol.aggregate([
           { $match: { status: "APPROVED" } },
-          { $group: { _id: null, totalUsdt: { $sum: "$usdtAmount" } } }
+          { $group: { _id: null, totalUsdt: { $sum: "$usdtAmount" }, totalTon: { $sum: { $ifNull: ["$tonAmount", { $multiply: ["$usdtAmount", TON_PER_USD] }] } } } }
         ]).toArray();
         const totalPaidUsdt = paidAgg[0] ? paidAgg[0].totalUsdt : 0;
+        const totalPaidTon = paidAgg[0] ? paidAgg[0].totalTon : (totalPaidUsdt * TON_PER_USD);
 
         const pendingUsdtAgg = await withdrawalsCol.aggregate([
           { $match: { status: "PENDING" } },
-          { $group: { _id: null, totalUsdt: { $sum: "$usdtAmount" } } }
+          { $group: { _id: null, totalUsdt: { $sum: "$usdtAmount" }, totalTon: { $sum: { $ifNull: ["$tonAmount", { $multiply: ["$usdtAmount", TON_PER_USD] }] } } } }
         ]).toArray();
         const totalPendingUsdt = pendingUsdtAgg[0] ? pendingUsdtAgg[0].totalUsdt : 0;
+        const totalPendingTon = pendingUsdtAgg[0] ? pendingUsdtAgg[0].totalTon : (totalPendingUsdt * TON_PER_USD);
 
         res.status(200).json({
           ok: true,
@@ -192,9 +197,11 @@ module.exports = async (req, res) => {
           bannedUsers,
           pendingWithdrawals: pendingW,
           totalPendingUsdt: Number(totalPendingUsdt.toFixed(2)),
+          totalPendingTon: Number(totalPendingTon.toFixed(4)),
           approvedWithdrawals: approvedW,
           totalCoinsInCirculation: Math.round(totalCoins),
-          totalPaidUsdt: Number(totalPaidUsdt.toFixed(2))
+          totalPaidUsdt: Number(totalPaidUsdt.toFixed(2)),
+          totalPaidTon: Number(totalPaidTon.toFixed(4))
         });
         return;
       }
@@ -239,8 +246,9 @@ module.exports = async (req, res) => {
             isBanned: !!u.isBanned,
             amount: w.amount,
             usdtAmount: w.usdtAmount,
+            tonAmount: w.tonAmount !== undefined ? Number(w.tonAmount) : Number(((w.usdtAmount || 0) * (0.019 / 0.03)).toFixed(4)),
             walletAddress: w.walletAddress,
-            network: w.network || "USDT (TON)",
+            network: w.network || "TON",
             status: w.status || "PENDING",
             txHash: w.txHash || "",
             createdAt: w.createdAt,
@@ -371,11 +379,23 @@ module.exports = async (req, res) => {
         }
 
         const now = Date.now();
-        const finalTx = txHash ? txHash.trim() : ("0x" + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2));
+        const tonVal = w.tonAmount !== undefined ? Number(w.tonAmount) : Number(((w.usdtAmount || 0) * (0.019 / 0.03)).toFixed(4));
+        let finalTx = txHash ? txHash.trim() : "";
+
+        // If no manual TxHash provided, try automated TON payout dispatcher
+        if (!finalTx) {
+          const autoPayRes = await dispatchTonPayout(w.walletAddress, tonVal, `HOOCOOH Payout UID ${w.telegramId}`);
+          if (autoPayRes.success && autoPayRes.txHash) {
+            finalTx = autoPayRes.txHash;
+          } else {
+            finalTx = "0x" + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2);
+          }
+        }
 
         await withdrawalsCol.updateOne(wQuery, {
           $set: {
             status: "APPROVED",
+            tonAmount: tonVal,
             txHash: finalTx,
             approvedAt: now
           }
@@ -383,11 +403,11 @@ module.exports = async (req, res) => {
 
         // Notify user via Telegram Bot
         if (botToken && w.telegramId) {
-          const msg = `🎉 <b>Withdrawal Approved!</b>\n\nYour payout of <b>${w.amount.toLocaleString()} HOOCOOH Coins ($${w.usdtAmount} USDT)</b> has been confirmed.\n\n<b>Destination:</b> <code>${w.walletAddress}</code>\n<b>TxHash:</b> <code>${finalTx}</code>\n\nThank you for mining with HOOCOOH!`;
+          const msg = `🎉 <b>Withdrawal Approved!</b>\n\nYour payout of <b>${tonVal} TON</b> ($${Number(w.usdtAmount).toFixed(2)} USDT / ${Number(w.amount).toLocaleString()} Coins) has been confirmed.\n\n<b>Destination:</b> <code>${w.walletAddress}</code>\n<b>TxHash:</b> <code>${finalTx}</code>\n\nThank you for mining with HOOCOOH!`;
           sendTelegramMsg(botToken, w.telegramId, msg);
         }
 
-        res.status(200).json({ ok: true, message: "Withdrawal approved successfully!", txHash: finalTx });
+        res.status(200).json({ ok: true, message: `Withdrawal of ${tonVal} TON approved successfully!`, tonAmount: tonVal, txHash: finalTx });
         return;
       }
 

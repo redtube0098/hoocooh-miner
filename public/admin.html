@@ -509,11 +509,11 @@
       <div class="val warning" id="statPendingW">0</div>
     </div>
     <div class="stat-card">
-      <div class="lbl">Pending Amount (USDT)</div>
+      <div class="lbl">Pending Amount (USDT / TON)</div>
       <div class="val warning" id="statPendingUsdt" style="color: #f59e0b;">$0.00</div>
     </div>
     <div class="stat-card">
-      <div class="lbl">Total Paid (USDT)</div>
+      <div class="lbl">Total Paid (USDT / TON)</div>
       <div class="val" id="statPaidUsdt">$0.00</div>
     </div>
     <div class="stat-card">
@@ -567,6 +567,7 @@
               <th>User</th>
               <th>Coins</th>
               <th>USDT Value</th>
+              <th style="color: #00b4d8;">💎 TON Payable</th>
               <th>TON Address</th>
               <th>Date</th>
               <th>Status</th>
@@ -574,7 +575,7 @@
             </tr>
           </thead>
           <tbody id="withdrawalsList">
-            <tr><td colspan="7" style="text-align: center; color: var(--text-dim);">Loading requests...</td></tr>
+            <tr><td colspan="8" style="text-align: center; color: var(--text-dim);">Loading requests...</td></tr>
           </tbody>
         </table>
       </div>
@@ -997,6 +998,7 @@
   }
 
   // 1. Stats
+  // 1. Stats
   async function loadStats() {
     try {
       var data = await apiAdmin("GET", { action: "stats" });
@@ -1005,13 +1007,15 @@
         document.getElementById("statPendingW").textContent = (data.pendingWithdrawals || 0).toLocaleString();
         
         var pendingUsdtStr = "$" + (data.totalPendingUsdt || 0).toFixed(2);
+        var pendingTonStr = (data.totalPendingTon !== undefined ? Number(data.totalPendingTon).toFixed(4) : "0.0000") + " TON";
         var pendingUsdtEl = document.getElementById("statPendingUsdt");
-        if (pendingUsdtEl) pendingUsdtEl.textContent = pendingUsdtStr;
+        if (pendingUsdtEl) pendingUsdtEl.innerHTML = `${pendingUsdtStr} <span style="font-size: 13px; color: #00b4d8; display: block; margin-top: 3px;">💎 ${pendingTonStr}</span>`;
 
         var headerBadge = document.getElementById("pendingUsdtHeaderBadge");
-        if (headerBadge) headerBadge.textContent = "Pending: " + pendingUsdtStr + " USDT";
+        if (headerBadge) headerBadge.textContent = "Pending: " + pendingUsdtStr + " / " + pendingTonStr;
 
-        document.getElementById("statPaidUsdt").textContent = "$" + (data.totalPaidUsdt || 0).toFixed(2);
+        var paidTonStr = (data.totalPaidTon !== undefined ? Number(data.totalPaidTon).toFixed(4) : "0.0000") + " TON";
+        document.getElementById("statPaidUsdt").innerHTML = `$${(data.totalPaidUsdt || 0).toFixed(2)} <span style="font-size: 13px; color: #00b4d8; display: block; margin-top: 3px;">💎 ${paidTonStr}</span>`;
         document.getElementById("statTotalCoins").textContent = (data.totalCoinsInCirculation || 0).toLocaleString();
         document.getElementById("statBannedUsers").textContent = (data.bannedUsers || 0).toLocaleString();
 
@@ -1040,12 +1044,12 @@
   });
 
   async function loadWithdrawals() {
-    withdrawalsList.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-dim);">Loading requests...</td></tr>';
+    withdrawalsList.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-dim);">Loading requests...</td></tr>';
     try {
       var data = await apiAdmin("GET", { action: "withdrawals", status: currentFilter });
       if (data.ok) {
         if (!data.withdrawals || data.withdrawals.length === 0) {
-          withdrawalsList.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-dim); padding: 24px;">No withdrawal requests found for this filter.</td></tr>';
+          withdrawalsList.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-dim); padding: 24px;">No withdrawal requests found for this filter.</td></tr>';
           return;
         }
 
@@ -1054,12 +1058,13 @@
           var statusClass = w.status === "APPROVED" ? "approved" : (w.status === "REJECTED" ? "rejected" : "pending");
           var dateStr = new Date(w.createdAt).toLocaleString();
           var isBannedTag = w.isBanned ? '<span class="status-tag banned" style="margin-left: 4px;">BANNED</span>' : '';
+          var tonValStr = (w.tonAmount !== undefined ? Number(w.tonAmount).toFixed(4) : "0.0000");
 
           var actions = '';
           if (isPending) {
             actions = `
               <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                <button class="btn-success" onclick="approveWithdrawal('${w.id}')">Approve</button>
+                <button class="btn-success" onclick="approveWithdrawal('${w.id}', '${tonValStr}', '${w.walletAddress}')">Approve</button>
                 <button class="btn-secondary" onclick="rejectWithdrawal('${w.id}')">Reject</button>
                 <button class="btn-danger" onclick="banUserFromW('${w.telegramId}', '${w.id}')">Ban</button>
               </div>
@@ -1078,10 +1083,18 @@
               </td>
               <td data-label="Coins"><strong>${Number(w.amount).toLocaleString()}</strong></td>
               <td data-label="USDT"><span style="color: var(--accent); font-weight: 800;">$${Number(w.usdtAmount).toFixed(2)}</span></td>
+              <td data-label="TON Payable">
+                <span style="display: inline-flex; align-items: center; gap: 4px; background: rgba(0, 180, 216, 0.15); color: #00b4d8; border: 1px solid rgba(0, 180, 216, 0.35); padding: 4px 8px; border-radius: 8px; font-weight: 800; font-size: 12.5px;">
+                  💎 ${tonValStr} TON
+                </span>
+              </td>
               <td data-label="TON Address">
-                <code style="font-size: 11.5px; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 6px;" title="${w.walletAddress}">
-                  ${w.walletAddress.slice(0, 6)}...${w.walletAddress.slice(-6)}
-                </code>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <code style="font-size: 11.5px; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 6px;" title="${w.walletAddress}">
+                    ${w.walletAddress.slice(0, 6)}...${w.walletAddress.slice(-6)}
+                  </code>
+                  <button class="btn-secondary" style="padding: 2px 7px; font-size: 11px; cursor: pointer;" onclick="navigator.clipboard.writeText('${w.walletAddress}'); showToast('📋 Address copied!');" title="Copy full address">📋 Copy</button>
+                </div>
               </td>
               <td data-label="Date" style="font-size: 11.5px; color: var(--text-dim);">${dateStr}</td>
               <td data-label="Status"><span class="status-tag ${statusClass}">${w.status}</span></td>
@@ -1091,18 +1104,19 @@
         }).join("");
       }
     } catch(e) {
-      withdrawalsList.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--danger);">Failed to load withdrawals.</td></tr>';
+      withdrawalsList.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--danger);">Failed to load withdrawals.</td></tr>';
     }
   }
 
   // Withdrawal Actions attached to window
-  window.approveWithdrawal = async function(id) {
-    var tx = prompt("Enter real Transaction Hash (or leave blank to auto-generate):");
+  window.approveWithdrawal = async function(id, tonAmount, walletAddr) {
+    var promptMsg = `Approve payout of ${tonAmount ? tonAmount + ' TON' : ''}?\nAddress: ${walletAddr || ''}\n\nEnter TxHash (or leave empty to auto-approve/auto-pay):`;
+    var tx = prompt(promptMsg);
     if (tx === null) return;
     try {
       var res = await apiAdmin("POST", null, { action: "approve_withdrawal", withdrawalId: id, txHash: tx });
       if (res.ok) {
-        showToast("✅ Withdrawal approved!");
+        showToast(`✅ Withdrawal approved! ${res.tonAmount ? '(' + res.tonAmount + ' TON)' : ''}`);
         loadWithdrawals();
         loadStats();
       }

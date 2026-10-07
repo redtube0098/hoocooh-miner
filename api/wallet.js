@@ -4,6 +4,9 @@ const { findOrCreateUser } = require("../lib/userHelper");
 const crypto = require("crypto");
 
 const COIN_RATE = 0.00004; // 1 HOOCOOH = 0.00004 USDT
+// Conversion rate: 3 cents ($0.03 USD) = 0.019 TON
+// TON per USD = 0.019 / 0.03 = 19 / 30 (~0.63333333 TON per $1 USDT)
+const TON_PER_USD = 0.019 / 0.03;
 
 module.exports = async (req, res) => {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -97,6 +100,7 @@ module.exports = async (req, res) => {
           return;
         }
         const usdtVal = Number((numAmount * COIN_RATE).toFixed(4));
+        const tonVal = Number((usdtVal * TON_PER_USD).toFixed(6));
         const newBal = currentBal - numAmount;
         const now = Date.now();
 
@@ -111,8 +115,9 @@ module.exports = async (req, res) => {
           telegramId,
           amount: numAmount,
           usdtAmount: usdtVal,
+          tonAmount: tonVal,
           walletAddress: cleanAddress,
-          network: network || "USDT (TON)",
+          network: "TON",
           status: "PENDING",
           txHash: "",
           createdAt: now
