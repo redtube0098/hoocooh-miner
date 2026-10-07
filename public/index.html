@@ -6201,7 +6201,14 @@
     });
   }
 
-  // Constants & Rewards
+  // Rate calculation
+  function coinsToUsd(coins) {
+    var c = Math.max(0, Number(coins) || 0);
+    if (c <= 1500) {
+      return c * 0.00004;
+    }
+    return (1500 * 0.00004) + ((c - 1500) * 0.000033);
+  }
   var COIN_USD = 0.00004;
   var DAILY_REWARDS = [5, 10, 15, 20, 25, 30, 35]; // Increases by 5 every day up to 35
 
@@ -6981,13 +6988,13 @@
       el.textContent = formattedWhole;
     });
     var usdEl = document.getElementById("balanceUsd");
-    if (usdEl) usdEl.textContent = "$" + (balance * COIN_USD).toFixed(2);
+    if (usdEl) usdEl.textContent = "$" + coinsToUsd(balance).toFixed(2);
 
     var walletVaultNum = document.getElementById("walletVaultNum");
     if (walletVaultNum) walletVaultNum.innerHTML = formattedWhole + '<span class="cents">.00</span>';
 
     var walletVaultUsd = document.getElementById("walletVaultUsd");
-    if (walletVaultUsd) walletVaultUsd.textContent = "≈ $" + (balance * COIN_USD).toFixed(2) + " USDT";
+    if (walletVaultUsd) walletVaultUsd.textContent = "≈ $" + coinsToUsd(balance).toFixed(2) + " USDT";
 
     var currentLvl = Math.max(1, Math.min(10, user.minerLevel || user.level || 1));
     var lvlName = getLevelName(currentLvl);
@@ -9020,7 +9027,7 @@
     if (vaultNumEl) vaultNumEl.innerHTML = formattedWhole + '<span class="cents">.00</span>';
 
     var vaultUsdEl = document.getElementById("walletVaultUsd");
-    var usdtVal = (bal * COIN_USD).toFixed(2);
+    var usdtVal = coinsToUsd(bal).toFixed(2);
     if (vaultUsdEl) vaultUsdEl.textContent = "≈ $" + usdtVal + " USDT";
 
     // 4. Two Stats Cards (Referrals, Total Mined)
@@ -9119,7 +9126,7 @@
   function updateWithdrawEstimate() {
     var amt = parseInt(withdrawAmountInput ? withdrawAmountInput.value : 0, 10);
     if (isNaN(amt) || amt < 0) amt = 0;
-    var est = (amt * COIN_USD).toFixed(2);
+    var est = coinsToUsd(amt).toFixed(2);
     if (withdrawEstUsdtVal) withdrawEstUsdtVal.textContent = est;
   }
 

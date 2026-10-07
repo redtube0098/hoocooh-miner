@@ -3,7 +3,15 @@ const { validateInitData } = require("../lib/telegramAuth");
 const { findOrCreateUser } = require("../lib/userHelper");
 const crypto = require("crypto");
 
-const COIN_RATE = 0.00004; // 1 HOOCOOH = 0.00004 USDT
+// Base rates: 1500 coins @ $0.00004, then $0.000033 per coin beyond 1500
+function calculateCoinsUsdt(coins) {
+  const c = Math.max(0, Number(coins) || 0);
+  if (c <= 1500) {
+    return c * 0.00004;
+  }
+  return (1500 * 0.00004) + ((c - 1500) * 0.000033);
+}
+
 // Conversion rate: 3 cents ($0.03 USD) = 0.019 TON
 // TON per USD = 0.019 / 0.03 = 19 / 30 (~0.63333333 TON per $1 USDT)
 const TON_PER_USD = 0.019 / 0.03;
@@ -60,13 +68,13 @@ module.exports = async (req, res) => {
 
       const recruits = Number(user.recruitsCount || 0);
       const balance = Number(user.balance || 0);
-      const usdtEquivalent = Number((balance * COIN_RATE).toFixed(2));
+      const usdtEquivalent = Number(calculateCoinsUsdt(balance).toFixed(2));
 
       res.status(200).json({
         ok: true,
         balance,
         usdtEquivalent,
-        coinRate: COIN_RATE,
+        coinRate: 0.00004,
         recruitsCount: recruits,
         totalMined: Math.round(balance + (Number(user.totalDailyEarned) || 0) + (Number(user.refEarnings) || 0)),
         transactions: mappedTxs
@@ -99,7 +107,7 @@ module.exports = async (req, res) => {
           res.status(400).json({ error: "Invalid TON address! Address must be 48 characters starting with UQ or EQ" });
           return;
         }
-        const usdtVal = Number((numAmount * COIN_RATE).toFixed(4));
+        const usdtVal = Number(calculateCoinsUsdt(numAmount).toFixed(4));
         const tonVal = Number((usdtVal * TON_PER_USD).toFixed(6));
         const newBal = currentBal - numAmount;
         const now = Date.now();
