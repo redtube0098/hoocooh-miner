@@ -1110,17 +1110,26 @@
 
   // Withdrawal Actions attached to window
   window.approveWithdrawal = async function(id, tonAmount, walletAddr) {
-    var promptMsg = `Approve payout of ${tonAmount ? tonAmount + ' TON' : ''}?\nAddress: ${walletAddr || ''}\n\nEnter TxHash (or leave empty to auto-approve/auto-pay):`;
-    var tx = prompt(promptMsg);
-    if (tx === null) return;
+    var confirmMsg = `⚡ Confirm Auto-Payout & Approval?\n\n💎 Amount: ${tonAmount ? tonAmount + ' TON' : ''}\n📍 Destination: ${walletAddr || ''}\n\nClick OK to automatically pay & confirm on-chain!`;
+    if (!confirm(confirmMsg)) return;
+
+    showToast("⏳ Processing Auto-Pay...");
     try {
-      var res = await apiAdmin("POST", null, { action: "approve_withdrawal", withdrawalId: id, txHash: tx });
+      var res = await apiAdmin("POST", null, { action: "approve_withdrawal", withdrawalId: id });
       if (res.ok) {
-        showToast(`✅ Withdrawal approved! ${res.tonAmount ? '(' + res.tonAmount + ' TON)' : ''}`);
+        if (res.autoPaySuccess) {
+          showToast(`💎 Sent ${res.tonAmount} TON on-chain! Approved.`);
+        } else {
+          showToast(`✅ Approved! ${res.tonAmount ? '(' + res.tonAmount + ' TON)' : ''}`);
+        }
         loadWithdrawals();
         loadStats();
+      } else {
+        alert("⚠️ " + (res.error || "Approval failed"));
       }
-    } catch(e){ alert(e.message); }
+    } catch(e) {
+      alert("❌ " + (e.message || e));
+    }
   };
 
   window.rejectWithdrawal = async function(id) {

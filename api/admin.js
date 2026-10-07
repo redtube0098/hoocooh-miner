@@ -389,20 +389,25 @@ module.exports = async (req, res) => {
         const now = Date.now();
         const tonVal = w.tonAmount !== undefined ? Number(w.tonAmount) : Number(((w.usdtAmount || 0) * (0.019 / 0.03)).toFixed(4));
         let finalTx = txHash ? txHash.trim() : "";
+        let autoPaySuccess = false;
+        let autoPayMsg = "";
 
         // If no manual TxHash provided, try automated TON payout dispatcher
         if (!finalTx) {
           const autoPayRes = await dispatchTonPayout(w.walletAddress, tonVal, `HOOCOOH Payout UID ${w.telegramId}`);
-          if (autoPayRes.isConfigured && !autoPayRes.success) {
-            res.status(400).json({
-              error: `Auto-pay halted: ${autoPayRes.message || autoPayRes.error}`
-            });
-            return;
-          }
-          if (autoPayRes.success && autoPayRes.txHash) {
+          if (autoPayRes.isConfigured) {
+            if (!autoPayRes.success) {
+              res.status(400).json({
+                error: `Auto-pay halted: ${autoPayRes.message || autoPayRes.error}`
+              });
+              return;
+            }
             finalTx = autoPayRes.txHash;
+            autoPaySuccess = true;
+            autoPayMsg = autoPayRes.message || "On-chain transfer dispatched";
           } else {
             finalTx = "0x" + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2);
+            autoPayMsg = "Auto-pay env variables (TON_AUTO_PAY / TON_WALLET_MNEMONIC) not active. Approved manually.";
           }
         }
 
@@ -463,7 +468,14 @@ module.exports = async (req, res) => {
           }
         }
 
-        res.status(200).json({ ok: true, message: `Withdrawal of ${tonVal} TON approved successfully!`, tonAmount: tonVal, txHash: finalTx });
+        res.status(200).json({ 
+          ok: true, 
+          message: `Withdrawal of ${tonVal} TON approved successfully!`, 
+          tonAmount: tonVal, 
+          txHash: finalTx,
+          autoPaySuccess,
+          autoPayMsg
+        });
         return;
       }
 
