@@ -6995,7 +6995,13 @@
   }
 
   function checkTermsPrompt() {
-    if (user && user.termsAccepted === true) {
+    var tgUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+    var localAccepted = false;
+    try {
+      localAccepted = localStorage.getItem("hoocooh_terms_accepted_" + tgUid) === "true";
+    } catch(e){}
+
+    if ((user && user.termsAccepted === true) || localAccepted) {
       return;
     }
     openTermsModal();
@@ -7009,6 +7015,11 @@
       btn.innerHTML = '<span>Processing...</span>';
 
       user.termsAccepted = true;
+      var tgUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+      try {
+        localStorage.setItem("hoocooh_terms_accepted_" + tgUid, "true");
+      } catch(e){}
+
       if (typeof apiPost === "function") {
         apiPost({ action: "accept_terms" }).catch(function(){});
       }
@@ -7092,6 +7103,29 @@
     }).then(function(r) {
       if (r.status === 404) {
         return fetch("/api/user.js" + query, { headers: { "X-Telegram-Init-Data": initData } });
+      }
+      return r;
+    }).then(handleResponse);
+  }
+
+  function apiPost(data) {
+    return fetch("/api/user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": initData
+      },
+      body: JSON.stringify(data || {})
+    }).then(function(r) {
+      if (r.status === 404) {
+        return fetch("/api/user.js", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Telegram-Init-Data": initData
+          },
+          body: JSON.stringify(data || {})
+        });
       }
       return r;
     }).then(handleResponse);
@@ -9621,7 +9655,15 @@
     }
     Object.assign(user, res.data);
     user.languageSelected = res.data.languageSelected === true;
-    user.termsAccepted = res.data.termsAccepted === true;
+    var currentUid = res.data.telegramId || (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+    var localAccepted = false;
+    try {
+      localAccepted = localStorage.getItem("hoocooh_terms_accepted_" + currentUid) === "true";
+    } catch(e){}
+    user.termsAccepted = (res.data.termsAccepted === true) || localAccepted;
+    if (res.data.termsAccepted === true && !localAccepted) {
+      try { localStorage.setItem("hoocooh_terms_accepted_" + currentUid, "true"); } catch(e){}
+    }
     if (res.data.language) {
       user.language = res.data.language;
       applyLanguage(res.data.language);
@@ -9658,6 +9700,7 @@
       if (res.ok) {
         Object.assign(user, res.data);
         user.languageSelected = res.data.languageSelected === true;
+        user.termsAccepted = (res.data.termsAccepted === true) || (user.termsAccepted === true);
         if (res.data.language && res.data.language !== currentLang) {
           applyLanguage(res.data.language);
         }
