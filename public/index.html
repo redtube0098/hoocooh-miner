@@ -6201,15 +6201,12 @@
     });
   }
 
-  // Rate calculation
+  // Rate calculation (1 Coin = $0.00003 USD)
+  var COIN_USD = 0.00003;
   function coinsToUsd(coins) {
     var c = Math.max(0, Number(coins) || 0);
-    if (c <= 1500) {
-      return c * 0.00004;
-    }
-    return (1500 * 0.00004) + ((c - 1500) * 0.000033);
+    return c * COIN_USD;
   }
-  var COIN_USD = 0.00004;
   var DAILY_REWARDS = [5, 10, 15, 20, 25, 30, 35]; // Increases by 5 every day up to 35
 
   function rewardForCycleDay(cycle, dayIndex) {
@@ -6273,7 +6270,7 @@
   var walletData = {
     balance: 0,
     usdtEquivalent: 0,
-    coinRate: 0.00004,
+    coinRate: 0.00003,
     recruitsCount: 0,
     totalMined: 0,
     transactions: []

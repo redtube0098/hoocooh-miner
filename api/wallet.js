@@ -3,13 +3,12 @@ const { validateInitData } = require("../lib/telegramAuth");
 const { findOrCreateUser } = require("../lib/userHelper");
 const crypto = require("crypto");
 
-// Base rates: 1500 coins @ $0.00004, then $0.000033 per coin beyond 1500
+// Base rate: 1 HOOCOOH Coin = $0.00003 USD
+const COIN_RATE = 0.00003;
+
 function calculateCoinsUsdt(coins) {
   const c = Math.max(0, Number(coins) || 0);
-  if (c <= 1500) {
-    return c * 0.00004;
-  }
-  return (1500 * 0.00004) + ((c - 1500) * 0.000033);
+  return c * COIN_RATE;
 }
 
 // Conversion rate: 3 cents ($0.03 USD) = 0.019 TON
@@ -74,7 +73,7 @@ module.exports = async (req, res) => {
         ok: true,
         balance,
         usdtEquivalent,
-        coinRate: 0.00004,
+        coinRate: COIN_RATE,
         recruitsCount: recruits,
         totalMined: Math.round(balance + (Number(user.totalDailyEarned) || 0) + (Number(user.refEarnings) || 0)),
         transactions: mappedTxs
