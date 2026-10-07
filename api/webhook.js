@@ -360,7 +360,7 @@ module.exports = async (req, res) => {
 
         // Send updated welcome message in newly selected language
         const appUrl = `${baseUrl}/index.html?lang=${finalLang}`;
-        const photoUrl = `${baseUrl}/assets/botfather_banner.jpg`;
+        const photoUrl = `${baseUrl}/assets/botfather_banner.jpg?v=2`;
 
         await sendTelegramMsg(botToken, cbChatId, langDict.text, {
           photoUrl: photoUrl,
@@ -475,7 +475,7 @@ module.exports = async (req, res) => {
         appUrl += `&tgWebAppStartParam=${encodeURIComponent(startParam)}`;
       }
 
-      const photoUrl = `${baseUrl}/assets/botfather_banner.jpg`;
+      const photoUrl = `${baseUrl}/assets/botfather_banner.jpg?v=2`;
       const langDict = WELCOME_MESSAGES[userLang] || WELCOME_MESSAGES.en;
 
       await sendTelegramMsg(botToken, chatId, langDict.text, {
