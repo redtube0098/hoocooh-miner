@@ -4758,6 +4758,129 @@
     opacity: 1;
     transform: scale(1);
   }
+
+  /* Terms & Conditions Modal */
+  .terms-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 7, 13, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  .terms-modal-box {
+    background: #0f131f;
+    border: 1px solid rgba(255, 215, 0, 0.35);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 410px;
+    max-height: 86vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 32px rgba(255, 215, 0, 0.15);
+    overflow: hidden;
+    animation: termsPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes termsPopIn {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .terms-modal-header {
+    padding: 22px 20px 14px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(180deg, rgba(255, 215, 0, 0.09) 0%, transparent 100%);
+  }
+  .terms-modal-badge {
+    font-size: 38px;
+    margin-bottom: 6px;
+  }
+  .terms-modal-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+  .terms-modal-subtitle {
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.4;
+  }
+  .terms-modal-content {
+    padding: 16px 18px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    -webkit-overflow-scrolling: touch;
+  }
+  .terms-rule-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    padding: 12px 14px;
+  }
+  .terms-rule-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffd700, #ff9f1c);
+    color: #000;
+    font-weight: 800;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .terms-rule-text {
+    font-size: 12px;
+    line-height: 1.45;
+    color: #cbd5e1;
+  }
+  .terms-rule-text strong {
+    color: #f8fafc;
+    display: block;
+    margin-bottom: 2px;
+    font-size: 12.5px;
+  }
+  .terms-modal-footer {
+    padding: 14px 18px 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: #0b0e17;
+  }
+  .terms-agree-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #ffd700 0%, #f59e0b 100%);
+    color: #000;
+    border: none;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+    transition: transform 0.15s ease, filter 0.15s ease;
+    user-select: none;
+  }
+  .terms-agree-btn:active {
+    transform: scale(0.98);
+    filter: brightness(0.95);
+  }
 </style>
 </head>
 <body>
@@ -6055,6 +6178,60 @@
     </div>
   </div>
 
+  <!-- Terms & Conditions Modal -->
+  <div id="termsModal" class="terms-modal-overlay" style="display: none;">
+    <div class="terms-modal-box">
+      <div class="terms-modal-header">
+        <div class="terms-modal-badge">📜</div>
+        <div class="terms-modal-title">Terms & Conditions</div>
+        <div class="terms-modal-subtitle">Please read and agree to our mining rules to continue</div>
+      </div>
+
+      <div class="terms-modal-content">
+        <div class="terms-rule-item">
+          <div class="terms-rule-num">1</div>
+          <div class="terms-rule-text">
+            <strong>Strict Anti-Cheat Policy:</strong> Any form of cheating, hack, auto-clicker, Termux script, or unauthorized bot will result in permanent account suspension without prior notice.
+          </div>
+        </div>
+
+        <div class="terms-rule-item">
+          <div class="terms-rule-num">2</div>
+          <div class="terms-rule-text">
+            <strong>No Multiple Accounts:</strong> Creating or operating multiple accounts is strictly prohibited. All duplicate accounts and earned coins will be banned immediately.
+          </div>
+        </div>
+
+        <div class="terms-rule-item">
+          <div class="terms-rule-num">3</div>
+          <div class="terms-rule-text">
+            <strong>One Account Per Device:</strong> Only 1 account is permitted per physical device. Emulators, cloning apps, and multi-instances are strictly banned.
+          </div>
+        </div>
+
+        <div class="terms-rule-item">
+          <div class="terms-rule-num">4</div>
+          <div class="terms-rule-text">
+            <strong>One Account Per IP / Network:</strong> No more than 1 account is allowed under the same IP address or network. Using VPNs or proxies to bypass limits is forbidden.
+          </div>
+        </div>
+
+        <div class="terms-rule-item">
+          <div class="terms-rule-num">5</div>
+          <div class="terms-rule-text">
+            <strong>Fair Play & Verified Payouts:</strong> All coin withdrawals are audited. Fraudulent activities or fake referral spam will result in complete forfeiture of coins.
+          </div>
+        </div>
+      </div>
+
+      <div class="terms-modal-footer">
+        <button type="button" id="agreeTermsBtn" class="terms-agree-btn">
+          <span>Agree & Continue</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Element -->
   <div class="toast" id="toast"></div>
 
@@ -6792,15 +6969,63 @@
             modal.style.display = "none";
             modal.style.opacity = "";
             modal.style.transition = "";
+            checkTermsPrompt();
           }, 240);
         }, 220);
       });
     });
   }
 
+  function openTermsModal() {
+    var tm = document.getElementById("termsModal");
+    if (!tm) return;
+    tm.style.display = "flex";
+  }
+
+  function closeTermsModal() {
+    var tm = document.getElementById("termsModal");
+    if (!tm) return;
+    tm.style.opacity = "0";
+    tm.style.transition = "opacity 0.22s ease";
+    setTimeout(function(){
+      tm.style.display = "none";
+      tm.style.opacity = "";
+      tm.style.transition = "";
+    }, 240);
+  }
+
+  function checkTermsPrompt() {
+    if (user && user.termsAccepted === true) {
+      return;
+    }
+    openTermsModal();
+  }
+
+  function setupTermsModal() {
+    var btn = document.getElementById("agreeTermsBtn");
+    if (!btn) return;
+    btn.addEventListener("click", function(){
+      btn.disabled = true;
+      btn.innerHTML = '<span>Processing...</span>';
+
+      user.termsAccepted = true;
+      if (typeof apiPost === "function") {
+        apiPost({ action: "accept_terms" }).catch(function(){});
+      }
+
+      showToast("✅ Terms & Conditions Accepted");
+      setTimeout(function(){
+        closeTermsModal();
+        btn.disabled = false;
+        btn.innerHTML = '<span>Agree & Continue</span>';
+      }, 200);
+    });
+  }
+
   function checkLanguagePrompt() {
-    // If the user already has languageSelected: true in MongoDB, do nothing
+    // If the user already has languageSelected: true in MongoDB, check terms
     if (user && user.languageSelected === true) {
+      checkTermsPrompt();
       return;
     }
     // New user or has not selected language: popup appears immediately after loading
@@ -9367,8 +9592,9 @@
   // Fallback safety timeout (maximum 3.5s)
   setTimeout(dismissLoadingScreen, 3500);
 
-  // Initialize Language selector modal and active language
+  // Initialize Modals and active language
   setupLanguageModal();
+  setupTermsModal();
   applyLanguage(currentLang);
 
   // Load Tasks, Referrals & Wallet on startup
@@ -9395,12 +9621,17 @@
     }
     Object.assign(user, res.data);
     user.languageSelected = res.data.languageSelected === true;
+    user.termsAccepted = res.data.termsAccepted === true;
     if (res.data.language) {
       user.language = res.data.language;
       applyLanguage(res.data.language);
     }
-    if (loadingDone && user.languageSelected !== true) {
-      openLanguageModal();
+    if (loadingDone) {
+      if (user.languageSelected !== true) {
+        openLanguageModal();
+      } else if (user.termsAccepted !== true) {
+        openTermsModal();
+      }
     }
     if (res.data.minerLevel) {
       user.minerLevel = res.data.minerLevel;

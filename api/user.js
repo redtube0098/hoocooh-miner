@@ -65,6 +65,11 @@ module.exports = async (req, res) => {
         res.status(200).json({ ok: true, language: finalLang, languageSelected: true });
         return;
       }
+      if (action === "accept_terms") {
+        await users.updateOne({ _id: user._id }, { $set: { termsAccepted: true, termsAcceptedAt: Date.now() } });
+        res.status(200).json({ ok: true, termsAccepted: true });
+        return;
+      }
       res.status(400).json({ error: "Unknown action" });
       return;
     }
@@ -147,6 +152,7 @@ module.exports = async (req, res) => {
       claimedMilestones: user.claimedMilestones || [],
       language: user.language || "en",
       languageSelected: user.languageSelected === true,
+      termsAccepted: user.termsAccepted === true,
       botUsername: botUsername
     });
   } catch (err) {
