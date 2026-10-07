@@ -33,6 +33,14 @@ async function getAdminTelegramIds(db) {
   return ids;
 }
 
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 function checkAdminAuth(req) {
   const headerKey = req.headers["x-admin-key"];
   const bodyKey = req.body && req.body.adminKey;
@@ -407,10 +415,52 @@ module.exports = async (req, res) => {
           }
         });
 
-        // Notify user via Telegram Bot
-        if (botToken && w.telegramId) {
-          const msg = `🎉 <b>Withdrawal Approved!</b>\n\nYour payout of <b>${tonVal} TON</b> ($${Number(w.usdtAmount).toFixed(2)} USDT / ${Number(w.amount).toLocaleString()} Coins) has been confirmed.\n\n<b>Destination:</b> <code>${w.walletAddress}</code>\n<b>TxHash:</b> <code>${finalTx}</code>\n\nThank you for mining with HOOCOOH!`;
-          sendTelegramMsg(botToken, w.telegramId, msg);
+        // Notify Payout Channel (@hoocoohpaylogs) and User via Telegram Bot
+        if (botToken) {
+          try {
+            const userDoc = await usersCol.findOne({
+              $or: [
+                { telegramId: String(w.telegramId) },
+                { telegramId: Number(w.telegramId) }
+              ]
+            });
+
+            const rawName = userDoc?.username 
+              ? `@${userDoc.username}` 
+              : (userDoc?.firstName ? `${userDoc.firstName}${userDoc.lastName ? ' ' + userDoc.lastName : ''}` : `Miner_${String(w.telegramId).slice(-4)}`);
+            const displayName = escapeHtml(rawName);
+
+            const txUrl = `https://tonviewer.com/transaction/${encodeURIComponent(finalTx)}`;
+            const txLinkHtml = `<a href="${txUrl}">View Transaction</a>`;
+
+            // 1. Post to Payout Logs Channel
+            const channelId = process.env.PAYOUT_CHANNEL_ID || "@hoocoohpaylogs";
+            const channelMsg = 
+`🎉 <b>New payout paid</b> 🎉\n\n` +
+`👤 <b>User:</b> ${displayName}\n` +
+`🔘 <b>Amount:</b> ${Number(w.amount).toLocaleString()} HOOCOOH (${Number(w.usdtAmount).toFixed(2)} USDT)\n` +
+`💳 <b>Wallet address:</b>\n` +
+`<code>${w.walletAddress}</code>\n` +
+`🔗 <b>Transaction id:</b> ${txLinkHtml}`;
+
+            await sendTelegramMsg(botToken, channelId, channelMsg);
+
+            // 2. Send detailed confirmation to the withdrawing user
+            if (w.telegramId) {
+              const userMsg = 
+`🎉 <b>New payout paid</b> 🎉\n\n` +
+`👤 <b>User:</b> ${displayName} (UID: <code>${w.telegramId}</code>)\n` +
+`🔘 <b>Amount:</b> ${Number(w.amount).toLocaleString()} HOOCOOH (${Number(w.usdtAmount).toFixed(2)} USDT)\n` +
+`💳 <b>Wallet address:</b>\n` +
+`<code>${w.walletAddress}</code>\n` +
+`🔗 <b>Transaction id:</b> ${txLinkHtml}\n\n` +
+`<i>Thank you for mining with HOOCOOH! Proof posted to @hoocoohpaylogs</i>`;
+
+              await sendTelegramMsg(botToken, w.telegramId, userMsg);
+            }
+          } catch (notifErr) {
+            console.error("Payout notification error:", notifErr);
+          }
         }
 
         res.status(200).json({ ok: true, message: `Withdrawal of ${tonVal} TON approved successfully!`, tonAmount: tonVal, txHash: finalTx });

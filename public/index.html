@@ -9089,6 +9089,20 @@
     }
   }
 
+  // Payout Logs Banner click handler (opens https://t.me/hoocoohpaylogs)
+  var payoutLogsBanner = document.getElementById("walletPayoutLogsBanner");
+  if (payoutLogsBanner) {
+    payoutLogsBanner.addEventListener("click", function(e) {
+      e.preventDefault();
+      var payUrl = "https://t.me/hoocoohpaylogs";
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+        window.Telegram.WebApp.openTelegramLink(payUrl);
+      } else {
+        window.open(payUrl, "_blank");
+      }
+    });
+  }
+
   // Multi-Step Withdraw Modal Controller (1:1 Nautilus Mine Flow)
   var withdrawModal = document.getElementById("withdrawModal");
   var openWithdrawModalBtn = document.getElementById("openWithdrawModalBtn");
