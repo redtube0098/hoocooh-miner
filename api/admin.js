@@ -385,6 +385,12 @@ module.exports = async (req, res) => {
         // If no manual TxHash provided, try automated TON payout dispatcher
         if (!finalTx) {
           const autoPayRes = await dispatchTonPayout(w.walletAddress, tonVal, `HOOCOOH Payout UID ${w.telegramId}`);
+          if (autoPayRes.isConfigured && !autoPayRes.success) {
+            res.status(400).json({
+              error: `Auto-pay halted: ${autoPayRes.message || autoPayRes.error}`
+            });
+            return;
+          }
           if (autoPayRes.success && autoPayRes.txHash) {
             finalTx = autoPayRes.txHash;
           } else {
