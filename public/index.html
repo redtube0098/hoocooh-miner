@@ -2092,6 +2092,296 @@
     width: 100%;
   }
 
+  /* ========================================================
+     SPIN & EARN LUCKY WHEEL MODAL
+     ======================================================== */
+  .spin-modal-sheet {
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+  .spin-top-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(234, 88, 12, 0.08) 100%);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 14px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+  }
+  .spin-top-title {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .spin-top-sub {
+    font-size: 10.5px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .spin-ticket-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    border: 1.5px solid #f59e0b;
+    border-radius: 12px;
+    padding: 6px 14px;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+    min-width: 65px;
+  }
+  .spin-ticket-count {
+    font-size: 16px;
+    font-weight: 900;
+    color: #f59e0b;
+    line-height: 1.1;
+  }
+  .spin-ticket-label {
+    font-size: 8.5px;
+    font-weight: 800;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .spin-wheel-stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 12px 0 6px;
+  }
+  .wheel-pointer {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 26px;
+    color: #ef4444;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    z-index: 10;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .wheel-outer-ring {
+    position: relative;
+    width: 270px;
+    height: 270px;
+    border-radius: 50%;
+    box-shadow: 0 0 24px rgba(36, 191, 166, 0.25), 0 0 0 6px var(--border);
+    background: #111e25;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #spinWheelCanvas {
+    width: 270px;
+    height: 270px;
+    border-radius: 50%;
+    transition: transform 4.5s cubic-bezier(0.15, 0.9, 0.2, 1);
+  }
+  .wheel-spin-center-btn {
+    position: absolute;
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border: 3.5px solid #ffffff;
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.6);
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: transform 0.15s ease;
+  }
+  .wheel-spin-center-btn:active {
+    transform: scale(0.92);
+  }
+  .wheel-spin-center-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: #64748b;
+  }
+  .spin-btn-txt {
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+  .spin-btn-cost {
+    font-size: 9.5px;
+    font-weight: 800;
+    opacity: 0.95;
+    margin-top: 2px;
+  }
+  .spin-status-note {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+  .spin-section-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-dim);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .get-ticket-card {
+    background: var(--sub-box-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 14px;
+  }
+  .ticket-card-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .ticket-icon-squircle {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(36, 191, 166, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .ticket-icon-squircle.gold {
+    background: rgba(245, 158, 11, 0.15);
+  }
+  .ticket-card-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .ticket-card-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .ticket-card-sub {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 1px;
+  }
+  .ticket-progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .ticket-progress-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(125, 125, 125, 0.15);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .ticket-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #0098ea);
+    border-radius: 100px;
+    transition: width 0.3s ease;
+  }
+  .btn-get-ticket-ad {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #4ee0cb 0%, #1db8a2 100%);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 3px 10px var(--accent-glow);
+    transition: transform 0.15s ease;
+  }
+  .btn-get-ticket-ad:active {
+    transform: scale(0.97);
+  }
+  .btn-get-ticket-ad:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    background: var(--card-bg);
+    color: var(--text-dim);
+    box-shadow: none;
+    border: 1px solid var(--border);
+  }
+  .verified-member-alert {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px dashed rgba(245, 158, 11, 0.4);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 10px;
+    color: #d97706;
+    margin-bottom: 9px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+  }
+  [data-theme="dark"] .verified-member-alert {
+    color: #fbbf24;
+  }
+  .ref-ticket-stats-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 9px;
+  }
+  .ref-ticket-actions-row {
+    display: flex;
+    gap: 8px;
+  }
+  .btn-claim-tickets {
+    flex: 1;
+    padding: 9px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-claim-tickets:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--card-bg);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+  .btn-invite-tickets {
+    flex: 1;
+    padding: 9px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 800;
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    cursor: pointer;
+  }
+
   /* Toast Notification */
   .toast {
     position: fixed;
@@ -6731,6 +7021,98 @@
     </div>
   </div>
 
+  <!-- Modal: Spin & Earn Lucky Wheel -->
+  <div class="modal-overlay" id="spinWheelModal">
+    <div class="modal-sheet spin-modal-sheet">
+      <div class="modal-header">
+        <div class="modal-title">🎡 Lucky Spin &amp; Earn</div>
+        <button class="modal-close-btn" id="closeSpinModalBtn" type="button">✕</button>
+      </div>
+
+      <!-- Top Header Row with Ticket Balance Box -->
+      <div class="spin-top-banner">
+        <div>
+          <div class="spin-top-title">Spin &amp; Win Coins</div>
+          <div class="spin-top-sub">Win 10 – 30 HOOCOOH Coins every spin!</div>
+        </div>
+        <!-- Ticket balance counter in corner -->
+        <div class="spin-ticket-box" id="spinTicketBox">
+          <span class="spin-ticket-count" id="spinTicketsCount">0</span>
+          <span class="spin-ticket-label">Tickets</span>
+        </div>
+      </div>
+
+      <!-- Wheel Stage -->
+      <div class="spin-wheel-stage">
+        <div class="wheel-pointer">▼</div>
+        <div class="wheel-outer-ring">
+          <canvas id="spinWheelCanvas" width="270" height="270"></canvas>
+          <button type="button" class="wheel-spin-center-btn" id="startWheelSpinBtn">
+            <span class="spin-btn-txt">SPIN</span>
+            <span class="spin-btn-cost">1 🎟️</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="spin-status-note" id="spinStatusNote">
+        Cost: 1 Ticket per Spin • 100% Real Reward
+      </div>
+
+      <!-- Section: GET TICKETS -->
+      <div class="spin-section-title">
+        <span>🎟️ GET TICKETS</span>
+      </div>
+
+      <!-- Box 1: Watch Ads for Tickets (Max 6 per 24 hours) -->
+      <div class="get-ticket-card">
+        <div class="ticket-card-top">
+          <div class="ticket-icon-squircle">🎬</div>
+          <div class="ticket-card-info">
+            <div class="ticket-card-title">Watch Ads for Tickets</div>
+            <div class="ticket-card-sub">Watch 1 ad = 1 Ticket (Max 6 tickets / 24 hours)</div>
+          </div>
+        </div>
+        <div class="ticket-progress-row">
+          <span>Daily Claimed: <strong id="spinAdsWatchedCount">0</strong> / 6 Tickets</span>
+          <span id="spinAdsResetCountdown" style="font-size: 10px; opacity: 0.8;"></span>
+        </div>
+        <div class="ticket-progress-track">
+          <div class="ticket-progress-fill" id="spinAdsProgressFill" style="width: 0%;"></div>
+        </div>
+        <button type="button" class="btn-get-ticket-ad" id="watchSpinAdActionBtn">
+          <span>🎬 Watch Ad (+1 Ticket)</span>
+        </button>
+      </div>
+
+      <!-- Box 2: Earn More Tickets (Per Valid Referral) -->
+      <div class="get-ticket-card" style="margin-top: 10px;">
+        <div class="ticket-card-top">
+          <div class="ticket-icon-squircle gold">👥</div>
+          <div class="ticket-card-info">
+            <div class="ticket-card-title">Earn More Tickets (Referrals)</div>
+            <div class="ticket-card-sub">Get 1 Free Ticket for each valid verified referral!</div>
+          </div>
+        </div>
+        <div class="verified-member-alert">
+          <span>ℹ️</span>
+          <span>A friend becomes a <strong>Verified Member</strong> when they complete <strong>30 ad watches</strong>.</span>
+        </div>
+        <div class="ref-ticket-stats-row">
+          <div>Verified Friends: <strong id="verifiedFriendsCount">0</strong></div>
+          <div>Available: <strong id="claimableTicketsCount" style="color: var(--accent);">0 Tickets</strong></div>
+        </div>
+        <div class="ref-ticket-actions-row">
+          <button type="button" class="btn-claim-tickets" id="claimRefTicketsBtn" disabled>
+            🎁 Claim Free Tickets
+          </button>
+          <button type="button" class="btn-invite-tickets" id="inviteFriendsTicketsBtn">
+            🔗 Invite Friends
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal: Multi-Step Withdraw USDT (1:1 Nautilus Mine Flow) -->
   <div class="modal-overlay" id="withdrawModal">
     <div class="modal-sheet">
@@ -9621,11 +10003,376 @@
     });
   }
 
-  // Spin & Earn Button
+  // ========================================================
+  // LUCKY SPIN & EARN (WHEEL, TICKETS & REWARDS)
+  // ========================================================
   var spinNowBtn = document.getElementById("spinNowBtn");
+  var spinWheelModal = document.getElementById("spinWheelModal");
+  var closeSpinModalBtn = document.getElementById("closeSpinModalBtn");
+  var spinTicketsCount = document.getElementById("spinTicketsCount");
+  var startWheelSpinBtn = document.getElementById("startWheelSpinBtn");
+  var spinWheelCanvas = document.getElementById("spinWheelCanvas");
+  var spinAdsWatchedCount = document.getElementById("spinAdsWatchedCount");
+  var spinAdsResetCountdown = document.getElementById("spinAdsResetCountdown");
+  var spinAdsProgressFill = document.getElementById("spinAdsProgressFill");
+  var watchSpinAdActionBtn = document.getElementById("watchSpinAdActionBtn");
+  var verifiedFriendsCount = document.getElementById("verifiedFriendsCount");
+  var claimableTicketsCount = document.getElementById("claimableTicketsCount");
+  var claimRefTicketsBtn = document.getElementById("claimRefTicketsBtn");
+  var inviteFriendsTicketsBtn = document.getElementById("inviteFriendsTicketsBtn");
+
+  var currentSpinTickets = 0;
+  var isWheelSpinning = false;
+  var currentWheelAngle = 0;
+  var spinCountdownTimer = null;
+
+  var WHEEL_SECTORS = [
+    { val: 10, label: "10 COINS", bg: "#f59e0b", text: "#ffffff" },
+    { val: 15, label: "15 COINS", bg: "#0098ea", text: "#ffffff" },
+    { val: 20, label: "20 COINS", bg: "#8b5cf6", text: "#ffffff" },
+    { val: 10, label: "10 COINS", bg: "#10b981", text: "#ffffff" },
+    { val: 25, label: "25 COINS", bg: "#ec4899", text: "#ffffff" },
+    { val: 10, label: "10 COINS", bg: "#eab308", text: "#111827" },
+    { val: 15, label: "15 COINS", bg: "#06b6d4", text: "#ffffff" },
+    { val: 30, label: "30 COINS", bg: "#e11d48", text: "#ffffff" }
+  ];
+
+  function drawLuckyWheel() {
+    if (!spinWheelCanvas) return;
+    var ctx = spinWheelCanvas.getContext("2d");
+    var totalSectors = WHEEL_SECTORS.length;
+    var arc = (2 * Math.PI) / totalSectors;
+    var cx = spinWheelCanvas.width / 2;
+    var cy = spinWheelCanvas.height / 2;
+    var radius = cx - 5;
+
+    ctx.clearRect(0, 0, spinWheelCanvas.width, spinWheelCanvas.height);
+
+    for (var i = 0; i < totalSectors; i++) {
+      var angle = i * arc;
+      ctx.beginPath();
+      ctx.fillStyle = WHEEL_SECTORS[i].bg;
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, radius, angle, angle + arc, false);
+      ctx.lineTo(cx, cy);
+      ctx.fill();
+
+      // Divider lines
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Sector Text & Coin Emoji
+      ctx.save();
+      ctx.fillStyle = WHEEL_SECTORS[i].text;
+      ctx.font = "bold 11px sans-serif";
+      ctx.translate(cx, cy);
+      ctx.rotate(angle + arc / 2);
+      ctx.textAlign = "right";
+      ctx.fillText("💎 " + WHEEL_SECTORS[i].label, radius - 14, 4);
+      ctx.restore();
+    }
+
+    // Outer wheel border
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 3.5;
+    ctx.stroke();
+  }
+
+  function fetchSpinDataApi() {
+    return fetch("/api/ads", {
+      headers: { "X-Telegram-Init-Data": initData }
+    }).then(function(r) {
+      if (r.status === 404) {
+        return fetch("/api/ads.js", { headers: { "X-Telegram-Init-Data": initData } });
+      }
+      return r;
+    }).then(handleResponse);
+  }
+
+  function loadSpinStatus() {
+    fetchSpinDataApi().then(function(res) {
+      if (res.ok && res.data && res.data.spin) {
+        var sp = res.data.spin;
+        currentSpinTickets = Number(sp.tickets || 0);
+        if (spinTicketsCount) spinTicketsCount.textContent = currentSpinTickets;
+
+        var watched = Number(sp.watchedToday || 0);
+        var maxAds = Number(sp.maxAds || 6);
+        if (spinAdsWatchedCount) spinAdsWatchedCount.textContent = watched;
+        if (spinAdsProgressFill) {
+          var pct = Math.min(100, Math.round((watched / maxAds) * 100));
+          spinAdsProgressFill.style.width = pct + "%";
+        }
+
+        if (watchSpinAdActionBtn) {
+          if (watched >= maxAds) {
+            watchSpinAdActionBtn.disabled = true;
+            watchSpinAdActionBtn.innerHTML = '<span>Limit Reached (6/6 Today)</span>';
+          } else {
+            watchSpinAdActionBtn.disabled = false;
+            watchSpinAdActionBtn.innerHTML = '<span>🎬 Watch Ad (+1 Ticket)</span>';
+          }
+        }
+
+        if (spinAdsResetCountdown && sp.nextResetMs > 0 && watched >= maxAds) {
+          var hrs = Math.floor(sp.nextResetMs / (1000 * 60 * 60));
+          var mins = Math.floor((sp.nextResetMs % (1000 * 60 * 60)) / (1000 * 60));
+          spinAdsResetCountdown.textContent = "Resets in " + hrs + "h " + mins + "m";
+        } else if (spinAdsResetCountdown) {
+          spinAdsResetCountdown.textContent = "";
+        }
+
+        var verified = Number(sp.verifiedRecruitsCount || 0);
+        var claimable = Number(sp.claimableRefTickets || 0);
+        if (verifiedFriendsCount) verifiedFriendsCount.textContent = verified;
+        if (claimableTicketsCount) claimableTicketsCount.textContent = claimable + " Tickets";
+
+        if (claimRefTicketsBtn) {
+          if (claimable > 0) {
+            claimRefTicketsBtn.disabled = false;
+            claimRefTicketsBtn.textContent = "🎁 Claim +" + claimable + " Free Tickets";
+          } else {
+            claimRefTicketsBtn.disabled = true;
+            claimRefTicketsBtn.textContent = "🎁 Claim Free Tickets";
+          }
+        }
+      }
+    }).catch(function(err) {
+      console.warn("loadSpinStatus error:", err);
+    });
+  }
+
+  function openSpinWheelModal() {
+    drawLuckyWheel();
+    loadSpinStatus();
+    if (spinWheelModal) spinWheelModal.classList.add("open");
+  }
+
+  function closeSpinWheelModal() {
+    if (isWheelSpinning) return;
+    if (spinWheelModal) spinWheelModal.classList.remove("open");
+  }
+
   if (spinNowBtn) {
-    spinNowBtn.addEventListener("click", function(){
-      showToast("🎡 Lucky Spin Wheel is coming in the next update!");
+    spinNowBtn.addEventListener("click", openSpinWheelModal);
+  }
+
+  if (closeSpinModalBtn) {
+    closeSpinModalBtn.addEventListener("click", closeSpinWheelModal);
+  }
+
+  if (spinWheelModal) {
+    spinWheelModal.addEventListener("click", function(e) {
+      if (e.target === spinWheelModal) {
+        closeSpinWheelModal();
+      }
+    });
+  }
+
+  // SPIN ACTION
+  if (startWheelSpinBtn) {
+    startWheelSpinBtn.addEventListener("click", function() {
+      if (isWheelSpinning) return;
+      if (currentSpinTickets < 1) {
+        showToast("⚠️ You have 0 tickets! Watch ads or invite friends below to get tickets.");
+        return;
+      }
+
+      isWheelSpinning = true;
+      startWheelSpinBtn.disabled = true;
+
+      fetch("/api/ads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Telegram-Init-Data": initData
+        },
+        body: JSON.stringify({ action: "spin" })
+      }).then(function(r) {
+        if (r.status === 404) {
+          return fetch("/api/ads.js", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-Telegram-Init-Data": initData },
+            body: JSON.stringify({ action: "spin" })
+          });
+        }
+        return r;
+      }).then(handleResponse).then(function(res) {
+        if (!res.ok) {
+          isWheelSpinning = false;
+          startWheelSpinBtn.disabled = false;
+          var err = (res.data && res.data.error) ? res.data.error : "Failed to spin";
+          showToast(err);
+          return;
+        }
+
+        var segIdx = Number(res.data.segmentIndex || 0);
+        var reward = Number(res.data.reward || 10);
+        currentSpinTickets = Number(res.data.spinTickets || 0);
+        if (spinTicketsCount) spinTicketsCount.textContent = currentSpinTickets;
+
+        // Pointer is at TOP (270 degrees in Canvas standard coordinate system)
+        // Sector segIdx spans [segIdx * 45, (segIdx + 1) * 45]
+        var sectorCenter = segIdx * 45 + 22.5;
+        var targetDeg = (270 - sectorCenter + 360) % 360;
+
+        // Add 5-7 full spins
+        var extraSpins = 360 * (5 + Math.floor(Math.random() * 3));
+        var currentNorm = currentWheelAngle % 360;
+        var diffDeg = (targetDeg - currentNorm + 360) % 360;
+        var finalAngle = currentWheelAngle + extraSpins + diffDeg;
+        currentWheelAngle = finalAngle;
+
+        if (spinWheelCanvas) {
+          spinWheelCanvas.style.transform = "rotate(" + finalAngle + "deg)";
+        }
+
+        // Wait 4.5s for spin animation to finish
+        setTimeout(function() {
+          isWheelSpinning = false;
+          startWheelSpinBtn.disabled = false;
+
+          if (res.data.newBalance !== undefined) {
+            user.balance = res.data.newBalance;
+            var balEl = document.getElementById("headerBalanceVal");
+            if (balEl) balEl.textContent = Number(res.data.newBalance).toLocaleString();
+            var homeBalEl = document.getElementById("homeBalanceVal");
+            if (homeBalEl) homeBalEl.textContent = Number(res.data.newBalance).toLocaleString();
+          }
+
+          if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+            try { window.Telegram.WebApp.HapticFeedback.notificationOccurred("success"); } catch (e) {}
+          }
+
+          showToast("🎉 Congratulations! You won +" + reward + " HOOCOOH Coins!");
+        }, 4600);
+      }).catch(function(err) {
+        isWheelSpinning = false;
+        startWheelSpinBtn.disabled = false;
+        showToast(err.message || "Network issue");
+      });
+    });
+  }
+
+  // WATCH AD FOR SPIN TICKET
+  if (watchSpinAdActionBtn) {
+    watchSpinAdActionBtn.addEventListener("click", function() {
+      watchSpinAdActionBtn.disabled = true;
+      watchSpinAdActionBtn.textContent = "Loading Ad...";
+
+      startAdPlayback(function onAdComplete() {
+        openSecurityCaptcha(function(verifiedCaptchaToken) {
+          fetch("/api/ads", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Telegram-Init-Data": initData
+            },
+            body: JSON.stringify({ action: "spin_watch_ad", captchaToken: verifiedCaptchaToken })
+          }).then(function(r) {
+            if (r.status === 404) {
+              return fetch("/api/ads.js", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-Telegram-Init-Data": initData },
+                body: JSON.stringify({ action: "spin_watch_ad", captchaToken: verifiedCaptchaToken })
+              });
+            }
+            return r;
+          }).then(handleResponse).then(function(res) {
+            watchSpinAdActionBtn.disabled = false;
+            watchSpinAdActionBtn.textContent = "🎬 Watch Ad (+1 Ticket)";
+
+            if (!res.ok) {
+              var err = (res.data && res.data.error) ? res.data.error : "Could not claim ticket";
+              showToast(err);
+              return;
+            }
+
+            showToast("🎟️ +1 Spin Ticket received successfully!");
+            currentSpinTickets = Number(res.data.spinTickets || 0);
+            if (spinTicketsCount) spinTicketsCount.textContent = currentSpinTickets;
+            loadSpinStatus();
+          }).catch(function(err) {
+            watchSpinAdActionBtn.disabled = false;
+            watchSpinAdActionBtn.textContent = "🎬 Watch Ad (+1 Ticket)";
+            showToast(err.message || "Network issue");
+          });
+        });
+      });
+    });
+  }
+
+  // CLAIM REFERRAL TICKETS
+  if (claimRefTicketsBtn) {
+    claimRefTicketsBtn.addEventListener("click", function() {
+      claimRefTicketsBtn.disabled = true;
+      claimRefTicketsBtn.textContent = "Claiming...";
+
+      fetch("/api/ads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Telegram-Init-Data": initData
+        },
+        body: JSON.stringify({ action: "claim_ref_tickets" })
+      }).then(function(r) {
+        if (r.status === 404) {
+          return fetch("/api/ads.js", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-Telegram-Init-Data": initData },
+            body: JSON.stringify({ action: "claim_ref_tickets" })
+          });
+        }
+        return r;
+      }).then(handleResponse).then(function(res) {
+        claimRefTicketsBtn.disabled = false;
+        claimRefTicketsBtn.textContent = "🎁 Claim Free Tickets";
+
+        if (!res.ok) {
+          var err = (res.data && res.data.error) ? res.data.error : "No tickets to claim";
+          showToast(err);
+          return;
+        }
+
+        showToast(res.data.message || "🎉 Free spin tickets claimed!");
+        currentSpinTickets = Number(res.data.spinTickets || 0);
+        if (spinTicketsCount) spinTicketsCount.textContent = currentSpinTickets;
+        loadSpinStatus();
+      }).catch(function(err) {
+        claimRefTicketsBtn.disabled = false;
+        claimRefTicketsBtn.textContent = "🎁 Claim Free Tickets";
+        showToast(err.message || "Network issue");
+      });
+    });
+  }
+
+  // INVITE FRIENDS FOR TICKETS
+  if (inviteFriendsTicketsBtn) {
+    inviteFriendsTicketsBtn.addEventListener("click", function() {
+      var botUsername = "hoocoohmine_bot";
+      var refLink = "https://t.me/" + botUsername + "?start=" + (user.telegramId || "");
+      var shareText = "🚀 Join HOOCOOH Mine and start earning real coins! Spin the Lucky Wheel daily and win rewards:";
+      var tgShareUrl = "https://t.me/share/url?url=" + encodeURIComponent(refLink) + "&text=" + encodeURIComponent(shareText);
+
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+        try {
+          window.Telegram.WebApp.openTelegramLink(tgShareUrl);
+          return;
+        } catch (e) {}
+      }
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(refLink);
+          showToast("🔗 Referral link copied! Share with friends to get spin tickets.");
+        } else {
+          window.open(tgShareUrl, "_blank");
+        }
+      } catch (e) {
+        window.open(tgShareUrl, "_blank");
+      }
     });
   }
 
