@@ -11,8 +11,11 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // 0. CRON JOB TRIGGER: Check all pending task deposits on-chain without requiring user session
-  if (req.method === "GET" && req.query && req.query.cron === "check_deposits") {
+  // 0. CRON JOB TRIGGER (compatible with cron-job.org & external services)
+  // Check all pending task deposits on-chain without requiring user Telegram session
+  const isCron = (req.query && (req.query.cron === "check_deposits" || req.query.cron === "deposit" || req.query.cron === "true")) ||
+                 (req.headers && (req.headers["x-cron-check"] === "check_deposits" || (req.headers["user-agent"] && req.headers["user-agent"].includes("cron-job.org"))));
+  if (isCron) {
     try {
       const db = await getDb();
       const tasksCol = db.collection("tasks");

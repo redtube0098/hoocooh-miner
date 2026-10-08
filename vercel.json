@@ -1,17 +1,11 @@
 {
   "version": 2,
-  "crons": [
-    {
-      "path": "/api/tasks?cron=check_deposits",
-      "schedule": "*/5 * * * *"
-    }
-  ],
   "builds": [
     { "src": "public/**", "use": "@vercel/static" },
     { "src": "api/**/*.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/([^/\\?]+?)(?:\\.js)?(?:\\?(.*))?$", "dest": "/api/$1.js?$2" },
+    { "src": "/api/([^/]+?)(?:\\.js)?$", "dest": "/api/$1.js" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
