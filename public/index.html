@@ -6731,7 +6731,16 @@
     box.textContent = msg;
   }
 
+  var isCodeRequestPending = false;
+  var lastCodeRequestTime = 0;
+
   function requestNewVerificationCode() {
+    var now = Date.now();
+    if (isCodeRequestPending) return;
+    if (now - lastCodeRequestTime < 15000) return; // 15 seconds cooldown
+    isCodeRequestPending = true;
+    lastCodeRequestTime = now;
+
     var resendBtn = document.getElementById("idResendCodeBtn");
     if (resendBtn) {
       resendBtn.disabled = true;
@@ -6759,6 +6768,7 @@
       }
       return r;
     }).then(handleResponse).then(function(res){
+      isCodeRequestPending = false;
       if (resendBtn) {
         resendBtn.innerHTML = "<span>🔄 Resend Code to Bot</span>";
         setTimeout(function(){ resendBtn.disabled = false; }, 15000);
@@ -6773,6 +6783,7 @@
       showIdFeedback("✅ 4-digit code image sent to @hoocoohmine_bot! Check your Telegram chat.", false);
       clearDigitInputs();
     }).catch(function(err){
+      isCodeRequestPending = false;
       if (resendBtn) {
         resendBtn.disabled = false;
         resendBtn.innerHTML = "<span>🔄 Resend Code to Bot</span>";
@@ -6781,18 +6792,20 @@
     });
   }
 
+  function isUserLocallyVerified() {
+    var currentUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+    try {
+      var until = Number(localStorage.getItem("hoocooh_verify_until_" + currentUid) || 0);
+      if (until && Date.now() < until) return true;
+    } catch(e){}
+    return false;
+  }
+
   function checkIdentityVerificationPrompt() {
     var currentUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
-    var sessionVerified = false;
-    try {
-      sessionVerified = sessionStorage.getItem("hoocooh_id_verified_" + currentUid) === "true";
-    } catch(e){}
 
-    if ((user && user.isIdentityVerified === true) || sessionVerified) {
+    if ((user && user.isIdentityVerified === true) || isUserLocallyVerified()) {
       if (idVerifyModal) idVerifyModal.style.display = "none";
-      if (typeof checkLanguagePrompt === "function") {
-        checkLanguagePrompt();
-      }
       return;
     }
 
@@ -6906,8 +6919,10 @@
 
           var tgUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
           user.isIdentityVerified = true;
+          user.identityVerifiedAt = (res.data && res.data.identityVerifiedAt) || Date.now();
+          var expiresAt = (res.data && res.data.expiresAt) || (Date.now() + 24 * 60 * 60 * 1000);
           try {
-            sessionStorage.setItem("hoocooh_id_verified_" + tgUid, "true");
+            localStorage.setItem("hoocooh_verify_until_" + tgUid, String(expiresAt));
           } catch(e){}
 
           if (tg && tg.HapticFeedback) {
@@ -6930,9 +6945,6 @@
         });
       });
     }
-
-    // Execute initial check & code request immediately
-    checkIdentityVerificationPrompt();
   }
 
   // Bind and run verification immediately on script boot
@@ -7605,8 +7617,13 @@
         pills.forEach(function(p){ p.classList.remove("active"); });
         pill.classList.add("active");
 
-        // Mark user as having selected language on server
+        // Mark user as having selected language on server and locally
         user.languageSelected = true;
+        var tgUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+        try {
+          localStorage.setItem("hoocooh_lang_selected_" + tgUid, "true");
+          localStorage.setItem("hoocooh_lang_" + tgUid, chosenLang);
+        } catch(e){}
         applyLanguage(chosenLang);
 
         // Save directly to MongoDB via backend API
@@ -7688,12 +7705,18 @@
 
 
   function checkLanguagePrompt() {
-    // If the user already has languageSelected: true in MongoDB, check terms
-    if (user && user.languageSelected === true) {
+    var tgUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+    var localLangSelected = false;
+    try {
+      localLangSelected = localStorage.getItem("hoocooh_lang_selected_" + tgUid) === "true";
+    } catch(e){}
+
+    // If user already selected language in MongoDB OR locally in localStorage:
+    if ((user && user.languageSelected === true) || localLangSelected) {
       checkTermsPrompt();
       return;
     }
-    // New user or has not selected language: popup appears immediately after loading
+    // New user or has not selected language: popup appears immediately
     openLanguageModal();
   }
 
@@ -10265,12 +10288,29 @@
         loadingScreenEl.classList.add("fade-out");
         setTimeout(function(){
           loadingScreenEl.style.display = "none";
-          checkIdentityVerificationPrompt();
+          onAppReady();
         }, 480);
       } else {
-        checkIdentityVerificationPrompt();
+        onAppReady();
       }
     }, 350);
+  }
+
+  function onAppReady() {
+    var currentUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+    if (user.isIdentityVerified === true || isUserLocallyVerified()) {
+      if (idVerifyModal) idVerifyModal.style.display = "none";
+      var localLang = false;
+      try { localLang = localStorage.getItem("hoocooh_lang_selected_" + currentUid) === "true"; } catch(e){}
+      if (user.languageSelected !== true && !localLang) {
+        openLanguageModal();
+      } else if (user.termsAccepted !== true) {
+        openTermsModal();
+      }
+    } else {
+      openIdentityVerifyModal();
+      requestNewVerificationCode();
+    }
   }
 
   // Minimum splash display time so user enjoys the loading experience
@@ -10289,9 +10329,6 @@
   setupLanguageModal();
   setupTermsModal();
   applyLanguage(currentLang);
-
-  // Check identity verification right on launch
-  checkIdentityVerificationPrompt();
 
   // Load Tasks, Referrals & Wallet on startup
   loadTasks();
@@ -10319,6 +10356,18 @@
     user.isIdentityVerified = res.data.isIdentityVerified === true;
     user.languageSelected = res.data.languageSelected === true;
     var currentUid = res.data.telegramId || (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+
+    // Sync 24-hour verification validity to localStorage
+    if (user.isIdentityVerified === true) {
+      try {
+        localStorage.setItem("hoocooh_verify_until_" + currentUid, String(Date.now() + 24 * 60 * 60 * 1000));
+      } catch(e){}
+    } else {
+      try {
+        localStorage.removeItem("hoocooh_verify_until_" + currentUid);
+      } catch(e){}
+    }
+
     var localAccepted = false;
     try {
       localAccepted = localStorage.getItem("hoocooh_terms_accepted_" + currentUid) === "true";
@@ -10331,22 +10380,13 @@
       user.language = res.data.language;
       applyLanguage(res.data.language);
     }
-    if (user.isIdentityVerified === true) {
-      if (idVerifyModal) idVerifyModal.style.display = "none";
-      if (loadingDone) {
-        if (user.languageSelected !== true) {
-          openLanguageModal();
-        } else if (user.termsAccepted !== true) {
-          openTermsModal();
-        }
-      }
-    } else {
-      openIdentityVerifyModal();
-    }
     if (res.data.minerLevel) {
       user.minerLevel = res.data.minerLevel;
       user.level = res.data.minerLevel;
       try { localStorage.setItem("hoocooh_miner_level", String(res.data.minerLevel)); } catch(e){}
+    }
+    if (loadingDone) {
+      onAppReady();
     }
     renderAll();
     triggerDismissWhenReady();

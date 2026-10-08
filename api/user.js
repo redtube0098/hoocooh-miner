@@ -77,14 +77,20 @@ module.exports = async (req, res) => {
         const now = Date.now();
         const codesCol = db.collection("user_verification_codes");
 
-        // Cooldown check (15 seconds)
+        // Duplicate suppression: if a code was created within the last 20 seconds, reuse it and don't re-send
         const recentCode = await codesCol.findOne(
           { userId: telegramId, used: false },
           { sort: { createdAt: -1 } }
         );
-        if (recentCode && (now - recentCode.createdAt < 15000)) {
-          const waitSec = Math.ceil((15000 - (now - recentCode.createdAt)) / 1000);
-          res.status(429).json({ error: `Please wait ${waitSec}s before requesting a new code.` });
+        if (recentCode && (now - recentCode.createdAt < 20000)) {
+          const botUser = await fetchBotUsername(process.env.TELEGRAM_BOT_TOKEN);
+          res.status(200).json({
+            ok: true,
+            expiresAt: recentCode.expiresAt,
+            validitySeconds: Math.max(0, Math.floor((recentCode.expiresAt - now) / 1000)),
+            botUsername: `@${botUser}`,
+            message: "A verification code image was sent to your bot."
+          });
           return;
         }
 
@@ -212,16 +218,24 @@ module.exports = async (req, res) => {
         res.status(200).json({
           ok: true,
           verified: true,
+          identityVerifiedAt: now,
+          expiresAt: now + (24 * 60 * 60 * 1000),
           message: "Identity verified successfully!"
         });
         return;
       }
 
-      // Verification: Check status
+      // Verification: Check status (24 hours validity check)
       if (action === "check_status" || action === "check_verification_status") {
+        const isVerified24h = Boolean(
+          user &&
+          user.isIdentityVerified === true &&
+          user.identityVerifiedAt &&
+          (Date.now() - Number(user.identityVerifiedAt) < 24 * 60 * 60 * 1000)
+        );
         res.status(200).json({
           ok: true,
-          isVerified: user && user.isIdentityVerified === true
+          isVerified: isVerified24h
         });
         return;
       }
@@ -309,7 +323,12 @@ module.exports = async (req, res) => {
       language: user.language || "en",
       languageSelected: user.languageSelected === true,
       termsAccepted: user.termsAccepted === true,
-      isIdentityVerified: user.isIdentityVerified === true,
+      isIdentityVerified: Boolean(
+        user.isIdentityVerified === true &&
+        user.identityVerifiedAt &&
+        (now - Number(user.identityVerifiedAt) < 24 * 60 * 60 * 1000)
+      ),
+      identityVerifiedAt: user.identityVerifiedAt || 0,
       botUsername: botUsername
     });
   } catch (err) {
