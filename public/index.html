@@ -4881,6 +4881,282 @@
     transform: scale(0.98);
     filter: brightness(0.95);
   }
+
+  /* ==========================================
+     IDENTITY VERIFICATION MODAL ("Verify It's you")
+     ========================================== */
+  .id-verify-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(6, 10, 20, 0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    z-index: 100000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  .id-verify-card {
+    width: 100%;
+    max-width: 390px;
+    background: #0d1728;
+    border: 1px solid rgba(0, 240, 255, 0.28);
+    border-radius: 24px;
+    padding: 24px 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(0, 240, 255, 0.12);
+    text-align: center;
+    animation: idPopIn 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+  }
+
+  @keyframes idPopIn {
+    from { opacity: 0; transform: scale(0.92) translateY(12px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .id-verify-icon-wrap {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .id-verify-icon-glow {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.45) 0%, transparent 70%);
+    animation: idPulseGlow 2s infinite ease-in-out;
+  }
+
+  @keyframes idPulseGlow {
+    0%, 100% { opacity: 0.5; transform: scale(0.95); }
+    50% { opacity: 0.95; transform: scale(1.1); }
+  }
+
+  .id-verify-icon {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(2, 132, 199, 0.25));
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .id-verify-badge {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #00f0ff;
+    background: rgba(0, 240, 255, 0.12);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .id-verify-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 8px;
+    letter-spacing: -0.3px;
+  }
+
+  .id-verify-sub {
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.45;
+    margin: 0 0 14px;
+  }
+
+  .id-bot-link {
+    color: #00f0ff;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .id-verify-notice {
+    background: rgba(0, 240, 255, 0.05);
+    border: 1px dashed rgba(0, 240, 255, 0.35);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    text-align: left;
+  }
+
+  .id-notice-badge {
+    font-size: 10px;
+    font-weight: 800;
+    color: #38bdf8;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .id-notice-text {
+    font-size: 11.5px;
+    color: #cbd5e1;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .id-open-bot-btn {
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: rgba(0, 240, 255, 0.14);
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    color: #00f0ff;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+
+  .id-open-bot-btn:active {
+    transform: scale(0.98);
+    background: rgba(0, 240, 255, 0.25);
+  }
+
+  .id-digits-wrap {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .id-digit-cell {
+    width: 58px;
+    height: 66px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    font-size: 30px;
+    font-weight: 800;
+    text-align: center;
+    outline: none;
+    transition: all 0.2s;
+    box-sizing: border-box;
+    font-family: inherit;
+  }
+
+  .id-digit-cell:focus {
+    border-color: #00f0ff;
+    background: rgba(0, 240, 255, 0.08);
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+    color: #00f0ff;
+  }
+
+  .id-digit-cell.filled {
+    border-color: rgba(0, 240, 255, 0.6);
+    color: #00f0ff;
+  }
+
+  .id-timer-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #38bdf8;
+    margin-bottom: 14px;
+  }
+
+  .id-timer-row.warning {
+    color: #ef4444;
+    animation: idTimerBlink 1s infinite;
+  }
+
+  @keyframes idTimerBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .id-feedback-box {
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 11.5px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  .id-feedback-box.error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #f87171;
+  }
+
+  .id-feedback-box.success {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #34d399;
+  }
+
+  .id-confirm-btn {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #00f0ff, #0284c7);
+    border: none;
+    color: #05131f;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 240, 255, 0.35);
+    transition: all 0.2s;
+    margin-bottom: 10px;
+  }
+
+  .id-confirm-btn:active {
+    transform: scale(0.98);
+  }
+
+  .id-confirm-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .id-resend-btn {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 6px;
+    transition: color 0.2s;
+  }
+
+  .id-resend-btn:hover {
+    color: #00f0ff;
+  }
+
+  .id-resend-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 </style>
 </head>
 <body>
@@ -6232,6 +6508,71 @@
     </div>
   </div>
 
+  <!-- Identity Verification Screen ("Verify It's you") -->
+  <div id="identityVerifyModal" class="id-verify-overlay" style="display: none;">
+    <div class="id-verify-card">
+      <div class="id-verify-icon-wrap">
+        <div class="id-verify-icon-glow"></div>
+        <div class="id-verify-icon">
+          <svg width="38" height="38" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L4 5V11.5C4 16.5 7.4 21.1 12 22.3C16.6 21.1 20 16.5 20 11.5V5L12 2Z" fill="url(#idShieldGrad)" stroke="#00f0ff" stroke-width="1.2"/>
+            <path d="M9 11.8L11 13.8L15.5 9.3" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="idShieldGrad" x1="12" y1="2" x2="12" y2="22.3" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#00f0ff"/>
+                <stop offset="1" stop-color="#0284c7"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+
+      <div class="id-verify-badge">SECURITY CHECK</div>
+      <h2 class="id-verify-title">Verify It's you</h2>
+      <p class="id-verify-sub">
+        A secure 4-digit verification code has been sent inside our bot 
+        <a href="https://t.me/hoocoohmine_bot" target="_blank" class="id-bot-link" id="idVerifyBotLink">@hoocoohmine_bot</a>.
+      </p>
+
+      <div class="id-verify-notice">
+        <div class="id-notice-badge">📸 IMAGE CODE</div>
+        <div class="id-notice-text">
+          The code is written inside an image picture in the chat. Open <strong>@hoocoohmine_bot</strong>, find your 4-digit code in the photo, and enter it below:
+        </div>
+        <button type="button" class="id-open-bot-btn" id="idOpenBotBtn">
+          <span>💬 Open @hoocoohmine_bot</span>
+        </button>
+      </div>
+
+      <!-- 4-Digit Code Inputs -->
+      <div class="id-digits-wrap" id="idDigitsWrap">
+        <input type="text" inputmode="numeric" maxlength="1" class="id-digit-cell" data-idx="0" autocomplete="off">
+        <input type="text" inputmode="numeric" maxlength="1" class="id-digit-cell" data-idx="1" autocomplete="off">
+        <input type="text" inputmode="numeric" maxlength="1" class="id-digit-cell" data-idx="2" autocomplete="off">
+        <input type="text" inputmode="numeric" maxlength="1" class="id-digit-cell" data-idx="3" autocomplete="off">
+      </div>
+
+      <!-- Timer & Feedback -->
+      <div class="id-timer-row" id="idTimerRow">
+        <span class="id-timer-icon">⏳</span>
+        <span id="idTimerTxt">Validity: 02:00</span>
+      </div>
+
+      <div class="id-feedback-box" id="idFeedbackBox" style="display: none;"></div>
+
+      <!-- Action Buttons -->
+      <div class="id-actions-col">
+        <button type="button" class="id-confirm-btn" id="idConfirmCodeBtn">
+          <span>Confirm & Enter</span>
+        </button>
+
+        <button type="button" class="id-resend-btn" id="idResendCodeBtn">
+          <span>🔄 Resend Code to Bot</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Element -->
   <div class="toast" id="toast"></div>
 
@@ -7031,6 +7372,264 @@
         btn.innerHTML = '<span>Agree & Continue</span>';
       }, 200);
     });
+  }
+
+  // ==========================================
+  // IDENTITY VERIFICATION MODAL ("Verify It's you")
+  // ==========================================
+  var idVerifyModal = document.getElementById("identityVerifyModal");
+  var idTimerInterval = null;
+  var idCodeExpiresAt = 0;
+
+  function openIdentityVerifyModal() {
+    if (!idVerifyModal) return;
+    idVerifyModal.style.display = "flex";
+    idVerifyModal.style.opacity = "";
+    clearDigitInputs();
+  }
+
+  function closeIdentityVerifyModal() {
+    if (!idVerifyModal) return;
+    clearInterval(idTimerInterval);
+    idVerifyModal.style.opacity = "0";
+    idVerifyModal.style.transition = "opacity 0.24s ease";
+    setTimeout(function(){
+      idVerifyModal.style.display = "none";
+      idVerifyModal.style.opacity = "";
+      idVerifyModal.style.transition = "";
+    }, 250);
+  }
+
+  function clearDigitInputs() {
+    var cells = document.querySelectorAll(".id-digit-cell");
+    cells.forEach(function(c){
+      c.value = "";
+      c.classList.remove("filled");
+    });
+    if (cells.length > 0) {
+      setTimeout(function(){ cells[0].focus(); }, 100);
+    }
+  }
+
+  function getEnteredCode() {
+    var cells = document.querySelectorAll(".id-digit-cell");
+    var code = "";
+    cells.forEach(function(c){ code += (c.value || "").trim(); });
+    return code;
+  }
+
+  function startIdCodeTimer(expiresAt) {
+    clearInterval(idTimerInterval);
+    idCodeExpiresAt = expiresAt;
+    var timerTxt = document.getElementById("idTimerTxt");
+    var timerRow = document.getElementById("idTimerRow");
+    var resendBtn = document.getElementById("idResendCodeBtn");
+
+    function update() {
+      var remaining = Math.max(0, Math.floor((idCodeExpiresAt - Date.now()) / 1000));
+      var mins = String(Math.floor(remaining / 60)).padStart(2, "0");
+      var secs = String(remaining % 60).padStart(2, "0");
+
+      if (timerTxt) timerTxt.textContent = "Validity: " + mins + ":" + secs;
+
+      if (remaining <= 30) {
+        if (timerRow) timerRow.classList.add("warning");
+      } else {
+        if (timerRow) timerRow.classList.remove("warning");
+      }
+
+      if (remaining <= 0) {
+        clearInterval(idTimerInterval);
+        if (timerTxt) timerTxt.textContent = "Code expired. Please click Resend Code.";
+        if (resendBtn) resendBtn.disabled = false;
+      }
+    }
+
+    update();
+    idTimerInterval = setInterval(update, 1000);
+  }
+
+  function showIdFeedback(msg, isError) {
+    var box = document.getElementById("idFeedbackBox");
+    if (!box) return;
+    box.style.display = "block";
+    box.className = "id-feedback-box " + (isError ? "error" : "success");
+    box.textContent = msg;
+  }
+
+  function requestNewVerificationCode() {
+    var resendBtn = document.getElementById("idResendCodeBtn");
+    if (resendBtn) {
+      resendBtn.disabled = true;
+      resendBtn.innerHTML = "<span>⏳ Sending image code to bot...</span>";
+    }
+    showIdFeedback("📸 Generating code image & sending to @hoocoohmine_bot...", false);
+
+    fetch("/api/verify-code", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": initData
+      },
+      body: JSON.stringify({ action: "request_code" })
+    }).then(handleResponse).then(function(res){
+      if (resendBtn) {
+        resendBtn.innerHTML = "<span>🔄 Resend Code to Bot</span>";
+        setTimeout(function(){ resendBtn.disabled = false; }, 15000);
+      }
+
+      if (!res.ok) {
+        showIdFeedback((res.data && res.data.error) ? res.data.error : "Failed to send code", true);
+        return;
+      }
+
+      startIdCodeTimer(res.data.expiresAt || (Date.now() + 120000));
+      showIdFeedback("✅ 4-digit code image sent to @hoocoohmine_bot! Check your Telegram chat.", false);
+      clearDigitInputs();
+    }).catch(function(err){
+      if (resendBtn) {
+        resendBtn.disabled = false;
+        resendBtn.innerHTML = "<span>🔄 Resend Code to Bot</span>";
+      }
+      showIdFeedback("Network error. Please try again.", true);
+    });
+  }
+
+  function checkIdentityVerificationPrompt() {
+    var tgUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+    var sessionVerified = false;
+    var localVerified = false;
+    try {
+      sessionVerified = sessionStorage.getItem("hoocooh_id_verified_" + tgUid) === "true";
+      localVerified = localStorage.getItem("hoocooh_id_verified_" + tgUid) === "true";
+    } catch(e){}
+
+    if ((user && user.isIdentityVerified === true) || sessionVerified || localVerified) {
+      checkLanguagePrompt();
+      return;
+    }
+
+    openIdentityVerifyModal();
+    requestNewVerificationCode();
+  }
+
+  function setupIdentityVerifyModal() {
+    var cells = document.querySelectorAll(".id-digit-cell");
+    cells.forEach(function(cell, idx){
+      cell.addEventListener("input", function(e){
+        var val = cell.value.replace(/\D/g, "");
+        cell.value = val ? val[0] : "";
+        if (cell.value) {
+          cell.classList.add("filled");
+          if (idx < cells.length - 1) {
+            cells[idx + 1].focus();
+          }
+        } else {
+          cell.classList.remove("filled");
+        }
+      });
+
+      cell.addEventListener("keydown", function(e){
+        if (e.key === "Backspace" && !cell.value && idx > 0) {
+          cells[idx - 1].focus();
+        }
+      });
+
+      cell.addEventListener("paste", function(e){
+        e.preventDefault();
+        var pasteData = (e.clipboardData || window.clipboardData).getData("text").replace(/\D/g, "");
+        if (pasteData) {
+          for (var i = 0; i < cells.length; i++) {
+            if (pasteData[i]) {
+              cells[i].value = pasteData[i];
+              cells[i].classList.add("filled");
+            }
+          }
+          var lastIdx = Math.min(pasteData.length, cells.length) - 1;
+          if (lastIdx >= 0) cells[lastIdx].focus();
+        }
+      });
+    });
+
+    // Open Telegram Bot Chat buttons
+    var openBtn = document.getElementById("idOpenBotBtn");
+    var linkBtn = document.getElementById("idVerifyBotLink");
+    function launchBotChat(e) {
+      if (e) e.preventDefault();
+      if (tg && typeof tg.openTelegramLink === "function") {
+        try {
+          tg.openTelegramLink("https://t.me/hoocoohmine_bot");
+          return;
+        } catch(err){}
+      }
+      window.open("https://t.me/hoocoohmine_bot", "_blank");
+    }
+    if (openBtn) openBtn.addEventListener("click", launchBotChat);
+    if (linkBtn) linkBtn.addEventListener("click", launchBotChat);
+
+    // Resend code button
+    var resendBtn = document.getElementById("idResendCodeBtn");
+    if (resendBtn) {
+      resendBtn.addEventListener("click", function(){
+        requestNewVerificationCode();
+      });
+    }
+
+    // Confirm button
+    var confirmBtn = document.getElementById("idConfirmCodeBtn");
+    if (confirmBtn) {
+      confirmBtn.addEventListener("click", function(){
+        var code = getEnteredCode();
+        if (code.length < 4) {
+          showIdFeedback("⚠️ Please enter all 4 digits.", true);
+          return;
+        }
+
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = "<span>⏳ Verifying...</span>";
+        showIdFeedback("Verifying code...", false);
+
+        fetch("/api/verify-code", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Telegram-Init-Data": initData
+          },
+          body: JSON.stringify({ action: "submit_code", code: code })
+        }).then(handleResponse).then(function(res){
+          confirmBtn.disabled = false;
+          confirmBtn.innerHTML = "<span>Confirm & Enter</span>";
+
+          if (!res.ok) {
+            showIdFeedback((res.data && res.data.error) ? res.data.error : "Verification failed", true);
+            return;
+          }
+
+          var tgUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+          user.isIdentityVerified = true;
+          try {
+            sessionStorage.setItem("hoocooh_id_verified_" + tgUid, "true");
+            localStorage.setItem("hoocooh_id_verified_" + tgUid, "true");
+          } catch(e){}
+
+          if (tg && tg.HapticFeedback) {
+            try { tg.HapticFeedback.notificationOccurred("success"); } catch(e){}
+          }
+
+          showIdFeedback("✅ Verified successfully! Welcome.", false);
+          showToast("🎉 Verified It's you!");
+
+          setTimeout(function(){
+            closeIdentityVerifyModal();
+            checkLanguagePrompt();
+          }, 600);
+        }).catch(function(err){
+          confirmBtn.disabled = false;
+          confirmBtn.innerHTML = "<span>Confirm & Enter</span>";
+          showIdFeedback("Network error. Please try again.", true);
+        });
+      });
+    }
   }
 
   function checkLanguagePrompt() {
@@ -9611,10 +10210,10 @@
         loadingScreenEl.classList.add("fade-out");
         setTimeout(function(){
           loadingScreenEl.style.display = "none";
-          checkLanguagePrompt();
+          checkIdentityVerificationPrompt();
         }, 480);
       } else {
-        checkLanguagePrompt();
+        checkIdentityVerificationPrompt();
       }
     }, 350);
   }
@@ -9631,6 +10230,7 @@
   setTimeout(dismissLoadingScreen, 3500);
 
   // Initialize Modals and active language
+  setupIdentityVerifyModal();
   setupLanguageModal();
   setupTermsModal();
   applyLanguage(currentLang);
@@ -9658,6 +10258,7 @@
       return;
     }
     Object.assign(user, res.data);
+    user.isIdentityVerified = res.data.isIdentityVerified === true;
     user.languageSelected = res.data.languageSelected === true;
     var currentUid = res.data.telegramId || (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
     var localAccepted = false;
@@ -9673,7 +10274,12 @@
       applyLanguage(res.data.language);
     }
     if (loadingDone) {
-      if (user.languageSelected !== true) {
+      var isVerified = (user.isIdentityVerified === true) ||
+                       (sessionStorage.getItem("hoocooh_id_verified_" + currentUid) === "true") ||
+                       (localStorage.getItem("hoocooh_id_verified_" + currentUid) === "true");
+      if (!isVerified) {
+        checkIdentityVerificationPrompt();
+      } else if (user.languageSelected !== true) {
         openLanguageModal();
       } else if (user.termsAccepted !== true) {
         openTermsModal();

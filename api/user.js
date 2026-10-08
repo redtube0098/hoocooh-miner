@@ -153,6 +153,7 @@ module.exports = async (req, res) => {
       language: user.language || "en",
       languageSelected: user.languageSelected === true,
       termsAccepted: user.termsAccepted === true,
+      isIdentityVerified: user.isIdentityVerified === true,
       botUsername: botUsername
     });
   } catch (err) {
