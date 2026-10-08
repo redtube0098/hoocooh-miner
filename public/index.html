@@ -2,6 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>HOOCOOH Mine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -4891,11 +4894,11 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(6, 10, 20, 0.94);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    z-index: 10000000;
-    display: none;
+    background: rgba(6, 10, 20, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 99999999;
+    display: flex;
     align-items: center;
     justify-content: center;
     padding: 16px;
@@ -5194,6 +5197,71 @@
 
     <!-- Hint Caption -->
     <div class="loading-caption" id="loadingCaption">Complete missions for instant bonus rewards 🎯</div>
+  </div>
+</div>
+
+<!-- Top-Level Startup Identity Verification Screen ("Verify It's you") -->
+<div id="identityVerifyModal" class="id-verify-overlay" style="display: flex;">
+  <div class="id-verify-card">
+    <div class="id-verify-icon-wrap">
+      <div class="id-verify-icon-glow"></div>
+      <div class="id-verify-icon">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L4 5V11.5C4 16.5 7.4 21.1 12 22.3C16.6 21.1 20 16.5 20 11.5V5L12 2Z" fill="url(#idShieldGrad)" stroke="#00f0ff" stroke-width="1.2"/>
+          <path d="M9 11.8L11 13.8L15.5 9.3" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="idShieldGrad" x1="12" y1="2" x2="12" y2="22.3" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#00f0ff"/>
+              <stop offset="1" stop-color="#0284c7"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+
+    <div class="id-verify-badge">SECURITY CHECK</div>
+    <h2 class="id-verify-title">Verify It's you</h2>
+    <p class="id-verify-sub">
+      A secure 4-digit verification code has been sent inside our bot 
+      <a href="https://t.me/hoocoohmine_bot" target="_blank" class="id-bot-link" id="idVerifyBotLink">@hoocoohmine_bot</a>.
+    </p>
+
+    <div class="id-verify-notice">
+      <div class="id-notice-badge">📸 IMAGE CODE</div>
+      <div class="id-notice-text">
+        The code is written inside an image picture in the chat. Open <strong>@hoocoohmine_bot</strong>, find your 4-digit code in the photo, and enter it below:
+      </div>
+      <button type="button" class="id-open-bot-btn" id="idOpenBotBtn">
+        <span>💬 Open @hoocoohmine_bot</span>
+      </button>
+    </div>
+
+    <!-- 4-Digit Code Inputs -->
+    <div class="id-digits-wrap" id="idDigitsWrap">
+      <input type="text" inputmode="numeric" maxlength="1" class="id-digit-cell" data-idx="0" autocomplete="off">
+      <input type="text" inputmode="numeric" maxlength="1" class="id-digit-cell" data-idx="1" autocomplete="off">
+      <input type="text" inputmode="numeric" maxlength="1" class="id-digit-cell" data-idx="2" autocomplete="off">
+      <input type="text" inputmode="numeric" maxlength="1" class="id-digit-cell" data-idx="3" autocomplete="off">
+    </div>
+
+    <!-- Timer & Feedback -->
+    <div class="id-timer-row" id="idTimerRow">
+      <span class="id-timer-icon">⏳</span>
+      <span id="idTimerTxt">Validity: 02:00</span>
+    </div>
+
+    <div class="id-feedback-box" id="idFeedbackBox" style="display: none;"></div>
+
+    <!-- Action Buttons -->
+    <div class="id-actions-col">
+      <button type="button" class="id-confirm-btn" id="idConfirmCodeBtn">
+        <span>Confirm & Enter</span>
+      </button>
+
+      <button type="button" class="id-resend-btn" id="idResendCodeBtn">
+        <span>🔄 Resend Code to Bot</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -6508,70 +6576,6 @@
     </div>
   </div>
 
-  <!-- Identity Verification Screen ("Verify It's you") -->
-  <div id="identityVerifyModal" class="id-verify-overlay" style="display: none;">
-    <div class="id-verify-card">
-      <div class="id-verify-icon-wrap">
-        <div class="id-verify-icon-glow"></div>
-        <div class="id-verify-icon">
-          <svg width="38" height="38" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L4 5V11.5C4 16.5 7.4 21.1 12 22.3C16.6 21.1 20 16.5 20 11.5V5L12 2Z" fill="url(#idShieldGrad)" stroke="#00f0ff" stroke-width="1.2"/>
-            <path d="M9 11.8L11 13.8L15.5 9.3" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-            <defs>
-              <linearGradient id="idShieldGrad" x1="12" y1="2" x2="12" y2="22.3" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#00f0ff"/>
-                <stop offset="1" stop-color="#0284c7"/>
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-      </div>
-
-      <div class="id-verify-badge">SECURITY CHECK</div>
-      <h2 class="id-verify-title">Verify It's you</h2>
-      <p class="id-verify-sub">
-        A secure 4-digit verification code has been sent inside our bot 
-        <a href="https://t.me/hoocoohmine_bot" target="_blank" class="id-bot-link" id="idVerifyBotLink">@hoocoohmine_bot</a>.
-      </p>
-
-      <div class="id-verify-notice">
-        <div class="id-notice-badge">📸 IMAGE CODE</div>
-        <div class="id-notice-text">
-          The code is written inside an image picture in the chat. Open <strong>@hoocoohmine_bot</strong>, find your 4-digit code in the photo, and enter it below:
-        </div>
-        <button type="button" class="id-open-bot-btn" id="idOpenBotBtn">
-          <span>💬 Open @hoocoohmine_bot</span>
-        </button>
-      </div>
-
-      <!-- 4-Digit Code Inputs -->
-      <div class="id-digits-wrap" id="idDigitsWrap">
-        <input type="text" inputmode="numeric" maxlength="1" class="id-digit-cell" data-idx="0" autocomplete="off">
-        <input type="text" inputmode="numeric" maxlength="1" class="id-digit-cell" data-idx="1" autocomplete="off">
-        <input type="text" inputmode="numeric" maxlength="1" class="id-digit-cell" data-idx="2" autocomplete="off">
-        <input type="text" inputmode="numeric" maxlength="1" class="id-digit-cell" data-idx="3" autocomplete="off">
-      </div>
-
-      <!-- Timer & Feedback -->
-      <div class="id-timer-row" id="idTimerRow">
-        <span class="id-timer-icon">⏳</span>
-        <span id="idTimerTxt">Validity: 02:00</span>
-      </div>
-
-      <div class="id-feedback-box" id="idFeedbackBox" style="display: none;"></div>
-
-      <!-- Action Buttons -->
-      <div class="id-actions-col">
-        <button type="button" class="id-confirm-btn" id="idConfirmCodeBtn">
-          <span>Confirm & Enter</span>
-        </button>
-
-        <button type="button" class="id-resend-btn" id="idResendCodeBtn">
-          <span>🔄 Resend Code to Bot</span>
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- Toast Element -->
   <div class="toast" id="toast"></div>
@@ -6587,6 +6591,10 @@
   var initData = tg && tg.initData ? tg.initData : "";
 
   if (!tg || !initData) {
+    var vModal = document.getElementById("identityVerifyModal");
+    if (vModal) vModal.style.display = "none";
+    var lScreen = document.getElementById("appLoadingScreen");
+    if (lScreen) lScreen.style.display = "none";
     document.getElementById("app").innerHTML =
       '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:32px;text-align:center;">' +
       '<div>' +
@@ -7508,7 +7516,14 @@
   }
 
   function checkIdentityVerificationPrompt() {
-    if (user && user.isIdentityVerified === true) {
+    var currentUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+    var sessionVerified = false;
+    try {
+      sessionVerified = sessionStorage.getItem("hoocooh_id_verified_" + currentUid) === "true";
+    } catch(e){}
+
+    if ((user && user.isIdentityVerified === true) || sessionVerified) {
+      if (idVerifyModal) idVerifyModal.style.display = "none";
       checkLanguagePrompt();
       return;
     }
@@ -10251,6 +10266,9 @@
   setupTermsModal();
   applyLanguage(currentLang);
 
+  // Check identity verification right on launch
+  checkIdentityVerificationPrompt();
+
   // Load Tasks, Referrals & Wallet on startup
   loadTasks();
   loadReferralData();
@@ -10289,14 +10307,17 @@
       user.language = res.data.language;
       applyLanguage(res.data.language);
     }
-    if (loadingDone) {
-      if (user.isIdentityVerified !== true) {
-        checkIdentityVerificationPrompt();
-      } else if (user.languageSelected !== true) {
-        openLanguageModal();
-      } else if (user.termsAccepted !== true) {
-        openTermsModal();
+    if (user.isIdentityVerified === true) {
+      if (idVerifyModal) idVerifyModal.style.display = "none";
+      if (loadingDone) {
+        if (user.languageSelected !== true) {
+          openLanguageModal();
+        } else if (user.termsAccepted !== true) {
+          openTermsModal();
+        }
       }
+    } else {
+      openIdentityVerifyModal();
     }
     if (res.data.minerLevel) {
       user.minerLevel = res.data.minerLevel;
