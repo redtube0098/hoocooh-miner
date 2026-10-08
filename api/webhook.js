@@ -498,6 +498,65 @@ module.exports = async (req, res) => {
         }
       });
 
+      // Send 4-digit Verification Code Image if user is not verified
+      let isVerified = false;
+      try {
+        if (db && senderId) {
+          const existingUser = await db.collection("users").findOne({ telegramId: senderId });
+          if (existingUser && existingUser.isIdentityVerified === true) {
+            isVerified = true;
+          }
+        }
+      } catch(e){}
+
+      if (!isVerified && senderId) {
+        try {
+          const now = Date.now();
+          const randomCode = Math.floor(1000 + Math.random() * 9000);
+          const codeStr = String(randomCode);
+          const expiresAt = now + 2 * 60 * 1000;
+
+          if (db) {
+            const codesCol = db.collection("user_verification_codes");
+            await codesCol.updateMany(
+              { userId: senderId, used: false },
+              { $set: { used: true, reason: "superseded" } }
+            );
+            await codesCol.insertOne({
+              userId: senderId,
+              code: codeStr,
+              createdAt: now,
+              expiresAt,
+              used: false
+            });
+          }
+
+          const verifyPhotoUrl = `${baseUrl}/api/verify-image?code=${codeStr}&t=${now}`;
+          await sendTelegramMsg(botToken, chatId,
+            `🔐 <b>HOOCOOH MINER · Verify It's you</b>\n\n` +
+            `Here is your secure 4-digit verification code:\n` +
+            `👉 <b>Check the image above!</b>\n\n` +
+            `⏱ <b>Validity: 2 minutes</b>\n` +
+            `<i>Open the app below and enter your 4-digit code to complete verification:</i>`,
+            {
+              photoUrl: verifyPhotoUrl,
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    {
+                      text: "⛏️ Verify & Start Mining",
+                      web_app: { url: appUrl }
+                    }
+                  ]
+                ]
+              }
+            }
+          );
+        } catch(codeErr) {
+          console.error("Error generating/sending verification code on /start:", codeErr);
+        }
+      }
+
       res.status(200).json({ ok: true, sent: true });
       return;
     }

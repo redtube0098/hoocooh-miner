@@ -72,48 +72,82 @@ module.exports = async (req, res) => {
         used: false
       });
 
-      // Generate unique PNG image containing the 4 digits
-      const imageBuffer = generateVerificationImage(codeStr);
+      // Build base URL for dynamic image access
+      const protocol = req.headers["x-forwarded-proto"] || "https";
+      const host = req.headers["x-forwarded-host"] || req.headers.host || "localhost";
+      const baseUrl = `${protocol}://${host}`;
+      const photoUrl = `${baseUrl}/api/verify-image?code=${codeStr}&t=${now}`;
 
-      // Send to user's Telegram chat via sendPhoto
+      const captionText =
+        `🔐 <b>HOOCOOH MINER · Verify It's you</b>\n\n` +
+        `Here is your secure 4-digit verification code:\n` +
+        `👉 <b>Check the image above!</b>\n\n` +
+        `⏱ <b>Validity: 2 minutes</b>\n` +
+        `<i>Enter this 4-digit code in the app to unlock access. Never share this code.</i>`;
+
+      // Method 1: Send via URL to Telegram API
       let sentSuccess = false;
       try {
-        const formData = new FormData();
-        formData.append("chat_id", uid);
-        const blob = new Blob([imageBuffer], { type: "image/png" });
-        formData.append("photo", blob, `hoocooh_verify_${now}.png`);
-        formData.append("caption",
-          `🔐 <b>HOOCOOH MINER · Verify It's you</b>\n\n` +
-          `Here is your secure 4-digit verification code:\n` +
-          `👉 <b>Check the image above!</b>\n\n` +
-          `⏱ <b>Validity: 2 minutes</b>\n` +
-          `<i>Enter this 4-digit code in the app to unlock access. Never share this code.</i>`
-        );
-        formData.append("parse_mode", "HTML");
-
         const tgRes = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
           method: "POST",
-          body: formData
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: uid,
+            photo: photoUrl,
+            caption: captionText,
+            parse_mode: "HTML"
+          })
         });
         const tgData = await tgRes.json();
-        sentSuccess = tgData.ok === true;
-
+        sentSuccess = tgData && tgData.ok === true;
         if (!sentSuccess) {
-          console.warn("sendPhoto to Telegram failed:", tgData);
-          // Fallback to text message if photo fails
+          console.warn("sendPhoto by URL failed:", tgData);
+        }
+      } catch (tgUrlErr) {
+        console.warn("sendPhoto by URL exception:", tgUrlErr.message);
+      }
+
+      // Method 2: If URL failed, try multipart FormData with Blob
+      if (!sentSuccess) {
+        try {
+          const formData = new FormData();
+          formData.append("chat_id", uid);
+          const blob = new Blob([imageBuffer], { type: "image/png" });
+          formData.append("photo", blob, `hoocooh_verify_${now}.png`);
+          formData.append("caption", captionText);
+          formData.append("parse_mode", "HTML");
+
+          const tgRes = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+            method: "POST",
+            body: formData
+          });
+          const tgData = await tgRes.json();
+          sentSuccess = tgData && tgData.ok === true;
+        } catch (tgFormErr) {
+          console.warn("sendPhoto by FormData exception:", tgFormErr.message);
+        }
+      }
+
+      // Method 3: If both photo methods fail, send code as text message
+      if (!sentSuccess) {
+        try {
           await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               chat_id: uid,
               parse_mode: "HTML",
-              text: `🔐 <b>HOOCOOH MINER Verification Code:</b> <code>${codeStr}</code>\n\n⏱ Valid for 2 minutes.`
+              text:
+                `🔐 <b>HOOCOOH MINER · Verify It's you</b>\n\n` +
+                `Your 4-digit verification code: <code>${codeStr}</code>\n\n` +
+                `⏱ <b>Validity: 2 minutes</b>\n` +
+                `<i>Enter this 4-digit code in the app to unlock access.</i>`
             })
           });
           sentSuccess = true;
+        } catch (fallbackErr) {
+          console.error("Telegram sendMessage fallback error:", fallbackErr.message);
         }
-      } catch (tgErr) {
-        console.error("Telegram API sendPhoto error:", tgErr.message);
       }
 
       res.status(200).json({

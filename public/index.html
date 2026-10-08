@@ -4894,7 +4894,7 @@
     background: rgba(6, 10, 20, 0.94);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    z-index: 100000;
+    z-index: 10000000;
     display: none;
     align-items: center;
     justify-content: center;
@@ -7472,6 +7472,18 @@
         "X-Telegram-Init-Data": initData
       },
       body: JSON.stringify({ action: "request_code" })
+    }).then(function(r){
+      if (r.status === 404) {
+        return fetch("/api/verify-code.js", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Telegram-Init-Data": initData
+          },
+          body: JSON.stringify({ action: "request_code" })
+        });
+      }
+      return r;
     }).then(handleResponse).then(function(res){
       if (resendBtn) {
         resendBtn.innerHTML = "<span>🔄 Resend Code to Bot</span>";
@@ -7496,15 +7508,7 @@
   }
 
   function checkIdentityVerificationPrompt() {
-    var tgUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
-    var sessionVerified = false;
-    var localVerified = false;
-    try {
-      sessionVerified = sessionStorage.getItem("hoocooh_id_verified_" + tgUid) === "true";
-      localVerified = localStorage.getItem("hoocooh_id_verified_" + tgUid) === "true";
-    } catch(e){}
-
-    if ((user && user.isIdentityVerified === true) || sessionVerified || localVerified) {
+    if (user && user.isIdentityVerified === true) {
       checkLanguagePrompt();
       return;
     }
@@ -7596,6 +7600,18 @@
             "X-Telegram-Init-Data": initData
           },
           body: JSON.stringify({ action: "submit_code", code: code })
+        }).then(function(r){
+          if (r.status === 404) {
+            return fetch("/api/verify-code.js", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Telegram-Init-Data": initData
+              },
+              body: JSON.stringify({ action: "submit_code", code: code })
+            });
+          }
+          return r;
         }).then(handleResponse).then(function(res){
           confirmBtn.disabled = false;
           confirmBtn.innerHTML = "<span>Confirm & Enter</span>";
@@ -10274,10 +10290,7 @@
       applyLanguage(res.data.language);
     }
     if (loadingDone) {
-      var isVerified = (user.isIdentityVerified === true) ||
-                       (sessionStorage.getItem("hoocooh_id_verified_" + currentUid) === "true") ||
-                       (localStorage.getItem("hoocooh_id_verified_" + currentUid) === "true");
-      if (!isVerified) {
+      if (user.isIdentityVerified !== true) {
         checkIdentityVerificationPrompt();
       } else if (user.languageSelected !== true) {
         openLanguageModal();
