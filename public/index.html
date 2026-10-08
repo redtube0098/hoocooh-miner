@@ -7098,7 +7098,7 @@
           <span>A friend becomes a <strong>Verified Member</strong> when they complete <strong>30 ad watches</strong>.</span>
         </div>
         <div class="ref-ticket-stats-row">
-          <div>Verified Friends: <strong id="verifiedFriendsCount">0</strong></div>
+          <div>Total Valid Refer: <strong id="totalValidReferralsCount">0</strong></div>
           <div>Available: <strong id="claimableTicketsCount" style="color: var(--accent);">0 Tickets</strong></div>
         </div>
         <div class="ref-ticket-actions-row">
@@ -10016,6 +10016,7 @@
   var spinAdsResetCountdown = document.getElementById("spinAdsResetCountdown");
   var spinAdsProgressFill = document.getElementById("spinAdsProgressFill");
   var watchSpinAdActionBtn = document.getElementById("watchSpinAdActionBtn");
+  var totalValidReferralsCount = document.getElementById("totalValidReferralsCount");
   var verifiedFriendsCount = document.getElementById("verifiedFriendsCount");
   var claimableTicketsCount = document.getElementById("claimableTicketsCount");
   var claimRefTicketsBtn = document.getElementById("claimRefTicketsBtn");
@@ -10125,8 +10126,9 @@
           spinAdsResetCountdown.textContent = "";
         }
 
-        var verified = Number(sp.verifiedRecruitsCount || 0);
+        var verified = Number(sp.totalValidRef !== undefined ? sp.totalValidRef : (sp.verifiedRecruitsCount || 0));
         var claimable = Number(sp.claimableRefTickets || 0);
+        if (totalValidReferralsCount) totalValidReferralsCount.textContent = verified;
         if (verifiedFriendsCount) verifiedFriendsCount.textContent = verified;
         if (claimableTicketsCount) claimableTicketsCount.textContent = claimable + " Tickets";
 

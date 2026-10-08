@@ -77,6 +77,7 @@ module.exports = async (req, res) => {
           maxAds: MAX_SPIN_ADS_PER_DAY,
           nextResetMs: Math.max(0, CYCLE_MS - (now - spinCycleStart)),
           verifiedRecruitsCount,
+          totalValidRef: verifiedRecruitsCount,
           claimedRefTickets,
           claimableRefTickets
         }
