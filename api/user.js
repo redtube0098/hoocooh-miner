@@ -215,11 +215,63 @@ module.exports = async (req, res) => {
           { $set: { isIdentityVerified: true, identityVerifiedAt: now } }
         );
 
+        // Process referral: reward inviter ONLY when the recruited user completes verification!
+        let referrerId = user.referredBy;
+        const paramToTest = String((req.body && req.body.start_param) || tgUser.start_param || (req.query && req.query.start_param) || "").trim();
+        if (!referrerId && paramToTest) {
+          const parsedId = paramToTest.replace(/^ref_/, "").trim();
+          if (parsedId && /^\d+$/.test(parsedId) && String(parsedId) !== telegramId) {
+            referrerId = parsedId;
+            user.referredBy = parsedId;
+            await users.updateOne({ _id: user._id }, { $set: { referredBy: parsedId } });
+          }
+        }
+
+        let userBalance = Number(user.balance) || 0;
+        let referralRewardGiven = false;
+
+        if (referrerId && !user.referralRewarded && String(referrerId) !== telegramId) {
+          const inviter = await findUserById(users, referrerId);
+          if (inviter && String(inviter.telegramId) !== telegramId) {
+            const welcomeBonus = 50; // New verified recruit gets 50 HOOCOOH
+            userBalance += welcomeBonus;
+            user.balance = userBalance;
+
+            // Mark referral as rewarded on this user
+            await users.updateOne(
+              { _id: user._id },
+              {
+                $set: {
+                  referralRewarded: true,
+                  referralRewardedAt: now,
+                  balance: userBalance
+                }
+              }
+            );
+
+            // Reward inviter: +1 recruit, +100 HOOCOOH to earnings and balance
+            await users.updateOne(
+              { _id: inviter._id },
+              {
+                $inc: {
+                  recruitsCount: 1,
+                  refEarnings: 100,
+                  balance: 100
+                }
+              }
+            );
+
+            referralRewardGiven = true;
+          }
+        }
+
         res.status(200).json({
           ok: true,
           verified: true,
           identityVerifiedAt: now,
           expiresAt: now + (24 * 60 * 60 * 1000),
+          balance: userBalance,
+          referralRewardGiven: referralRewardGiven,
           message: "Identity verified successfully!"
         });
         return;
@@ -244,7 +296,7 @@ module.exports = async (req, res) => {
       return;
     }
 
-    // Process Referral if provided and not yet bound
+    // Process Referral if provided and not yet bound (DO NOT reward until verified!)
     const rawParam = String(tgUser.start_param || (req.query && req.query.start_param) || "").trim();
     if (rawParam && !user.referredBy) {
       const inviterId = rawParam.replace(/^ref_/, "").trim();
@@ -252,25 +304,40 @@ module.exports = async (req, res) => {
         const inviter = await findUserById(users, inviterId);
         if (inviter && String(inviter.telegramId) !== telegramId) {
           user.referredBy = String(inviter.telegramId);
-          const welcomeBonus = 50; // New recruit gets 50 HOOCOOH
-          user.balance = (Number(user.balance) || 0) + welcomeBonus;
 
-          await users.updateOne(
-            { _id: user._id },
-            { $set: { referredBy: user.referredBy, balance: user.balance } }
+          const isVerifiedNow = Boolean(
+            user.isIdentityVerified === true &&
+            user.identityVerifiedAt &&
+            (now - Number(user.identityVerifiedAt) < 24 * 60 * 60 * 1000)
           );
 
-          // Reward inviter: +1 recruit, +100 HOOCOOH to earnings and balance
-          await users.updateOne(
-            { _id: inviter._id },
-            {
-              $inc: {
-                recruitsCount: 1,
-                refEarnings: 100,
-                balance: 100
+          if (isVerifiedNow && !user.referralRewarded) {
+            const welcomeBonus = 50; // Verified recruit gets 50 HOOCOOH
+            user.balance = (Number(user.balance) || 0) + welcomeBonus;
+
+            await users.updateOne(
+              { _id: user._id },
+              { $set: { referredBy: user.referredBy, referralRewarded: true, referralRewardedAt: now, balance: user.balance } }
+            );
+
+            // Reward inviter: +1 recruit, +100 HOOCOOH to earnings and balance
+            await users.updateOne(
+              { _id: inviter._id },
+              {
+                $inc: {
+                  recruitsCount: 1,
+                  refEarnings: 100,
+                  balance: 100
+                }
               }
-            }
-          );
+            );
+          } else {
+            // Unverified: simply record referredBy. Inviter gets NOTHING until verification!
+            await users.updateOne(
+              { _id: user._id },
+              { $set: { referredBy: user.referredBy, referralRewarded: false } }
+            );
+          }
         }
       }
     }
@@ -329,6 +396,7 @@ module.exports = async (req, res) => {
         (now - Number(user.identityVerifiedAt) < 24 * 60 * 60 * 1000)
       ),
       identityVerifiedAt: user.identityVerifiedAt || 0,
+      referralRewarded: user.referralRewarded === true,
       botUsername: botUsername
     });
   } catch (err) {

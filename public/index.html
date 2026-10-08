@@ -6898,7 +6898,7 @@
             "Content-Type": "application/json",
             "X-Telegram-Init-Data": initData
           },
-          body: JSON.stringify({ action: "submit_code", code: code })
+          body: JSON.stringify({ action: "submit_code", code: code, start_param: (typeof getStartParam === "function" ? getStartParam() : "") })
         }).then(function(r){
           if (r.status === 404) {
             return fetch("/api/user.js", {
@@ -6907,7 +6907,7 @@
                 "Content-Type": "application/json",
                 "X-Telegram-Init-Data": initData
               },
-              body: JSON.stringify({ action: "submit_code", code: code })
+              body: JSON.stringify({ action: "submit_code", code: code, start_param: (typeof getStartParam === "function" ? getStartParam() : "") })
             });
           }
           return r;
@@ -6923,6 +6923,9 @@
           var tgUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
           user.isIdentityVerified = true;
           user.identityVerifiedAt = (res.data && res.data.identityVerifiedAt) || Date.now();
+          if (res.data && res.data.balance !== undefined) {
+            user.balance = res.data.balance;
+          }
           var expiresAt = (res.data && res.data.expiresAt) || (Date.now() + 24 * 60 * 60 * 1000);
           try {
             localStorage.setItem("hoocooh_verify_until_" + tgUid, String(expiresAt));
@@ -6934,7 +6937,12 @@
           }
 
           showIdFeedback("✅ Verified successfully! Welcome.", false);
-          showToast("🎉 Verified It's you!");
+          if (res.data && res.data.referralRewardGiven) {
+            showToast("🎁 +50 HOOCOOH Referral Welcome Bonus!");
+          } else {
+            showToast("🎉 Verified It's you!");
+          }
+          if (typeof renderAll === "function") renderAll();
 
           setTimeout(function(){
             closeIdentityVerifyModal();
