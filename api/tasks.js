@@ -20,26 +20,42 @@ module.exports = async (req, res) => {
       const db = await getDb();
       const tasksCol = db.collection("tasks");
       const pendingTasks = await tasksCol
-        .find({ status: "pending_payment", createdAt: { $gt: Date.now() - 24 * 60 * 60 * 1000 } })
+        .find({ status: "pending_payment" })
         .toArray();
 
       let activated = 0;
+      let declined = 0;
+      const now = Date.now();
+
       for (const t of pendingTasks) {
         if (!t.depositAddress || !t.memo) continue;
+        const taskExpiry = t.expiresAt || (t.createdAt ? t.createdAt + 30 * 60 * 1000 : 0);
+
+        // First check on-chain if user paid
         const resCheck = await checkTonDeposit(t.depositAddress, t.tonCost, t.memo);
         if (resCheck.verified) {
           await tasksCol.updateOne(
             { _id: t._id },
-            { $set: { status: "active", paid: true, paidAt: Date.now(), txHash: resCheck.txHash } }
+            { $set: { status: "active", paid: true, paidAt: now, txHash: resCheck.txHash } }
           );
           if (t.creatorId) {
             await notifyUserTaskActivated(botToken, t.creatorId, t, resCheck.txHash);
           }
           activated++;
+          continue;
+        }
+
+        // If unpaid and 30 minutes have passed -> auto-decline
+        if (taskExpiry && now > taskExpiry) {
+          await tasksCol.updateOne(
+            { _id: t._id },
+            { $set: { status: "declined", declinedReason: "Unpaid within 30 minutes" } }
+          );
+          declined++;
         }
       }
 
-      res.status(200).json({ ok: true, processed: pendingTasks.length, activated });
+      res.status(200).json({ ok: true, processed: pendingTasks.length, activated, declined });
       return;
     } catch (cronErr) {
       console.error("Cron check_deposits error:", cronErr);
@@ -69,8 +85,70 @@ module.exports = async (req, res) => {
       return;
     }
 
-    // GET: list tasks (Only show tasks that the user hasn't completed yet!)
+    // GET: list tasks or user's task history
     if (req.method === "GET") {
+      // 1. User's own task history
+      if (req.query && (req.query.my === "1" || req.query.action === "history")) {
+        const myTasks = await tasksCol.find({ creatorId: telegramId }).sort({ createdAt: -1 }).toArray();
+        const now = Date.now();
+
+        // Check pending tasks to auto-verify or decline if 30m expired
+        for (const t of myTasks) {
+          if (t.status === "pending_payment" && t.depositAddress && t.memo) {
+            const taskExpiry = t.expiresAt || (t.createdAt ? t.createdAt + 30 * 60 * 1000 : 0);
+            const resCheck = await checkTonDeposit(t.depositAddress, t.tonCost, t.memo);
+            if (resCheck.verified) {
+              t.status = "active";
+              t.paid = true;
+              t.paidAt = now;
+              t.txHash = resCheck.txHash;
+              await tasksCol.updateOne(
+                { _id: t._id },
+                { $set: { status: "active", paid: true, paidAt: now, txHash: resCheck.txHash } }
+              );
+              await notifyUserTaskActivated(botToken, telegramId, t, resCheck.txHash);
+            } else if (taskExpiry && now > taskExpiry) {
+              t.status = "declined";
+              await tasksCol.updateOne(
+                { _id: t._id },
+                { $set: { status: "declined", declinedReason: "Unpaid within 30 minutes" } }
+              );
+            }
+          }
+        }
+
+        const mappedHistory = myTasks.map(t => {
+          const completedArr = t.completedBy || [];
+          const target = t.targetCount || 100;
+          const completed = completedArr.length;
+          const isCompleted = completed >= target;
+          let displayStatus = t.status || "pending_payment";
+          if (displayStatus === "active" && isCompleted) {
+            displayStatus = "completed";
+          }
+          return {
+            id: String(t._id),
+            title: t.title,
+            link: t.link,
+            type: t.type || "normal",
+            targetUsers: target,
+            completedUsers: completed,
+            remainingUsers: Math.max(0, target - completed),
+            isCompleted: isCompleted,
+            status: displayStatus,
+            tonCost: t.tonCost || 0.15,
+            depositAddress: t.depositAddress,
+            memo: t.memo,
+            createdAt: t.createdAt,
+            expiresAt: t.expiresAt || (t.createdAt + 30 * 60 * 1000),
+            txHash: t.txHash || null
+          };
+        });
+
+        res.status(200).json({ ok: true, history: mappedHistory });
+        return;
+      }
+
       const userCompleted = (user && user.completedTasks) || [];
 
       // Find active tasks from database
@@ -235,6 +313,9 @@ module.exports = async (req, res) => {
         const depositAddress = await getAdminDepositAddress(db);
         const memo = `TASK-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
 
+        const now = Date.now();
+        const expiresAt = now + 30 * 60 * 1000;
+
         const newTask = {
           creatorId: telegramId,
           type: taskType,
@@ -249,7 +330,8 @@ module.exports = async (req, res) => {
           completedBy: [],
           status: "pending_payment",
           paid: false,
-          createdAt: Date.now()
+          createdAt: now,
+          expiresAt: expiresAt
         };
 
         const insertRes = await tasksCol.insertOne(newTask);
@@ -264,7 +346,9 @@ module.exports = async (req, res) => {
             targetUsers: count,
             tonCost: tonCost,
             depositAddress: depositAddress,
-            memo: memo
+            memo: memo,
+            createdAt: now,
+            expiresAt: expiresAt
           },
           message: "Please complete the TON deposit to publish your task."
         });
@@ -300,6 +384,19 @@ module.exports = async (req, res) => {
           return;
         }
 
+        if (task.status === "declined") {
+          res.status(200).json({
+            ok: true,
+            paid: false,
+            status: "declined",
+            message: "Deposit window expired (30 minutes). Task declined."
+          });
+          return;
+        }
+
+        const now = Date.now();
+        const taskExpiry = task.expiresAt || (task.createdAt ? task.createdAt + 30 * 60 * 1000 : 0);
+
         // Check on-chain deposit
         const resCheck = await checkTonDeposit(task.depositAddress, task.tonCost, task.memo);
         if (resCheck.verified) {
@@ -309,7 +406,7 @@ module.exports = async (req, res) => {
               $set: {
                 status: "active",
                 paid: true,
-                paidAt: Date.now(),
+                paidAt: now,
                 txHash: resCheck.txHash,
                 sender: resCheck.sender || null
               }
@@ -328,10 +425,26 @@ module.exports = async (req, res) => {
           return;
         }
 
+        // If unpaid and 30 minutes expired -> decline
+        if (taskExpiry && now > taskExpiry) {
+          await tasksCol.updateOne(
+            taskQuery,
+            { $set: { status: "declined", declinedReason: "Unpaid within 30 minutes" } }
+          );
+          res.status(200).json({
+            ok: true,
+            paid: false,
+            status: "declined",
+            message: "Deposit window expired (30 minutes). Task declined."
+          });
+          return;
+        }
+
         res.status(200).json({
           ok: true,
           paid: false,
           status: "pending_payment",
+          expiresAt: taskExpiry,
           message: "Payment not detected on-chain yet. Please ensure you sent with the exact memo."
         });
         return;
