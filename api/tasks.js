@@ -1,6 +1,7 @@
 const { getDb } = require("../lib/mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
 const { findOrCreateUser } = require("../lib/userHelper");
+const { getAdminDepositAddress, checkTonDeposit, notifyUserTaskActivated } = require("../lib/tonDeposit");
 const { ObjectId } = require("mongodb");
 
 module.exports = async (req, res) => {
@@ -8,6 +9,40 @@ module.exports = async (req, res) => {
   if (!botToken) {
     res.status(500).json({ error: "TELEGRAM_BOT_TOKEN is not configured" });
     return;
+  }
+
+  // 0. CRON JOB TRIGGER: Check all pending task deposits on-chain without requiring user session
+  if (req.method === "GET" && req.query && req.query.cron === "check_deposits") {
+    try {
+      const db = await getDb();
+      const tasksCol = db.collection("tasks");
+      const pendingTasks = await tasksCol
+        .find({ status: "pending_payment", createdAt: { $gt: Date.now() - 24 * 60 * 60 * 1000 } })
+        .toArray();
+
+      let activated = 0;
+      for (const t of pendingTasks) {
+        if (!t.depositAddress || !t.memo) continue;
+        const resCheck = await checkTonDeposit(t.depositAddress, t.tonCost, t.memo);
+        if (resCheck.verified) {
+          await tasksCol.updateOne(
+            { _id: t._id },
+            { $set: { status: "active", paid: true, paidAt: Date.now(), txHash: resCheck.txHash } }
+          );
+          if (t.creatorId) {
+            await notifyUserTaskActivated(botToken, t.creatorId, t, resCheck.txHash);
+          }
+          activated++;
+        }
+      }
+
+      res.status(200).json({ ok: true, processed: pendingTasks.length, activated });
+      return;
+    } catch (cronErr) {
+      console.error("Cron check_deposits error:", cronErr);
+      res.status(500).json({ error: cronErr.message });
+      return;
+    }
   }
 
   const initData = req.headers["x-telegram-init-data"];
@@ -36,7 +71,7 @@ module.exports = async (req, res) => {
       const userCompleted = (user && user.completedTasks) || [];
 
       // Find active tasks from database
-      const customTasks = await tasksCol.find({ status: { $ne: "disabled" } }).sort({ createdAt: -1 }).toArray();
+      const customTasks = await tasksCol.find({ status: "active" }).sort({ createdAt: -1 }).toArray();
 
       // Filter out tasks already completed/claimed by this user OR target limit reached
       const activeTasks = customTasks.filter(t => {
@@ -171,7 +206,7 @@ module.exports = async (req, res) => {
         return;
       }
 
-      // 2. CREATE
+      // 2. CREATE (Initializes task with pending_payment status and returns deposit details)
       if (action === "create") {
         const { title, link, type, targetUsers } = req.body || {};
         if (!title || !title.trim()) {
@@ -194,7 +229,8 @@ module.exports = async (req, res) => {
           cleanLink = "https://" + cleanLink;
         }
 
-        const userBal = Number(user.balance || 0);
+        const depositAddress = await getAdminDepositAddress(db);
+        const memo = `TASK-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
 
         const newTask = {
           creatorId: telegramId,
@@ -205,21 +241,95 @@ module.exports = async (req, res) => {
           targetCount: count,
           tonCost: tonCost,
           currency: "TON",
+          depositAddress: depositAddress,
+          memo: memo,
           completedBy: [],
-          status: "active",
+          status: "pending_payment",
+          paid: false,
           createdAt: Date.now()
         };
 
         const insertRes = await tasksCol.insertOne(newTask);
+        const taskId = String(insertRes.insertedId);
 
         res.status(200).json({
           ok: true,
-          task: {
-            id: String(insertRes.insertedId),
-            ...newTask
+          requiresDeposit: true,
+          deposit: {
+            taskId: taskId,
+            title: newTask.title,
+            targetUsers: count,
+            tonCost: tonCost,
+            depositAddress: depositAddress,
+            memo: memo
           },
-          newBalance: userBal,
-          message: `Task successfully posted! Sponsored ${count} users (${tonCost} TON).`
+          message: "Please complete the TON deposit to publish your task."
+        });
+        return;
+      }
+
+      // 3. CHECK DEPOSIT (Triggered by client polling, wallet confirmation, or manual check)
+      if (action === "check_deposit") {
+        const { taskId } = req.body || {};
+        if (!taskId) {
+          res.status(400).json({ error: "taskId is required" });
+          return;
+        }
+
+        let objId;
+        try { objId = new ObjectId(taskId); } catch(e) { objId = null; }
+        const taskQuery = objId ? { _id: objId } : { _id: taskId };
+        const task = await tasksCol.findOne(taskQuery);
+
+        if (!task) {
+          res.status(404).json({ error: "Task not found" });
+          return;
+        }
+
+        if (task.status === "active" && task.paid) {
+          res.status(200).json({
+            ok: true,
+            paid: true,
+            status: "active",
+            txHash: task.txHash || null,
+            message: "Task is active and published!"
+          });
+          return;
+        }
+
+        // Check on-chain deposit
+        const resCheck = await checkTonDeposit(task.depositAddress, task.tonCost, task.memo);
+        if (resCheck.verified) {
+          await tasksCol.updateOne(
+            taskQuery,
+            {
+              $set: {
+                status: "active",
+                paid: true,
+                paidAt: Date.now(),
+                txHash: resCheck.txHash,
+                sender: resCheck.sender || null
+              }
+            }
+          );
+
+          await notifyUserTaskActivated(botToken, telegramId, task, resCheck.txHash);
+
+          res.status(200).json({
+            ok: true,
+            paid: true,
+            status: "active",
+            txHash: resCheck.txHash,
+            message: "Payment confirmed! Your task is now active."
+          });
+          return;
+        }
+
+        res.status(200).json({
+          ok: true,
+          paid: false,
+          status: "pending_payment",
+          message: "Payment not detected on-chain yet. Please ensure you sent with the exact memo."
         });
         return;
       }

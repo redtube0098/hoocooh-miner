@@ -1689,6 +1689,232 @@
     border: 1px solid var(--border);
   }
 
+  /* Task TON Deposit Modal & Wallet Selector */
+  .deposit-summary-card {
+    background: linear-gradient(135deg, rgba(36, 191, 166, 0.12) 0%, rgba(0, 152, 234, 0.08) 100%);
+    border: 1px solid rgba(36, 191, 166, 0.35);
+    border-radius: 16px;
+    padding: 13px 16px;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .deposit-summary-amount {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+  .deposit-summary-package {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .deposit-wallet-btn {
+    width: 100%;
+    padding: 13px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #0098ea 0%, #0077c5 100%);
+    color: #ffffff;
+    font-size: 13.5px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(0, 152, 234, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    margin-bottom: 12px;
+  }
+  .deposit-wallet-btn:active {
+    transform: scale(0.97);
+  }
+  .wallet-selector-title {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .wallet-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .wallet-option-card {
+    background: var(--sub-box-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 9px 10px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .wallet-option-card:active {
+    transform: scale(0.96);
+    border-color: #0098ea;
+  }
+  .wallet-option-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    background: rgba(0, 152, 234, 0.12);
+    flex-shrink: 0;
+  }
+  .wallet-option-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .wallet-option-name {
+    font-size: 11.5px;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .wallet-option-tag {
+    font-size: 9px;
+    color: var(--text-dim);
+  }
+  .deposit-manual-box {
+    background: var(--sub-box-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+  .deposit-info-row {
+    margin-bottom: 9px;
+  }
+  .deposit-info-row:last-child {
+    margin-bottom: 0;
+  }
+  .deposit-info-label {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .deposit-copy-val {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 11px;
+    font-family: monospace;
+    color: var(--text);
+    word-break: break-all;
+    gap: 8px;
+  }
+  .copy-btn-mini {
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 3px 9px;
+    font-size: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+  }
+  .copy-btn-mini:active {
+    transform: scale(0.92);
+  }
+  .deposit-memo-alert {
+    background: rgba(234, 88, 12, 0.12);
+    border: 1px dashed rgba(234, 88, 12, 0.5);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 10px;
+    color: #ea580c;
+    font-weight: 700;
+    margin-top: 9px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  [data-theme="dark"] .deposit-memo-alert {
+    color: #fb923c;
+    border-color: rgba(251, 146, 60, 0.5);
+  }
+  .deposit-status-tracker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--sub-box-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 6px;
+  }
+  .deposit-status-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .deposit-pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #0098ea;
+    box-shadow: 0 0 8px #0098ea;
+    animation: depositPulse 1.4s infinite ease-in-out;
+    flex-shrink: 0;
+  }
+  .deposit-pulse-dot.success {
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+    animation: none;
+  }
+  @keyframes depositPulse {
+    0%, 100% { opacity: 0.3; transform: scale(0.85); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  .btn-check-deposit {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 10.5px;
+    font-weight: 800;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .btn-check-deposit:active {
+    transform: scale(0.94);
+  }
+
   /* Toast Notification */
   .toast {
     position: fixed;
@@ -6189,6 +6415,115 @@
     </div>
   </div>
 
+  <!-- Modal: Task TON Deposit & Wallet Selector -->
+  <div class="modal-overlay" id="taskDepositModal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div class="modal-title">💎 Complete TON Deposit</div>
+        <button class="modal-close-btn" id="closeTaskDepositModalBtn" type="button">✕</button>
+      </div>
+
+      <!-- Deposit Summary Box -->
+      <div class="deposit-summary-card">
+        <div>
+          <div class="deposit-summary-amount" id="depositTonAmountVal">💎 0.15 TON</div>
+          <div class="deposit-summary-package" id="depositPackageVal">100 Sponsored Users</div>
+        </div>
+        <div style="font-size: 26px;">💎</div>
+      </div>
+
+      <!-- Quick Wallet Action Button -->
+      <button type="button" class="deposit-wallet-btn" id="depositPayNowWalletBtn">
+        <span>💎 Pay with Wallet (Auto Prefill)</span>
+      </button>
+
+      <!-- Wallet Selector (Telegram Wallet, Tonkeeper, MyTonWallet, Trust Wallet) -->
+      <div class="wallet-selector-title">
+        <span>⚡ Select TON Wallet to Pay:</span>
+      </div>
+      <div class="wallet-selector-grid" id="depositWalletSelectorGrid">
+        <a class="wallet-option-card" id="walletLinkTelegram" href="#" target="_blank">
+          <div class="wallet-option-icon">👛</div>
+          <div class="wallet-option-info">
+            <div class="wallet-option-name">Telegram Wallet</div>
+            <div class="wallet-option-tag">@wallet in Telegram</div>
+          </div>
+        </a>
+
+        <a class="wallet-option-card" id="walletLinkTonkeeper" href="#" target="_blank">
+          <div class="wallet-option-icon">💎</div>
+          <div class="wallet-option-info">
+            <div class="wallet-option-name">Tonkeeper</div>
+            <div class="wallet-option-tag">Mobile / Extension</div>
+          </div>
+        </a>
+
+        <a class="wallet-option-card" id="walletLinkMyTonWallet" href="#" target="_blank">
+          <div class="wallet-option-icon">⚡</div>
+          <div class="wallet-option-info">
+            <div class="wallet-option-name">MyTonWallet</div>
+            <div class="wallet-option-tag">Web / Mobile</div>
+          </div>
+        </a>
+
+        <a class="wallet-option-card" id="walletLinkGeneric" href="#" target="_blank">
+          <div class="wallet-option-icon">🛡️</div>
+          <div class="wallet-option-info">
+            <div class="wallet-option-name">Trust / Default</div>
+            <div class="wallet-option-tag">System TON App</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Manual Deposit Details -->
+      <div class="deposit-manual-box">
+        <div class="deposit-info-row">
+          <div class="deposit-info-label">
+            <span>Deposit Address</span>
+            <span style="font-size: 9px; opacity: 0.7;">TON Network</span>
+          </div>
+          <div class="deposit-copy-val">
+            <span id="depositAddressText" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px;">-</span>
+            <button class="copy-btn-mini" id="copyDepositAddressBtn" type="button">Copy</button>
+          </div>
+        </div>
+
+        <div class="deposit-info-row">
+          <div class="deposit-info-label">
+            <span>Required Memo / Comment</span>
+            <span style="font-size: 9px; color: #ea580c; font-weight: 800;">MUST INCLUDE</span>
+          </div>
+          <div class="deposit-copy-val">
+            <span id="depositMemoText" style="color: var(--accent); font-weight: 800;">-</span>
+            <button class="copy-btn-mini" id="copyDepositMemoBtn" type="button">Copy</button>
+          </div>
+        </div>
+
+        <div class="deposit-info-row">
+          <div class="deposit-info-label">Exact Amount</div>
+          <div class="deposit-copy-val">
+            <span id="depositAmountCopyText" style="font-weight: 800;">- TON</span>
+            <button class="copy-btn-mini" id="copyDepositAmountBtn" type="button">Copy</button>
+          </div>
+        </div>
+
+        <div class="deposit-memo-alert">
+          <span>⚠️</span>
+          <span>You <strong>MUST include the Memo</strong> comment so payment is automatically verified on-chain!</span>
+        </div>
+      </div>
+
+      <!-- Payment Detection Status Tracker -->
+      <div class="deposit-status-tracker">
+        <div class="deposit-status-left">
+          <div class="deposit-pulse-dot" id="depositStatusDot"></div>
+          <span id="depositStatusText">Waiting for on-chain transfer...</span>
+        </div>
+        <button type="button" class="btn-check-deposit" id="manualCheckDepositBtn">Check Status</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal: Multi-Step Withdraw USDT (1:1 Nautilus Mine Flow) -->
   <div class="modal-overlay" id="withdrawModal">
     <div class="modal-sheet">
@@ -9159,6 +9494,29 @@
     }).then(handleResponse);
   }
 
+  function checkTaskDepositApi(taskId) {
+    return fetch("/api/tasks", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": initData
+      },
+      body: JSON.stringify({ action: "check_deposit", taskId: taskId })
+    }).then(function(r) {
+      if (r.status === 404) {
+        return fetch("/api/tasks.js", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Telegram-Init-Data": initData
+          },
+          body: JSON.stringify({ action: "check_deposit", taskId: taskId })
+        });
+      }
+      return r;
+    }).then(handleResponse);
+  }
+
   function verifyChannelApi(channel) {
     return fetch("/api/verify-channel", {
       method: "POST",
@@ -9506,8 +9864,7 @@
           return;
         }
 
-        showToast("🚀 Task posted successfully for " + targetUsers.toLocaleString() + " users!");
-
+        // Reset create form
         postTaskForm.reset();
         isChannelVerified = false;
         verifiedChatUsername = "";
@@ -9517,14 +9874,269 @@
           verifyBotActionBtn.textContent = "Verify Bot";
         }
         if (tonPkgCards[0]) selectTonPackage(tonPkgCards[0]);
-        postTaskModal.classList.remove("open");
+        if (postTaskModal) postTaskModal.classList.remove("open");
 
-        loadTasks();
+        if (res.data && res.data.requiresDeposit && res.data.deposit) {
+          // Open Real TON Deposit Modal with wallet selector
+          openTaskDepositModal(res.data.deposit);
+        } else {
+          showToast("🚀 Task posted successfully for " + targetUsers.toLocaleString() + " users!");
+          loadTasks();
+        }
       }).catch(function(err) {
         submitPostTaskBtn.disabled = false;
         submitPostTaskBtn.textContent = "Post Task (" + tonCost + " TON)";
         showToast((err && err.message) ? err.message : "Error posting task");
       });
+    });
+  }
+
+  // ========================================================
+  // TON DEPOSIT MODAL & REAL ON-CHAIN PAYMENT TRACKING
+  // ========================================================
+  var taskDepositModal = document.getElementById("taskDepositModal");
+  var closeTaskDepositModalBtn = document.getElementById("closeTaskDepositModalBtn");
+  var depositTonAmountVal = document.getElementById("depositTonAmountVal");
+  var depositPackageVal = document.getElementById("depositPackageVal");
+  var depositAddressText = document.getElementById("depositAddressText");
+  var depositMemoText = document.getElementById("depositMemoText");
+  var depositAmountCopyText = document.getElementById("depositAmountCopyText");
+  var depositStatusText = document.getElementById("depositStatusText");
+  var depositStatusDot = document.getElementById("depositStatusDot");
+  var manualCheckDepositBtn = document.getElementById("manualCheckDepositBtn");
+  var depositPayNowWalletBtn = document.getElementById("depositPayNowWalletBtn");
+
+  var walletLinkTelegram = document.getElementById("walletLinkTelegram");
+  var walletLinkTonkeeper = document.getElementById("walletLinkTonkeeper");
+  var walletLinkMyTonWallet = document.getElementById("walletLinkMyTonWallet");
+  var walletLinkGeneric = document.getElementById("walletLinkGeneric");
+
+  var copyDepositAddressBtn = document.getElementById("copyDepositAddressBtn");
+  var copyDepositMemoBtn = document.getElementById("copyDepositMemoBtn");
+  var copyDepositAmountBtn = document.getElementById("copyDepositAmountBtn");
+
+  var currentDepositData = null;
+  var depositPollInterval = null;
+
+  function copyTextToClipboard(text, btn, successLabel) {
+    if (!text) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function() {
+        showCopyFeedback(btn, successLabel);
+      }).catch(function() {
+        fallbackCopy(text, btn, successLabel);
+      });
+    } else {
+      fallbackCopy(text, btn, successLabel);
+    }
+  }
+
+  function fallbackCopy(text, btn, successLabel) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      document.execCommand("copy");
+      showCopyFeedback(btn, successLabel);
+    } catch (e) {
+      showToast("Copied: " + text);
+    }
+    document.body.removeChild(ta);
+  }
+
+  function showCopyFeedback(btn, successLabel) {
+    if (!btn) return;
+    var orig = btn.textContent;
+    btn.textContent = successLabel || "✓ Copied";
+    setTimeout(function() { btn.textContent = orig; }, 1800);
+  }
+
+  function openWalletUrl(url) {
+    if (!url) return;
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink && url.indexOf("t.me/") !== -1) {
+      try {
+        window.Telegram.WebApp.openTelegramLink(url);
+        return;
+      } catch (e) {}
+    }
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink && (url.startsWith("http://") || url.startsWith("https://"))) {
+      try {
+        window.Telegram.WebApp.openLink(url);
+        return;
+      } catch (e) {}
+    }
+    try {
+      window.open(url, "_blank");
+    } catch (e) {
+      window.location.href = url;
+    }
+  }
+
+  function openTaskDepositModal(dep) {
+    if (!dep) return;
+    currentDepositData = dep;
+
+    if (depositTonAmountVal) depositTonAmountVal.textContent = "💎 " + dep.tonCost + " TON";
+    if (depositPackageVal) depositPackageVal.textContent = Number(dep.targetUsers).toLocaleString() + " Sponsored Users";
+    if (depositAddressText) depositAddressText.textContent = dep.depositAddress || "-";
+    if (depositMemoText) depositMemoText.textContent = dep.memo || "-";
+    if (depositAmountCopyText) depositAmountCopyText.textContent = dep.tonCost + " TON";
+
+    if (depositStatusText) depositStatusText.textContent = "Waiting for on-chain transfer...";
+    if (depositStatusDot) depositStatusDot.className = "deposit-pulse-dot";
+    if (manualCheckDepositBtn) {
+      manualCheckDepositBtn.disabled = false;
+      manualCheckDepositBtn.textContent = "Check Status";
+    }
+
+    var nanoTon = Math.round((Number(dep.tonCost) || 0) * 1e9);
+    var encodedMemo = encodeURIComponent(dep.memo || "");
+    var addr = dep.depositAddress || "";
+
+    var tonkeeperUrl = "https://app.tonkeeper.com/transfer/" + addr + "?amount=" + nanoTon + "&text=" + encodedMemo;
+    var tgWalletUrl = "https://t.me/wallet?startapp=transfer_" + addr + "_amount_" + nanoTon + "_text_" + encodedMemo;
+    var myTonWalletUrl = "https://mytonwallet.io/transfer/" + addr + "?amount=" + nanoTon + "&text=" + encodedMemo;
+    var genericTonUrl = "ton://transfer/" + addr + "?amount=" + nanoTon + "&text=" + encodedMemo;
+
+    // Attach urls to wallet buttons
+    if (walletLinkTelegram) {
+      walletLinkTelegram.onclick = function(e) {
+        e.preventDefault();
+        openWalletUrl(tgWalletUrl);
+      };
+    }
+    if (walletLinkTonkeeper) {
+      walletLinkTonkeeper.onclick = function(e) {
+        e.preventDefault();
+        openWalletUrl(tonkeeperUrl);
+      };
+    }
+    if (walletLinkMyTonWallet) {
+      walletLinkMyTonWallet.onclick = function(e) {
+        e.preventDefault();
+        openWalletUrl(myTonWalletUrl);
+      };
+    }
+    if (walletLinkGeneric) {
+      walletLinkGeneric.onclick = function(e) {
+        e.preventDefault();
+        openWalletUrl(genericTonUrl);
+      };
+    }
+    if (depositPayNowWalletBtn) {
+      depositPayNowWalletBtn.onclick = function(e) {
+        e.preventDefault();
+        openWalletUrl(tgWalletUrl);
+      };
+    }
+
+    if (taskDepositModal) taskDepositModal.classList.add("open");
+
+    // Start auto-polling verification every 4 seconds
+    stopDepositPolling();
+    depositPollInterval = setInterval(function() {
+      verifyDepositStatus(true);
+    }, 4000);
+  }
+
+  function stopDepositPolling() {
+    if (depositPollInterval) {
+      clearInterval(depositPollInterval);
+      depositPollInterval = null;
+    }
+  }
+
+  function closeTaskDepositModal() {
+    stopDepositPolling();
+    currentDepositData = null;
+    if (taskDepositModal) taskDepositModal.classList.remove("open");
+  }
+
+  function verifyDepositStatus(isAutoPoll) {
+    if (!currentDepositData || !currentDepositData.taskId) return;
+
+    if (!isAutoPoll && manualCheckDepositBtn) {
+      manualCheckDepositBtn.disabled = true;
+      manualCheckDepositBtn.textContent = "Checking...";
+    }
+
+    checkTaskDepositApi(currentDepositData.taskId).then(function(res) {
+      if (!isAutoPoll && manualCheckDepositBtn) {
+        manualCheckDepositBtn.disabled = false;
+        manualCheckDepositBtn.textContent = "Check Status";
+      }
+
+      if (res.ok && res.data && res.data.paid) {
+        stopDepositPolling();
+        if (depositStatusText) depositStatusText.textContent = "✅ Payment confirmed! Task activated!";
+        if (depositStatusDot) depositStatusDot.className = "deposit-pulse-dot success";
+
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+          try { window.Telegram.WebApp.HapticFeedback.notificationOccurred("success"); } catch (e) {}
+        }
+
+        showToast("🎉 TON Deposit received! Task is now LIVE!");
+
+        setTimeout(function() {
+          closeTaskDepositModal();
+          loadTasks();
+        }, 1800);
+      } else if (!isAutoPoll) {
+        var msg = (res.data && res.data.message) ? res.data.message : "Payment not found yet. Please check your wallet.";
+        showToast(msg);
+      }
+    }).catch(function(err) {
+      if (!isAutoPoll && manualCheckDepositBtn) {
+        manualCheckDepositBtn.disabled = false;
+        manualCheckDepositBtn.textContent = "Check Status";
+        showToast("Error checking deposit: " + (err.message || "Network issue"));
+      }
+    });
+  }
+
+  if (closeTaskDepositModalBtn) {
+    closeTaskDepositModalBtn.addEventListener("click", closeTaskDepositModal);
+  }
+
+  if (taskDepositModal) {
+    taskDepositModal.addEventListener("click", function(e) {
+      if (e.target === taskDepositModal) {
+        closeTaskDepositModal();
+      }
+    });
+  }
+
+  if (copyDepositAddressBtn) {
+    copyDepositAddressBtn.addEventListener("click", function() {
+      if (currentDepositData && currentDepositData.depositAddress) {
+        copyTextToClipboard(currentDepositData.depositAddress, copyDepositAddressBtn, "✓ Address");
+      }
+    });
+  }
+
+  if (copyDepositMemoBtn) {
+    copyDepositMemoBtn.addEventListener("click", function() {
+      if (currentDepositData && currentDepositData.memo) {
+        copyTextToClipboard(currentDepositData.memo, copyDepositMemoBtn, "✓ Memo");
+      }
+    });
+  }
+
+  if (copyDepositAmountBtn) {
+    copyDepositAmountBtn.addEventListener("click", function() {
+      if (currentDepositData && currentDepositData.tonCost) {
+        copyTextToClipboard(String(currentDepositData.tonCost), copyDepositAmountBtn, "✓ Amount");
+      }
+    });
+  }
+
+  if (manualCheckDepositBtn) {
+    manualCheckDepositBtn.addEventListener("click", function() {
+      verifyDepositStatus(false);
     });
   }
 
