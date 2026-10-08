@@ -4444,7 +4444,7 @@
   .loading-screen {
     position: fixed;
     inset: 0;
-    z-index: 999999;
+    z-index: 99999999;
     background: #f7f9fb;
     display: flex;
     flex-direction: column;
@@ -4897,8 +4897,8 @@
     background: rgba(6, 10, 20, 0.96);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    z-index: 99999999;
-    display: flex;
+    z-index: 9999999;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 16px;
@@ -5201,7 +5201,7 @@
 </div>
 
 <!-- Top-Level Startup Identity Verification Screen ("Verify It's you") -->
-<div id="identityVerifyModal" class="id-verify-overlay" style="display: flex;">
+<div id="identityVerifyModal" class="id-verify-overlay" style="display: none;">
   <div class="id-verify-card">
     <div class="id-verify-icon-wrap">
       <div class="id-verify-icon-glow"></div>
@@ -6797,11 +6797,14 @@
     try {
       var until = Number(localStorage.getItem("hoocooh_verify_until_" + currentUid) || 0);
       if (until && Date.now() < until) return true;
+      var genUntil = Number(localStorage.getItem("hoocooh_verify_until_me") || 0);
+      if (genUntil && Date.now() < genUntil) return true;
     } catch(e){}
     return false;
   }
 
   function checkIdentityVerificationPrompt() {
+    if (!loadingDone) return;
     var currentUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
 
     if ((user && user.isIdentityVerified === true) || isUserLocallyVerified()) {
@@ -6923,6 +6926,7 @@
           var expiresAt = (res.data && res.data.expiresAt) || (Date.now() + 24 * 60 * 60 * 1000);
           try {
             localStorage.setItem("hoocooh_verify_until_" + tgUid, String(expiresAt));
+            localStorage.setItem("hoocooh_verify_until_me", String(expiresAt));
           } catch(e){}
 
           if (tg && tg.HapticFeedback) {
@@ -10361,10 +10365,12 @@
     if (user.isIdentityVerified === true) {
       try {
         localStorage.setItem("hoocooh_verify_until_" + currentUid, String(Date.now() + 24 * 60 * 60 * 1000));
+        localStorage.setItem("hoocooh_verify_until_me", String(Date.now() + 24 * 60 * 60 * 1000));
       } catch(e){}
     } else {
       try {
         localStorage.removeItem("hoocooh_verify_until_" + currentUid);
+        localStorage.removeItem("hoocooh_verify_until_me");
       } catch(e){}
     }
 
