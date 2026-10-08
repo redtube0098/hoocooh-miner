@@ -2,6 +2,7 @@ const { getDb } = require("../lib/mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
 const { findOrCreateUser, findUserById } = require("../lib/userHelper");
 const { mineIsReady, dailyStatus, MINE_INTERVAL_MS, LEVEL_NAMES, getMultiplierForLevel } = require("../lib/gameLogic");
+const { generateVerificationImage } = require("../lib/verificationImage");
 
 let cachedBotUsername = null;
 async function fetchBotUsername(token) {
@@ -57,7 +58,7 @@ module.exports = async (req, res) => {
 
     // POST request handling (e.g. set_language)
     if (req.method === "POST") {
-      const { action, language } = req.body || {};
+      const { action, language, code } = req.body || {};
       if (action === "set_language" && language) {
         const validLangs = ["en", "ru", "ar"];
         const finalLang = validLangs.includes(language) ? language : "en";
@@ -70,6 +71,161 @@ module.exports = async (req, res) => {
         res.status(200).json({ ok: true, termsAccepted: true });
         return;
       }
+
+      // Verification: Request 4-digit verification code image
+      if (action === "request_code" || action === "request_verification_code") {
+        const now = Date.now();
+        const codesCol = db.collection("user_verification_codes");
+
+        // Cooldown check (15 seconds)
+        const recentCode = await codesCol.findOne(
+          { userId: telegramId, used: false },
+          { sort: { createdAt: -1 } }
+        );
+        if (recentCode && (now - recentCode.createdAt < 15000)) {
+          const waitSec = Math.ceil((15000 - (now - recentCode.createdAt)) / 1000);
+          res.status(429).json({ error: `Please wait ${waitSec}s before requesting a new code.` });
+          return;
+        }
+
+        const randomCode = Math.floor(1000 + Math.random() * 9000);
+        const codeStr = String(randomCode);
+        const expiresAt = now + (2 * 60 * 1000); // 2 minutes
+
+        await codesCol.updateMany(
+          { userId: telegramId, used: false },
+          { $set: { used: true, reason: "superseded" } }
+        );
+
+        await codesCol.insertOne({
+          userId: telegramId,
+          code: codeStr,
+          createdAt: now,
+          expiresAt,
+          used: false
+        });
+
+        const captionText =
+          `🔐 <b>HOOCOOH MINER · Verify It's you</b>\n\n` +
+          `Here is your secure 4-digit verification code:\n` +
+          `👉 <b>Check the image above!</b>\n\n` +
+          `⏱ <b>Validity: 2 minutes</b>\n` +
+          `<i>Enter this 4-digit code in the app to unlock access. Never share this code.</i>`;
+
+        let sentSuccess = false;
+        try {
+          const imageBuffer = generateVerificationImage(codeStr);
+          const formData = new FormData();
+          formData.append("chat_id", telegramId);
+          const blob = new Blob([imageBuffer], { type: "image/png" });
+          formData.append("photo", blob, `hoocooh_verify_${now}.png`);
+          formData.append("caption", captionText);
+          formData.append("parse_mode", "HTML");
+
+          const tgRes = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+            method: "POST",
+            body: formData
+          });
+          const tgData = await tgRes.json();
+          sentSuccess = tgData && tgData.ok === true;
+          if (!sentSuccess) {
+            console.warn("sendPhoto by FormData failed:", tgData);
+          }
+        } catch (photoErr) {
+          console.warn("sendPhoto exception:", photoErr.message);
+        }
+
+        // Fallback: send text message if sendPhoto fails
+        if (!sentSuccess) {
+          try {
+            await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                chat_id: telegramId,
+                parse_mode: "HTML",
+                text:
+                  `🔐 <b>HOOCOOH MINER · Verify It's you</b>\n\n` +
+                  `Your 4-digit verification code: <code>${codeStr}</code>\n\n` +
+                  `⏱ <b>Validity: 2 minutes</b>\n` +
+                  `<i>Enter this 4-digit code in the app to unlock access.</i>`
+              })
+            });
+            sentSuccess = true;
+          } catch (msgErr) {
+            console.error("sendMessage fallback error:", msgErr.message);
+          }
+        }
+
+        const botUser = await fetchBotUsername(process.env.TELEGRAM_BOT_TOKEN);
+        res.status(200).json({
+          ok: true,
+          expiresAt,
+          validitySeconds: 120,
+          botUsername: `@${botUser}`,
+          message: "A 4-digit code was sent to your Telegram bot."
+        });
+        return;
+      }
+
+      // Verification: Submit 4-digit code
+      if (action === "submit_code" || action === "submit_verification_code") {
+        const cleanCode = String(code || "").trim();
+        if (!/^\d{4}$/.test(cleanCode)) {
+          res.status(400).json({ error: "Please enter a valid 4-digit code." });
+          return;
+        }
+
+        const codesCol = db.collection("user_verification_codes");
+        const activeRecord = await codesCol.findOne(
+          { userId: telegramId, used: false },
+          { sort: { createdAt: -1 } }
+        );
+
+        if (!activeRecord) {
+          res.status(400).json({ error: "No active verification code found. Please request a new code." });
+          return;
+        }
+
+        const now = Date.now();
+        if (now > activeRecord.expiresAt) {
+          await codesCol.updateOne({ _id: activeRecord._id }, { $set: { used: true, reason: "expired" } });
+          res.status(400).json({ error: "Verification code has expired (2 minutes limit). Please request a new code." });
+          return;
+        }
+
+        if (activeRecord.code !== cleanCode) {
+          res.status(400).json({ error: "Incorrect verification code! Check the image in @hoocoohmine_bot and try again." });
+          return;
+        }
+
+        await codesCol.updateOne(
+          { _id: activeRecord._id },
+          { $set: { used: true, verifiedAt: now } }
+        );
+
+        await users.updateOne(
+          { _id: user._id },
+          { $set: { isIdentityVerified: true, identityVerifiedAt: now } }
+        );
+
+        res.status(200).json({
+          ok: true,
+          verified: true,
+          message: "Identity verified successfully!"
+        });
+        return;
+      }
+
+      // Verification: Check status
+      if (action === "check_status" || action === "check_verification_status") {
+        res.status(200).json({
+          ok: true,
+          isVerified: user && user.isIdentityVerified === true
+        });
+        return;
+      }
+
       res.status(400).json({ error: "Unknown action" });
       return;
     }

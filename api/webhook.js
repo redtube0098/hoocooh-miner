@@ -1,4 +1,5 @@
 const { getDb } = require("../lib/mongodb");
+const { generateVerificationImage } = require("../lib/verificationImage");
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || "hoocooh_admin_2026";
 
@@ -54,6 +55,30 @@ async function sendTelegramMsg(botToken, chatId, text, options = {}) {
 
     if (options.reply_markup) {
       basePayload.reply_markup = options.reply_markup;
+    }
+
+    // If photoBuffer is provided, send as multipart photo
+    if (options.photoBuffer) {
+      try {
+        const formData = new FormData();
+        formData.append("chat_id", String(chatId));
+        const blob = new Blob([options.photoBuffer], { type: "image/png" });
+        formData.append("photo", blob, `hoocooh_verify_${Date.now()}.png`);
+        formData.append("caption", text);
+        formData.append("parse_mode", "HTML");
+        if (options.reply_markup) {
+          formData.append("reply_markup", JSON.stringify(options.reply_markup));
+        }
+        const res = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+        if (data && data.ok) return data;
+        console.warn("sendPhoto buffer was not ok, falling back to sendMessage:", data);
+      } catch (photoErr) {
+        console.warn("sendPhoto buffer error, falling back to sendMessage:", photoErr.message);
+      }
     }
 
     // If photoUrl is provided, send as photo with caption
@@ -531,7 +556,7 @@ module.exports = async (req, res) => {
             });
           }
 
-          const verifyPhotoUrl = `${baseUrl}/api/verify-image?code=${codeStr}&t=${now}`;
+          const photoBuf = generateVerificationImage(codeStr);
           await sendTelegramMsg(botToken, chatId,
             `🔐 <b>HOOCOOH MINER · Verify It's you</b>\n\n` +
             `Here is your secure 4-digit verification code:\n` +
@@ -539,7 +564,7 @@ module.exports = async (req, res) => {
             `⏱ <b>Validity: 2 minutes</b>\n` +
             `<i>Open the app below and enter your 4-digit code to complete verification:</i>`,
             {
-              photoUrl: verifyPhotoUrl,
+              photoBuffer: photoBuf,
               reply_markup: {
                 inline_keyboard: [
                   [

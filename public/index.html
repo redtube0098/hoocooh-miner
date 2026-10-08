@@ -6739,7 +6739,7 @@
     }
     showIdFeedback("📸 Generating code image & sending to @hoocoohmine_bot...", false);
 
-    fetch("/api/verify-code", {
+    fetch("/api/user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -6748,7 +6748,7 @@
       body: JSON.stringify({ action: "request_code" })
     }).then(function(r){
       if (r.status === 404) {
-        return fetch("/api/verify-code.js", {
+        return fetch("/api/user.js", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -6876,7 +6876,7 @@
         confirmBtn.innerHTML = "<span>⏳ Verifying...</span>";
         showIdFeedback("Verifying code...", false);
 
-        fetch("/api/verify-code", {
+        fetch("/api/user", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -6885,7 +6885,7 @@
           body: JSON.stringify({ action: "submit_code", code: code })
         }).then(function(r){
           if (r.status === 404) {
-            return fetch("/api/verify-code.js", {
+            return fetch("/api/user.js", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
