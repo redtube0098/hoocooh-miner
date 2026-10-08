@@ -3587,7 +3587,7 @@
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
+    z-index: 99999;
     padding: 16px;
     box-sizing: border-box;
   }
@@ -9225,19 +9225,21 @@
     }).then(handleResponse);
   }
 
-  function requestWithdrawApi(amount, walletAddress, network) {
+  function requestWithdrawApi(amount, walletAddress, network, captchaToken) {
+    var payload = {
+      action: "withdraw",
+      amount: amount,
+      walletAddress: walletAddress,
+      network: network,
+      captchaToken: captchaToken
+    };
     return fetch("/api/wallet", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-Telegram-Init-Data": initData
       },
-      body: JSON.stringify({
-        action: "withdraw",
-        amount: amount,
-        walletAddress: walletAddress,
-        network: network
-      })
+      body: JSON.stringify(payload)
     }).then(function(r) {
       if (r.status === 404) {
         return fetch("/api/wallet.js", {
@@ -9246,12 +9248,7 @@
             "Content-Type": "application/json",
             "X-Telegram-Init-Data": initData
           },
-          body: JSON.stringify({
-            action: "withdraw",
-            amount: amount,
-            walletAddress: walletAddress,
-            network: network
-          })
+          body: JSON.stringify(payload)
         });
       }
       return r;
@@ -9540,45 +9537,52 @@
         return;
       }
 
-      confirmWithdrawBtn.disabled = true;
-      confirmWithdrawBtn.textContent = "Processing...";
+      if (withdrawFeedbackBox) {
+        withdrawFeedbackBox.style.display = "none";
+      }
 
-      requestWithdrawApi(amt, addr, "USDT (TON)").then(function(res) {
-        confirmWithdrawBtn.disabled = false;
-        confirmWithdrawBtn.textContent = "Confirm";
+      // Mandatory Security Verification before withdrawal submission
+      openSecurityCaptcha(function(captchaToken) {
+        confirmWithdrawBtn.disabled = true;
+        confirmWithdrawBtn.textContent = "Processing...";
 
-        if (!res.ok) {
-          var errMsg = (res.data && res.data.error) ? res.data.error : "Withdrawal failed";
+        requestWithdrawApi(amt, addr, "USDT (TON)", captchaToken).then(function(res) {
+          confirmWithdrawBtn.disabled = false;
+          confirmWithdrawBtn.textContent = "Confirm";
+
+          if (!res.ok) {
+            var errMsg = (res.data && res.data.error) ? res.data.error : "Withdrawal failed";
+            if (withdrawFeedbackBox) {
+              withdrawFeedbackBox.style.display = "block";
+              withdrawFeedbackBox.className = "verify-feedback-box error";
+              withdrawFeedbackBox.textContent = "❌ " + errMsg;
+            }
+            return;
+          }
+
+          user.balance = res.data.newBalance;
+          renderBalance();
+          loadWalletData();
+
+          if (withdrawFeedbackBox) {
+            withdrawFeedbackBox.style.display = "block";
+            withdrawFeedbackBox.className = "verify-feedback-box success";
+            withdrawFeedbackBox.textContent = "✅ " + (res.data.message || "Withdrawal submitted for review!");
+          }
+          showToast("🎉 Withdrawal of " + amt.toLocaleString() + " Coins submitted!");
+
+          setTimeout(function() {
+            closeWithdrawModal();
+          }, 1800);
+        }).catch(function(err) {
+          confirmWithdrawBtn.disabled = false;
+          confirmWithdrawBtn.textContent = "Confirm";
           if (withdrawFeedbackBox) {
             withdrawFeedbackBox.style.display = "block";
             withdrawFeedbackBox.className = "verify-feedback-box error";
-            withdrawFeedbackBox.textContent = "❌ " + errMsg;
+            withdrawFeedbackBox.textContent = "❌ " + ((err && err.message) ? err.message : "Network error");
           }
-          return;
-        }
-
-        user.balance = res.data.newBalance;
-        renderBalance();
-        loadWalletData();
-
-        if (withdrawFeedbackBox) {
-          withdrawFeedbackBox.style.display = "block";
-          withdrawFeedbackBox.className = "verify-feedback-box success";
-          withdrawFeedbackBox.textContent = "✅ " + (res.data.message || "Withdrawal approved!");
-        }
-        showToast("🎉 Withdrawal of " + amt.toLocaleString() + " Coins approved!");
-
-        setTimeout(function() {
-          closeWithdrawModal();
-        }, 1800);
-      }).catch(function(err) {
-        confirmWithdrawBtn.disabled = false;
-        confirmWithdrawBtn.textContent = "Confirm";
-        if (withdrawFeedbackBox) {
-          withdrawFeedbackBox.style.display = "block";
-          withdrawFeedbackBox.className = "verify-feedback-box error";
-          withdrawFeedbackBox.textContent = "❌ " + ((err && err.message) ? err.message : "Network error");
-        }
+        });
       });
     });
   }

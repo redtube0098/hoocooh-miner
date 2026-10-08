@@ -86,6 +86,36 @@ module.exports = async (req, res) => {
       const { action, amount, walletAddress, network } = req.body || {};
 
       if (action === "withdraw") {
+        const { captchaToken } = req.body || {};
+        const cleanCaptchaToken = String(captchaToken || "").trim();
+
+        if (!cleanCaptchaToken) {
+          res.status(403).json({ error: "Security verification required! Please complete the verification puzzle." });
+          return;
+        }
+
+        const tokensCol = db.collection("captcha_tokens");
+        const validToken = await tokensCol.findOne({
+          token: cleanCaptchaToken,
+          userId: { $in: [telegramId, Number(telegramId)] },
+          used: false
+        });
+
+        if (!validToken) {
+          res.status(403).json({ error: "Security verification invalid or expired. Please complete verification again." });
+          return;
+        }
+
+        const tokenAge = Date.now() - (validToken.createdAt || 0);
+        if (tokenAge > 180000) {
+          await tokensCol.updateOne({ _id: validToken._id }, { $set: { used: true } });
+          res.status(403).json({ error: "Security verification expired. Please complete verification again." });
+          return;
+        }
+
+        // Burn token immediately to prevent replay
+        await tokensCol.updateOne({ _id: validToken._id }, { $set: { used: true, usedAt: Date.now() } });
+
         const numAmount = parseInt(amount, 10);
         if (isNaN(numAmount) || numAmount < 100) {
           res.status(400).json({ error: "Minimum withdrawal amount is 100 HOOCOOH Coins" });
