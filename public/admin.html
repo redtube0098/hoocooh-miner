@@ -1143,6 +1143,11 @@
             securityBadge = `<div style="margin-top: 4px;"><span class="status-tag high-risk" style="font-size: 10px; padding: 2px 7px;">🚨 HIGH RISK (HACKER)</span> ${w.suspiciousReason ? `<div style="font-size: 10px; color: #ef4444; margin-top: 2px;">${w.suspiciousReason}</div>` : ''}</div>`;
           } else if (w.isSuspicious) {
             securityBadge = `<div style="margin-top: 4px;"><span class="status-tag suspicious" style="font-size: 10px; padding: 2px 7px;">⚠️ SUSPICIOUS</span> ${w.suspiciousReason ? `<div style="font-size: 10px; color: #f59e0b; margin-top: 2px;">${w.suspiciousReason}</div>` : ''}</div>`;
+          } else if (w.isSuspendedMultipleAccount) {
+            securityBadge = `<div style="margin-top: 4px;"><span class="status-tag banned" style="font-size: 10px; padding: 2px 7px;">🚫 MULTI-ACCOUNT</span></div>`;
+          }
+          if (w.deviceViolationsCount > 0) {
+            securityBadge += `<div style="font-size: 10px; color: #ef4444; margin-top: 2px;">⚠️ Multi-Acc Strikes: ${w.deviceViolationsCount}</div>`;
           }
 
           var actions = '';
@@ -1554,11 +1559,13 @@
             secBadge = `<span class="status-tag high-risk" style="margin-left: 6px;">🚨 HIGH RISK: HACKER</span>`;
           } else if (u.isSuspicious) {
             secBadge = `<span class="status-tag suspicious" style="margin-left: 6px;">⚠️ SUSPICIOUS</span>`;
+          } else if (u.isSuspendedMultipleAccount) {
+            secBadge = `<span class="status-tag banned" style="margin-left: 6px;">🚫 MULTI-ACCOUNT</span>`;
           } else {
             secBadge = `<span class="status-tag approved" style="margin-left: 6px;">✅ CLEAN</span>`;
           }
 
-          var cardBorder = u.isHighRiskHacker ? '#ef4444' : (u.isSuspicious ? '#f59e0b' : 'var(--card-border)');
+          var cardBorder = u.isHighRiskHacker ? '#ef4444' : (u.isSuspendedMultipleAccount ? '#ef4444' : (u.isSuspicious ? '#f59e0b' : 'var(--card-border)'));
           var joinedDateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A';
 
           return `
@@ -1584,15 +1591,21 @@
               </div>
 
               ${(u.isHighRiskHacker || u.isSuspicious) && u.suspiciousReason ? `
-                <div style="font-size: 12px; color: ${u.isHighRiskHacker ? '#ef4444' : '#f59e0b'}; background: ${u.isHighRiskHacker ? 'rgba(239, 68, 68, 0.12)' : 'rgba(245, 158, 11, 0.12)'}; padding: 8px 12px; border-radius: 8px; border: 1px solid ${u.isHighRiskHacker ? 'rgba(239, 68, 68, 0.3)' : 'rgba(245, 158, 11, 0.3)'};">
+                <div style="font-size: 12px; color: ${u.isHighRiskHacker ? '#ef4444' : '#f59e0b'}; background: ${u.isHighRiskHacker ? 'rgba(239, 68, 68, 0.12)' : 'rgba(245, 158, 11, 0.12)'}; padding: 8px 12px; border-radius: 8px; border: 1px solid ${u.isHighRiskHacker ? 'rgba(239, 68, 68, 0.3)' : 'rgba(245, 158, 11, 0.3)'}; margin-bottom: 8px;">
                   <b>⚠️ Security Flag Reason:</b> ${u.suspiciousReason}
+                </div>
+              ` : ''}
+
+              ${u.penaltyNotice ? `
+                <div style="font-size: 12px; color: #ef4444; background: rgba(239, 68, 68, 0.12); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3); margin-bottom: 8px;">
+                  <b>⚠️ Device Penalty Applied:</b> ${u.penaltyNotice}
                 </div>
               ` : ''}
 
               <div class="u-stats" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));">
                 <div class="u-stat-box">
                   <div class="s-lbl">Balance</div>
-                  <div class="s-val accent">${Number(u.balance).toLocaleString()} Coins</div>
+                  <div class="s-val accent" style="color: ${u.balance < 0 ? '#ef4444' : 'inherit'};">${Number(u.balance).toLocaleString()} Coins</div>
                 </div>
                 <div class="u-stat-box">
                   <div class="s-lbl">Miner Level</div>
@@ -1611,12 +1624,20 @@
                   <div class="s-val" style="color: ${u.spinUnder5sStrikes >= 5 ? '#f59e0b' : 'inherit'};">${u.spinUnder5sStrikes || 0} / 5</div>
                 </div>
                 <div class="u-stat-box">
+                  <div class="s-lbl">Multi-Acc Strikes</div>
+                  <div class="s-val" style="color: ${u.deviceViolationsCount > 0 ? '#ef4444' : 'inherit'};">${u.deviceViolationsCount || 0}</div>
+                </div>
+                <div class="u-stat-box">
                   <div class="s-lbl">Invited Friends</div>
                   <div class="s-val">${u.recruitsCount}</div>
                 </div>
                 <div class="u-stat-box">
                   <div class="s-lbl">Ref Earnings</div>
                   <div class="s-val">${Number(u.refEarnings).toLocaleString()}</div>
+                </div>
+                <div class="u-stat-box">
+                  <div class="s-lbl">Registered IP</div>
+                  <div class="s-val" style="font-size: 11px;">${u.registeredIp || 'N/A'}</div>
                 </div>
                 <div class="u-stat-box">
                   <div class="s-lbl">Joined Date</div>

@@ -40,15 +40,48 @@ module.exports = async (req, res) => {
     return;
   }
   const telegramId = String(tgUser.id);
+  const clientIp = (
+    req.headers["x-forwarded-for"] ||
+    req.headers["x-real-ip"] ||
+    req.socket?.remoteAddress ||
+    ""
+  ).split(",")[0].trim();
+  const clientDeviceId = String(req.headers["x-device-id"] || (req.body && req.body.deviceId) || (req.query && req.query.deviceId) || "").trim();
+  const prevUid = String(req.headers["x-prev-uid"] || (req.body && req.body.prevUid) || (req.query && req.query.prevUid) || "").trim();
 
   try {
     const db = await getDb();
     const users = db.collection("users");
 
-    // Unified user retrieval, multi-type ID lookup, and duplicate merge
-    let user = await findOrCreateUser(users, tgUser);
+    // Unified user retrieval, multi-type ID lookup, and multi-account check
+    let user = await findOrCreateUser(users, tgUser, { clientIp, clientDeviceId, prevUid });
 
     if (user && user.isBanned) {
+      if (user.isSuspendedMultipleAccount || user.isMultipleAccountBlocked) {
+        let primaryAccount = user.primaryAccount;
+        if (!primaryAccount && user.primaryTelegramId) {
+          const prim = await findUserById(users, user.primaryTelegramId);
+          if (prim) {
+            primaryAccount = {
+              telegramId: prim.telegramId,
+              name: prim.firstName || prim.name || "Original User",
+              username: prim.username || "N/A",
+              photoUrl: prim.photoUrl || ""
+            };
+          }
+        }
+        res.status(200).json({
+          isBanned: true,
+          isMultipleAccountBlocked: true,
+          detectionType: user.detectionType || "ip",
+          primaryAccount: primaryAccount || null,
+          banReason: user.banReason || "Multiple accounts detected on same network/device",
+          message: "Multiple accounts are not allowed on the same network or device! Please return to your original account or connect through a different network/VPN.",
+          telegramId: user.telegramId
+        });
+        return;
+      }
+
       res.status(200).json({
         isBanned: true,
         banReason: user.banReason || "Your account has been suspended",
@@ -407,6 +440,8 @@ module.exports = async (req, res) => {
       ),
       identityVerifiedAt: user.identityVerifiedAt || 0,
       referralRewarded: user.referralRewarded === true,
+      penaltyNotice: user.penaltyNotice || null,
+      deviceViolationsCount: Number(user.deviceViolationsCount || 0),
       botUsername: botUsername
     });
   } catch (err) {

@@ -5912,6 +5912,40 @@
   </div>
 </div>
 
+<!-- Multiple Account Block Screen -->
+<div class="banned-overlay" id="multiAccountOverlay" style="display: none;">
+  <div class="banned-card" style="border-color: rgba(245, 158, 11, 0.6); box-shadow: 0 16px 50px rgba(245, 158, 11, 0.25); max-width: 380px; width: 100%; text-align: center;">
+    <div style="font-size: 44px; margin-bottom: 12px; line-height: 1;">⚠️</div>
+    <div style="font-size: 19px; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">MULTIPLE ACCOUNT DETECTED</div>
+    <div style="font-size: 13px; color: #94a3b8; line-height: 1.5; margin-bottom: 16px;">
+      Only one account is permitted per network or device. We detected an existing account registered from this connection:
+    </div>
+
+    <!-- Original Account Card Box -->
+    <div style="background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(245, 158, 11, 0.4); border-radius: 14px; padding: 14px; margin-bottom: 16px; text-align: left; display: flex; align-items: center; gap: 14px;">
+      <div id="multiAccOldAvatar" style="width: 52px; height: 52px; border-radius: 50%; background: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: #fff; overflow: hidden; flex-shrink: 0; border: 2px solid #f59e0b;">
+        M
+      </div>
+      <div style="min-width: 0; flex: 1;">
+        <div style="font-size: 10px; text-transform: uppercase; color: #f59e0b; font-weight: 700; letter-spacing: 0.5px;">Original Account</div>
+        <div id="multiAccOldName" style="font-size: 15px; font-weight: 700; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;">Original User</div>
+        <div id="multiAccOldUsername" style="font-size: 12px; color: #38bdf8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@username</div>
+        <div style="font-size: 11px; color: #64748b; margin-top: 2px;">UID: <code id="multiAccOldUid" style="color: #cbd5e1;">---</code></div>
+      </div>
+    </div>
+
+    <div style="background: rgba(239, 68, 68, 0.1); border: 1px dashed rgba(239, 68, 68, 0.4); border-radius: 10px; padding: 12px; font-size: 12px; color: #fca5a5; line-height: 1.45; text-align: left; margin-bottom: 20px;">
+      <b>What should you do?</b><br>
+      • Please return to your <b>Original Account</b> above to continue playing.<br>
+      • Or connect using a <b>different network / VPN</b> to create a new profile.
+    </div>
+
+    <button type="button" id="multiAccBackToBotBtn" class="btn primary-btn" style="width: 100%; padding: 12px; font-weight: 700; border-radius: 10px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; font-size: 14px; cursor: pointer;">
+      🔄 Switch to Original Account
+    </button>
+  </div>
+</div>
+
 <!-- Full-Screen Loading Splash (media_1791212619324.png) -->
 <div class="loading-screen" id="appLoadingScreen">
   <div class="loading-bg-circles"></div>
@@ -8758,14 +8792,37 @@
     return "";
   }
 
+  // Device fingerprint & Previous UID setup
+  var currentDeviceId = "";
+  try {
+    currentDeviceId = localStorage.getItem("hoocooh_device_id");
+    if (!currentDeviceId) {
+      currentDeviceId = "dev_" + Math.random().toString(36).substring(2, 12) + "_" + Date.now().toString(36);
+      localStorage.setItem("hoocooh_device_id", currentDeviceId);
+    }
+  } catch(e){}
+
+  function getClientHeaders(extraHeaders) {
+    var hdrs = {
+      "X-Telegram-Init-Data": initData,
+      "X-Device-Id": currentDeviceId || ""
+    };
+    try {
+      var prevUid = localStorage.getItem("hoocooh_registered_uid") || "";
+      if (prevUid) hdrs["X-Prev-Uid"] = prevUid;
+    } catch(e){}
+    if (extraHeaders) Object.assign(hdrs, extraHeaders);
+    return hdrs;
+  }
+
   function apiGet() {
     var sp = getStartParam();
     var query = sp ? ("?start_param=" + encodeURIComponent(sp)) : "";
     return fetch("/api/user" + query, {
-      headers: { "X-Telegram-Init-Data": initData }
+      headers: getClientHeaders()
     }).then(function(r) {
       if (r.status === 404) {
-        return fetch("/api/user.js" + query, { headers: { "X-Telegram-Init-Data": initData } });
+        return fetch("/api/user.js" + query, { headers: getClientHeaders() });
       }
       return r;
     }).then(handleResponse);
@@ -8774,19 +8831,13 @@
   function apiPost(data) {
     return fetch("/api/user", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Telegram-Init-Data": initData
-      },
+      headers: getClientHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify(data || {})
     }).then(function(r) {
       if (r.status === 404) {
         return fetch("/api/user.js", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Telegram-Init-Data": initData
-          },
+          headers: getClientHeaders({ "Content-Type": "application/json" }),
           body: JSON.stringify(data || {})
         });
       }
@@ -8904,17 +8955,27 @@
     var whole = Math.floor(balance);
     var formattedWhole = whole.toLocaleString();
     var balEl = document.getElementById("balanceAmount");
-    if (balEl) balEl.innerHTML = formattedWhole + '<span class="cents">.00</span>';
+    if (balEl) {
+      balEl.innerHTML = formattedWhole + '<span class="cents">.00</span>';
+      balEl.style.color = balance < 0 ? "#ef4444" : "";
+    }
     var liveTag = document.getElementById("liveBalanceTag");
-    if (liveTag) liveTag.textContent = formattedWhole;
+    if (liveTag) {
+      liveTag.textContent = formattedWhole;
+      liveTag.style.color = balance < 0 ? "#ef4444" : "";
+    }
     document.querySelectorAll(".ticker-balance").forEach(function(el) {
       el.textContent = formattedWhole;
+      el.style.color = balance < 0 ? "#ef4444" : "";
     });
     var usdEl = document.getElementById("balanceUsd");
     if (usdEl) usdEl.textContent = "$" + coinsToUsd(balance).toFixed(2);
 
     var walletVaultNum = document.getElementById("walletVaultNum");
-    if (walletVaultNum) walletVaultNum.innerHTML = formattedWhole + '<span class="cents">.00</span>';
+    if (walletVaultNum) {
+      walletVaultNum.innerHTML = formattedWhole + '<span class="cents">.00</span>';
+      walletVaultNum.style.color = balance < 0 ? "#ef4444" : "";
+    }
 
     var walletVaultUsd = document.getElementById("walletVaultUsd");
     if (walletVaultUsd) walletVaultUsd.textContent = "≈ $" + coinsToUsd(balance).toFixed(2) + " USDT";
@@ -12309,6 +12370,43 @@
   // Fetch real server state
   apiGet().then(function(res){
     if (res.data && res.data.isBanned) {
+      if (res.data.isMultipleAccountBlocked) {
+        var mOverlay = document.getElementById("multiAccountOverlay");
+        var mOldName = document.getElementById("multiAccOldName");
+        var mOldUsername = document.getElementById("multiAccOldUsername");
+        var mOldUid = document.getElementById("multiAccOldUid");
+        var mOldAvatar = document.getElementById("multiAccOldAvatar");
+        var prim = res.data.primaryAccount || {};
+
+        if (mOldName) mOldName.textContent = prim.name || "Original User";
+        if (mOldUsername) mOldUsername.textContent = (prim.username && prim.username !== "N/A") ? ("@" + prim.username) : "No Username";
+        if (mOldUid) mOldUid.textContent = prim.telegramId || "---";
+
+        if (mOldAvatar) {
+          if (prim.photoUrl) {
+            mOldAvatar.innerHTML = '<img src="' + prim.photoUrl + '" style="width:100%;height:100%;object-fit:cover;">';
+          } else {
+            var initial = (prim.name ? prim.name.charAt(0) : "M").toUpperCase();
+            mOldAvatar.textContent = initial;
+          }
+        }
+
+        var backBtn = document.getElementById("multiAccBackToBotBtn");
+        if (backBtn) {
+          backBtn.onclick = function() {
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.close) {
+              window.Telegram.WebApp.close();
+            } else {
+              window.location.href = "https://t.me/hoocoohmine_bot";
+            }
+          };
+        }
+
+        if (mOverlay) mOverlay.style.display = "flex";
+        dismissLoadingScreen();
+        return;
+      }
+
       var bOverlay = document.getElementById("bannedOverlay");
       var bReason = document.getElementById("bannedReasonTxt");
       var bUid = document.getElementById("bannedUidTxt");
@@ -12327,6 +12425,18 @@
     user.isIdentityVerified = res.data.isIdentityVerified === true;
     user.languageSelected = res.data.languageSelected === true;
     var currentUid = res.data.telegramId || (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+
+    try {
+      if (currentUid && currentUid !== "me") {
+        localStorage.setItem("hoocooh_registered_uid", String(currentUid));
+      }
+    } catch(e){}
+
+    if (res.data.penaltyNotice) {
+      setTimeout(function() {
+        showToast("⚠️ " + res.data.penaltyNotice);
+      }, 1200);
+    }
 
     // Sync 24-hour verification validity to localStorage
     if (user.isIdentityVerified === true) {

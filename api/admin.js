@@ -258,6 +258,9 @@ module.exports = async (req, res) => {
             suspiciousReason: u.suspiciousReason || "",
             isHighRiskHacker: !!u.isHighRiskHacker,
             securityFlag: u.securityFlag || "",
+            isSuspendedMultipleAccount: !!u.isSuspendedMultipleAccount,
+            deviceViolationsCount: Number(u.deviceViolationsCount || 0),
+            registeredIp: u.registeredIp || u.lastIp || "",
             amount: w.amount,
             usdtAmount: w.usdtAmount,
             tonAmount: w.tonAmount !== undefined ? Number(w.tonAmount) : Number(((w.usdtAmount || 0) * (0.019 / 0.03)).toFixed(4)),
@@ -316,6 +319,10 @@ module.exports = async (req, res) => {
           suspiciousReason: u.suspiciousReason || "",
           isHighRiskHacker: !!u.isHighRiskHacker,
           securityFlag: u.securityFlag || "",
+          isSuspendedMultipleAccount: !!u.isSuspendedMultipleAccount,
+          deviceViolationsCount: Number(u.deviceViolationsCount || 0),
+          penaltyNotice: u.penaltyNotice || "",
+          registeredIp: u.registeredIp || u.lastIp || "N/A",
           createdAt: u.createdAt || null
         }));
 
