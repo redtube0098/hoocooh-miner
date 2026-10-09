@@ -1,5 +1,6 @@
 const { getDb } = require("../lib/mongodb");
 const { generateVerificationImage } = require("../lib/verificationImage");
+const { processMiningReminders } = require("../lib/miningReminder");
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || "hoocooh_admin_2026";
 
@@ -260,6 +261,19 @@ module.exports = async (req, res) => {
         const tgRes = await fetch(`https://api.telegram.org/bot${botToken}/getWebhookInfo`);
         const tgData = await tgRes.json();
         res.status(200).json({ ok: true, info: tgData });
+        return;
+      } catch (err) {
+        res.status(500).json({ ok: false, error: err.message });
+        return;
+      }
+    }
+
+    // Cron trigger for 2-hour mining reminders: /api/webhook?cron=mining_reminder or ?action=cron_mining
+    if (action === "cron_mining" || action === "mining_reminder" || (req.query && (req.query.cron === "mining_reminder" || req.query.cron === "mining"))) {
+      try {
+        const db = await getDb();
+        const result = await processMiningReminders(db, botToken, baseUrl);
+        res.status(200).json({ ok: true, task: "mining_reminder", ...result });
         return;
       } catch (err) {
         res.status(500).json({ ok: false, error: err.message });

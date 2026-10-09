@@ -62,7 +62,7 @@ module.exports = async (req, res) => {
 
     await users.updateOne(
       { _id: user._id },
-      { $set: { balance: newBalance, lastMineCollectedAt: now } }
+      { $set: { balance: newBalance, lastMineCollectedAt: now, mineReminderSent: false } }
     );
 
     res.status(200).json({

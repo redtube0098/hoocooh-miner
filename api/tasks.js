@@ -2,6 +2,7 @@ const { getDb } = require("../lib/mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
 const { findOrCreateUser } = require("../lib/userHelper");
 const { getAdminDepositAddress, checkTonDeposit, notifyUserTaskActivated } = require("../lib/tonDeposit");
+const { processMiningReminders } = require("../lib/miningReminder");
 const { ObjectId } = require("mongodb");
 
 module.exports = async (req, res) => {
@@ -12,12 +13,20 @@ module.exports = async (req, res) => {
   }
 
   // 0. CRON JOB TRIGGER (compatible with cron-job.org & external services)
-  // Check all pending task deposits on-chain without requiring user Telegram session
-  const isCron = (req.query && (req.query.cron === "check_deposits" || req.query.cron === "deposit" || req.query.cron === "true")) ||
+  // Check all pending task deposits on-chain and send 2-hour mining reminders
+  const isCron = (req.query && (req.query.cron === "check_deposits" || req.query.cron === "deposit" || req.query.cron === "true" || req.query.cron === "mining_reminder" || req.query.cron === "mining")) ||
                  (req.headers && (req.headers["x-cron-check"] === "check_deposits" || (req.headers["user-agent"] && req.headers["user-agent"].includes("cron-job.org"))));
   if (isCron) {
     try {
       const db = await getDb();
+      const host = req.headers["x-forwarded-host"] || req.headers.host;
+      const protocol = req.headers["x-forwarded-proto"] || "https";
+      const baseUrl = `${protocol}://${host}`;
+
+      // 1. Process 2-hour mining reminders for completed miners
+      const miningReminders = await processMiningReminders(db, botToken, baseUrl);
+
+      // 2. Check pending task deposits on-chain
       const tasksCol = db.collection("tasks");
       const pendingTasks = await tasksCol
         .find({ status: "pending_payment" })
@@ -55,7 +64,11 @@ module.exports = async (req, res) => {
         }
       }
 
-      res.status(200).json({ ok: true, processed: pendingTasks.length, activated, declined });
+      res.status(200).json({
+        ok: true,
+        deposits: { processed: pendingTasks.length, activated, declined },
+        miningReminders
+      });
       return;
     } catch (cronErr) {
       console.error("Cron check_deposits error:", cronErr);
