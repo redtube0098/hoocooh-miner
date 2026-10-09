@@ -1,1 +1,472 @@
-function _0x412f(){const _0x35da14=['pc9JB2rLpGOk','C2LNBMfS','pgK+rw50zxiGDgHPCYa0lwrPz2L0ignVzguGAw4GDgHLigfWCcb0BYb1BMXVy2SGywnJzxnZlJWVAt4','C3rHCNrFCgfYyw0','ww91CIbHy2nVDw50igHHCYbIzwvUihn1C3bLBMrLza','CgHVDg9FDxjS','CgfYC2vFBw9Kzq','8j+uKca8yJ5it09dt09iie1jtKvsimk3ifzLCMLMEsbjDcDZihLVDtWVyJ4kcG','C3vIBwL0x3zLCMLMAwnHDgLVBL9JB2rL','lI4VBgLIl3rLBgvNCMfTqxv0Aa','ChjLDLvPza','y29TCgXLDgvFDgfZAW','C2v0x2XHBMD1ywDL','AgvHzgvYCW','D2f0y2HbzfjLD2fYza','nJG5oteXmMfetuvvrq','yMfUuMvHC29U','jg9Y','zgfPBhLdEwnSzq','C2v0DgLUz3m','DgvZDa','Ag9Vy29VAf92zxjPzNLF','y2XPzw50rgv2AwnLswq','BgfUz3vHz2vtzwXLy3rLza','zMLYC3royw1L','Axncyw5Uzwq','BgfUz3vHz2u','BwvZC2fNzq','x2LK','zgv0zwn0Aw9UvhLWzq','zMXVB3i','BMfTzq','Dg90ywXeywLSEuvHCM5Lza','Dgv4Da','y2XHAw1Lze1PBgvZDg9Uzxm','u3rHCNrLCG','Bwf4','Ag9ZDa','zgv2AwnLswq','CgvUywX0Eu5VDgLJzq','zMLUze9Uzq','ywjVCNq','ANnVBG','vMvYAwzPy2f0Aw9UignVzguGAgfZigv4CgLYzwqGkdiGBwLUDxrLCYbSAw1PDcKUifbSzwfZzsbYzxf1zxn0igeGBMv3ignVzguU','yM91BMrxywXSzxrbzgrYzxnZ','sfrnta','nezWELPUCW','yxbWzw5K','Ahr0Chm','C3bPBL93yxrJAf9Hza','l3nLBMrqAg90BW','Bwv0Ag9K','zMLYC3rFBMfTzq','jgLUyW','mteXoteYne1ruxL2Ea','DxnLza','DhLWzq','pgK+rw50zxiGDgHPCYa0lwrPz2L0ignVzguGAw4GDgHLigfWCcb0BYb1BMXVy2SGywnJzxnZlIbozxzLCIbZAgfYzsb0AgLZignVzguUpc9PpG','lI4VBgLIl21VBMDVzgi','sw52ywXPzcbZzxnZAw9Uic0GCMvVCgvUigfWCcbMCM9TifrLBgvNCMfT','C3bSAxq','DxnLCKLK','DxnLCI5QCYbLCNjVCJO','DMfSAwrPDhLtzwnVBMrZ','nZiZodm1vKnhsvHh','BM93','AwrLBNrPDhLwzxjPzMLLzef0','Ec1WCMv2lxvPza','y29SBgvJDgLVBG','yxbWx3nLDhrPBMDZ','DxbKyxrLt25L','CMvMzxjYzwrcEq','ChjPBwfYEufJy291BNq','CMvMrwfYBMLUz3m','y29Kzq','jhnLDa','C29YDa','DxnLCL92zxjPzMLJyxrPB25Fy29Kzxm','ue9tva','vw5RBM93BIbHy3rPB24','ywrZrwfYBMvKvg9KyxK','sw5JB3jYzwn0ihzLCMLMAwnHDgLVBIbJB2rLisbdAgvJAYb0AguGAw1Hz2uGAw4GqgHVB2nVB2HTAw5Lx2jVDcbHBMqGDhj5igfNywLUlG','CMvMzxjYywXszxDHCMrLzef0','Ahr0Chm6lY9HCgKUDgvSzwDYyw0UB3jNl2jVDa','zgfPBhLeyxLjBMrLEa','mZyXmdK4mdHisuXnzLG','CMvMzxjYywXszxDHCMrhAxzLBG','r0vu','C2vUzfbOB3rVigj5iezVCM1eyxrHigzHAwXLzdO','mJa2mteWoe1rBw1nwq','CgHVDg8','q29UDgvUDc1uExbL','4O+XidXIpLzHBgLKAxr5oIaYig1PBNv0zxm8l2i+cG','CMvZDwX0','8j+rIsa8yJ5dAgvJAYb0AguGAw1Hz2uGywjVDMuHpc9IpGOk','txvSDgLWBguGywnJB3vUDhmGyxjLig5VDcbHBgXVD2vKig9UihrOzsbZyw1Lig5LDhDVCMSGB3iGzgv2AwnLisbqBgvHC2uGCMv0DxjUihrVihLVDxiGB3jPz2LUywWGywnJB3vUDcbVCIbJB25Uzwn0ihrOCM91z2GGysbKAwzMzxjLBNqGBMv0D29YAY9wue4U','zxjYB3i','twv0Ag9Kig5VDcbHBgXVD2vK','l3nLBMrnzxnZywDL','yxbWBgLJyxrPB24VANnVBG','y2f0y2G','lI4VBgLIl2fJDgLVBLnPz25LCG','zgv2AwnLvMLVBgf0Aw9UC0nVDw50','DMvYAwzPzwrbDa','ywrZv2f0y2HLzfrVzgf5','t3jPz2LUywWGvxnLCG','yMfSyw5Jzq','CMvTB3rLqwrKCMvZCW','ywrZq3LJBgvtDgfYDgvKqxq','ChjPBwfYEvrLBgvNCMfTswq','Ec1MB3j3yxjKzwqTAg9ZDa','y2HLy2TFDMvYAwzPy2f0Aw9Ux3n0yxr1CW','y3jLyxrLzef0','DxnLCM5HBwu','BgfZDenOzwnRAw5bDa','zxHWB3j0CW','CMvXDwvZDf9JB2rL','DgvSzwDYyw1jza','DMvYAwzPzwq','oI8V','ndi2mte3nKLXENrYvW','BNvTyMvY','DxnLCNm','BwLU','Aw5JBhvKzxm','CMvXDwvZDf92zxjPzMLJyxrPB25Fy29Kzq','qsa0lwrPz2L0ignVzguGD2fZihnLBNqGDg8GEw91CIbuzwXLz3jHBsbIB3qU','mJK4ody0neLxr2nrCq','BgfZDe1PBMvdB2XSzwn0zwrbDa','C2vUze1LC3nHz2uGzMfSBgjHy2SGzxjYB3i6','vevmruDsqu1FqK9ux1rps0voigLZig5VDcbZzxqGAw4GvMvYy2vSihnLDhrPBMDZ','CxvLCNK','AxnwzxjPzMLLza','y2HHDf9Pza','y2HLy2TFC3rHDhvZ','CgHVDg9vCMW','Aw5Zzxj0t25L','CMvMzxjYywXszxDHCMrLza','Ec1MB3j3yxjKzwqTChjVDg8','zxHWAxjLC0f0','y2XPzw50sxa','zxHWAxjLza','D2fYBG','DgvYBxnby2nLChrLza','C3rHDhvZ','C3vIBwL0x2nVzgu','swrLBNrPDhKGDMvYAwzPzwqGC3vJy2vZC2z1BgX5iq','Ec1YzwfSlwLW','y2fWDgLVBG','DxbKyxrLtwfUEq','BwLUzxjmzxzLBa','yM9KEq','DhjPBq','AxnnDwX0AxbSzufJy291BNrcBg9JA2vK','qsb2zxjPzMLJyxrPB24Gy29KzsbPBwfNzsb3yxmGC2vUDcb0BYb5B3vYigjVDc4','CMvWBgfJzq','twLUzxi','ugXLyxnLigvUDgvYigeGDMfSAwqGnc1KAwDPDcbJB2rLlG','lI4VBgLIl21PBMLUz1jLBwLUzgvY','Ec1MB3j3yxjKzwqTzM9Y','AxnjzgvUDgL0EvzLCMLMAwvK','CMvJCNvPDhndB3vUDa'];_0x412f=function(){return _0x35da14;};return _0x412f();}const _0x1b0cef=_0x2f79;(function(_0x4c270b,_0x13c46b){const _0x35d034=_0x2f79,_0x227c73=_0x4c270b();while(!![]){try{const _0x46f7e7=parseInt(_0x35d034(0x199))/(0x58f+0x5*-0x5af+0x79f*0x3)+parseInt(_0x35d034(0x140))/(-0x204b+-0x11eb+-0x1*-0x3238)+parseInt(_0x35d034(0x139))/(0x108f*-0x1+-0xa*-0xa+0xda*0x13)+-parseInt(_0x35d034(0x191))/(0xa4e*0x3+0x7e4+-0x1*0x26ca)*(parseInt(_0x35d034(0x1a3))/(-0x37f+0xf33+-0xbaf))+parseInt(_0x35d034(0x172))/(-0x1892+0x7d*-0x1e+0x2*0x139f)+parseInt(_0x35d034(0x11a))/(-0x9*0x291+-0x278+0x1998)+-parseInt(_0x35d034(0x116))/(-0x125*-0x1+-0x1ba9+0x1a8c);if(_0x46f7e7===_0x13c46b)break;else _0x227c73['push'](_0x227c73['shift']());}catch(_0x5d2c0a){_0x227c73['push'](_0x227c73['shift']());}}}(_0x412f,-0x13bad4+0x31*-0x111b+0x2382b8));const {getDb}=require(_0x1b0cef(0x19d)),{validateInitData}=require(_0x1b0cef(0x16c)),{findOrCreateUser,findUserById}=require('../lib/userHelper'),{mineIsReady,dailyStatus,MINE_INTERVAL_MS,LEVEL_NAMES,getMultiplierForLevel}=require('../lib/gameLogic'),{generateVerificationImage}=require('../lib/verificationImage'),{notifyInviterReferralSuccess}=require(_0x1b0cef(0x15f)),{createActionToken}=require(_0x1b0cef(0x126));function _0x2f79(_0x575a6a,_0x3ed1ec){_0x575a6a=_0x575a6a-(-0x1*0x1e10+0x23a4*-0x1+0x42b9);const _0x34dfd2=_0x412f();let _0x527aac=_0x34dfd2[_0x575a6a];if(_0x2f79['sOVlFr']===undefined){var _0x3677ec=function(_0x22c284){const _0x183b2a='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x73210a='',_0x11e893='';for(let _0x12f356=-0x5*0x45b+-0x8ba*-0x3+-0x467,_0x1e4abe,_0x1c0efd,_0x9b2e28=-0x3*-0x2bd+-0x219*0xd+0x130e;_0x1c0efd=_0x22c284['charAt'](_0x9b2e28++);~_0x1c0efd&&(_0x1e4abe=_0x12f356%(-0x14c*0xe+-0x56*-0x40+-0x354)?_0x1e4abe*(-0x1315+0x110a+-0x24b*-0x1)+_0x1c0efd:_0x1c0efd,_0x12f356++%(0xf94+0xf10+0xe0*-0x23))?_0x73210a+=String['fromCharCode'](0x1a26+0xa63+0x238a*-0x1&_0x1e4abe>>(-(0x1f9*0xe+0x2*-0x7c6+-0xc1*0x10)*_0x12f356&0x1c*-0xc8+-0x228f+0x3875)):0x1977+-0x1394+-0x5e3){_0x1c0efd=_0x183b2a['indexOf'](_0x1c0efd);}for(let _0x36af59=0x20d7+-0x6f*-0x33+-0x36f4,_0x14db07=_0x73210a['length'];_0x36af59<_0x14db07;_0x36af59++){_0x11e893+='%'+('00'+_0x73210a['charCodeAt'](_0x36af59)['toString'](0x116d+-0x68b+-0x2*0x569))['slice'](-(0x1*0x11c3+0x7*-0x223+0x4*-0xb3));}return decodeURIComponent(_0x11e893);};_0x2f79['fivwwr']=_0x3677ec,_0x2f79['wYwIdd']={},_0x2f79['sOVlFr']=!![];}const _0x37d1ea=_0x34dfd2[0x3*-0xc2a+0x22d8+0x2*0xd3];_0x2f79['ZZGZOP']!==_0x37d1ea&&(_0x2f79['wYwIdd']={},_0x2f79['ZZGZOP']=_0x37d1ea);const _0x4661a0=_0x2f79['wYwIdd'][_0x575a6a];return _0x4661a0===undefined?(_0x527aac=_0x2f79['fivwwr'](_0x527aac),_0x2f79['wYwIdd'][_0x575a6a]=_0x527aac):_0x527aac=_0x4661a0,_0x527aac;}let cachedBotUsername=null;async function fetchBotUsername(_0x19de5d){const _0x3be202=_0x1b0cef;if(cachedBotUsername)return cachedBotUsername;try{const _0x2e3fe6=new AbortController(),_0x7e48f3=setTimeout(()=>_0x2e3fe6[_0x3be202(0x18c)](),-0xafb+0x226d+-0x8cb*0x2),_0x934c9c={};_0x934c9c['signal']=_0x2e3fe6[_0x3be202(0x164)];const _0x2bbc2d=await fetch(_0x3be202(0x114)+_0x19de5d+'/getMe',_0x934c9c);clearTimeout(_0x7e48f3);const _0xd97f15=await _0x2bbc2d[_0x3be202(0x18d)]();if(_0xd97f15['ok']&&_0xd97f15[_0x3be202(0x11e)]&&_0xd97f15['result'][_0x3be202(0x132)])return cachedBotUsername=_0xd97f15[_0x3be202(0x11e)][_0x3be202(0x132)],cachedBotUsername;}catch(_0x374c5f){}return'hoocooh_miner_bot';}module[_0x1b0cef(0x134)]=async(_0x227f1a,_0x420842)=>{const _0x466144=_0x1b0cef;if(_0x227f1a[_0x466144(0x196)]!==_0x466144(0x118)&&_0x227f1a[_0x466144(0x196)]!==_0x466144(0x10f)){const _0x270fbf={};_0x270fbf[_0x466144(0x121)]=_0x466144(0x122),_0x420842[_0x466144(0x151)](-0x133e+0x521+0xfb2)[_0x466144(0x18d)](_0x270fbf);return;}if(!process.env.TELEGRAM_BOT_TOKEN){const _0x3b0e5f={};_0x3b0e5f['error']=_0x466144(0x143),_0x420842[_0x466144(0x151)](-0xf1*-0x10+-0x1a4a+0xd2e)[_0x466144(0x18d)](_0x3b0e5f);return;}const _0x16fc90=_0x227f1a['headers']['x-telegram-init-data'],_0x380fa6=validateInitData(_0x16fc90,process.env.TELEGRAM_BOT_TOKEN);if(!_0x380fa6){const _0x29310b={};_0x29310b[_0x466144(0x121)]=_0x466144(0x19e),_0x420842[_0x466144(0x151)](-0x40*0x25+0x13*-0x2f+0xe4e)[_0x466144(0x18d)](_0x29310b);return;}const _0xd2ee95=String(_0x380fa6['id']),_0x61f51c=(_0x227f1a[_0x466144(0x170)][_0x466144(0x160)]||_0x227f1a[_0x466144(0x170)][_0x466144(0x154)]||_0x227f1a['socket']?.[_0x466144(0x12c)]||'')[_0x466144(0x19f)](',')[0x7*0x4e1+0x19c3+-0x3bea][_0x466144(0x159)](),_0x5be6d4=String(_0x227f1a[_0x466144(0x170)]['x-device-id']||_0x227f1a[_0x466144(0x158)]&&_0x227f1a['body'][_0x466144(0x189)]||_0x227f1a[_0x466144(0x144)]&&_0x227f1a['query'][_0x466144(0x189)]||'')[_0x466144(0x159)](),_0x2c2f16=String(_0x227f1a[_0x466144(0x170)][_0x466144(0x1a6)]||_0x227f1a['body']&&_0x227f1a[_0x466144(0x158)][_0x466144(0x16d)]||_0x227f1a[_0x466144(0x144)]&&_0x227f1a['query'][_0x466144(0x16d)]||'')[_0x466144(0x159)]();try{const _0xf03c3d=Date[_0x466144(0x1a4)](),_0x5bdb7e=await getDb(),_0x151569=_0x5bdb7e[_0x466144(0x105)](_0x466144(0x13b)),_0x2e636b={};_0x2e636b[_0x466144(0x14d)]=_0x61f51c,_0x2e636b[_0x466144(0x179)]=_0x5be6d4,_0x2e636b['prevUid']=_0x2c2f16;let _0x49d31=await findOrCreateUser(_0x151569,_0x380fa6,_0x2e636b);if(_0x49d31&&_0x49d31[_0x466144(0x17c)]){if(_0x49d31['isSuspendedMultipleAccount']||_0x49d31[_0x466144(0x15a)]){let _0x360aeb=_0x49d31[_0x466144(0x109)];if(!_0x360aeb&&_0x49d31[_0x466144(0x12e)]){const _0x322b96=await findUserById(_0x151569,_0x49d31[_0x466144(0x12e)]);if(_0x322b96){const _0xddae49={};_0xddae49[_0x466144(0x136)]=_0x322b96[_0x466144(0x136)],_0xddae49[_0x466144(0x182)]=_0x322b96[_0x466144(0x17b)]||_0x322b96[_0x466144(0x182)]||_0x466144(0x12a),_0xddae49[_0x466144(0x132)]=_0x322b96[_0x466144(0x132)]||'N/A',_0xddae49[_0x466144(0x148)]=_0x322b96[_0x466144(0x148)]||'',_0x360aeb=_0xddae49;}}const _0xe1f0fd={};_0xe1f0fd[_0x466144(0x17c)]=!![],_0xe1f0fd[_0x466144(0x15a)]=!![],_0xe1f0fd[_0x466144(0x180)]=_0x49d31['detectionType']||'ip',_0xe1f0fd[_0x466144(0x109)]=_0x360aeb||null,_0xe1f0fd[_0x466144(0x173)]=_0x49d31[_0x466144(0x173)]||'Multiple\x20accounts\x20detected\x20on\x20same\x20network/device',_0xe1f0fd['message']=_0x466144(0x120),_0xe1f0fd[_0x466144(0x136)]=_0x49d31[_0x466144(0x136)],_0x420842['status'](0x1f9*0xe+0x2*-0x7c6+-0x55*0x22)[_0x466144(0x18d)](_0xe1f0fd);return;}const _0x4fae2a={};_0x4fae2a[_0x466144(0x17c)]=!![],_0x4fae2a[_0x466144(0x173)]=_0x49d31[_0x466144(0x173)]||_0x466144(0x167),_0x4fae2a[_0x466144(0x136)]=_0x49d31[_0x466144(0x136)],_0x420842[_0x466144(0x151)](-0xb85*0x3+0xda3+-0x1cf*-0xc)['json'](_0x4fae2a);return;}if(_0x227f1a['method']===_0x466144(0x10f)){const {action:_0xcdec61,language:_0x101962,code:_0x38f3fc}=_0x227f1a['body']||{};if(_0xcdec61===_0x466144(0x16f)&&_0x101962){const _0xeb6a11=['en','ru','ar'],_0x57c665=_0xeb6a11[_0x466144(0x13d)](_0x101962)?_0x101962:'en',_0x2a8018={};_0x2a8018['_id']=_0x49d31[_0x466144(0x17f)],await _0x151569[_0x466144(0x107)](_0x2a8018,{'$set':{'language':_0x57c665,'languageSelected':!![],'updatedAt':Date[_0x466144(0x1a4)]()}});const _0x439290={};_0x439290['ok']=!![],_0x439290[_0x466144(0x17d)]=_0x57c665,_0x439290[_0x466144(0x17a)]=!![],_0x420842['status'](-0xc*0x93+-0x4b1*-0x7+-0x192b)[_0x466144(0x18d)](_0x439290);return;}if(_0xcdec61==='accept_terms'){const _0x512392=String(_0x49d31[_0x466144(0x136)]),_0x2a01bd=Number(_0x49d31[_0x466144(0x136)]),_0x337cb9={};_0x337cb9[_0x466144(0x17f)]=_0x49d31[_0x466144(0x17f)];const _0x76148b={};_0x76148b[_0x466144(0x136)]=_0x512392;const _0x4d9d34={};_0x4d9d34[_0x466144(0x174)]=[_0x337cb9,_0x76148b,..._0x2a01bd?[{'telegramId':_0x2a01bd}]:[]],await _0x151569[_0x466144(0x156)](_0x4d9d34,{'$set':{'termsAccepted':!![],'termsAcceptedAt':Date[_0x466144(0x1a4)]()}});const _0xc55f43={};_0xc55f43['ok']=!![],_0xc55f43[_0x466144(0x150)]=!![],_0x420842['status'](-0xa*-0x3e5+0xf*-0x5a+0x5*-0x694)[_0x466144(0x18d)](_0xc55f43);return;}if(_0xcdec61===_0x466144(0x135)||_0xcdec61===_0x466144(0x13e)){const _0x5700ab=Date[_0x466144(0x1a4)](),_0x2f7376=_0x5bdb7e[_0x466144(0x105)](_0x466144(0x10e)),_0x141a1c={};_0x141a1c[_0x466144(0x1a0)]=_0xd2ee95,_0x141a1c[_0x466144(0x19a)]=![];const _0x204779={};_0x204779[_0x466144(0x131)]=-(0x3*-0xc2a+0x22d8+0x9*0x2f);const _0x4a6b38={};_0x4a6b38['sort']=_0x204779;const _0x5b2210=await _0x2f7376['findOne'](_0x141a1c,_0x4a6b38);if(_0x5b2210&&_0x5700ab-_0x5b2210['createdAt']<-0x10ff*-0x1+0x7204+-0x34e3){const _0x30594f=await fetchBotUsername(process.env.TELEGRAM_BOT_TOKEN);_0x420842['status'](-0x1338+-0x212d+0x352d)[_0x466144(0x18d)]({'ok':!![],'expiresAt':_0x5b2210[_0x466144(0x14c)],'validitySeconds':Math[_0x466144(0x187)](-0xb3*0x17+-0x2*0xf90+0x5*0x971,Math['floor']((_0x5b2210[_0x466144(0x14c)]-_0x5700ab)/(-0x13ed+-0x638*0x2+0x2445))),'botUsername':'@'+_0x30594f,'message':_0x466144(0x15b)});return;}const _0x212efe=Math[_0x466144(0x181)](-0x24d8+-0x1f3a*0x1+-0x4a*-0xf9+Math['random']()*(-0x2*-0x1a3d+-0x7*-0x7cb+0x47df*-0x1)),_0x51f368=String(_0x212efe),_0x4d4dc6=_0x5700ab+(0xa49*0x2+-0x196f+-0x1*-0x4df)*(-0x43*-0x17+0x1506+-0x1acf)*(0x201a+-0x1*-0x5c+-0x1c8e),_0x9e009={};_0x9e009[_0x466144(0x1a0)]=_0xd2ee95,_0x9e009[_0x466144(0x19a)]=![];const _0x563a78={};_0x563a78[_0x466144(0x19a)]=!![],_0x563a78['reason']='superseded';const _0x113471={};_0x113471[_0x466144(0x10c)]=_0x563a78,await _0x2f7376[_0x466144(0x156)](_0x9e009,_0x113471),await _0x2f7376[_0x466144(0x149)]({'userId':_0xd2ee95,'code':_0x51f368,'createdAt':_0x5700ab,'createdAtDate':new Date(),'expiresAt':_0x4d4dc6,'used':![]});const _0x5183a2=_0x466144(0x16a)+'Here\x20is\x20your\x20secure\x204-digit\x20verification\x20code:\x0a'+_0x466144(0x11f)+_0x466144(0x11d)+_0x466144(0x19c);let _0x11d2cb=![];try{const _0x4f30bf=generateVerificationImage(_0x51f368),_0x52bf5d=new FormData();_0x52bf5d[_0x466144(0x192)](_0x466144(0x146),_0xd2ee95);const _0x4163dd={};_0x4163dd[_0x466144(0x19b)]='image/png';const _0xd8102=new Blob([_0x4f30bf],_0x4163dd);_0x52bf5d['append'](_0x466144(0x11b),_0xd8102,_0x466144(0x178)+_0x5700ab+'.png'),_0x52bf5d['append'](_0x466144(0x155),_0x5183a2),_0x52bf5d[_0x466144(0x192)](_0x466144(0x169),_0x466144(0x190));const _0x1b8e68={};_0x1b8e68['method']=_0x466144(0x10f),_0x1b8e68[_0x466144(0x158)]=_0x52bf5d;const _0x59988a=await fetch(_0x466144(0x114)+process.env.TELEGRAM_BOT_TOKEN+_0x466144(0x195),_0x1b8e68),_0x45e27d=await _0x59988a[_0x466144(0x18d)]();_0x11d2cb=_0x45e27d&&_0x45e27d['ok']===!![],!_0x11d2cb&&console[_0x466144(0x14f)](_0x466144(0x119),_0x45e27d);}catch(_0x27b324){console[_0x466144(0x14f)]('sendPhoto\x20exception:',_0x27b324['message']);}if(!_0x11d2cb)try{const _0x1ab45d={};_0x1ab45d[_0x466144(0x11c)]=_0x466144(0x124);const _0x1dc73d={};_0x1dc73d[_0x466144(0x146)]=_0xd2ee95,_0x1dc73d[_0x466144(0x169)]=_0x466144(0x190),_0x1dc73d[_0x466144(0x184)]='🔐\x20<b>HOOCOOH\x20MINER\x20·\x20Verify\x20It\x27s\x20you</b>\x0a\x0a'+('Your\x204-digit\x20verification\x20code:\x20<code>'+_0x51f368+_0x466144(0x163))+_0x466144(0x11d)+_0x466144(0x165),await fetch(_0x466144(0x114)+process.env.TELEGRAM_BOT_TOKEN+_0x466144(0x123),{'method':'POST','headers':_0x1ab45d,'body':JSON['stringify'](_0x1dc73d)}),_0x11d2cb=!![];}catch(_0x2f6405){console[_0x466144(0x121)](_0x466144(0x142),_0x2f6405[_0x466144(0x17e)]);}const _0x3c1162=await fetchBotUsername(process.env.TELEGRAM_BOT_TOKEN),_0x4d275d={};_0x4d275d['ok']=!![],_0x4d275d['expiresAt']=_0x4d4dc6,_0x4d275d[_0x466144(0x1a2)]=0x78,_0x4d275d['botUsername']='@'+_0x3c1162,_0x4d275d[_0x466144(0x17e)]=_0x466144(0x13f),_0x420842[_0x466144(0x151)](-0x622+0x150c+-0xe22)[_0x466144(0x18d)](_0x4d275d);return;}if(_0xcdec61===_0x466144(0x152)||_0xcdec61===_0x466144(0x16b)){const _0x268c21=String(_0x38f3fc||'')['trim']();if(!/^\d{4}$/[_0x466144(0x177)](_0x268c21)){const _0x14725e={};_0x14725e[_0x466144(0x121)]=_0x466144(0x15e),_0x420842['status'](0xb1*-0x31+0x1*0x1442+0xf2f)[_0x466144(0x18d)](_0x14725e);return;}const _0x3bc375=_0x5bdb7e[_0x466144(0x105)]('user_verification_codes'),_0x26c3f5={};_0x26c3f5[_0x466144(0x1a0)]=_0xd2ee95,_0x26c3f5[_0x466144(0x19a)]=![];const _0x28d4c0={};_0x28d4c0[_0x466144(0x131)]=-(-0x1*0x12c1+0x252+-0x838*-0x2);const _0x24e4d6={};_0x24e4d6[_0x466144(0x10d)]=_0x28d4c0;const _0x17b187=await _0x3bc375[_0x466144(0x18b)](_0x26c3f5,_0x24e4d6);if(!_0x17b187){const _0x1fd700={};_0x1fd700[_0x466144(0x121)]='No\x20active\x20verification\x20code\x20found.\x20Please\x20request\x20a\x20new\x20code.',_0x420842[_0x466144(0x151)](-0x758+0x1f14+-0x2b*0x84)[_0x466144(0x18d)](_0x1fd700);return;}const _0x382e4e=Date['now']();if(_0x382e4e>_0x17b187['expiresAt']){const _0x257e56={};_0x257e56[_0x466144(0x17f)]=_0x17b187[_0x466144(0x17f)];const _0x5aae42={};_0x5aae42[_0x466144(0x19a)]=!![],_0x5aae42['reason']=_0x466144(0x14e);const _0x15521c={};_0x15521c[_0x466144(0x10c)]=_0x5aae42,await _0x3bc375[_0x466144(0x107)](_0x257e56,_0x15521c);const _0x4561ac={};_0x4561ac[_0x466144(0x121)]=_0x466144(0x18e),_0x420842[_0x466144(0x151)](-0x6e*-0x24+0x224*-0xf+0x3a4*0x5)[_0x466144(0x18d)](_0x4561ac);return;}if(_0x17b187[_0x466144(0x10b)]!==_0x268c21){const _0x3a3f9c={};_0x3a3f9c[_0x466144(0x121)]=_0x466144(0x112),_0x420842[_0x466144(0x151)](-0xec5+0x1d*0x81+0x1b8)[_0x466144(0x18d)](_0x3a3f9c);return;}const _0xd398af={};_0xd398af[_0x466144(0x17f)]=_0x17b187[_0x466144(0x17f)];const _0x507f10={};_0x507f10[_0x466144(0x19a)]=!![],_0x507f10[_0x466144(0x128)]=_0x382e4e;const _0x37913d={};_0x37913d[_0x466144(0x10c)]=_0x507f10,await _0x3bc375[_0x466144(0x107)](_0xd398af,_0x37913d);const _0x2774d6={};_0x2774d6[_0x466144(0x17f)]=_0x49d31['_id'];const _0x53e5bd={};_0x53e5bd['isIdentityVerified']=!![],_0x53e5bd[_0x466144(0x1a5)]=_0x382e4e;const _0xc63a1d={};_0xc63a1d[_0x466144(0x10c)]=_0x53e5bd,await _0x151569[_0x466144(0x107)](_0x2774d6,_0xc63a1d);let _0xbf0f99=_0x49d31[_0x466144(0x108)];const _0x5b9ba7=String(_0x227f1a[_0x466144(0x158)]&&_0x227f1a[_0x466144(0x158)][_0x466144(0x166)]||_0x380fa6[_0x466144(0x166)]||_0x227f1a[_0x466144(0x144)]&&_0x227f1a[_0x466144(0x144)]['start_param']||'')[_0x466144(0x159)]();if(!_0xbf0f99&&_0x5b9ba7){const _0xbfe643=_0x5b9ba7[_0x466144(0x15c)](/^ref_/,'')[_0x466144(0x159)]();if(_0xbfe643&&/^\d+$/[_0x466144(0x177)](_0xbfe643)&&String(_0xbfe643)!==_0xd2ee95){_0xbf0f99=_0xbfe643,_0x49d31[_0x466144(0x108)]=_0xbfe643;const _0x15f2c1={};_0x15f2c1[_0x466144(0x17f)]=_0x49d31[_0x466144(0x17f)];const _0x2eddc1={};_0x2eddc1[_0x466144(0x108)]=_0xbfe643;const _0xd0d8cc={};_0xd0d8cc[_0x466144(0x10c)]=_0x2eddc1,await _0x151569[_0x466144(0x107)](_0x15f2c1,_0xd0d8cc);}}let _0x3964b6=Number(_0x49d31[_0x466144(0x12b)])||0x381*-0x1+-0xf6b+0x12ec,_0x298bb1=![];if(_0xbf0f99&&!_0x49d31[_0x466144(0x14a)]&&String(_0xbf0f99)!==_0xd2ee95){const _0x37c61d=await findUserById(_0x151569,_0xbf0f99);if(_0x37c61d&&String(_0x37c61d[_0x466144(0x136)])!==_0xd2ee95){const _0x7b539=0x19b0+-0x1*-0xa2a+-0x23a8;_0x3964b6+=_0x7b539,_0x49d31[_0x466144(0x12b)]=_0x3964b6;const _0x1986bc={};_0x1986bc[_0x466144(0x17f)]=_0x49d31[_0x466144(0x17f)];const _0x285544={};_0x285544[_0x466144(0x14a)]=!![],_0x285544[_0x466144(0x113)]=_0x382e4e,_0x285544['balance']=_0x3964b6;const _0x198d11={};_0x198d11[_0x466144(0x10c)]=_0x285544,await _0x151569[_0x466144(0x107)](_0x1986bc,_0x198d11);const _0x4ecf21={};_0x4ecf21[_0x466144(0x17f)]=_0x37c61d[_0x466144(0x17f)];const _0x1c3c3b={};_0x1c3c3b[_0x466144(0x162)]=0x1,_0x1c3c3b[_0x466144(0x10a)]=0x64,_0x1c3c3b['balance']=0x64;const _0xae1016={};_0xae1016[_0x466144(0x198)]=_0x1c3c3b,await _0x151569['updateOne'](_0x4ecf21,_0xae1016);const _0x57491b=_0x227f1a[_0x466144(0x170)][_0x466144(0x14b)]||_0x466144(0x193),_0x3b7fe3=_0x227f1a[_0x466144(0x170)][_0x466144(0x12f)]||_0x227f1a[_0x466144(0x170)][_0x466144(0x188)],_0x3f542f=_0x3b7fe3?_0x57491b+_0x466144(0x138)+_0x3b7fe3:'';notifyInviterReferralSuccess(process.env.TELEGRAM_BOT_TOKEN,_0x37c61d,_0x49d31,_0x3f542f)[_0x466144(0x125)](()=>{}),_0x298bb1=!![];}}const _0x551d49={};_0x551d49['ok']=!![],_0x551d49[_0x466144(0x137)]=!![],_0x551d49[_0x466144(0x1a5)]=_0x382e4e,_0x551d49[_0x466144(0x14c)]=_0x382e4e+(0x2617+-0x6*-0x39e+-0x3bb3)*(0xc5*-0x28+0x1*-0x195f+0xb47*0x5)*(-0x159b+-0x1*-0x313+-0x4*-0x4b1)*(-0xe6c+-0x1*0x1882+-0x156b*-0x2),_0x551d49[_0x466144(0x12b)]=_0x3964b6,_0x551d49[_0x466144(0x117)]=_0x298bb1,_0x551d49['message']=_0x466144(0x153),_0x420842[_0x466144(0x151)](0x1*0x21d+-0x1ce9+0x584*0x5)['json'](_0x551d49);return;}if(_0xcdec61===_0x466144(0x147)||_0xcdec61===_0x466144(0x130)){const _0x132d61=Boolean(_0x49d31&&_0x49d31['isIdentityVerified']===!![]&&_0x49d31[_0x466144(0x1a5)]&&Date[_0x466144(0x1a4)]()-Number(_0x49d31[_0x466144(0x1a5)])<(0x112d*0x1+-0x12db+0x1*0x1c6)*(0x71f+-0x368+-0x37b)*(0x20+-0x151c+0x1538)*(-0x1ffa*-0x1+0x1b5*0xb+-0x1*0x2ed9)),_0x12a762={};_0x12a762['ok']=!![],_0x12a762[_0x466144(0x145)]=_0x132d61,_0x420842[_0x466144(0x151)](0x2667+0xd6f+-0x330e)[_0x466144(0x18d)](_0x12a762);return;}const _0x33f657={};_0x33f657[_0x466144(0x121)]=_0x466144(0x110),_0x420842[_0x466144(0x151)](0x14cf+-0x1*-0x3bf+-0xda*0x1b)[_0x466144(0x18d)](_0x33f657);return;}const _0x1d1cc0=String(_0x380fa6['start_param']||_0x227f1a['query']&&_0x227f1a[_0x466144(0x144)][_0x466144(0x166)]||'')[_0x466144(0x159)]();if(_0x1d1cc0&&!_0x49d31[_0x466144(0x108)]){const _0x31a174=_0x1d1cc0[_0x466144(0x15c)](/^ref_/,'')['trim']();if(_0x31a174&&/^\d+$/[_0x466144(0x177)](_0x31a174)&&String(_0x31a174)!==_0xd2ee95){const _0x29097a=await findUserById(_0x151569,_0x31a174);if(_0x29097a&&String(_0x29097a[_0x466144(0x136)])!==_0xd2ee95){_0x49d31['referredBy']=String(_0x29097a['telegramId']);const _0x549b87=Boolean(_0x49d31['isIdentityVerified']===!![]&&_0x49d31[_0x466144(0x1a5)]&&_0xf03c3d-Number(_0x49d31[_0x466144(0x1a5)])<(0x214+0xb9+0x63*-0x7)*(0x17d+0x1*0x1ba7+0x94*-0x32)*(-0xc*0x14a+-0x1943+0x28f7)*(0x1be4+-0x1654+-0x1a8));if(_0x549b87&&!_0x49d31[_0x466144(0x14a)]){const _0x5446ee=-0x163*0x3+-0xe79+0xf1*0x14;_0x49d31[_0x466144(0x12b)]=(Number(_0x49d31[_0x466144(0x12b)])||0x1*0x193b+-0x1cae*0x1+-0x1*-0x373)+_0x5446ee;const _0x2280f8={};_0x2280f8[_0x466144(0x17f)]=_0x49d31[_0x466144(0x17f)];const _0x5e1bde={};_0x5e1bde[_0x466144(0x108)]=_0x49d31[_0x466144(0x108)],_0x5e1bde['referralRewarded']=!![],_0x5e1bde[_0x466144(0x113)]=_0xf03c3d,_0x5e1bde['balance']=_0x49d31[_0x466144(0x12b)];const _0x299874={};_0x299874[_0x466144(0x10c)]=_0x5e1bde,await _0x151569[_0x466144(0x107)](_0x2280f8,_0x299874);const _0x2248b4={};_0x2248b4['_id']=_0x29097a[_0x466144(0x17f)];const _0xd391ae={};_0xd391ae[_0x466144(0x162)]=0x1,_0xd391ae[_0x466144(0x10a)]=0x64,_0xd391ae['balance']=0x64;const _0x3e7b92={};_0x3e7b92[_0x466144(0x198)]=_0xd391ae,await _0x151569[_0x466144(0x107)](_0x2248b4,_0x3e7b92),notifyInviterReferralSuccess(process.env.TELEGRAM_BOT_TOKEN,_0x29097a,_0x49d31)['catch'](()=>{});}else{const _0x4b35a0={};_0x4b35a0[_0x466144(0x17f)]=_0x49d31[_0x466144(0x17f)];const _0x9d9cb7={};_0x9d9cb7[_0x466144(0x108)]=_0x49d31[_0x466144(0x108)],_0x9d9cb7[_0x466144(0x14a)]=![];const _0x3c31b3={};_0x3c31b3[_0x466144(0x10c)]=_0x9d9cb7,await _0x151569[_0x466144(0x107)](_0x4b35a0,_0x3c31b3);}}}}const _0x27696e=Math[_0x466144(0x187)](0xedf+0x369+-0x1247,Math[_0x466144(0x13c)](0x1*0xfec+0x812+-0x17f4,_0x49d31[_0x466144(0x157)]||0x39d+-0xb4b+0x7af)),_0x275589=getMultiplierForLevel(_0x27696e),_0x2588d5=LEVEL_NAMES[_0x27696e-(-0x10d*0xd+0x26ec+-0x1942)]||_0x466144(0x186),_0x5ba9f3=await fetchBotUsername(process.env.TELEGRAM_BOT_TOKEN),_0x31da47=(0x7*0x393+0x4*-0x60f+0x1*-0xb1)*(0xc47*-0x2+-0x15c4+0x1747*0x2)*(-0xcb0+-0x67*-0x5d+-0x1*0x187f)*(0xf28+0x1*-0x2323+0x17e3);let _0x35ead8=_0x49d31['adsCycleStartedAt']?Number(_0x49d31[_0x466144(0x12d)]):0x2066+-0x614+-0x1a52,_0x4bf5e7=Number(_0x49d31[_0x466144(0x129)]||-0x2b8*0x9+-0xfb0+0x808*0x5),_0x4119b8=Number(_0x49d31[_0x466144(0x111)]||-0x22cf*0x1+0x1fe0+0x2ef);if(_0x35ead8&&_0xf03c3d-_0x35ead8>=_0x31da47){_0x4bf5e7=0x1*0x463+-0x7*0x2+-0x455*0x1,_0x4119b8=-0x1c0a+-0x12*0x35+0x1fc4,_0x35ead8=null;const _0xf045c9={};_0xf045c9[_0x466144(0x17f)]=_0x49d31['_id'];const _0x36e698={};_0x36e698[_0x466144(0x129)]=0x0,_0x36e698[_0x466144(0x111)]=0x0,_0x36e698[_0x466144(0x12d)]=null;const _0x294001={};_0x294001[_0x466144(0x10c)]=_0x36e698,await _0x151569[_0x466144(0x107)](_0xf045c9,_0x294001);}const _0xd4f984={};_0xd4f984[_0x466144(0x17f)]=_0x49d31['_id'],_0x151569['updateOne'](_0xd4f984,{'$set':{'lastActiveAt':new Date()}})['catch'](()=>{}),_0x420842[_0x466144(0x151)](0xbca*0x2+0x236a+0x1d1b*-0x2)['json']({'telegramId':_0x49d31[_0x466144(0x136)],'firstName':_0x49d31[_0x466144(0x17b)]||_0x380fa6[_0x466144(0x197)]||_0x466144(0x15d),'username':_0x49d31['username']||_0x380fa6['username']||'','photoUrl':_0x49d31[_0x466144(0x148)]||_0x380fa6[_0x466144(0x168)]||'','level':_0x27696e,'minerLevel':_0x27696e,'minerMultiplier':_0x275589,'minerLevelName':_0x2588d5,'balance':_0x49d31[_0x466144(0x12b)],'lastMineCollectedAt':_0x49d31['lastMineCollectedAt'],'dailyCycle':_0x49d31[_0x466144(0x175)]||-0x185+0x557+-0x3d1,'dailyDayIndex':_0x49d31[_0x466144(0x115)]||0x5bf+-0x1*0xabc+0x4fd,'lastCheckinAt':_0x49d31[_0x466144(0x133)],'totalDailyEarned':_0x49d31[_0x466144(0x183)]||-0x432+-0x1e24*0x1+0x5b9*0x6,'mineReady':mineIsReady(_0x49d31[_0x466144(0x141)]),'mineIntervalMs':MINE_INTERVAL_MS,'dailyStatusNow':dailyStatus(_0x49d31[_0x466144(0x133)]),'adsWatchedToday':_0x4bf5e7,'adsEarnedToday':_0x4119b8,'adsCycleStartedAt':_0x35ead8,'recruitsCount':_0x49d31[_0x466144(0x162)]||0xd*0x1f6+-0x1139+-0x845,'refEarnings':_0x49d31[_0x466144(0x10a)]||0x86*-0x3c+-0x407+0x236f,'claimedMilestones':_0x49d31[_0x466144(0x185)]||[],'language':_0x49d31[_0x466144(0x17d)]||'en','languageSelected':_0x49d31[_0x466144(0x17a)]===!![],'termsAccepted':_0x49d31[_0x466144(0x150)]===!![],'isIdentityVerified':Boolean(_0x49d31[_0x466144(0x161)]===!![]&&_0x49d31[_0x466144(0x1a5)]&&_0xf03c3d-Number(_0x49d31[_0x466144(0x1a5)])<(0x1*-0x4fd+0xa00+0x1*-0x4eb)*(-0xd26+-0x73e+0x14a0)*(-0xcc*0x10+-0xdf4+0xd78*0x2)*(-0x287*-0xf+0x4e*0x6d+-0x4337)),'identityVerifiedAt':_0x49d31[_0x466144(0x1a5)]||-0xc20+0x1f9a+-0x22a*0x9,'referralRewarded':_0x49d31[_0x466144(0x14a)]===!![],'penaltyNotice':_0x49d31[_0x466144(0x18a)]||null,'deviceViolationsCount':Number(_0x49d31[_0x466144(0x127)]||-0x1f6+-0x3f*-0x85+-0x1ec5*0x1),'actionTokens':{'mine':createActionToken(_0xd2ee95,'mine'),'spin_watch_ad':createActionToken(_0xd2ee95,_0x466144(0x194)),'complete_task':createActionToken(_0xd2ee95,_0x466144(0x16e)),'checkin':createActionToken(_0xd2ee95,'checkin')},'boundWalletAddress':_0x49d31[_0x466144(0x18f)]||null,'botUsername':_0x5ba9f3,'watchAdReward':await((async()=>{const _0x3d112b=_0x466144;try{const _0x1f0182={};_0x1f0182['key']=_0x3d112b(0x106);const _0x3e6482=await _0x5bdb7e['collection'](_0x3d112b(0x176))['findOne'](_0x1f0182);return _0x3e6482&&typeof _0x3e6482[_0x3d112b(0x171)]===_0x3d112b(0x13a)&&_0x3e6482[_0x3d112b(0x171)]>-0x11ff+0x219e+-0xf9f?_0x3e6482[_0x3d112b(0x171)]:0xdc4+-0x1d94+0xfda;}catch(_0x54162c){return-0x9f*0x13+-0x1*0xb0d+0x16e4;}})())});}catch(_0x5e45f6){console[_0x466144(0x121)](_0x466144(0x1a1),_0x5e45f6);const _0x3badd6={};_0x3badd6['error']=_0x5e45f6['message']||'Server\x20error',_0x420842[_0x466144(0x151)](0x641*0x6+0x1585+-0x3917*0x1)[_0x466144(0x18d)](_0x3badd6);}};
+const { getDb } = require("../lib/mongodb");
+const { validateInitData } = require("../lib/telegramAuth");
+const { findOrCreateUser, findUserById } = require("../lib/userHelper");
+const { mineIsReady, dailyStatus, MINE_INTERVAL_MS, LEVEL_NAMES, getMultiplierForLevel } = require("../lib/gameLogic");
+const { generateVerificationImage } = require("../lib/verificationImage");
+const { notifyInviterReferralSuccess } = require("../lib/miningReminder");
+const { createActionToken } = require("../lib/actionSigner");
+
+let cachedBotUsername = null;
+async function fetchBotUsername(token) {
+  if (cachedBotUsername) return cachedBotUsername;
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 1500);
+    const res = await fetch(`https://api.telegram.org/bot${token}/getMe`, { signal: controller.signal });
+    clearTimeout(timeout);
+    const data = await res.json();
+    if (data.ok && data.result && data.result.username) {
+      cachedBotUsername = data.result.username;
+      return cachedBotUsername;
+    }
+  } catch(e) {}
+  return "hoocooh_miner_bot";
+}
+
+module.exports = async (req, res) => {
+  if (req.method !== "GET" && req.method !== "POST") {
+    res.status(405).json({ error: "Method not allowed" });
+    return;
+  }
+
+  if (!process.env.TELEGRAM_BOT_TOKEN) {
+    res.status(500).json({ error: "TELEGRAM_BOT_TOKEN is not set in Vercel settings" });
+    return;
+  }
+
+  const initData = req.headers["x-telegram-init-data"];
+  const tgUser = validateInitData(initData, process.env.TELEGRAM_BOT_TOKEN);
+  if (!tgUser) {
+    res.status(401).json({ error: "Invalid session - reopen app from Telegram" });
+    return;
+  }
+  const telegramId = String(tgUser.id);
+  const clientIp = (
+    req.headers["x-forwarded-for"] ||
+    req.headers["x-real-ip"] ||
+    req.socket?.remoteAddress ||
+    ""
+  ).split(",")[0].trim();
+  const clientDeviceId = String(req.headers["x-device-id"] || (req.body && req.body.deviceId) || (req.query && req.query.deviceId) || "").trim();
+  const prevUid = String(req.headers["x-prev-uid"] || (req.body && req.body.prevUid) || (req.query && req.query.prevUid) || "").trim();
+
+  try {
+    const now = Date.now();
+    const db = await getDb();
+    const users = db.collection("users");
+
+    // Unified user retrieval, multi-type ID lookup, and multi-account check
+    let user = await findOrCreateUser(users, tgUser, { clientIp, clientDeviceId, prevUid });
+
+    if (user && user.isBanned) {
+      if (user.isSuspendedMultipleAccount || user.isMultipleAccountBlocked) {
+        let primaryAccount = user.primaryAccount;
+        if (!primaryAccount && user.primaryTelegramId) {
+          const prim = await findUserById(users, user.primaryTelegramId);
+          if (prim) {
+            primaryAccount = {
+              telegramId: prim.telegramId,
+              name: prim.firstName || prim.name || "Original User",
+              username: prim.username || "N/A",
+              photoUrl: prim.photoUrl || ""
+            };
+          }
+        }
+        res.status(200).json({
+          isBanned: true,
+          isMultipleAccountBlocked: true,
+          detectionType: user.detectionType || "ip",
+          primaryAccount: primaryAccount || null,
+          banReason: user.banReason || "Multiple accounts detected on same network/device",
+          message: "Multiple accounts are not allowed on the same network or device! Please return to your original account or connect through a different network/VPN.",
+          telegramId: user.telegramId
+        });
+        return;
+      }
+
+      res.status(200).json({
+        isBanned: true,
+        banReason: user.banReason || "Your account has been suspended",
+        telegramId: user.telegramId
+      });
+      return;
+    }
+
+    // POST request handling (e.g. set_language)
+    if (req.method === "POST") {
+      const { action, language, code } = req.body || {};
+      if (action === "set_language" && language) {
+        const validLangs = ["en", "ru", "ar"];
+        const finalLang = validLangs.includes(language) ? language : "en";
+        await users.updateOne({ _id: user._id }, { $set: { language: finalLang, languageSelected: true, updatedAt: Date.now() } });
+        res.status(200).json({ ok: true, language: finalLang, languageSelected: true });
+        return;
+      }
+      if (action === "accept_terms") {
+        const tid = String(user.telegramId);
+        const numId = Number(user.telegramId);
+        await users.updateMany(
+          { $or: [{ _id: user._id }, { telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])] },
+          { $set: { termsAccepted: true, termsAcceptedAt: Date.now() } }
+        );
+        res.status(200).json({ ok: true, termsAccepted: true });
+        return;
+      }
+
+      // Verification: Request 4-digit verification code image
+      if (action === "request_code" || action === "request_verification_code") {
+        const now = Date.now();
+        const codesCol = db.collection("user_verification_codes");
+
+        // Duplicate suppression: if a code was created within the last 20 seconds, reuse it and don't re-send
+        const recentCode = await codesCol.findOne(
+          { userId: telegramId, used: false },
+          { sort: { createdAt: -1 } }
+        );
+        if (recentCode && (now - recentCode.createdAt < 20000)) {
+          const botUser = await fetchBotUsername(process.env.TELEGRAM_BOT_TOKEN);
+          res.status(200).json({
+            ok: true,
+            expiresAt: recentCode.expiresAt,
+            validitySeconds: Math.max(0, Math.floor((recentCode.expiresAt - now) / 1000)),
+            botUsername: `@${botUser}`,
+            message: "A verification code image was sent to your bot."
+          });
+          return;
+        }
+
+        const randomCode = Math.floor(1000 + Math.random() * 9000);
+        const codeStr = String(randomCode);
+        const expiresAt = now + (2 * 60 * 1000); // 2 minutes
+
+        await codesCol.updateMany(
+          { userId: telegramId, used: false },
+          { $set: { used: true, reason: "superseded" } }
+        );
+
+        await codesCol.insertOne({
+          userId: telegramId,
+          code: codeStr,
+          createdAt: now,
+          createdAtDate: new Date(),
+          expiresAt,
+          used: false
+        });
+
+        const captionText =
+          `🔐 <b>HOOCOOH MINER · Verify It's you</b>\n\n` +
+          `Here is your secure 4-digit verification code:\n` +
+          `👉 <b>Check the image above!</b>\n\n` +
+          `⏱ <b>Validity: 2 minutes</b>\n` +
+          `<i>Enter this 4-digit code in the app to unlock access. Never share this code.</i>`;
+
+        let sentSuccess = false;
+        try {
+          const imageBuffer = generateVerificationImage(codeStr);
+          const formData = new FormData();
+          formData.append("chat_id", telegramId);
+          const blob = new Blob([imageBuffer], { type: "image/png" });
+          formData.append("photo", blob, `hoocooh_verify_${now}.png`);
+          formData.append("caption", captionText);
+          formData.append("parse_mode", "HTML");
+
+          const tgRes = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+            method: "POST",
+            body: formData
+          });
+          const tgData = await tgRes.json();
+          sentSuccess = tgData && tgData.ok === true;
+          if (!sentSuccess) {
+            console.warn("sendPhoto by FormData failed:", tgData);
+          }
+        } catch (photoErr) {
+          console.warn("sendPhoto exception:", photoErr.message);
+        }
+
+        // Fallback: send text message if sendPhoto fails
+        if (!sentSuccess) {
+          try {
+            await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                chat_id: telegramId,
+                parse_mode: "HTML",
+                text:
+                  `🔐 <b>HOOCOOH MINER · Verify It's you</b>\n\n` +
+                  `Your 4-digit verification code: <code>${codeStr}</code>\n\n` +
+                  `⏱ <b>Validity: 2 minutes</b>\n` +
+                  `<i>Enter this 4-digit code in the app to unlock access.</i>`
+              })
+            });
+            sentSuccess = true;
+          } catch (msgErr) {
+            console.error("sendMessage fallback error:", msgErr.message);
+          }
+        }
+
+        const botUser = await fetchBotUsername(process.env.TELEGRAM_BOT_TOKEN);
+        res.status(200).json({
+          ok: true,
+          expiresAt,
+          validitySeconds: 120,
+          botUsername: `@${botUser}`,
+          message: "A 4-digit code was sent to your Telegram bot."
+        });
+        return;
+      }
+
+      // Verification: Submit 4-digit code
+      if (action === "submit_code" || action === "submit_verification_code") {
+        const cleanCode = String(code || "").trim();
+        if (!/^\d{4}$/.test(cleanCode)) {
+          res.status(400).json({ error: "Please enter a valid 4-digit code." });
+          return;
+        }
+
+        const codesCol = db.collection("user_verification_codes");
+        const activeRecord = await codesCol.findOne(
+          { userId: telegramId, used: false },
+          { sort: { createdAt: -1 } }
+        );
+
+        if (!activeRecord) {
+          res.status(400).json({ error: "No active verification code found. Please request a new code." });
+          return;
+        }
+
+        const now = Date.now();
+        if (now > activeRecord.expiresAt) {
+          await codesCol.updateOne({ _id: activeRecord._id }, { $set: { used: true, reason: "expired" } });
+          res.status(400).json({ error: "Verification code has expired (2 minutes limit). Please request a new code." });
+          return;
+        }
+
+        if (activeRecord.code !== cleanCode) {
+          res.status(400).json({ error: "Incorrect verification code! Check the image in @hoocoohmine_bot and try again." });
+          return;
+        }
+
+        await codesCol.updateOne(
+          { _id: activeRecord._id },
+          { $set: { used: true, verifiedAt: now } }
+        );
+
+        await users.updateOne(
+          { _id: user._id },
+          { $set: { isIdentityVerified: true, identityVerifiedAt: now } }
+        );
+
+        // Process referral: reward inviter ONLY when the recruited user completes verification!
+        let referrerId = user.referredBy;
+        const paramToTest = String((req.body && req.body.start_param) || tgUser.start_param || (req.query && req.query.start_param) || "").trim();
+        if (!referrerId && paramToTest) {
+          const parsedId = paramToTest.replace(/^ref_/, "").trim();
+          if (parsedId && /^\d+$/.test(parsedId) && String(parsedId) !== telegramId) {
+            referrerId = parsedId;
+            user.referredBy = parsedId;
+            await users.updateOne({ _id: user._id }, { $set: { referredBy: parsedId } });
+          }
+        }
+
+        let userBalance = Number(user.balance) || 0;
+        let referralRewardGiven = false;
+
+        if (referrerId && !user.referralRewarded && String(referrerId) !== telegramId) {
+          const inviter = await findUserById(users, referrerId);
+          if (inviter && String(inviter.telegramId) !== telegramId) {
+            const welcomeBonus = 50; // New verified recruit gets 50 HOOCOOH
+            userBalance += welcomeBonus;
+            user.balance = userBalance;
+
+            // Mark referral as rewarded on this user
+            await users.updateOne(
+              { _id: user._id },
+              {
+                $set: {
+                  referralRewarded: true,
+                  referralRewardedAt: now,
+                  balance: userBalance
+                }
+              }
+            );
+
+            // Reward inviter: +1 recruit, +100 HOOCOOH to earnings and balance
+            await users.updateOne(
+              { _id: inviter._id },
+              {
+                $inc: {
+                  recruitsCount: 1,
+                  refEarnings: 100,
+                  balance: 100
+                }
+              }
+            );
+
+            // Notify inviter via Telegram bot with Open HOOCOOH Mine button
+            const reqProto = req.headers["x-forwarded-proto"] || "https";
+            const reqHost = req.headers["x-forwarded-host"] || req.headers.host;
+            const userBaseUrl = reqHost ? `${reqProto}://${reqHost}` : "";
+            notifyInviterReferralSuccess(process.env.TELEGRAM_BOT_TOKEN, inviter, user, userBaseUrl).catch(() => {});
+
+            referralRewardGiven = true;
+          }
+        }
+
+        res.status(200).json({
+          ok: true,
+          verified: true,
+          identityVerifiedAt: now,
+          expiresAt: now + (24 * 60 * 60 * 1000),
+          balance: userBalance,
+          referralRewardGiven: referralRewardGiven,
+          message: "Identity verified successfully!"
+        });
+        return;
+      }
+
+      // Verification: Check status (24 hours validity check)
+      if (action === "check_status" || action === "check_verification_status") {
+        const isVerified24h = Boolean(
+          user &&
+          user.isIdentityVerified === true &&
+          user.identityVerifiedAt &&
+          (Date.now() - Number(user.identityVerifiedAt) < 24 * 60 * 60 * 1000)
+        );
+        res.status(200).json({
+          ok: true,
+          isVerified: isVerified24h
+        });
+        return;
+      }
+
+      res.status(400).json({ error: "Unknown action" });
+      return;
+    }
+
+    // Process Referral if provided and not yet bound (DO NOT reward until verified!)
+    const rawParam = String(tgUser.start_param || (req.query && req.query.start_param) || "").trim();
+    if (rawParam && !user.referredBy) {
+      const inviterId = rawParam.replace(/^ref_/, "").trim();
+      if (inviterId && /^\d+$/.test(inviterId) && String(inviterId) !== telegramId) {
+        const inviter = await findUserById(users, inviterId);
+        if (inviter && String(inviter.telegramId) !== telegramId) {
+          user.referredBy = String(inviter.telegramId);
+
+          const isVerifiedNow = Boolean(
+            user.isIdentityVerified === true &&
+            user.identityVerifiedAt &&
+            (now - Number(user.identityVerifiedAt) < 24 * 60 * 60 * 1000)
+          );
+
+          if (isVerifiedNow && !user.referralRewarded) {
+            const welcomeBonus = 50; // Verified recruit gets 50 HOOCOOH
+            user.balance = (Number(user.balance) || 0) + welcomeBonus;
+
+            await users.updateOne(
+              { _id: user._id },
+              { $set: { referredBy: user.referredBy, referralRewarded: true, referralRewardedAt: now, balance: user.balance } }
+            );
+
+            // Reward inviter: +1 recruit, +100 HOOCOOH to earnings and balance
+            await users.updateOne(
+              { _id: inviter._id },
+              {
+                $inc: {
+                  recruitsCount: 1,
+                  refEarnings: 100,
+                  balance: 100
+                }
+              }
+            );
+
+            // Notify inviter via Telegram bot matching media_1791524423871.png
+            notifyInviterReferralSuccess(process.env.TELEGRAM_BOT_TOKEN, inviter, user).catch(() => {});
+          } else {
+            // Unverified: simply record referredBy. Inviter gets NOTHING until verification!
+            await users.updateOne(
+              { _id: user._id },
+              { $set: { referredBy: user.referredBy, referralRewarded: false } }
+            );
+          }
+        }
+      }
+    }
+
+    const minerLevel = Math.max(1, Math.min(10, user.minerLevel || 1));
+    const minerMultiplier = getMultiplierForLevel(minerLevel);
+    const minerLevelName = LEVEL_NAMES[minerLevel - 1] || "Starter";
+
+    const botUsername = await fetchBotUsername(process.env.TELEGRAM_BOT_TOKEN);
+    const CYCLE_MS = 24 * 60 * 60 * 1000;
+    let cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
+    let watchedToday = Number(user.adsWatchedToday || 0);
+    let earnedToday = Number(user.adsEarnedToday || 0);
+
+    if (cycleStart && (now - cycleStart >= CYCLE_MS)) {
+      watchedToday = 0;
+      earnedToday = 0;
+      cycleStart = null;
+      await users.updateOne({ _id: user._id }, {
+        $set: { adsWatchedToday: 0, adsEarnedToday: 0, adsCycleStartedAt: null }
+      });
+    }
+
+    users.updateOne({ _id: user._id }, { $set: { lastActiveAt: new Date() } }).catch(() => {});
+
+    res.status(200).json({
+      telegramId: user.telegramId,
+      firstName: user.firstName || tgUser.first_name || "Miner",
+      username: user.username || tgUser.username || "",
+      photoUrl: user.photoUrl || tgUser.photo_url || "",
+      level: minerLevel,
+      minerLevel: minerLevel,
+      minerMultiplier: minerMultiplier,
+      minerLevelName: minerLevelName,
+      balance: user.balance,
+      lastMineCollectedAt: user.lastMineCollectedAt,
+      dailyCycle: user.dailyCycle || 1,
+      dailyDayIndex: user.dailyDayIndex || 0,
+      lastCheckinAt: user.lastCheckinAt,
+      totalDailyEarned: user.totalDailyEarned || 0,
+      mineReady: mineIsReady(user.lastMineCollectedAt),
+      mineIntervalMs: MINE_INTERVAL_MS,
+      dailyStatusNow: dailyStatus(user.lastCheckinAt),
+      adsWatchedToday: watchedToday,
+      adsEarnedToday: earnedToday,
+      adsCycleStartedAt: cycleStart,
+      recruitsCount: user.recruitsCount || 0,
+      refEarnings: user.refEarnings || 0,
+      claimedMilestones: user.claimedMilestones || [],
+      language: user.language || "en",
+      languageSelected: user.languageSelected === true,
+      termsAccepted: user.termsAccepted === true,
+      isIdentityVerified: Boolean(
+        user.isIdentityVerified === true &&
+        user.identityVerifiedAt &&
+        (now - Number(user.identityVerifiedAt) < 24 * 60 * 60 * 1000)
+      ),
+      identityVerifiedAt: user.identityVerifiedAt || 0,
+      referralRewarded: user.referralRewarded === true,
+      penaltyNotice: user.penaltyNotice || null,
+      deviceViolationsCount: Number(user.deviceViolationsCount || 0),
+      actionTokens: {
+        mine: createActionToken(telegramId, "mine"),
+        spin_watch_ad: createActionToken(telegramId, "spin_watch_ad"),
+        complete_task: createActionToken(telegramId, "complete_task"),
+        checkin: createActionToken(telegramId, "checkin")
+      },
+      boundWalletAddress: user.boundWalletAddress || null,
+      botUsername: botUsername,
+      watchAdReward: (await (async () => {
+        try {
+          const s = await db.collection("settings").findOne({ key: "app_settings" });
+          return (s && typeof s.watchAdReward === "number" && s.watchAdReward > 0) ? s.watchAdReward : 10;
+        } catch(e){ return 10; }
+      })())
+    });
+  } catch (err) {
+    console.error("user.js error:", err);
+    res.status(500).json({ error: err.message || "Server error" });
+  }
+};

@@ -1,1 +1,224 @@
-function _0x35fb(_0x5a6063,_0x34ced8){_0x5a6063=_0x5a6063-(0x1c70+0x21ed+0x1*-0x3ccf);const _0x580181=_0x2f9e();let _0x343460=_0x580181[_0x5a6063];if(_0x35fb['cTfdqg']===undefined){var _0x43d77f=function(_0xc7be97){const _0xee1d8c='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x4e3e02='',_0x13533f='';for(let _0x1ffd69=0x11*0x1cd+-0x38*-0x68+-0x355d,_0x107fb2,_0x3318d9,_0xa21fd5=0x1*-0x8ec+-0x1afd+0x13d*0x1d;_0x3318d9=_0xc7be97['charAt'](_0xa21fd5++);~_0x3318d9&&(_0x107fb2=_0x1ffd69%(0x1*0x869+0xcc7*-0x1+0x21*0x22)?_0x107fb2*(-0x1*0x1253+0x217d+-0xeea)+_0x3318d9:_0x3318d9,_0x1ffd69++%(0x224d+-0xf9d*0x1+-0x12ac))?_0x4e3e02+=String['fromCharCode'](-0x5ae*-0x3+0x6*0x463+-0x2a5d&_0x107fb2>>(-(-0x6d*0x2f+-0x20e6+0x34eb)*_0x1ffd69&0x173f+0x13+-0x174c)):0x34+-0x25a1+-0x367*-0xb){_0x3318d9=_0xee1d8c['indexOf'](_0x3318d9);}for(let _0x4c18e8=0x3*0x346+0x1eac+-0x2*0x143f,_0x2384e0=_0x4e3e02['length'];_0x4c18e8<_0x2384e0;_0x4c18e8++){_0x13533f+='%'+('00'+_0x4e3e02['charCodeAt'](_0x4c18e8)['toString'](-0x854+0x66c+0x15*0x18))['slice'](-(0x1*0x12d+0xc56*-0x1+0xb2b));}return decodeURIComponent(_0x13533f);};_0x35fb['zQAfNl']=_0x43d77f,_0x35fb['evYovS']={},_0x35fb['cTfdqg']=!![];}const _0x171f54=_0x580181[-0xe12+-0x12*-0xd5+-0x2*0x74];_0x35fb['pztpdx']!==_0x171f54&&(_0x35fb['evYovS']={},_0x35fb['pztpdx']=_0x171f54);const _0x2de69f=_0x35fb['evYovS'][_0x5a6063];return _0x2de69f===undefined?(_0x343460=_0x35fb['zQAfNl'](_0x343460),_0x35fb['evYovS'][_0x5a6063]=_0x343460):_0x343460=_0x2de69f,_0x343460;}const _0x12de09=_0x35fb;(function(_0x56effc,_0x3f5268){const _0x4b2ac6=_0x35fb,_0x23dd53=_0x56effc();while(!![]){try{const _0x283226=-parseInt(_0x4b2ac6(0x197))/(-0x1f13+-0x10e9*0x1+0x2ffd)*(-parseInt(_0x4b2ac6(0x1be))/(0x214f+-0x1f21+-0x22c))+-parseInt(_0x4b2ac6(0x1b1))/(-0x1*-0x2b+-0x6*0x7+0x2)*(parseInt(_0x4b2ac6(0x19b))/(-0x210f+-0x18b3+-0x1fe*-0x1d))+parseInt(_0x4b2ac6(0x1bb))/(-0x213f*-0x1+0x29*-0x4+0x2096*-0x1)*(-parseInt(_0x4b2ac6(0x1c2))/(0x1b23+0x1c9+-0x1ce6))+-parseInt(_0x4b2ac6(0x19a))/(0x6*-0x657+0x25a0+0x71)+-parseInt(_0x4b2ac6(0x1b9))/(-0x1*0x1b86+-0xcde+0xa1b*0x4)+parseInt(_0x4b2ac6(0x1a7))/(-0x26f6+0xbf*0x4+-0x7*-0x525)*(parseInt(_0x4b2ac6(0x193))/(0x1b5+-0x25e4+0xc13*0x3))+parseInt(_0x4b2ac6(0x1cd))/(0x1*0x104e+0x6af*0x3+0x298*-0xe);if(_0x283226===_0x3f5268)break;else _0x23dd53['push'](_0x23dd53['shift']());}catch(_0x54ea4b){_0x23dd53['push'](_0x23dd53['shift']());}}}(_0x2f9e,-0x29e9f+0xd0092*-0x1+0x16e19b));const crypto=require('crypto'),{getDb}=require(_0x12de09(0x1c5)),{validateInitData}=require('../lib/telegramAuth'),CHALLENGE_EXPIRY_MS=(0x873+-0x10fe+0x903)*(0x1a49+0x6b*0x3+-0x16*0x113),TOKEN_EXPIRY_MS=(0x1504*0x1+0x1c*0x2c+-0x197a)*(0x217d+0x1a35+-0x37ca);module[_0x12de09(0x1ac)]=async(_0x2061ee,_0x4137be)=>{const _0x8586c=_0x12de09;if(_0x2061ee[_0x8586c(0x1b7)]!==_0x8586c(0x18f)){const _0x876520={};_0x876520['error']='Method\x20not\x20allowed',_0x4137be[_0x8586c(0x1a0)](0x224d+-0xf9d*0x1+-0x111b)[_0x8586c(0x199)](_0x876520);return;}const _0x2dab8f=process.env.TELEGRAM_BOT_TOKEN;if(!_0x2dab8f){const _0x1aaa3a={};_0x1aaa3a[_0x8586c(0x1a9)]='TELEGRAM_BOT_TOKEN\x20is\x20not\x20configured',_0x4137be[_0x8586c(0x1a0)](0x1a52+0x28*0x97+-0x2ff6)[_0x8586c(0x199)](_0x1aaa3a);return;}const _0x5ac904=_0x2061ee['headers']['x-telegram-init-data'],_0x363608=validateInitData(_0x5ac904,_0x2dab8f);if(!_0x363608){const _0x23d66e={};_0x23d66e[_0x8586c(0x1a9)]='Invalid\x20session\x20-\x20reopen\x20app\x20from\x20Telegram',_0x4137be[_0x8586c(0x1a0)](-0x20e6+0x1209+0x106e)[_0x8586c(0x199)](_0x23d66e);return;}const {action:_0x29a481}=_0x2061ee[_0x8586c(0x1a5)]||{},_0x464705=String(_0x363608['id']);try{const _0x257710=await getDb(),_0x39800a=_0x257710[_0x8586c(0x19d)](_0x8586c(0x1a3)),_0x4c096c=_0x257710['collection']('captcha_challenges'),_0x57cb12=_0x257710['collection'](_0x8586c(0x1a6)),_0x3e981f={};_0x3e981f[_0x8586c(0x19c)]=_0x464705;let _0x40ccf6=await _0x39800a[_0x8586c(0x191)]({'$or':[_0x3e981f,{'telegramId':Number(_0x464705)}]});if(_0x40ccf6&&_0x40ccf6[_0x8586c(0x1b8)]){const _0x3290dd={};_0x3290dd[_0x8586c(0x1a9)]=_0x40ccf6[_0x8586c(0x1a8)]||'Your\x20account\x20has\x20been\x20permanently\x20suspended\x20due\x20to\x20security\x20violation.',_0x3290dd[_0x8586c(0x1b8)]=!![],_0x4137be['status'](-0x26ca+-0x24bc*0x1+0x4d19)['json'](_0x3290dd);return;}const _0x174de4=Date[_0x8586c(0x1b6)]();async function _0x4b6440(_0x1860f3){const _0x53a88e=_0x8586c,_0x3cc746={};_0x3cc746['isHighRiskHacker']=!![],_0x3cc746['isSuspicious']=!![],_0x3cc746[_0x53a88e(0x19e)]=_0x53a88e(0x1bf),_0x3cc746['suspiciousReason']=_0x1860f3,_0x3cc746['flaggedAt']=_0x174de4;const _0x511d82=_0x3cc746;if(_0x40ccf6){const _0xf0112b={};_0xf0112b[_0x53a88e(0x1b5)]=_0x40ccf6['_id'];const _0x35d12a={};_0x35d12a[_0x53a88e(0x192)]=_0x511d82,await _0x39800a[_0x53a88e(0x1c0)](_0xf0112b,_0x35d12a);}else{const _0x3d6b36={};_0x3d6b36[_0x53a88e(0x19c)]=_0x464705;const _0x5a382e={};_0x5a382e[_0x53a88e(0x192)]=_0x511d82;const _0x1923a3={};_0x1923a3[_0x53a88e(0x196)]=!![],await _0x39800a[_0x53a88e(0x1c0)](_0x3d6b36,_0x5a382e,_0x1923a3);}}if(_0x29a481===_0x8586c(0x1a2)){const _0xe7bc6f=crypto[_0x8586c(0x195)](-0x138e+0x9de+-0x4*-0x270)[_0x8586c(0x19f)](_0x8586c(0x1ae)),_0x442e01=Math[_0x8586c(0x1c6)](Math[_0x8586c(0x1ca)]()*(0x1*-0x1fff+0x775+0x4*0x65c-(0x9e2+0x2703+-0x3095*0x1)+(-0x2*-0x160+0x1*-0xc87+0x9c8)))+(0x3b3+0x1083+-0x13e6),_0x21fa5c=Math[_0x8586c(0x1c6)](Math[_0x8586c(0x1ca)]()*(-0x1ae1+0x1909+0x22d-(-0xb*-0x41+0x1ec5*-0x1+0x1c13)+(-0x3d5+0x1*0x65d+-0x287)))+(0x2683+-0x4*0xbf+-0x236e);await _0x4c096c[_0x8586c(0x1b3)]({'challengeId':_0xe7bc6f,'userId':_0x464705,'targetX':_0x442e01,'targetY':_0x21fa5c,'createdAt':_0x174de4,'createdAtDate':new Date(),'used':![]});const _0x5130f0={};_0x5130f0['ok']=!![],_0x5130f0[_0x8586c(0x190)]=_0xe7bc6f,_0x5130f0[_0x8586c(0x1ab)]=_0x442e01,_0x5130f0[_0x8586c(0x1b2)]=_0x21fa5c,_0x4137be[_0x8586c(0x1a0)](-0x1688+-0x217a+0x12ee*0x3)[_0x8586c(0x199)](_0x5130f0);return;}if(_0x29a481===_0x8586c(0x1c7)){const {challengeId:_0x13615f,solvedX:_0x37cb28,timeElapsed:_0x27ed53,trail:_0x331ab1}=_0x2061ee['body']||{};if(!_0x13615f||typeof _0x37cb28!==_0x8586c(0x1bc)){const _0x459dff={};_0x459dff[_0x8586c(0x1a9)]=_0x8586c(0x1c9),_0x4137be[_0x8586c(0x1a0)](-0x22f+0x2*0x65b+0x2d*-0x33)['json'](_0x459dff);return;}const _0x499acc=await _0x4c096c[_0x8586c(0x191)]({'challengeId':_0x13615f,'userId':{'$in':[_0x464705,Number(_0x464705),_0x363608['id']]},'used':![]});if(!_0x499acc){const _0x2153fb=Number(_0x40ccf6&&_0x40ccf6['captchaStrikes']?_0x40ccf6['captchaStrikes']:-0xbe1+0x4*-0x22b+0x148d)+(0x7*0x2b4+-0x2321+0x33e*0x5);if(_0x2153fb>=0xf7f+-0x1c8d+-0x1de*-0x7){await _0x4b6440(_0x8586c(0x18e));const _0xf33acd={};_0xf33acd['error']=_0x8586c(0x1c8),_0x4137be[_0x8586c(0x1a0)](0x2*0xbee+-0x21d8+0xb8c)['json'](_0xf33acd);return;}if(_0x40ccf6){const _0x384391={};_0x384391[_0x8586c(0x1b5)]=_0x40ccf6['_id'];const _0x327db7={};_0x327db7[_0x8586c(0x1c1)]=_0x2153fb;const _0x58c594={};_0x58c594[_0x8586c(0x192)]=_0x327db7,await _0x39800a[_0x8586c(0x1c0)](_0x384391,_0x58c594);}const _0x54330f={};_0x54330f[_0x8586c(0x1a9)]=_0x8586c(0x1cb),_0x4137be[_0x8586c(0x1a0)](0x10f*-0x1+0x3c8+-0x129)[_0x8586c(0x199)](_0x54330f);return;}const _0x4a71f4={};_0x4a71f4['_id']=_0x499acc[_0x8586c(0x1b5)];const _0x13455d={};_0x13455d['used']=!![],_0x13455d['verifiedAt']=_0x174de4;const _0x501941={};_0x501941[_0x8586c(0x192)]=_0x13455d,await _0x4c096c[_0x8586c(0x1c0)](_0x4a71f4,_0x501941);if(_0x174de4-_0x499acc[_0x8586c(0x1ba)]>CHALLENGE_EXPIRY_MS){const _0x5cf373={};_0x5cf373['error']='Challenge\x20expired.\x20Please\x20try\x20again.',_0x4137be[_0x8586c(0x1a0)](-0x3db*-0x7+0x1*-0x1817+-0x13*0x12)['json'](_0x5cf373);return;}const _0x4f5f4a=Number(_0x27ed53)||-0x5*0x451+0x7d0+0x8d*0x19;if(_0x4f5f4a<0x1a*0xd+-0x6e*0x9+0x368){const _0x31b122=Number(_0x40ccf6&&_0x40ccf6[_0x8586c(0x1c1)]?_0x40ccf6[_0x8586c(0x1c1)]:0xc4+0x1*-0x115f+-0x109b*-0x1)+(0x77*-0x2f+0x6d*0x4a+-0x1*0x9a8);if(_0x31b122>=0x2a4+-0x1*0xb11+0x870){await _0x4b6440(_0x8586c(0x1cc));const _0x3d90da={};_0x3d90da['error']=_0x8586c(0x1c4),_0x4137be['status'](0x12d2+-0xbc+-0x11a*0xf)[_0x8586c(0x199)](_0x3d90da);return;}const _0x536e67={};_0x536e67['captchaStrikes']=_0x31b122;const _0x5727e1={};_0x5727e1['$set']=_0x536e67;if(_0x40ccf6)await _0x39800a[_0x8586c(0x1c0)]({'_id':_0x40ccf6[_0x8586c(0x1b5)]},_0x5727e1);const _0x313104={};_0x313104['error']=_0x8586c(0x1c3),_0x4137be[_0x8586c(0x1a0)](0xb*-0x227+0x2*0x8ac+0x7e5)[_0x8586c(0x199)](_0x313104);return;}if(!Array[_0x8586c(0x1ad)](_0x331ab1)||_0x331ab1[_0x8586c(0x1bd)]<0xe0+-0xa8c+0x9af*0x1){const _0x5b7a7a=Number(_0x40ccf6&&_0x40ccf6['captchaStrikes']?_0x40ccf6[_0x8586c(0x1c1)]:-0x8f0+-0xa*0x1bb+0x1a3e)+(-0x20dd+0xff2+0x10ec);if(_0x5b7a7a>=-0x2*0xf40+-0x913*0x2+0x1*0x30a9){await _0x4b6440('Synthetic\x20touch\x20event\x20/\x20headless\x20script\x20tampering\x20detected');const _0x5aa237={};_0x5aa237[_0x8586c(0x1a9)]=_0x8586c(0x1af),_0x4137be[_0x8586c(0x1a0)](0x5*-0x279+-0x966+0x1753)[_0x8586c(0x199)](_0x5aa237);return;}const _0x99555d={};_0x99555d[_0x8586c(0x1c1)]=_0x5b7a7a;const _0xbf369c={};_0xbf369c[_0x8586c(0x192)]=_0x99555d;if(_0x40ccf6)await _0x39800a[_0x8586c(0x1c0)]({'_id':_0x40ccf6[_0x8586c(0x1b5)]},_0xbf369c);const _0x33fd6d={};_0x33fd6d[_0x8586c(0x1a9)]=_0x8586c(0x1af),_0x4137be[_0x8586c(0x1a0)](-0x1d*-0xe5+0x2*0x4ce+-0x21fd)[_0x8586c(0x199)](_0x33fd6d);return;}const _0x4ec2df=Math[_0x8586c(0x1a1)](_0x37cb28-_0x499acc[_0x8586c(0x1ab)]);if(_0x4ec2df>-0x25e1+0x26b8+-0x1*0xc1){const _0x11bf20=Number(_0x40ccf6&&_0x40ccf6[_0x8586c(0x198)]?_0x40ccf6[_0x8586c(0x198)]:0x4e*0x2e+0x3*-0x705+-0x3*-0x259)+(-0x1*0x1271+0x1*-0x8a5+0x1b17);if(_0x11bf20>=0x1*0x21cd+0x2*0x795+0x1*-0x30ef){await _0x4b6440(_0x8586c(0x1aa));const _0x3abd67={};_0x3abd67[_0x8586c(0x1a9)]='Too\x20many\x20failed\x20attempts.\x20Try\x20again\x20later.',_0x4137be[_0x8586c(0x1a0)](0xd1*0x1c+0x213c+-0x3688)[_0x8586c(0x199)](_0x3abd67);return;}const _0x26e0cd={};_0x26e0cd[_0x8586c(0x198)]=_0x11bf20;const _0x514772={};_0x514772[_0x8586c(0x192)]=_0x26e0cd;if(_0x40ccf6)await _0x39800a[_0x8586c(0x1c0)]({'_id':_0x40ccf6[_0x8586c(0x1b5)]},_0x514772);const _0x57c167={};_0x57c167[_0x8586c(0x1a9)]='Puzzle\x20piece\x20did\x20not\x20fit\x20into\x20place.\x20Try\x20again.',_0x57c167[_0x8586c(0x1b0)]=_0x4ec2df,_0x4137be[_0x8586c(0x1a0)](-0x231f+0x15de+0x1*0xed1)[_0x8586c(0x199)](_0x57c167);return;}if(_0x40ccf6){const _0x1037d5={};_0x1037d5[_0x8586c(0x1b5)]=_0x40ccf6[_0x8586c(0x1b5)];const _0x1e55c7={};_0x1e55c7[_0x8586c(0x1c1)]=0x0,_0x1e55c7[_0x8586c(0x198)]=0x0;const _0x589a5f={};_0x589a5f['$set']=_0x1e55c7,await _0x39800a[_0x8586c(0x1c0)](_0x1037d5,_0x589a5f);}const _0x2f8175=crypto['randomBytes'](0x1d6*-0x9+-0x3*-0x2f1+0x7cb)[_0x8586c(0x19f)](_0x8586c(0x1ae));await _0x57cb12[_0x8586c(0x1b3)]({'token':_0x2f8175,'userId':_0x464705,'createdAt':_0x174de4,'createdAtDate':new Date(),'used':![]});const _0x11801f={};_0x11801f['ok']=!![],_0x11801f['captchaToken']=_0x2f8175,_0x11801f[_0x8586c(0x194)]='Verification\x20successful!',_0x4137be[_0x8586c(0x1a0)](-0x1ae7+-0x2327*-0x1+-0x778)[_0x8586c(0x199)](_0x11801f);return;}const _0x44cb08={};_0x44cb08['error']=_0x8586c(0x1a4),_0x4137be[_0x8586c(0x1a0)](-0x1*0x2179+0x53*0x3d+0xf42)[_0x8586c(0x199)](_0x44cb08);}catch(_0x5edae5){console['error']('captcha.js\x20error:',_0x5edae5);const _0xbd132a={};_0xbd132a['error']=_0x5edae5['message']||_0x8586c(0x1b4),_0x4137be[_0x8586c(0x1a0)](-0xa20+0x5*0x577+0x515*-0x3)[_0x8586c(0x199)](_0xbd132a);}};function _0x2f9e(){const _0x3f368b=['AxnbCNjHEq','Agv4','tMf0DxjHBcb0B3vJAcb0CMfQzwn0B3j5ihjLCxvPCMvKlIbqBgvHC2uGC2XPzguGBMf0DxjHBgX5lG','zgLMzG','m3DqDunRCa','DgfYz2v0wq','Aw5Zzxj0t25L','sw50zxjUywWGC2vYDMvYigvYCM9Y','x2LK','BM93','Bwv0Ag9K','Axncyw5Uzwq','mJK3ndm2me9UB0rqEG','y3jLyxrLzef0','nta1Aez6CMj2','BNvTyMvY','BgvUz3rO','ndq5otm2Dg1pBM9h','seLhscbssvnlicHiywnRzxiGlYbbDxrVBwf0zwqGu2nYAxb0kq','DxbKyxrLt25L','y2fWDgnOyvn0CMLRzxm','ndC0nNDfr0rYCW','u29SDMLUzYb0B28GzMfZDc4GugXLyxnLihnSAwrLig5HDhvYywXSEs4','u29SDMLUzYb0B28GzMfZDc4GshvTyw4GC2XPzguGAw50zxjHy3rPB24GCMvXDwLYzwqU','lI4VBgLIl21VBMDVzgi','zMXVB3i','DMvYAwz5','vMvYAwzPy2f0Aw9UigzHAwXLzc4GuMvWzwf0zwqGAw52ywXPzcbJAgfSBgvUz2uGyxr0zw1WDhmU','twLZC2LUzYb2zxjPzMLJyxrPB24GCgfYyw1LDgvYCW','CMfUzg9T','sw52ywXPzcbVCIbLEhbPCMvKignOywXSzw5Nzs4GugXLyxnLihrYEsbHz2fPBI4','u3vIlwH1BwfUihjLywn0Aw9UihrPBwuGlYbHDxrVBwf0zwqGmKnHChrJAgeGC29SDMvYigrLDgvJDgvK','mtyXmtm3otbUuunRtxa','uMvWzwf0zwqGyxv0B21HDgvKignOywXSzw5NzsbYzxbSyxKGlYbICNv0zsbMB3jJzsbHDhrLBxb0CW','ue9tva','y2HHBgXLBMDLswq','zMLUze9Uzq','jhnLDa','mtbUEKPct1G','BwvZC2fNzq','CMfUzg9TqNL0zxm','DxbZzxj0','mu1bvePgEG','y2fWDgnOyuzHAwX1CMvZ','ANnVBG','mJK3mdCXnNjoD1L0AG','mJa4nZa3nLzxCNfqsG','DgvSzwDYyw1jza','y29SBgvJDgLVBG','C2vJDxjPDhLgBgfN','Dg9tDhjPBMC','C3rHDhvZ','ywjZ','y3jLyxrL','DxnLCNm','vw5RBM93BIbHy3rPB24','yM9KEq','y2fWDgnOyv90B2TLBNm','mty1mZy1muD0BMPHva','yMfUuMvHC29U','zxjYB3i','rxHJzxnZAxzLihjHCgLKihb1ENPSzsbMywLSDxjLCYaVigf1Dg9TyxrLzcbZB2X2zxiGC3bHBq','DgfYz2v0wa','zxHWB3j0CW'];_0x2f9e=function(){return _0x3f368b;};return _0x2f9e();}
+const crypto = require("crypto");
+const { getDb } = require("../lib/mongodb");
+const { validateInitData } = require("../lib/telegramAuth");
+
+const CHALLENGE_EXPIRY_MS = 120 * 1000; // 2 minutes
+const TOKEN_EXPIRY_MS = 90 * 1000;      // 90 seconds
+
+module.exports = async (req, res) => {
+  if (req.method !== "POST") {
+    res.status(405).json({ error: "Method not allowed" });
+    return;
+  }
+
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  if (!botToken) {
+    res.status(500).json({ error: "TELEGRAM_BOT_TOKEN is not configured" });
+    return;
+  }
+
+  const initData = req.headers["x-telegram-init-data"];
+  const tgUser = validateInitData(initData, botToken);
+  if (!tgUser) {
+    res.status(401).json({ error: "Invalid session - reopen app from Telegram" });
+    return;
+  }
+
+  const { action } = req.body || {};
+  const uid = String(tgUser.id);
+
+  try {
+    const db = await getDb();
+    const usersCol = db.collection("users");
+    const challengesCol = db.collection("captcha_challenges");
+    const tokensCol = db.collection("captcha_tokens");
+
+    // 1. Strict Security Check: Banned / Suspended Accounts are denied immediately
+    let user = await usersCol.findOne({
+      $or: [{ telegramId: uid }, { telegramId: Number(uid) }]
+    });
+
+    if (user && user.isBanned) {
+      res.status(403).json({
+        error: user.banReason || "Your account has been permanently suspended due to security violation.",
+        isBanned: true
+      });
+      return;
+    }
+
+    const now = Date.now();
+
+    // Helper to permanently flag account as HIGH RISK / Hacker instead of auto-banning
+    async function markHighRiskHacker(reason) {
+      const updateData = {
+        isHighRiskHacker: true,
+        isSuspicious: true,
+        securityFlag: "HIGH RISK (Hacker / Automated Script)",
+        suspiciousReason: reason,
+        flaggedAt: now
+      };
+      if (user) {
+        await usersCol.updateOne(
+          { _id: user._id },
+          { $set: updateData }
+        );
+      } else {
+        await usersCol.updateOne(
+          { telegramId: uid },
+          { $set: updateData },
+          { upsert: true }
+        );
+      }
+    }
+
+    // Action 1: Create a fresh challenge
+    if (action === "create") {
+      const challengeId = crypto.randomBytes(16).toString("hex");
+      // Puzzle canvas is 320px wide. Valid slot range between 80px and 230px.
+      const targetX = Math.floor(Math.random() * (230 - 80 + 1)) + 80;
+      const targetY = Math.floor(Math.random() * (85 - 25 + 1)) + 25;
+
+      await challengesCol.insertOne({
+        challengeId,
+        userId: uid,
+        targetX,
+        targetY,
+        createdAt: now,
+        createdAtDate: new Date(),
+        used: false
+      });
+
+      res.status(200).json({
+        ok: true,
+        challengeId,
+        targetX,
+        targetY
+      });
+      return;
+    }
+
+    // Action 2: Verify the user's solved slider position
+    if (action === "verify") {
+      const { challengeId, solvedX, timeElapsed, trail } = req.body || {};
+
+      if (!challengeId || typeof solvedX !== "number") {
+        res.status(400).json({ error: "Missing verification parameters" });
+        return;
+      }
+
+      const challenge = await challengesCol.findOne({
+        challengeId,
+        userId: { $in: [uid, Number(uid), tgUser.id] },
+        used: false
+      });
+
+      // Attack / Replay detection:
+      if (!challenge) {
+        const strikes = Number(user && user.captchaStrikes ? user.captchaStrikes : 0) + 1;
+        if (strikes >= 4) {
+          await markHighRiskHacker("Repeated automated challenge replay / brute force attempts");
+          res.status(400).json({
+            error: "Verification failed. Repeated invalid challenge attempts."
+          });
+          return;
+        }
+        if (user) {
+          await usersCol.updateOne({ _id: user._id }, { $set: { captchaStrikes: strikes } });
+        }
+        res.status(400).json({ error: "Invalid or expired challenge. Please try again." });
+        return;
+      }
+
+      // Mark challenge as used immediately to prevent replay attacks
+      await challengesCol.updateOne(
+        { _id: challenge._id },
+        { $set: { used: true, verifiedAt: now } }
+      );
+
+      if (now - challenge.createdAt > CHALLENGE_EXPIRY_MS) {
+        res.status(400).json({ error: "Challenge expired. Please try again." });
+        return;
+      }
+
+      const elapsed = Number(timeElapsed) || 0;
+
+      // 1. Anti-Bot: Instant scripts & 2Captcha auto-solvers click in < 220ms
+      if (elapsed < 220) {
+        const strikes = Number(user && user.captchaStrikes ? user.captchaStrikes : 0) + 1;
+        if (strikes >= 3) {
+          await markHighRiskHacker("Sub-human reaction time / automated 2Captcha solver detected");
+          res.status(400).json({
+            error: "Solving too fast. Human slide interaction required."
+          });
+          return;
+        }
+        if (user) await usersCol.updateOne({ _id: user._id }, { $set: { captchaStrikes: strikes } });
+        res.status(400).json({ error: "Solving too fast. Please slide naturally." });
+        return;
+      }
+
+      // 2. Trajectory & Trail Analysis: Bots provide empty, single, or spoofed trail
+      if (!Array.isArray(trail) || trail.length < 3) {
+        const strikes = Number(user && user.captchaStrikes ? user.captchaStrikes : 0) + 1;
+        if (strikes >= 3) {
+          await markHighRiskHacker("Synthetic touch event / headless script tampering detected");
+          res.status(400).json({
+            error: "Natural touch trajectory required. Please slide naturally."
+          });
+          return;
+        }
+        if (user) await usersCol.updateOne({ _id: user._id }, { $set: { captchaStrikes: strikes } });
+        res.status(400).json({ error: "Natural touch trajectory required. Please slide naturally." });
+        return;
+      }
+
+      // 3. Tolerance Check: puzzle piece placed nearby (relaxed to ±22 pixels for smooth human UX)
+      const diff = Math.abs(solvedX - challenge.targetX);
+      if (diff > 22) {
+        const failCount = Number(user && user.captchaFailures ? user.captchaFailures : 0) + 1;
+        if (failCount >= 8) {
+          await markHighRiskHacker("Excessive rapid puzzle failures / automated solver spam");
+          res.status(400).json({
+            error: "Too many failed attempts. Try again later."
+          });
+          return;
+        }
+        if (user) await usersCol.updateOne({ _id: user._id }, { $set: { captchaFailures: failCount } });
+        res.status(400).json({
+          error: "Puzzle piece did not fit into place. Try again.",
+          diff
+        });
+        return;
+      }
+
+      // All security checks passed! Reset suspicious strikes and issue cryptographically secure token
+      if (user) {
+        await usersCol.updateOne(
+          { _id: user._id },
+          { $set: { captchaStrikes: 0, captchaFailures: 0 } }
+        );
+      }
+
+      const captchaToken = crypto.randomBytes(24).toString("hex");
+      await tokensCol.insertOne({
+        token: captchaToken,
+        userId: uid,
+        createdAt: now,
+        createdAtDate: new Date(),
+        used: false
+      });
+
+      res.status(200).json({
+        ok: true,
+        captchaToken,
+        message: "Verification successful!"
+      });
+      return;
+    }
+
+    res.status(400).json({ error: "Unknown action" });
+  } catch (err) {
+    console.error("captcha.js error:", err);
+    res.status(500).json({ error: err.message || "Internal server error" });
+  }
+};

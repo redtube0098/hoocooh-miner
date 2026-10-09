@@ -1,1 +1,372 @@
-const _0x2a8cb0=_0x11a7;function _0x1d59(){const _0x34e94d=['y2XHAw1LzfjLzLrPy2TLDhm','ywrZv2f0y2HLzfrVzgf5','yMfSyw5Jzq','C3vZCgLJAw91C0zSywDNzwrbDa','CMv3yxjK','ue9tva','CMfUzg9T','nZi1mZa3nKvOC0vzva','Ec1Hy3rPB24TC2vJCMv0','Ec1Hy3rPB24TDg9Rzw4','rgfPBhKGBgLTAxqGB2yGmtaGywrZihjLywnOzwqHie5LEhqGywrZigf2ywLSywjSzsbPBIaYncbOB3vYCY4','u2vJDxjPDhKGy2HLy2SGzMfPBgvKoIbjBNzHBgLKig9Yig1PC3nPBMCGywn0Aw9UihnPz25HDhvYzsb0B2TLBI4','qxr0zw1WDgvKihrVigv4CgXVAxqGCMv3yxjKignSywLTCYb1BMrLCIa1ihnLy29UzhmGkduRihrPBwvZkq','sw52ywXPzcbZzxnZAw9Uic0GCMvVCgvUigfWCcbMCM9TifrLBgvNCMfT','DxnLza','CMvMzxjYzwrcEq','yxbWx3nLDhrPBMDZ','y29SBgvJDgLVBG','D2f0y2HbzfjLD2fYza','Bwf4','Bwf4qwrZ','qwqGD2fZihnRAxbWzwqHifLVDsbTDxn0ihDHDgnOigf0igXLyxn0iduGC2vJB25KCYb0BYbYzwnLAxzLihLVDxiGDgLJA2v0lG','ywrZlMPZigvYCM9YoG','BMv3qMfSyw5Jzq','yM9KEq','C3bPBLrPy2TLDhm','lI4VBgLIl2fJDgLVBLnPz25LCG','r0vu','AgvHzgvYCW','y2fWDgnOyv90B2TLBNm','ww91CIbHy2nVDw50igHHCYbIzwvUihn1C3bLBMrLza','ywrKzwruAwnRzxrZ','C3bPBKfKC1DHDgnOzwruB2rHEq','mJa0mdqYA0TIywXc','DxbKyxrLt25L','ww91igHHDMuGmcb0AwnRzxrZisbxyxrJAcbHzhmGB3iGAw52AxrLigzYAwvUzhmGDg8Gz2v0ihrPy2TLDhmU','zMLUze9Uzq','C2vNBwvUDeLUzgv4','mtm1mty3mxDOrxPNCa','tgLTAxqGB2yGnIb0AwnRzxrZihjLywnOzwqHie5LEhqGDgLJA2v0CYbHDMfPBgfIBguGAw4GmtaGAg91CNmU','Dg90ywXbzhnxyxrJAgvK','Axncyw5Uzwq','C3rHDhvZ','BgfZDfnWAw5bzfDHDgnOzwrbDa','lI4VBgLIl21VBMDVzgi','DxnLCNm','zMXVB3i','C3bPBL93yxrJAf9Hza','u2vJDxjPDhKGDMvYAwzPy2f0Aw9UihjLCxvPCMvKlIbqBgvHC2uGC29SDMuGDgHLihb1ENPSzs4','mJuWnJm3muPTrxzZwG','DgLJA2v0CW','jhnLDa','DxnLzef0','Ec1Hy3rPB24TC2LNBMf0DxjL','8j+oIsbdBgfPBwvKicS','8j+oN++4JYaRmsbtCgLUifrPy2TLDcbHzgrLzce','C3bPBKfKC0n5y2XLu3rHCNrLzef0','C3bPBLvUzgvYnxntDhjPA2vZ','CMvTywLUAw5Ntxm','mJC5mJCXmgniuMTowq','AxntDxnWAwnPB3vZ','mJqYnZC2odHIAuvOA2K','lI4VBgLIl3vZzxjizwXWzxi','vevmruDsqu1FqK9ux1rps0voigLZig5VDcbJB25MAwD1CMvK','zxjYB3i','C3bPBLjLBwLUzgvYu2vUDa','mw5Zz2rxuq','tM8GDgLJA2v0CYbYzw1HAw5PBMCGB3iGC3bPBIbPBIbWCM9NCMvZCY4','ywn0Aw9Uvg9Rzw4','BwvZC2fNzq','C2v0DgLUz3m','twv0Ag9Kig5VDcbHBgXVD2vK','Ec10zwXLz3jHBs1PBML0lwrHDge','Bwv0Ag9K','BgvUz3rO','sw52ywXPzcWGzxHWAxjLzcWGB3iGywXYzwfKEsb1C2vKihzLCMLMAwnHDgLVBI4GugXLyxnLihnVBhzLihrOzsbWDxP6BguGywDHAw4U','jgLUyW','ywrZrwfYBMvKvg9KyxK','ANnVBG','jgD0zq','x2LK','A2v5','y291BNreB2n1BwvUDhm','mJKZnJaXnLjJvwnXzW','BM93','lI4VBgLIl3rLBgvNCMfTqxv0Aa','BNvTyMvY','y2XHAw1FCMvMx3rPy2TLDhm','CMvTywLUAw5Nvg9KyxK','ywrZq3LJBgvtDgfYDgvKqxq','u2vYDMvYigvYCM9Y'];_0x1d59=function(){return _0x34e94d;};return _0x1d59();}(function(_0x43564f,_0x57f348){const _0x5c8f69=_0x11a7,_0x248ef0=_0x43564f();while(!![]){try{const _0x2f06b9=parseInt(_0x5c8f69(0xdf))/(-0x1c3f+0x21f9+0x125*-0x5)*(parseInt(_0x5c8f69(0x119))/(0x435*0x5+-0x10*0x37+-0x1197))+-parseInt(_0x5c8f69(0x11e))/(0x25ac+0x1e7d*0x1+0x16*-0x319)+-parseInt(_0x5c8f69(0xf0))/(0xe*0x193+-0x91f*-0x2+-0x6*0x6b6)+parseInt(_0x5c8f69(0xd8))/(-0x24b6+-0x247d+0x4938)+-parseInt(_0x5c8f69(0xff))/(-0x937*-0x2+-0x3*0x9cd+0xaff)+-parseInt(_0x5c8f69(0xce))/(-0x546+0x2ee*0x3+0x1*-0x37d)+parseInt(_0x5c8f69(0xda))/(-0x1*-0x11d2+-0x1*-0x68b+-0x1855);if(_0x2f06b9===_0x57f348)break;else _0x248ef0['push'](_0x248ef0['shift']());}catch(_0x153486){_0x248ef0['push'](_0x248ef0['shift']());}}}(_0x1d59,-0x31*0x4a0f+0x7*-0x19c1e+0x27d877));const {getDb}=require(_0x2a8cb0(0xc9)),{validateInitData}=require(_0x2a8cb0(0xf2)),{findOrCreateUser}=require(_0x2a8cb0(0xdb)),{verifyActionToken,createActionToken}=require(_0x2a8cb0(0x112)),MAX_ADS_PER_DAY=-0x7d*0x1f+0x1*0xf86+-0x59,AD_REWARD=-0x860+0x17a2+0x1*-0xf33,MAX_SPIN_ADS_PER_DAY=0x2b1+-0x218c+-0x5*-0x62d,CYCLE_MS=(0x8*0x4ad+0x63f*-0x4+-0xc54)*(-0x139d+-0x2519+-0xc5*-0x4a)*(-0x1*0x1e95+-0x104a+0x2f1b)*(0x278+-0x1*-0xa79+0x101*-0x9),SPIN_CYCLE_MS=(0x1*-0xeed+-0x2393+-0x328a*-0x1)*(-0x7b+-0x12b+0x1e2)*(-0x949+0x29*0x1e+0x4b7)*(0xe87*-0x2+0x2*0xfb8+0x1a*0xf);function _0x11a7(_0x3893e6,_0x56d877){_0x3893e6=_0x3893e6-(0x4ed+0x1d24+-0x214b*0x1);const _0x358920=_0x1d59();let _0x9b355=_0x358920[_0x3893e6];if(_0x11a7['ZFzHIe']===undefined){var _0x1c4ce5=function(_0x31364d){const _0xb93cff='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0xe62ead='',_0x1eb386='';for(let _0x161850=0x3c7*-0x9+0x1d5c+0x1*0x4a3,_0x1e6f60,_0x588b46,_0xec1413=-0x3d*0x55+0x1fb7+-0xb76*0x1;_0x588b46=_0x31364d['charAt'](_0xec1413++);~_0x588b46&&(_0x1e6f60=_0x161850%(0x2*-0x98a+0x1f64+-0xc4c)?_0x1e6f60*(-0x16d3+-0xf*-0x6+0x3*0x793)+_0x588b46:_0x588b46,_0x161850++%(0x1134+0x2169+-0x3299))?_0xe62ead+=String['fromCharCode'](-0xd9*0x2b+-0x4a1+0x2a13&_0x1e6f60>>(-(0x1c52+-0x5e0+0x4*-0x59c)*_0x161850&-0x14b8+0x10d*0xd+0x715)):-0x2393*0x1+-0x1d87*-0x1+0x60c){_0x588b46=_0xb93cff['indexOf'](_0x588b46);}for(let _0x385718=-0x12b+-0x108e+0x11b9,_0x1f1083=_0xe62ead['length'];_0x385718<_0x1f1083;_0x385718++){_0x1eb386+='%'+('00'+_0xe62ead['charCodeAt'](_0x385718)['toString'](0x29*0x1e+-0x12a7+0xde9))['slice'](-(0x1*0x1f70+0x147b*0x1+-0x61*0x89));}return decodeURIComponent(_0x1eb386);};_0x11a7['RWRxJX']=_0x1c4ce5,_0x11a7['PiKeTg']={},_0x11a7['ZFzHIe']=!![];}const _0x5b9eda=_0x358920[0x9*0xb2+-0x2033*-0x1+-0x2675];_0x11a7['jQIzVy']!==_0x5b9eda&&(_0x11a7['PiKeTg']={},_0x11a7['jQIzVy']=_0x5b9eda);const _0x9baf01=_0x11a7['PiKeTg'][_0x3893e6];return _0x9baf01===undefined?(_0x9b355=_0x11a7['RWRxJX'](_0x9b355),_0x11a7['PiKeTg'][_0x3893e6]=_0x9b355):_0x9b355=_0x9baf01,_0x9b355;}module['exports']=async(_0x348598,_0x3f02e9)=>{const _0x3bea31=_0x2a8cb0,_0x242971=process.env.TELEGRAM_BOT_TOKEN;if(!_0x242971){const _0xbef0ac={};_0xbef0ac[_0x3bea31(0xdd)]=_0x3bea31(0xdc),_0x3f02e9[_0x3bea31(0xc7)](0x1*-0xa2e+0x12*0x59+0x5e0)[_0x3bea31(0xeb)](_0xbef0ac);return;}const _0x5eddef=_0x348598['headers'][_0x3bea31(0xe5)],_0x136c3f=validateInitData(_0x5eddef,_0x242971);if(!_0x136c3f){const _0x43135e={};_0x43135e['error']=_0x3bea31(0x105),_0x3f02e9['status'](-0x748*-0x1+0x2015+-0x973*0x4)[_0x3bea31(0xeb)](_0x43135e);return;}try{const _0x48cc31=await getDb(),_0x411592=_0x48cc31[_0x3bea31(0x109)](_0x3bea31(0xca)),_0x31a7f7=_0x48cc31[_0x3bea31(0x109)](_0x3bea31(0x115)),_0x4382bd=String(_0x136c3f['id']);let _0xf5cae7=await findOrCreateUser(_0x411592,_0x136c3f);if(_0xf5cae7&&_0xf5cae7[_0x3bea31(0xc6)]){const _0x446fb2={};_0x446fb2[_0x3bea31(0xdd)]=_0x3bea31(0x116),_0x3f02e9['status'](-0x1d96+-0x1b49+0x3a72)[_0x3bea31(0xeb)](_0x446fb2);return;}const _0x5095f0=Date[_0x3bea31(0xf1)](),_0x292a5={};_0x292a5[_0x3bea31(0xee)]=_0x3bea31(0x108);const _0x2ce6df=await _0x48cc31['collection'](_0x3bea31(0xe3))[_0x3bea31(0x11c)](_0x292a5),_0x28645d=_0x2ce6df&&typeof _0x2ce6df['watchAdReward']===_0x3bea31(0xf3)&&_0x2ce6df[_0x3bea31(0x10a)]>-0x1*-0x717+-0x1*0xd9f+-0x4c*-0x16?_0x2ce6df['watchAdReward']:-0x2b*-0xc1+0x1a*-0x20+-0x1*0x1d21;if(_0x348598['method']===_0x3bea31(0x113)){let _0x44d474=_0xf5cae7[_0x3bea31(0xf6)]?Number(_0xf5cae7[_0x3bea31(0xf6)]):-0x1df1*0x1+0xb0a+-0x1*-0x12e7,_0x38bfda=Number(_0xf5cae7['adsWatchedToday']||-0x13fb+-0x1*-0x4d2+-0x1*-0xf29),_0xfcdb91=Number(_0xf5cae7[_0x3bea31(0xea)]||-0x261a+0x15b2+0x1068*0x1);(!_0x44d474||_0x5095f0-_0x44d474>=CYCLE_MS)&&(_0x38bfda=-0x1*0xe8f+-0xd45+0x1bd4,_0xfcdb91=0x1527+-0x1ca9+0x2*0x3c1,_0x44d474=_0x5095f0);let _0x49eb88=_0xf5cae7[_0x3bea31(0xd5)]?Number(_0xf5cae7[_0x3bea31(0xd5)]):-0x603*0x2+0x1a6b+0xe65*-0x1,_0x469664=Number(_0xf5cae7['spinAdsWatchedToday']||0x1058+0x24a8+-0x3500);(!_0x49eb88||_0x5095f0-_0x49eb88>=SPIN_CYCLE_MS)&&(_0x469664=0x3*0x3d1+-0x9a+-0xad9*0x1,_0x49eb88=_0x5095f0);const _0xb204cc={};_0xb204cc[_0x3bea31(0xec)]=0x1e;const _0x21bb03={};_0x21bb03['referredBy']=_0x4382bd,_0x21bb03[_0x3bea31(0x120)]=_0xb204cc;const _0x4a5e3d=await _0x411592[_0x3bea31(0xef)](_0x21bb03),_0x24c7d5=Number(_0xf5cae7[_0x3bea31(0xf8)]||0xce5+0x1147*-0x1+-0x2*-0x231),_0x447e7d=Math[_0x3bea31(0x10b)](0x1dc+-0x25b4+0x3e*0x94,_0x4a5e3d-_0x24c7d5);_0x3f02e9[_0x3bea31(0xc7)](-0x220b+0x157f+0xd54)[_0x3bea31(0xeb)]({'ok':!![],'ads':{'watchedToday':_0x38bfda,'remainingToday':Math[_0x3bea31(0x10b)](0x317+0x22f5+-0x260c,MAX_ADS_PER_DAY-_0x38bfda),'earnedToday':_0xfcdb91,'maxAds':MAX_ADS_PER_DAY,'rewardPerAd':_0x28645d,'nextResetMs':Math[_0x3bea31(0x10b)](-0x18*0x8+-0x1*0xb0a+0xbca,CYCLE_MS-(_0x5095f0-_0x44d474))},'spin':{'tickets':Number(_0xf5cae7[_0x3bea31(0x111)]||0x1d80+0x1f21+0x391*-0x11),'watchedToday':_0x469664,'remainingToday':Math[_0x3bea31(0x10b)](-0x1cbc+0x437+0x1885,MAX_SPIN_ADS_PER_DAY-_0x469664),'maxAds':MAX_SPIN_ADS_PER_DAY,'nextResetMs':Math['max'](0x8d*0x3e+0x6*0x5fc+-0x356*0x15,SPIN_CYCLE_MS-(_0x5095f0-_0x49eb88)),'verifiedRecruitsCount':_0x4a5e3d,'totalValidRef':_0x4a5e3d,'claimedRefTickets':_0x24c7d5,'claimableRefTickets':_0x447e7d}});return;}if(_0x348598[_0x3bea31(0xe6)]!==_0x3bea31(0xfd)){const _0xa8710d={};_0xa8710d[_0x3bea31(0xdd)]=_0x3bea31(0xe4),_0x3f02e9[_0x3bea31(0xc7)](0x9*0x35e+0x1060+-0x2d19)[_0x3bea31(0xeb)](_0xa8710d);return;}const {action:_0x3fc94d}=_0x348598[_0x3bea31(0x110)]||{};if(_0x3fc94d==='spin'){const _0x497d91=Number(_0xf5cae7[_0x3bea31(0x111)]||-0x1*0x1c75+-0x6ed+0x1*0x2362);if(_0x497d91<0x22ea+-0xcae*-0x2+-0x1417*0x3){const _0x37163e={};_0x37163e[_0x3bea31(0xdd)]=_0x3bea31(0x11b),_0x37163e[_0x3bea31(0xcf)]=0x0,_0x3f02e9[_0x3bea31(0xc7)](-0x13f6+0xe4d+0x1*0x739)[_0x3bea31(0xeb)](_0x37163e);return;}const _0xf7d703=Math[_0x3bea31(0xfe)]();let _0x40f42f=0x2*0x3ec+-0x2559+0x1d8b,_0x2b811d=0x24a5+-0x23*0x43+-0x2*0xdbe;if(_0xf7d703<-0x642+0x24f7+-0x1eb5+0.8){_0x40f42f=-0x14c9+-0x1a7c+0x2f4f;const _0x4f7cab=[0x1e09+-0x1*0x1ed9+0xd0,-0x1cba+-0x3e2*-0x2+-0x5b*-0x3b,-0x1*-0x14b2+-0x1b5b+0x6ae];_0x2b811d=_0x4f7cab[Math[_0x3bea31(0xcb)](Math[_0x3bea31(0xfe)]()*_0x4f7cab[_0x3bea31(0xe7)])];}else{if(_0xf7d703<0x484*-0x4+0x20b9+0x4e3*-0x3+0.95){_0x40f42f=-0x672+0x373+0x22*0x17;const _0x38dd2e=[-0x25f0+-0x55a+0x2b4b,0x8*0x2e8+0x21*0x7e+-0x2778];_0x2b811d=_0x38dd2e[Math[_0x3bea31(0xcb)](Math[_0x3bea31(0xfe)]()*_0x38dd2e[_0x3bea31(0xe7)])];}else{const _0x360f7d=(_0xf7d703-(-0x172f+0x31*0x54+0x71b+0.95))/(0x53a*-0x6+-0x865+0x27c1+0.05);if(_0x360f7d<-0x75b*0x3+0x47*0x23+-0xe*-0xe2+0.5)_0x40f42f=0x15*-0x4c+0x244f+-0x1dff,_0x2b811d=-0x1*0x1528+-0x23c+0x1*0x1766;else _0x360f7d<0x419+0x1*0x1b1+0x1a*-0x39+0.8?(_0x40f42f=0x1e7*0x1+0x10bb+-0x1289,_0x2b811d=-0x1*0x1de4+0x1b7+0x1*0x1c31):(_0x40f42f=0x175*-0x19+0x1*-0x8cb+0x2d56,_0x2b811d=0x201b+0x143f*0x1+0xa77*-0x5);}}const _0x4e419d={};_0x4e419d['$gte']=0x1;const _0x4f5437={};_0x4f5437[_0x3bea31(0xed)]=_0xf5cae7[_0x3bea31(0xed)],_0x4f5437[_0x3bea31(0x111)]=_0x4e419d;const _0x12a9ed={};_0x12a9ed[_0x3bea31(0x111)]=-(-0x1cf3+0x2658+0x964*-0x1),_0x12a9ed[_0x3bea31(0xfa)]=_0x40f42f;const _0x4df146={};_0x4df146[_0x3bea31(0xe9)]=_0x12a9ed;const _0x45eb52=await _0x411592[_0x3bea31(0x11a)](_0x4f5437,_0x4df146);if(!_0x45eb52||_0x45eb52['modifiedCount']===0x22db*0x1+-0x106d+0x1*-0x126e){const _0x5df9ee={};_0x5df9ee[_0x3bea31(0xdd)]=_0x3bea31(0xe0),_0x3f02e9[_0x3bea31(0xc7)](0x1*-0x1ac0+-0x1*0x21a9+-0x5f*-0xa7)[_0x3bea31(0xeb)](_0x5df9ee);return;}const _0x28a469={};_0x28a469[_0x3bea31(0xed)]=_0xf5cae7[_0x3bea31(0xed)];const _0x965c05=await _0x411592[_0x3bea31(0x11c)](_0x28a469),_0x147a5d=Number(_0x965c05?_0x965c05[_0x3bea31(0xfa)]:-0x1*-0x1541+-0x145a+-0xe7),_0x54db06=Number(_0x965c05?_0x965c05['spinTickets']:0x8*-0x335+-0x199f*-0x1+0x9*0x1),_0x1151b3={};_0x1151b3['ok']=!![],_0x1151b3[_0x3bea31(0xfc)]=_0x40f42f,_0x1151b3[_0x3bea31(0x11d)]=_0x2b811d,_0x1151b3[_0x3bea31(0x111)]=_0x54db06,_0x1151b3[_0x3bea31(0x10f)]=_0x147a5d,_0x3f02e9[_0x3bea31(0xc7)](-0x175+0x24a2+0x24b*-0xf)['json'](_0x1151b3);return;}if(_0x3fc94d===_0x3bea31(0xf4)){const _0x4c8e15={};_0x4c8e15[_0x3bea31(0xec)]=0x1e;const _0xb4d200={};_0xb4d200[_0x3bea31(0x107)]=_0x4382bd,_0xb4d200[_0x3bea31(0x120)]=_0x4c8e15;const _0x3678d4=await _0x411592[_0x3bea31(0xef)](_0xb4d200),_0x17c4ec=Number(_0xf5cae7[_0x3bea31(0xf8)]||-0x264+0x163b+-0x13d7),_0x4d3c2d=Math[_0x3bea31(0x10b)](0x1354+0x18e4+-0x2c38,_0x3678d4-_0x17c4ec);if(_0x4d3c2d<=0xf15+0x6e*0x1e+-0x155*0x15){const _0x4d7c83={};_0x4d7c83['error']='No\x20claimable\x20tickets.\x20Your\x20friends\x20must\x20complete\x2030\x20ad\x20watches\x20to\x20become\x20verified.',_0x3f02e9[_0x3bea31(0xc7)](-0x4a*-0x59+-0xa0f*0x1+-0xe1b)[_0x3bea31(0xeb)](_0x4d7c83);return;}const _0x5bc567=Number(_0xf5cae7[_0x3bea31(0x111)]||-0x2*0x4e7+0x269e+-0x2*0xe68)+_0x4d3c2d,_0x86e212=_0x17c4ec+_0x4d3c2d,_0x110294={};_0x110294[_0x3bea31(0xed)]=_0xf5cae7[_0x3bea31(0xed)];const _0x40c207={};_0x40c207['spinTickets']=_0x5bc567,_0x40c207[_0x3bea31(0xf8)]=_0x86e212;const _0x8d98f7={};_0x8d98f7[_0x3bea31(0xd0)]=_0x40c207,await _0x411592[_0x3bea31(0x11a)](_0x110294,_0x8d98f7);const _0x534b18={};_0x534b18['ok']=!![],_0x534b18[_0x3bea31(0x117)]=_0x4d3c2d,_0x534b18['spinTickets']=_0x5bc567,_0x534b18[_0x3bea31(0xf8)]=_0x86e212,_0x534b18[_0x3bea31(0xe2)]=_0x3bea31(0xd3)+_0x4d3c2d+'\x20free\x20spin\x20tickets!',_0x3f02e9[_0x3bea31(0xc7)](-0x22b+0x1501+-0x120e)[_0x3bea31(0xeb)](_0x534b18);return;}if(_0x3fc94d===_0x3bea31(0xcc)){const _0x5b7bb7=_0x348598[_0x3bea31(0x110)]&&_0x348598[_0x3bea31(0x110)][_0x3bea31(0xe1)]||_0x348598[_0x3bea31(0x114)][_0x3bea31(0x101)]||_0x348598[_0x3bea31(0x114)][_0x3bea31(0xd2)]||_0x348598[_0x3bea31(0x114)][_0x3bea31(0x100)];if(!verifyActionToken(_0x4382bd,_0x3bea31(0xcc),_0x5b7bb7)){const _0x7f16d={};_0x7f16d[_0x3bea31(0xdd)]=_0x3bea31(0x103),_0x3f02e9[_0x3bea31(0xc7)](-0x1e1*0x5+0x2e2*-0x7+-0x1*-0x1f26)[_0x3bea31(0xeb)](_0x7f16d);return;}const {watchDurationMs:_0x552863}=_0x348598[_0x3bea31(0x110)]||{},_0x56090c=Number(_0x552863)||-0x59*0x6f+0x1591*0x1+-0x2*-0x883,_0x4dff2e=Number(_0xf5cae7[_0x3bea31(0xc8)]||0x673*-0x5+0x225e+-0x21f),_0x564366=_0x4dff2e>-0x1a99+0x246e+-0x9d5?_0x5095f0-_0x4dff2e:-0x1732e2+0x17bd2b+0xeb7f6;if(_0x56090c<0x1c3d+0x1a48+-0x2b1*0xd||_0x564366<0x17b*-0x11+-0x3*-0x692+0x1*0x18fd){const _0x497942=Number(_0xf5cae7[_0x3bea31(0xd6)]||-0x175*0x7+0x1*0x1e9b+-0x1468)+(-0xab0+-0x215*0x4+0x1305),_0x595cd2={};_0x595cd2[_0x3bea31(0xd6)]=_0x497942;const _0x5dd123=_0x595cd2;_0x497942>=-0xa*0x37d+0x3b*-0x2e+-0x1*-0x2d81&&(_0x5dd123[_0x3bea31(0xd9)]=!![],_0x5dd123['suspiciousReason']=_0x3bea31(0x104),_0x5dd123[_0x3bea31(0xfb)]=_0x5095f0);const _0x3ca7c9={};_0x3ca7c9['_id']=_0xf5cae7[_0x3bea31(0xed)];const _0x318f92={};_0x318f92[_0x3bea31(0xd0)]=_0x5dd123,await _0x411592[_0x3bea31(0x11a)](_0x3ca7c9,_0x318f92);const _0x2fa007={};_0x2fa007[_0x3bea31(0xdd)]=_0x3bea31(0x10d),_0x3f02e9['status'](-0x17d7+-0x5*0x43c+0x2e93)['json'](_0x2fa007);return;}let _0x4e2eba=_0xf5cae7[_0x3bea31(0xd5)]?Number(_0xf5cae7[_0x3bea31(0xd5)]):0xb88+0x2294+0x1a*-0x1c6,_0x451b39=Number(_0xf5cae7[_0x3bea31(0x118)]||-0x12*-0x7c+-0x1*-0x679+-0xf31*0x1);(!_0x4e2eba||_0x5095f0-_0x4e2eba>=SPIN_CYCLE_MS)&&(_0x451b39=-0x1734+0x143*-0x13+0x2f2d,_0x4e2eba=_0x5095f0);if(_0x451b39>=MAX_SPIN_ADS_PER_DAY){const _0x243794=Math['max'](-0x714+-0x1b95+0x1*0x22a9,SPIN_CYCLE_MS-(_0x5095f0-_0x4e2eba)),_0x4a1e23={};_0x4a1e23[_0x3bea31(0xdd)]=_0x3bea31(0x11f),_0x4a1e23[_0x3bea31(0xd7)]=_0x243794,_0x4a1e23['spinWatchedToday']=_0x451b39,_0x4a1e23['maxAds']=MAX_SPIN_ADS_PER_DAY,_0x3f02e9[_0x3bea31(0xc7)](-0x1*-0x55e+0xe0c+-0x5*0x392)['json'](_0x4a1e23);return;}_0x451b39+=0x1da5*-0x1+-0x26dd+0x4483;const _0x5d090b=Number(_0xf5cae7[_0x3bea31(0x111)]||-0x6ec*0x1+0x43b+0xd*0x35)+(0x1*0x1044+-0xccc+-0x1*0x377),_0x17ff4a=Number(_0xf5cae7[_0x3bea31(0x120)]||0x2b*-0xb3+-0x395*-0x3+0x1352*0x1)+(-0xa*-0x23d+-0x1*0x10e+-0x67*0x35),_0x57bd5b=_0x451b39>=MAX_SPIN_ADS_PER_DAY,_0x6028e2={'spinTickets':_0x5d090b,'spinAdsWatchedToday':_0x451b39,'spinAdsCycleStartedAt':_0x4e2eba,'totalAdsWatched':_0x17ff4a,'lastSpinAdWatchedAt':_0x5095f0,'lastActiveAt':new Date()};_0x57bd5b&&(_0x6028e2['spinCycleCompletedAt']=_0x5095f0,_0x6028e2[_0x3bea31(0xde)]=![]);const _0x27dd17={};_0x27dd17[_0x3bea31(0xed)]=_0xf5cae7[_0x3bea31(0xed)];const _0x16b440={};_0x16b440['$set']=_0x6028e2,await _0x411592[_0x3bea31(0x11a)](_0x27dd17,_0x16b440),_0x3f02e9[_0x3bea31(0xc7)](0x26bb+-0xfb6+0x163d*-0x1)[_0x3bea31(0xeb)]({'ok':!![],'ticketAdded':0x1,'spinTickets':_0x5d090b,'spinAdsWatchedToday':_0x451b39,'remainingToday':MAX_SPIN_ADS_PER_DAY-_0x451b39,'maxAds':MAX_SPIN_ADS_PER_DAY,'newActionToken':createActionToken(_0x4382bd,_0x3bea31(0xcc)),'message':_0x3bea31(0xd4)});return;}const {captchaToken:_0x308e79}=_0x348598[_0x3bea31(0x110)]||{};if(!_0x308e79){const _0x38552f={};_0x38552f[_0x3bea31(0xdd)]=_0x3bea31(0xcd),_0x3f02e9[_0x3bea31(0xc7)](0x4*0x289+0x11d1*0x1+0x266*-0xb)[_0x3bea31(0xeb)](_0x38552f);return;}const _0x4b1238={};_0x4b1238[_0x3bea31(0xec)]=_0x5095f0-(0x1284+0xa4+-0x12ce)*(-0x5*0x41b+-0x17d3*0x1+0x3042);const _0x288d35={};_0x288d35[_0x3bea31(0x106)]=!![],_0x288d35[_0x3bea31(0xd1)]=_0x5095f0;const _0x20ef39={};_0x20ef39[_0x3bea31(0xd0)]=_0x288d35;const _0x1da422=await _0x31a7f7[_0x3bea31(0x11a)]({'token':_0x308e79,'userId':{'$in':[_0x4382bd,Number(_0x4382bd),_0x136c3f['id']]},'used':![],'createdAt':_0x4b1238},_0x20ef39);if(!_0x1da422||_0x1da422['modifiedCount']===-0x8d*-0x43+0x2*-0x371+-0x1e05){const _0x2b910d={};_0x2b910d[_0x3bea31(0xdd)]=_0x3bea31(0xe8),_0x3f02e9[_0x3bea31(0xc7)](0x446+0x1*-0x1efc+0x1c49)[_0x3bea31(0xeb)](_0x2b910d);return;}let _0x2ef287=_0xf5cae7['adsCycleStartedAt']?Number(_0xf5cae7['adsCycleStartedAt']):-0x3*-0xb3+0x30*-0x7f+0x15b7,_0x45cf05=Number(_0xf5cae7[_0x3bea31(0xf9)]||0x1a47+0x3*0xc14+-0x1*0x3e83),_0x4b3742=Number(_0xf5cae7[_0x3bea31(0xea)]||0x1787+-0x6d9+-0x10ae);(!_0x2ef287||_0x5095f0-_0x2ef287>=CYCLE_MS)&&(_0x45cf05=-0x22f1*-0x1+-0x7a7*-0x1+-0x2a98,_0x4b3742=0x1e01*0x1+0x1*0x19ed+-0x37ee,_0x2ef287=_0x5095f0);if(_0x45cf05>=MAX_ADS_PER_DAY){const _0x5153e2=Math[_0x3bea31(0x10b)](-0x94+-0x1*0x1c12+-0x26*-0xc1,CYCLE_MS-(_0x5095f0-_0x2ef287)),_0x5c0c85={};_0x5c0c85[_0x3bea31(0xdd)]=_0x3bea31(0x102),_0x5c0c85[_0x3bea31(0xd7)]=_0x5153e2,_0x5c0c85[_0x3bea31(0xf9)]=_0x45cf05,_0x5c0c85[_0x3bea31(0xea)]=_0x4b3742,_0x5c0c85[_0x3bea31(0xf6)]=_0x2ef287,_0x3f02e9[_0x3bea31(0xc7)](0x1546*0x1+-0xdd3+-0x5e3)[_0x3bea31(0xeb)](_0x5c0c85);return;}_0x45cf05+=-0xbf*-0x27+0x132c+0x2*-0x1822,_0x4b3742+=_0x28645d;const _0x39ff65=Number(_0xf5cae7['balance']||0x269d+-0x2*0x1cd+0x2303*-0x1)+_0x28645d,_0x57b563=Number(_0xf5cae7[_0x3bea31(0x120)]||0x1ed2+-0x1ffc*0x1+0x12a)+(-0xe82+0x430*-0x1+0x12b3),_0x40c15e={};_0x40c15e[_0x3bea31(0xed)]=_0xf5cae7['_id'],await _0x411592[_0x3bea31(0x11a)](_0x40c15e,{'$set':{'balance':_0x39ff65,'adsWatchedToday':_0x45cf05,'adsEarnedToday':_0x4b3742,'adsCycleStartedAt':_0x2ef287,'totalAdsWatched':_0x57b563,'lastActiveAt':new Date()}});const _0x117f21={};_0x117f21['ok']=!![],_0x117f21[_0x3bea31(0xfc)]=_0x28645d,_0x117f21[_0x3bea31(0x10f)]=_0x39ff65,_0x117f21[_0x3bea31(0xf9)]=_0x45cf05,_0x117f21['adsEarnedToday']=_0x4b3742,_0x117f21[_0x3bea31(0xf6)]=_0x2ef287,_0x117f21[_0x3bea31(0xf5)]=MAX_ADS_PER_DAY-_0x45cf05,_0x117f21[_0x3bea31(0x10c)]=MAX_ADS_PER_DAY,_0x3f02e9[_0x3bea31(0xc7)](-0x193c+0x88*0x30+0x84)[_0x3bea31(0xeb)](_0x117f21);}catch(_0x309f8c){console[_0x3bea31(0xdd)](_0x3bea31(0x10e),_0x309f8c);const _0x4aaf7b={};_0x4aaf7b[_0x3bea31(0xdd)]=_0x309f8c['message']||_0x3bea31(0xf7),_0x3f02e9['status'](0x71c+0x1597+-0x1abf)[_0x3bea31(0xeb)](_0x4aaf7b);}};
+const { getDb } = require("../lib/mongodb");
+const { validateInitData } = require("../lib/telegramAuth");
+const { findOrCreateUser } = require("../lib/userHelper");
+const { verifyActionToken, createActionToken } = require("../lib/actionSigner");
+
+const MAX_ADS_PER_DAY = 10;
+const AD_REWARD = 15;
+const MAX_SPIN_ADS_PER_DAY = 6;
+const CYCLE_MS = 24 * 60 * 60 * 1000; // 24 hours for daily ads
+const SPIN_CYCLE_MS = 10 * 60 * 60 * 1000; // 10 hours for 6 spin tickets reload
+
+module.exports = async (req, res) => {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  if (!botToken) {
+    res.status(500).json({ error: "TELEGRAM_BOT_TOKEN is not configured" });
+    return;
+  }
+
+  const initData = req.headers["x-telegram-init-data"];
+  const tgUser = validateInitData(initData, botToken);
+  if (!tgUser) {
+    res.status(401).json({ error: "Invalid session - reopen app from Telegram" });
+    return;
+  }
+
+  try {
+    const db = await getDb();
+    const usersCol = db.collection("users");
+    const tokensCol = db.collection("captcha_tokens");
+    const uid = String(tgUser.id);
+
+    let user = await findOrCreateUser(usersCol, tgUser);
+    if (user && user.isBanned) {
+      res.status(403).json({ error: "Your account has been suspended" });
+      return;
+    }
+
+    const now = Date.now();
+    const appSetting = await db.collection("settings").findOne({ key: "app_settings" });
+    const currentAdReward = (appSetting && typeof appSetting.watchAdReward === "number" && appSetting.watchAdReward > 0) ? appSetting.watchAdReward : 10;
+
+    // 1. GET: Fetch Ads and Spin status
+    if (req.method === "GET") {
+      let cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
+      let watchedToday = Number(user.adsWatchedToday || 0);
+      let earnedToday = Number(user.adsEarnedToday || 0);
+      if (!cycleStart || (now - cycleStart >= CYCLE_MS)) {
+        watchedToday = 0;
+        earnedToday = 0;
+        cycleStart = now;
+      }
+
+      let spinCycleStart = user.spinAdsCycleStartedAt ? Number(user.spinAdsCycleStartedAt) : 0;
+      let spinWatchedToday = Number(user.spinAdsWatchedToday || 0);
+      if (!spinCycleStart || (now - spinCycleStart >= SPIN_CYCLE_MS)) {
+        spinWatchedToday = 0;
+        spinCycleStart = now;
+      }
+
+      // Verified referrals: friends with totalAdsWatched >= 30
+      const verifiedRecruitsCount = await usersCol.countDocuments({
+        referredBy: uid,
+        totalAdsWatched: { $gte: 30 }
+      });
+      const claimedRefTickets = Number(user.claimedRefTickets || 0);
+      const claimableRefTickets = Math.max(0, verifiedRecruitsCount - claimedRefTickets);
+
+      res.status(200).json({
+        ok: true,
+        ads: {
+          watchedToday,
+          remainingToday: Math.max(0, MAX_ADS_PER_DAY - watchedToday),
+          earnedToday,
+          maxAds: MAX_ADS_PER_DAY,
+          rewardPerAd: currentAdReward,
+          nextResetMs: Math.max(0, CYCLE_MS - (now - cycleStart))
+        },
+        spin: {
+          tickets: Number(user.spinTickets || 0),
+          watchedToday: spinWatchedToday,
+          remainingToday: Math.max(0, MAX_SPIN_ADS_PER_DAY - spinWatchedToday),
+          maxAds: MAX_SPIN_ADS_PER_DAY,
+          nextResetMs: Math.max(0, SPIN_CYCLE_MS - (now - spinCycleStart)),
+          verifiedRecruitsCount,
+          totalValidRef: verifiedRecruitsCount,
+          claimedRefTickets,
+          claimableRefTickets
+        }
+      });
+      return;
+    }
+
+    if (req.method !== "POST") {
+      res.status(405).json({ error: "Method not allowed" });
+      return;
+    }
+
+    const { action } = req.body || {};
+
+    // 2. ACTION: SPIN THE LUCKY WHEEL (Cost: 1 ticket)
+    if (action === "spin") {
+      const tickets = Number(user.spinTickets || 0);
+      if (tickets < 1) {
+        res.status(400).json({
+          error: "You have 0 tickets! Watch ads or invite friends to get tickets.",
+          tickets: 0
+        });
+        return;
+      }
+
+      // Probability distribution requested by user:
+      // - 10 coins: 80% chance
+      // - 15 coins: 15% chance
+      // - remaining rewards (20, 25, 30): 5% chance
+      const r = Math.random();
+      let reward = 10;
+      let segmentIndex = 0;
+
+      // Wheel Sectors (8 total):
+      // 0: 10, 1: 15, 2: 20, 3: 10, 4: 25, 5: 10, 6: 15, 7: 30
+      if (r < 0.80) {
+        reward = 10;
+        const s10 = [0, 3, 5];
+        segmentIndex = s10[Math.floor(Math.random() * s10.length)];
+      } else if (r < 0.95) {
+        reward = 15;
+        const s15 = [1, 6];
+        segmentIndex = s15[Math.floor(Math.random() * s15.length)];
+      } else {
+        const sub = (r - 0.95) / 0.05;
+        if (sub < 0.50) {
+          reward = 20;
+          segmentIndex = 2;
+        } else if (sub < 0.80) {
+          reward = 25;
+          segmentIndex = 4;
+        } else {
+          reward = 30;
+          segmentIndex = 7;
+        }
+      }
+
+      // Atomically decrement 1 ticket and add reward (impossible to double-claim on spam clicks)
+      const spinRes = await usersCol.updateOne(
+        { _id: user._id, spinTickets: { $gte: 1 } },
+        {
+          $inc: {
+            spinTickets: -1,
+            balance: reward
+          }
+        }
+      );
+
+      if (!spinRes || spinRes.modifiedCount === 0) {
+        res.status(400).json({ error: "No tickets remaining or spin in progress." });
+        return;
+      }
+
+      const updatedUser = await usersCol.findOne({ _id: user._id });
+      const newBalance = Number(updatedUser ? updatedUser.balance : 0);
+      const newTickets = Number(updatedUser ? updatedUser.spinTickets : 0);
+
+      res.status(200).json({
+        ok: true,
+        reward,
+        segmentIndex,
+        spinTickets: newTickets,
+        newBalance
+      });
+      return;
+    }
+
+    // 3. ACTION: CLAIM REFERRAL TICKETS
+    if (action === "claim_ref_tickets") {
+      const verifiedRecruitsCount = await usersCol.countDocuments({
+        referredBy: uid,
+        totalAdsWatched: { $gte: 30 }
+      });
+      const alreadyClaimed = Number(user.claimedRefTickets || 0);
+      const claimable = Math.max(0, verifiedRecruitsCount - alreadyClaimed);
+
+      if (claimable <= 0) {
+        res.status(400).json({ error: "No claimable tickets. Your friends must complete 30 ad watches to become verified." });
+        return;
+      }
+
+      const newTickets = Number(user.spinTickets || 0) + claimable;
+      const newClaimed = alreadyClaimed + claimable;
+
+      await usersCol.updateOne(
+        { _id: user._id },
+        {
+          $set: {
+            spinTickets: newTickets,
+            claimedRefTickets: newClaimed
+          }
+        }
+      );
+
+      res.status(200).json({
+        ok: true,
+        addedTickets: claimable,
+        spinTickets: newTickets,
+        claimedRefTickets: newClaimed,
+        message: `🎉 Claimed +${claimable} free spin tickets!`
+      });
+      return;
+    }
+
+    // 4A. ACTION: WATCH AD FOR SPIN TICKET (Up to 6 per 10 hours via Gigapub Ad)
+    if (action === "spin_watch_ad") {
+      // Cryptographic Action Signing Verification
+      const actionToken = (req.body && req.body.actionToken) || req.headers["x-action-token"] || req.headers["x-action-signature"] || req.headers["x-action-secret"];
+      if (!verifyActionToken(uid, "spin_watch_ad", actionToken)) {
+        res.status(403).json({ error: "Security check failed: Invalid or missing action signature token." });
+        return;
+      }
+
+      const { watchDurationMs } = req.body || {};
+      const duration = Number(watchDurationMs) || 0;
+      const lastWatchedAt = Number(user.lastSpinAdWatchedAt || 0);
+      const timeSinceLast = (lastWatchedAt > 0) ? (now - lastWatchedAt) : 999999;
+
+      // Normal users who skip ads in the app do NOT call this API (they receive no reward and no strikes).
+      // Only automated scripts or bots trying to bypass the 5s watch rule to claim rewards hit this check:
+      if (duration < 5000 || timeSinceLast < 5000) {
+        const strikes = Number(user.spinUnder5sStrikes || 0) + 1;
+        const updateData = { spinUnder5sStrikes: strikes };
+        if (strikes >= 5) {
+          updateData.isSuspicious = true;
+          updateData.suspiciousReason = "Attempted to exploit reward claims under 5 seconds (5+ times)";
+          updateData.suspiciousFlaggedAt = now;
+        }
+        await usersCol.updateOne({ _id: user._id }, { $set: updateData });
+        res.status(400).json({ error: "Ad was skipped! You must watch at least 5 seconds to receive your ticket." });
+        return;
+      }
+
+      let spinCycleStart = user.spinAdsCycleStartedAt ? Number(user.spinAdsCycleStartedAt) : 0;
+      let spinWatchedToday = Number(user.spinAdsWatchedToday || 0);
+
+      if (!spinCycleStart || (now - spinCycleStart >= SPIN_CYCLE_MS)) {
+        spinWatchedToday = 0;
+        spinCycleStart = now;
+      }
+
+      if (spinWatchedToday >= MAX_SPIN_ADS_PER_DAY) {
+        const remainingMs = Math.max(0, SPIN_CYCLE_MS - (now - spinCycleStart));
+        res.status(400).json({
+          error: "Limit of 6 tickets reached! Next tickets available in 10 hours.",
+          remainingMs,
+          spinWatchedToday,
+          maxAds: MAX_SPIN_ADS_PER_DAY
+        });
+        return;
+      }
+
+      spinWatchedToday += 1;
+      const newTickets = Number(user.spinTickets || 0) + 1;
+      const totalAds = Number(user.totalAdsWatched || 0) + 1;
+
+      const isCompleted = (spinWatchedToday >= MAX_SPIN_ADS_PER_DAY);
+      const updatePayload = {
+        spinTickets: newTickets,
+        spinAdsWatchedToday: spinWatchedToday,
+        spinAdsCycleStartedAt: spinCycleStart,
+        totalAdsWatched: totalAds,
+        lastSpinAdWatchedAt: now,
+        lastActiveAt: new Date()
+      };
+
+      if (isCompleted) {
+        updatePayload.spinCycleCompletedAt = now;
+        updatePayload.spinReminderSent = false;
+      }
+
+      await usersCol.updateOne(
+        { _id: user._id },
+        { $set: updatePayload }
+      );
+
+      res.status(200).json({
+        ok: true,
+        ticketAdded: 1,
+        spinTickets: newTickets,
+        spinAdsWatchedToday: spinWatchedToday,
+        remainingToday: MAX_SPIN_ADS_PER_DAY - spinWatchedToday,
+        maxAds: MAX_SPIN_ADS_PER_DAY,
+        newActionToken: createActionToken(uid, "spin_watch_ad"),
+        message: "🎟️ +1 Spin Ticket added!"
+      });
+      return;
+    }
+
+    // 4B. ACTION: REGULAR WATCH & EARN (+15 Coins) - Requires Puzzle Captcha Verification
+    const { captchaToken } = req.body || {};
+    if (!captchaToken) {
+      res.status(403).json({ error: "Security verification required. Please solve the puzzle." });
+      return;
+    }
+
+    // Atomically burn token (impossible for duplicate concurrent clicks to claim twice)
+    const burnTokenRes = await tokensCol.updateOne(
+      {
+        token: captchaToken,
+        userId: { $in: [uid, Number(uid), tgUser.id] },
+        used: false,
+        createdAt: { $gte: now - 90 * 1000 }
+      },
+      { $set: { used: true, usedAt: now } }
+    );
+
+    if (!burnTokenRes || burnTokenRes.modifiedCount === 0) {
+      res.status(403).json({ error: "Invalid, expired, or already used verification. Please solve the puzzle again." });
+      return;
+    }
+    let cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
+    let watchedToday = Number(user.adsWatchedToday || 0);
+    let earnedToday = Number(user.adsEarnedToday || 0);
+
+    if (!cycleStart || (now - cycleStart >= CYCLE_MS)) {
+      watchedToday = 0;
+      earnedToday = 0;
+      cycleStart = now;
+    }
+
+    if (watchedToday >= MAX_ADS_PER_DAY) {
+      const remainingMs = Math.max(0, CYCLE_MS - (now - cycleStart));
+      res.status(400).json({
+        error: "Daily limit of 10 ads reached! Next ads available in 24 hours.",
+        remainingMs,
+        adsWatchedToday: watchedToday,
+        adsEarnedToday: earnedToday,
+        adsCycleStartedAt: cycleStart
+      });
+      return;
+    }
+
+    watchedToday += 1;
+    earnedToday += currentAdReward;
+    const newBalance = Number(user.balance || 0) + currentAdReward;
+    const totalAds = Number(user.totalAdsWatched || 0) + 1;
+
+    await usersCol.updateOne(
+      { _id: user._id },
+      {
+        $set: {
+          balance: newBalance,
+          adsWatchedToday: watchedToday,
+          adsEarnedToday: earnedToday,
+          adsCycleStartedAt: cycleStart,
+          totalAdsWatched: totalAds,
+          lastActiveAt: new Date()
+        }
+      }
+    );
+
+    res.status(200).json({
+      ok: true,
+      reward: currentAdReward,
+      newBalance,
+      adsWatchedToday: watchedToday,
+      adsEarnedToday: earnedToday,
+      adsCycleStartedAt: cycleStart,
+      remainingToday: MAX_ADS_PER_DAY - watchedToday,
+      maxAds: MAX_ADS_PER_DAY
+    });
+  } catch (err) {
+    console.error("ads.js error:", err);
+    res.status(500).json({ error: err.message || "Server error" });
+  }
+};

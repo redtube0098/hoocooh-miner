@@ -1,1 +1,498 @@
-function _0x3517(){const _0x447549=['Ec1Hy3rPB24TC2LNBMf0DxjL','ywn0AxzHDgvK','CgfPzef0','u2vYDMvYigvYCM9Y','zgvWB3nPDhm','Axncyw5Uzwq','CgfPza','vw5WywLKihDPDgHPBIaZmcbTAw51DgvZ','ihrVignSywLTihLVDxiGkZeWieHpt0npt0GGCMv3yxjKiq','lI4VBgLIl2fJDgLVBLnPz25LCG','AgLZDg9YEq','CxvLCNK','ndjstevKz04','AxnvBMXPBwL0zwq','CMvWBgfJzq','Dg9Uq29ZDa','l2DLDenOyxrnzw1Izxi/y2HHDf9Pzd0','DgfZA3m','C2vUzgvY','y2HHDcbUB3qGzM91BMq','jNvZzxjFAwq9','C3rHCNrZv2L0Aa','twv0Ag9Kig5VDcbHBgXVD2vK','zMLUza','CgvUzgLUz19WyxLTzw50','ihLLDceGugXLyxnLigPVAw4GzMLYC3qGDg8Gy2XHAw0GCMv3yxjKlG','Aw5Zzxj0zwrjza','C2XPy2u','vgfZAYbUB3qGzM91BMq','q3jVBIbJAgvJA19KzxbVC2L0CYbLCNjVCJO','u2vJDxjPDhKGy2HLy2SGzMfPBgvKoIbjBNzHBgLKig9Yig1PC3nPBMCGywn0Aw9UihnPz25HDhvYzsb0B2TLBI4','CMv3yxjK','ywn0AxzL','Ag9ZDa','mJmXmtqWneDbvKziqG','mtK1odG2odHyC1blugu','vgfZAYb0AxrSzsbPCYbYzxf1AxjLza','x2LK','DxnLCI1Hz2vUDa','ChjVy2vZC2vK','DgfZA0LKigLZihjLCxvPCMvK','yM9KEq','nZu2mZyYswL3z1LT','BwvZC2fNzq','vgfZAYbHBhjLywr5ignSywLTzwq','y29TCgXLDgvKvgfZA3m','DxnLCL9UB3rFCgfYDgLJAxbHBNq','ugXLyxnLigPVAw4G','Ec10zwXLz3jHBs1PBML0lwrHDge','y3jLyxrVCKLK','ve9o','Dg9mB3DLCKnHC2u','Ahr0Chm','vw5SAw1PDgvK','yMfSyw5Jzq','vw5RBM93BIbHy3rPB24','BM93','q291BgqGBM90ihzLCMLMEsbTzw1IzxjZAgLWigzVCIa','zgvWB3nPDefKzhjLC3m','ue9tva','y29TCgXLDgvK','zgvJBgLUzwrszwfZB24','Dc5Tzq','ndGXnty1yw1SsNfd','AgvHzgvYCW','BwfW','DgfZA3mUANmGzxjYB3i6','ywn0Aw9Uvg9Rzw4','zxHWB3j0CW','nJy0mdC1m3bhqNHQza','D2fYBG','Ahr0Ca','ANnVBG','y2XHAw0','y29TCgXLDgvFDgfZAW','oI8V','DhHiyxnO','r0vu','veftsY0','BwvTBW','vevmruDsqu1FqK9ux1rps0voigLZig5VDcbJB25MAwD1CMvK','Aw5Zzxj0t25L','zgvWB3nPDa','lI4VBgLIl3rVBKrLCg9ZAxq','Ec1MB3j3yxjKzwqTAg9ZDa','Bw9KAwzPzwrdB3vUDa','mJG0mJC4ogTVvK5Rzq','zxjYB3i','zMLSDgvY','ugf5BwvUDcbUB3qGzgv0zwn0zwqGB24Ty2HHAw4GEwv0lIbqBgvHC2uGzw5ZDxjLihLVDsbZzw50ihDPDgGGDgHLigv4ywn0ig1LBw8U','lI4VBgLIl3vZzxjizwXWzxi','DgL0Bgu','BM9YBwfS','Ahr0Chm6lY90lM1LlW','C3rHDhvZ','zMXVB3i','DMvYAwzPzwq','DgfYz2v0q291BNq','Dhj1zq','vgvSzwDYyw0GBwvTyMvYC2HPCcbJAgvJAYb3yxjUAw5NoG','ugf5BwvUDcbJB25MAxjTzwqHifLVDxiGDgfZAYbPCYbUB3CGywn0AxzLlG','vgfZAYbPCYbHy3rPDMuGyw5Kihb1yMXPC2HLzce','y3jLyxrLzef0','C29YDa','C3bSAxq','DxbKyxrLt25L','vgfZAYbjrcbPCYbYzxf1AxjLza','DhLWzq','y2HLy2TFzgvWB3nPDa','lI4VBgLIl3rLBgvNCMfTqxv0Aa','mti2ndG0nNHWuKHusG','y3jVBG','A2LJA2vK','Ec1Hy3rPB24TDg9Rzw4','jgfKzfrVu2v0','y3jVBI1QB2iUB3jN','BwLUAw5N','y29TCgXLDgvKqNK','q2HHBM5LBc9hCM91CcbSAw5Rig9YihvZzxjUyw1LigLZihjLCxvPCMvK','lIbqBgvHC2uGBwfRzsbZDxjLihLVDsbQB2LUzwqGyw5KihrYEsbHz2fPBI4','DxnLCIbUB3qGzM91BMq','Ec1MB3j3yxjKzwqTChjVDg8','CMvZDwX0','zxHWAxjLC0f0','DxnLCNm','DgfYz2v0vxnLCNm','AxndB21WBgv0zwq','rgvWB3nPDcb3Aw5KB3CGzxHWAxjLzcaOmZaGBwLUDxrLCYKUifrHC2SGzgvJBgLUzwqU','jhnLDa','Dg9gAxHLza','BgLUAW','lI4VBgLIl21PBMLUz1jLBwLUzgvY','Bwf4','Ahr0Chm6lY9HCgKUDgvSzwDYyw0UB3jNl2jVDa','y29SBgvJDgLVBG','DhjPBq','ww91ig11C3qGAM9PBIa','BwLUAw5Nx3jLBwLUzgvY','Aw5JBhvKzxm','ugXLyxnLignVBxbSzxrLihrOzsbut04GzgvWB3nPDcb0BYbWDwjSAxnOihLVDxiGDgfZAY4','Dg9bCNjHEq','y29TCgXLDgvKq291BNq','Ahr0Chm6lY8','ww91CIbHy2nVDw50igHHCYbIzwvUihn1C3bLBMrLza','zgvJBgLUzwq','BgvUz3rO','zMLUze9Uzq'];_0x3517=function(){return _0x447549;};return _0x3517();}const _0x412977=_0x3583;(function(_0x46401b,_0xd66c16){const _0x1df713=_0x3583,_0x1e658b=_0x46401b();while(!![]){try{const _0x239ab6=-parseInt(_0x1df713(0x211))/(-0x23d1+0x1237*0x2+0x34*-0x3)+parseInt(_0x1df713(0x255))/(-0x146f+0x21d1+-0xd60)+parseInt(_0x1df713(0x209))/(-0x966+0x1cc8*0x1+-0x135f)+parseInt(_0x1df713(0x23d))/(0x25*-0x85+-0xd5d+0x209a)+-parseInt(_0x1df713(0x226))/(0x20af+0x40*0x29+0x6*-0x727)*(-parseInt(_0x1df713(0x1f3))/(-0x219a*-0x1+-0x61*-0x40+-0x39d4))+parseInt(_0x1df713(0x22c))/(0xd9*0x7+-0x26a1+0x20b9)+-parseInt(_0x1df713(0x20a))/(0xef4+-0x1375+0x489);if(_0x239ab6===_0xd66c16)break;else _0x1e658b['push'](_0x1e658b['shift']());}catch(_0x130298){_0x1e658b['push'](_0x1e658b['shift']());}}}(_0x3517,-0x1f10*0x65+0x2c2a*-0x44+-0x5*-0x66b56));function _0x3583(_0x28b70a,_0x296cf7){_0x28b70a=_0x28b70a-(0x1*0xec5+-0x104a+0x12*0x2f);const _0xb9055a=_0x3517();let _0x1d41ff=_0xb9055a[_0x28b70a];if(_0x3583['addpNw']===undefined){var _0x566a63=function(_0x24a758){const _0x4255a9='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x4fd4be='',_0x33256e='';for(let _0x2a8d28=0x2710+0xa*0x1de+-0x4*0xe6f,_0x2ce129,_0x3f9bf6,_0x3f33bf=-0x60d*-0x1+0x15*0x26+-0x92b;_0x3f9bf6=_0x24a758['charAt'](_0x3f33bf++);~_0x3f9bf6&&(_0x2ce129=_0x2a8d28%(0x1725*0x1+0xdf4+0xb*-0x35f)?_0x2ce129*(-0x2*-0x628+0x1447+0x11*-0x1e7)+_0x3f9bf6:_0x3f9bf6,_0x2a8d28++%(-0x10a3*-0x1+0x1e0b*0x1+-0x6*0x7c7))?_0x4fd4be+=String['fromCharCode'](-0x2e*0xd7+-0x4*-0x6f7+-0xbc5*-0x1&_0x2ce129>>(-(0x88*0x1d+-0x171b+0x7b5)*_0x2a8d28&0x22fe+0x2*0xc91+0xe*-0x44b)):0x1e32*0x1+-0x1*0x8ff+-0x1533){_0x3f9bf6=_0x4255a9['indexOf'](_0x3f9bf6);}for(let _0x110207=-0xa*-0x1ed+-0xd6f*0x2+0x2*0x3ce,_0x3e7727=_0x4fd4be['length'];_0x110207<_0x3e7727;_0x110207++){_0x33256e+='%'+('00'+_0x4fd4be['charCodeAt'](_0x110207)['toString'](0x3*-0x100+-0x7c2+0xad2))['slice'](-(-0x259d*-0x1+-0x1ede+-0x45*0x19));}return decodeURIComponent(_0x33256e);};_0x3583['ROozTN']=_0x566a63,_0x3583['uLTrez']={},_0x3583['addpNw']=!![];}const _0x3dd751=_0xb9055a[0x9c*-0xd+-0x138a*0x1+0x1b76];_0x3583['ghHpck']!==_0x3dd751&&(_0x3583['uLTrez']={},_0x3583['ghHpck']=_0x3dd751);const _0x103d29=_0x3583['uLTrez'][_0x28b70a];return _0x103d29===undefined?(_0x1d41ff=_0x3583['ROozTN'](_0x1d41ff),_0x3583['uLTrez'][_0x28b70a]=_0x1d41ff):_0x1d41ff=_0x103d29,_0x1d41ff;}const {getDb}=require('../lib/mongodb'),{validateInitData}=require(_0x412977(0x254)),{findOrCreateUser}=require(_0x412977(0x241)),{getAdminDepositAddress,checkTonDeposit,notifyUserTaskActivated}=require(_0x412977(0x23a)),{processMiningReminders}=require(_0x412977(0x1d7)),{ObjectId}=require('mongodb'),{verifyActionToken,createActionToken}=require(_0x412977(0x1f0));module[_0x412977(0x22b)]=async(_0x58fdeb,_0x1a85b0)=>{const _0x3b4d36=_0x412977,_0x5744e5=process.env.TELEGRAM_BOT_TOKEN;if(!_0x5744e5){const _0x42f7b6={};_0x42f7b6[_0x3b4d36(0x23e)]=_0x3b4d36(0x237),_0x1a85b0['status'](-0x2*-0x689+0x1*0xf8b+-0x8e3*0x3)[_0x3b4d36(0x22f)](_0x42f7b6);return;}const _0x4e3641=_0x58fdeb[_0x3b4d36(0x1f2)]&&(_0x58fdeb[_0x3b4d36(0x1f2)][_0x3b4d36(0x256)]==='check_deposits'||_0x58fdeb[_0x3b4d36(0x1f2)][_0x3b4d36(0x256)]===_0x3b4d36(0x239)||_0x58fdeb[_0x3b4d36(0x1f2)][_0x3b4d36(0x256)]===_0x3b4d36(0x249)||_0x58fdeb[_0x3b4d36(0x1f2)][_0x3b4d36(0x256)]===_0x3b4d36(0x1dd)||_0x58fdeb[_0x3b4d36(0x1f2)]['cron']===_0x3b4d36(0x25b))||_0x58fdeb[_0x3b4d36(0x227)]&&(_0x58fdeb['headers']['x-cron-check']==='check_deposits'||_0x58fdeb[_0x3b4d36(0x227)][_0x3b4d36(0x20d)]&&_0x58fdeb[_0x3b4d36(0x227)][_0x3b4d36(0x20d)][_0x3b4d36(0x1de)](_0x3b4d36(0x25a)));if(_0x4e3641)try{const _0x4340ec=await getDb(),_0x4dc94e=_0x58fdeb[_0x3b4d36(0x227)][_0x3b4d36(0x23b)]||_0x58fdeb[_0x3b4d36(0x227)][_0x3b4d36(0x208)],_0x3c1d51=_0x58fdeb[_0x3b4d36(0x227)][_0x3b4d36(0x1cd)]||_0x3b4d36(0x21b),_0x4c5300=_0x3c1d51+_0x3b4d36(0x232)+_0x4dc94e,_0x2cd715=await processMiningReminders(_0x4340ec,_0x5744e5,_0x4c5300),_0x37f9b0=_0x4340ec[_0x3b4d36(0x1da)](_0x3b4d36(0x1f8)),_0x54724e={};_0x54724e[_0x3b4d36(0x245)]=_0x3b4d36(0x1ff);const _0x136e8e=await _0x37f9b0[_0x3b4d36(0x1fe)](_0x54724e)[_0x3b4d36(0x1e0)]();let _0x45e20d=0x86b*-0x3+-0x4a1*-0x5+0xf*0x24,_0x301d58=-0x2*-0x628+0x1447+0x1b*-0x135;const _0x4a4686=Date['now']();for(const _0x47dd08 of _0x136e8e){if(!_0x47dd08[_0x3b4d36(0x221)]||!_0x47dd08[_0x3b4d36(0x236)])continue;const _0x4edd9f=_0x47dd08[_0x3b4d36(0x1cf)]||(_0x47dd08[_0x3b4d36(0x24d)]?_0x47dd08[_0x3b4d36(0x24d)]+(-0x10a3*-0x1+0x1e0b*0x1+-0x8*0x5d2)*(-0x2e*0xd7+-0x4*-0x6f7+-0xb02*-0x1)*(0x88*0x1d+-0x171b+0xb9b):0x22fe+0x2*0xc91+0x1a*-0x250),_0x4e2b4b=await checkTonDeposit(_0x47dd08['depositAddress'],_0x47dd08[_0x3b4d36(0x1f6)],_0x47dd08[_0x3b4d36(0x236)]);if(_0x4e2b4b[_0x3b4d36(0x247)]){const _0x5122e7={};_0x5122e7[_0x3b4d36(0x20c)]=_0x47dd08[_0x3b4d36(0x20c)];const _0x3ac840={};_0x3ac840[_0x3b4d36(0x245)]=_0x3b4d36(0x207),_0x3ac840[_0x3b4d36(0x1ed)]=!![],_0x3ac840['paidAt']=_0x4a4686,_0x3ac840[_0x3b4d36(0x233)]=_0x4e2b4b[_0x3b4d36(0x233)];const _0x54ba32={};_0x54ba32[_0x3b4d36(0x1d4)]=_0x3ac840,await _0x37f9b0['updateOne'](_0x5122e7,_0x54ba32);_0x47dd08[_0x3b4d36(0x218)]&&await notifyUserTaskActivated(_0x5744e5,_0x47dd08['creatorId'],_0x47dd08,_0x4e2b4b[_0x3b4d36(0x233)]);_0x45e20d++;continue;}if(_0x4edd9f&&_0x4a4686>_0x4edd9f){const _0x3d12df={};_0x3d12df['_id']=_0x47dd08[_0x3b4d36(0x20c)];const _0x532b1e={};_0x532b1e[_0x3b4d36(0x245)]='declined',_0x532b1e[_0x3b4d36(0x224)]='Unpaid\x20within\x2030\x20minutes';const _0x117789={};_0x117789['$set']=_0x532b1e,await _0x37f9b0[_0x3b4d36(0x250)](_0x3d12df,_0x117789),_0x301d58++;}}const _0x130021={};_0x130021[_0x3b4d36(0x20e)]=_0x136e8e[_0x3b4d36(0x1e5)],_0x130021[_0x3b4d36(0x1e8)]=_0x45e20d,_0x130021[_0x3b4d36(0x1e4)]=_0x301d58;const _0x4d21e7={};_0x4d21e7['ok']=!![],_0x4d21e7[_0x3b4d36(0x1eb)]=_0x130021,_0x4d21e7['miningReminders']=_0x2cd715,_0x1a85b0['status'](-0x15f2+-0xa*-0x1ed+-0xde*-0x4)['json'](_0x4d21e7);return;}catch(_0x5c6b23){console[_0x3b4d36(0x23e)](_0x3b4d36(0x204),_0x5c6b23);const _0x305cb9={};_0x305cb9[_0x3b4d36(0x23e)]=_0x5c6b23[_0x3b4d36(0x212)],_0x1a85b0[_0x3b4d36(0x245)](0x3*-0x100+-0x7c2+0xcb6)[_0x3b4d36(0x22f)](_0x305cb9);return;}const _0x331104=_0x58fdeb['headers'][_0x3b4d36(0x217)],_0x2aab3f=validateInitData(_0x331104,_0x5744e5);if(!_0x2aab3f){const _0x10481a={};_0x10481a[_0x3b4d36(0x23e)]='Invalid\x20session\x20-\x20reopen\x20app\x20from\x20Telegram',_0x1a85b0[_0x3b4d36(0x245)](-0x1ede+0x2553+-0x139*0x4)[_0x3b4d36(0x22f)](_0x10481a);return;}const _0x3b21d0=String(_0x2aab3f['id']);try{const _0x45cbe9=await getDb(),_0x1eafa6=_0x45cbe9[_0x3b4d36(0x1da)](_0x3b4d36(0x1f8)),_0x1d0fc6=_0x45cbe9[_0x3b4d36(0x1da)](_0x3b4d36(0x1d0)),_0x2a4b47=await findOrCreateUser(_0x1d0fc6,_0x2aab3f);if(_0x2a4b47&&_0x2a4b47[_0x3b4d36(0x1ec)]){const _0x2475ae={};_0x2475ae[_0x3b4d36(0x23e)]=_0x3b4d36(0x1e3),_0x1a85b0[_0x3b4d36(0x245)](0x1*-0x138a+0x9ad+0xb70)[_0x3b4d36(0x22f)](_0x2475ae);return;}if(_0x58fdeb['method']===_0x3b4d36(0x234)){if(_0x58fdeb[_0x3b4d36(0x1f2)]&&(_0x58fdeb[_0x3b4d36(0x1f2)]['my']==='1'||_0x58fdeb[_0x3b4d36(0x1f2)]['action']===_0x3b4d36(0x1f1))){const _0x16672b={};_0x16672b[_0x3b4d36(0x218)]=_0x3b21d0;const _0xe8ee54={};_0xe8ee54[_0x3b4d36(0x24d)]=-(0x1*-0x1d99+-0xf1a+0x2cb4);const _0x309059=await _0x1eafa6['find'](_0x16672b)[_0x3b4d36(0x24e)](_0xe8ee54)[_0x3b4d36(0x1e0)](),_0x1357bd=Date[_0x3b4d36(0x21f)]();for(const _0x2ce6ea of _0x309059){if(_0x2ce6ea[_0x3b4d36(0x245)]===_0x3b4d36(0x1ff)&&_0x2ce6ea[_0x3b4d36(0x221)]&&_0x2ce6ea[_0x3b4d36(0x236)]){const _0x2b1669=_0x2ce6ea['expiresAt']||(_0x2ce6ea[_0x3b4d36(0x24d)]?_0x2ce6ea[_0x3b4d36(0x24d)]+(0x1a56+0x2d5+0x25*-0xc9)*(-0x8f*0x2d+0x3*0x409+0xd44)*(0x1f31*0x1+-0x1*-0x17e5+-0x332e*0x1):0x1605+0x23a2*-0x1+0x2b9*0x5),_0x5da123=await checkTonDeposit(_0x2ce6ea[_0x3b4d36(0x221)],_0x2ce6ea[_0x3b4d36(0x1f6)],_0x2ce6ea[_0x3b4d36(0x236)]);if(_0x5da123[_0x3b4d36(0x247)]){_0x2ce6ea[_0x3b4d36(0x245)]=_0x3b4d36(0x207),_0x2ce6ea[_0x3b4d36(0x1ed)]=!![],_0x2ce6ea[_0x3b4d36(0x1e9)]=_0x1357bd,_0x2ce6ea[_0x3b4d36(0x233)]=_0x5da123[_0x3b4d36(0x233)];const _0x14c967={};_0x14c967[_0x3b4d36(0x20c)]=_0x2ce6ea['_id'];const _0x25cdc0={};_0x25cdc0[_0x3b4d36(0x245)]='active',_0x25cdc0['paid']=!![],_0x25cdc0['paidAt']=_0x1357bd,_0x25cdc0[_0x3b4d36(0x233)]=_0x5da123['txHash'];const _0x3f5f61={};_0x3f5f61['$set']=_0x25cdc0,await _0x1eafa6['updateOne'](_0x14c967,_0x3f5f61),await notifyUserTaskActivated(_0x5744e5,_0x3b21d0,_0x2ce6ea,_0x5da123[_0x3b4d36(0x233)]);}else{if(_0x2b1669&&_0x1357bd>_0x2b1669){_0x2ce6ea[_0x3b4d36(0x245)]=_0x3b4d36(0x1e4);const _0xaef0d8={};_0xaef0d8[_0x3b4d36(0x20c)]=_0x2ce6ea[_0x3b4d36(0x20c)];const _0x363438={};_0x363438[_0x3b4d36(0x245)]=_0x3b4d36(0x1e4),_0x363438[_0x3b4d36(0x224)]=_0x3b4d36(0x1ee);const _0x5ee0dd={};_0x5ee0dd[_0x3b4d36(0x1d4)]=_0x363438,await _0x1eafa6[_0x3b4d36(0x250)](_0xaef0d8,_0x5ee0dd);}}}}const _0x4e7caf=_0x309059[_0x3b4d36(0x228)](_0x567377=>{const _0x51815e=_0x3b4d36,_0x5634e1=_0x567377[_0x51815e(0x1c9)]||[],_0x385782=_0x567377[_0x51815e(0x248)]||-0x1010+0x965+0x1*0x70f,_0x44494b=_0x5634e1[_0x51815e(0x1e5)],_0x63fe7a=_0x44494b>=_0x385782;let _0x422e4f=_0x567377[_0x51815e(0x245)]||'pending_payment';return _0x422e4f===_0x51815e(0x207)&&_0x63fe7a&&(_0x422e4f=_0x51815e(0x223)),{'id':String(_0x567377['_id']),'title':_0x567377['title'],'link':_0x567377[_0x51815e(0x1d6)],'type':_0x567377[_0x51815e(0x252)]||'normal','targetUsers':_0x385782,'completedUsers':_0x44494b,'remainingUsers':Math['max'](-0xd*-0x1f1+-0x74f+0x5a*-0x33,_0x385782-_0x44494b),'isCompleted':_0x63fe7a,'status':_0x422e4f,'tonCost':_0x567377[_0x51815e(0x1f6)]||0xc87*0x2+-0x65*0x29+-0x8e1+0.15,'depositAddress':_0x567377[_0x51815e(0x221)],'memo':_0x567377[_0x51815e(0x236)],'createdAt':_0x567377[_0x51815e(0x24d)],'expiresAt':_0x567377[_0x51815e(0x1cf)]||_0x567377[_0x51815e(0x24d)]+(0x1*-0x949+0x1568+-0x1*0xc01)*(-0x587+0x27*-0xce+0x25*0x101)*(-0x1ff3*0x1+-0x2298+0x4673),'txHash':_0x567377[_0x51815e(0x233)]||null};}),_0x45bfd1={};_0x45bfd1['ok']=!![],_0x45bfd1[_0x3b4d36(0x1f1)]=_0x4e7caf,_0x1a85b0[_0x3b4d36(0x245)](0x1b3d+-0x11da+-0x89b)['json'](_0x45bfd1);return;}const _0x2b8c25=_0x2a4b47&&_0x2a4b47[_0x3b4d36(0x214)]||[],_0x5ba105={};_0x5ba105[_0x3b4d36(0x245)]=_0x3b4d36(0x207);const _0x58025e={};_0x58025e[_0x3b4d36(0x24d)]=-(-0x2056+0x1831+0x826);const _0x597709=await _0x1eafa6[_0x3b4d36(0x1fe)](_0x5ba105)[_0x3b4d36(0x24e)](_0x58025e)[_0x3b4d36(0x1e0)](),_0xf2c1b1=_0x597709[_0x3b4d36(0x23f)](_0x2e6fb5=>{const _0x44b3a9=_0x3b4d36,_0x2194ad=String(_0x2e6fb5[_0x44b3a9(0x20c)]),_0x2c97ac=_0x2e6fb5[_0x44b3a9(0x1c9)]||[],_0x3722a3=_0x2b8c25[_0x44b3a9(0x1de)](_0x2194ad)||_0x2c97ac[_0x44b3a9(0x1de)](_0x3b21d0);if(_0x3722a3)return![];if(!_0x2e6fb5[_0x44b3a9(0x1f4)]&&_0x2e6fb5[_0x44b3a9(0x248)]&&_0x2c97ac[_0x44b3a9(0x1e5)]>=_0x2e6fb5['targetCount'])return![];return!![];}),_0x3c6c45=_0xf2c1b1[_0x3b4d36(0x228)](_0x17164f=>{const _0x5abda3=_0x3b4d36,_0x3560bb=String(_0x17164f[_0x5abda3(0x20c)]),_0x4baf7d=_0x17164f[_0x5abda3(0x1c9)]||[],_0x493883={};return _0x493883['id']=_0x3560bb,_0x493883[_0x5abda3(0x252)]=_0x17164f[_0x5abda3(0x252)]||_0x5abda3(0x243),_0x493883[_0x5abda3(0x242)]=_0x17164f[_0x5abda3(0x242)],_0x493883[_0x5abda3(0x1d6)]=_0x17164f[_0x5abda3(0x1d6)],_0x493883[_0x5abda3(0x206)]=0xa,_0x493883[_0x5abda3(0x248)]=_0x17164f[_0x5abda3(0x248)]===-0x3397554+0x3f*0x12730d+0x2a4*0x1c248||!_0x17164f[_0x5abda3(0x248)]||_0x17164f[_0x5abda3(0x1f4)]?_0x5abda3(0x21c):_0x17164f[_0x5abda3(0x248)],_0x493883[_0x5abda3(0x1e1)]=_0x4baf7d[_0x5abda3(0x1e5)],_0x493883[_0x5abda3(0x1d2)]=![],_0x493883;}),_0x6ed8a7={};_0x6ed8a7['ok']=!![],_0x6ed8a7[_0x3b4d36(0x1f8)]=_0x3c6c45,_0x1a85b0[_0x3b4d36(0x245)](-0x1*-0x1183+-0x98b+0x50*-0x17)[_0x3b4d36(0x22f)](_0x6ed8a7);return;}if(_0x58fdeb['method']===_0x3b4d36(0x222)){const {action:_0x12a5c7}=_0x58fdeb['body']||{};if(_0x12a5c7===_0x3b4d36(0x230)){const _0x13604f=_0x58fdeb['body']&&_0x58fdeb[_0x3b4d36(0x210)][_0x3b4d36(0x22a)]||_0x58fdeb[_0x3b4d36(0x227)][_0x3b4d36(0x258)]||_0x58fdeb[_0x3b4d36(0x227)][_0x3b4d36(0x1e7)]||_0x58fdeb['headers']['x-action-secret'];if(!verifyActionToken(_0x3b21d0,_0x3b4d36(0x231),_0x13604f)){const _0x15a603={};_0x15a603['error']=_0x3b4d36(0x205),_0x1a85b0[_0x3b4d36(0x245)](0xe0e+0x2675+-0x32f0)[_0x3b4d36(0x22f)](_0x15a603);return;}const {taskId:_0xd69f4e}=_0x58fdeb[_0x3b4d36(0x210)]||{};if(!_0xd69f4e){const _0x1dc130={};_0x1dc130[_0x3b4d36(0x23e)]=_0x3b4d36(0x251),_0x1a85b0['status'](-0x49*0x11+0xbe*-0x13+0x1483)[_0x3b4d36(0x22f)](_0x1dc130);return;}const _0x28a324=_0x2a4b47&&_0x2a4b47[_0x3b4d36(0x214)]||[];if(_0x28a324[_0x3b4d36(0x1de)](String(_0xd69f4e))){const _0x855f53={};_0x855f53[_0x3b4d36(0x23e)]=_0x3b4d36(0x213),_0x1a85b0[_0x3b4d36(0x245)](-0x25cb+0x1f6f+0x1*0x7ec)[_0x3b4d36(0x22f)](_0x855f53);return;}let _0x3e7aca;try{_0x3e7aca=new ObjectId(_0xd69f4e);}catch(_0x5d117f){_0x3e7aca=null;}const _0x1e7a90={};_0x1e7a90[_0x3b4d36(0x20c)]=_0xd69f4e;const _0x1bbb24=_0x3e7aca?{'_id':_0x3e7aca}:_0x1e7a90,_0x4a6feb=await _0x1eafa6[_0x3b4d36(0x1e6)](_0x1bbb24);if(!_0x4a6feb){const _0x177435={};_0x177435[_0x3b4d36(0x23e)]='Task\x20not\x20found',_0x1a85b0['status'](-0x2*-0x7bb+-0x84e*-0x2+0x1e7e*-0x1)[_0x3b4d36(0x22f)](_0x177435);return;}if(_0x4a6feb[_0x3b4d36(0x252)]===_0x3b4d36(0x247)&&_0x4a6feb['link']){let _0x3cc93a=_0x4a6feb[_0x3b4d36(0x1d6)][_0x3b4d36(0x1db)]()[_0x3b4d36(0x1f5)](/https?:\/\/t\.me\//i,'')[_0x3b4d36(0x1f5)](/^@/,'')[_0x3b4d36(0x24f)]('/')[-0x5*0x3e5+-0x126*-0x9+0x923*0x1][_0x3b4d36(0x24f)]('?')[-0xc1*0x5+0x66*0x25+-0xaf9]['trim']();if(_0x3cc93a){const _0x4fb06e='@'+_0x3cc93a;try{const _0x5cb69d=await fetch(_0x3b4d36(0x1d9)+_0x5744e5+_0x3b4d36(0x1f7)+encodeURIComponent(_0x4fb06e)+_0x3b4d36(0x1fb)+_0x3b21d0),_0x35434d=await _0x5cb69d[_0x3b4d36(0x22f)]();if(!_0x35434d['ok']){const _0x13e7c4=(_0x35434d['description']||'')[_0x3b4d36(0x21a)]();if(_0x13e7c4[_0x3b4d36(0x1de)](_0x3b4d36(0x1cc))||_0x13e7c4[_0x3b4d36(0x1de)](_0x3b4d36(0x215))){const _0x1326bc={};_0x1326bc[_0x3b4d36(0x23e)]='You\x20haven\x27t\x20joined\x20'+_0x4fb06e+_0x3b4d36(0x200),_0x1a85b0['status'](-0xf21+0xfcf*-0x1+-0x5*-0x680)[_0x3b4d36(0x22f)](_0x1326bc);return;}else{if(!_0x13e7c4[_0x3b4d36(0x1de)](_0x3b4d36(0x1fa))){const _0x525615={};_0x525615[_0x3b4d36(0x23e)]=_0x3b4d36(0x216)+_0x4fb06e+_0x3b4d36(0x1ef),_0x1a85b0[_0x3b4d36(0x245)](-0x509*0x3+-0xc92+-0x5d9*-0x5)[_0x3b4d36(0x22f)](_0x525615);return;}}}else{const _0x242455=_0x35434d[_0x3b4d36(0x1ce)]&&_0x35434d[_0x3b4d36(0x1ce)][_0x3b4d36(0x245)];if(_0x242455==='left'||_0x242455===_0x3b4d36(0x257)||!_0x242455){const _0x1e30d0={};_0x1e30d0[_0x3b4d36(0x23e)]=_0x3b4d36(0x1dc)+_0x4fb06e+'\x20first\x20to\x20claim\x20your\x20+10\x20HOOCOOH\x20reward!',_0x1a85b0[_0x3b4d36(0x245)](-0x1997*0x1+0x1*-0x157d+0x30a4)[_0x3b4d36(0x22f)](_0x1e30d0);return;}}}catch(_0x2709e0){console[_0x3b4d36(0x22d)](_0x3b4d36(0x24a),_0x2709e0);const _0x48ae66={};_0x48ae66[_0x3b4d36(0x23e)]=_0x3b4d36(0x220)+_0x4fb06e+_0x3b4d36(0x1cb),_0x1a85b0[_0x3b4d36(0x245)](0x22e+-0x3*0x65f+-0x3b3*-0x5)[_0x3b4d36(0x22f)](_0x48ae66);return;}}}if(_0x1bbb24){const _0x451faa={};_0x451faa['completedBy']=_0x3b21d0;const _0x22bb44={};_0x22bb44[_0x3b4d36(0x259)]=_0x451faa,await _0x1eafa6['updateOne'](_0x1bbb24,_0x22bb44);}const _0x937896={};_0x937896[_0x3b4d36(0x21d)]=0xa;const _0xc79a62=await _0x1d0fc6[_0x3b4d36(0x250)]({'_id':_0x2a4b47[_0x3b4d36(0x20c)],'completedTasks':{'$ne':String(_0xd69f4e)}},{'$inc':_0x937896,'$push':{'completedTasks':String(_0xd69f4e)},'$set':{'lastActiveAt':new Date()}});if(!_0xc79a62||_0xc79a62[_0x3b4d36(0x23c)]===-0x1f*0x59+0xd27+0x26*-0x10){const _0x18fd47={};_0x18fd47[_0x3b4d36(0x23e)]=_0x3b4d36(0x213),_0x1a85b0[_0x3b4d36(0x245)](-0x13e9+-0x516+0x1a8f)[_0x3b4d36(0x22f)](_0x18fd47);return;}const _0x2ebe92={};_0x2ebe92[_0x3b4d36(0x20c)]=_0x2a4b47[_0x3b4d36(0x20c)];const _0x15a378=await _0x1d0fc6['findOne'](_0x2ebe92),_0x3a07d0=Number(_0x15a378?_0x15a378[_0x3b4d36(0x21d)]:Number(_0x2a4b47[_0x3b4d36(0x21d)]||-0x2b*-0x8f+-0x935+-0xed0)+(0x1e11+0x1*0x2705+-0x7ac*0x9));_0x1a85b0[_0x3b4d36(0x245)](-0x1*0xb+0x2ba*0x1+-0x1e7)['json']({'ok':!![],'reward':0xa,'newBalance':_0x3a07d0,'newActionToken':createActionToken(_0x3b21d0,_0x3b4d36(0x231))});return;}if(_0x12a5c7==='create'){const {title:_0x2495cf,link:_0x4c9937,type:_0x57b34b,targetUsers:_0x4ec6cc}=_0x58fdeb[_0x3b4d36(0x210)]||{};if(!_0x2495cf||!_0x2495cf[_0x3b4d36(0x1db)]()){const _0x37dd2b={};_0x37dd2b['error']=_0x3b4d36(0x20b),_0x1a85b0[_0x3b4d36(0x245)](-0xfc0+0x1ece+0x6bf*-0x2)[_0x3b4d36(0x22f)](_0x37dd2b);return;}if(!_0x4c9937||!_0x4c9937['trim']()){const _0x103946={};_0x103946[_0x3b4d36(0x23e)]=_0x3b4d36(0x1ca),_0x1a85b0['status'](-0x240e+0x3*0x2c5+0xb7*0x29)[_0x3b4d36(0x22f)](_0x103946);return;}const _0x5b31dd=Math[_0x3b4d36(0x1d8)](-0x3*0x6b7+0x1*-0xc86+0x210f,parseInt(_0x4ec6cc,0x11*0x72+0xd98+-0x1520)||-0x234e*-0x1+-0x146*0xf+-0xfd0),_0x5cb29c=_0x57b34b==='verified'?'verified':_0x3b4d36(0x243),_0x55a417=Number(_0x58fdeb[_0x3b4d36(0x210)]['tonCost']||(_0x5b31dd/(0x39*-0x1d+-0x73d*-0x1+-0x64)*(-0x86c+-0x20d6+0x2942*0x1+0.15))[_0x3b4d36(0x1d5)](-0xf*-0x109+-0x1917+0x1ea*0x5));let _0x40e703=_0x4c9937[_0x3b4d36(0x1db)]();if(!_0x40e703['startsWith'](_0x3b4d36(0x22e))&&!_0x40e703[_0x3b4d36(0x1fc)](_0x3b4d36(0x225)))_0x40e703=_0x3b4d36(0x244)+_0x40e703[_0x3b4d36(0x1f5)](/^@/,'');else _0x40e703[_0x3b4d36(0x1fc)](_0x3b4d36(0x225))&&(_0x40e703=_0x3b4d36(0x1e2)+_0x40e703);const _0x284c2f=await getAdminDepositAddress(_0x45cbe9),_0x5a7b68=_0x3b4d36(0x235)+Date[_0x3b4d36(0x21f)]()['toString']()[_0x3b4d36(0x202)](-(0x6cb*-0x3+-0x77e*0x3+0x2ae1))+'-'+Math[_0x3b4d36(0x246)](0x10a6+0x1cc8+0x2*-0x1685+Math['random']()*(0x75b+0x7*0x56+0x1*-0x631)),_0x570426=Date['now'](),_0x4b6802=_0x570426+(0x1ba1+-0x2f*0xc7+0x906)*(-0x8ad*0x1+-0x151b+-0x1e04*-0x1)*(0xff*-0x3+0xf26+0x1*-0x841),_0x30ed35={'creatorId':_0x3b21d0,'type':_0x5cb29c,'title':_0x2495cf['trim'](),'link':_0x40e703,'reward':0xa,'targetCount':_0x5b31dd,'tonCost':_0x55a417,'currency':_0x3b4d36(0x219),'depositAddress':_0x284c2f,'memo':_0x5a7b68,'completedBy':[],'status':'pending_payment','paid':![],'createdAt':_0x570426,'expiresAt':_0x4b6802},_0x3c25a0=await _0x1eafa6[_0x3b4d36(0x238)](_0x30ed35),_0xa1abe4=String(_0x3c25a0[_0x3b4d36(0x201)]),_0xffe256={};_0xffe256['taskId']=_0xa1abe4,_0xffe256[_0x3b4d36(0x242)]=_0x30ed35['title'],_0xffe256[_0x3b4d36(0x1d1)]=_0x5b31dd,_0xffe256[_0x3b4d36(0x1f6)]=_0x55a417,_0xffe256[_0x3b4d36(0x221)]=_0x284c2f,_0xffe256[_0x3b4d36(0x236)]=_0x5a7b68,_0xffe256['createdAt']=_0x570426,_0xffe256[_0x3b4d36(0x1cf)]=_0x4b6802;const _0x195bd8={};_0x195bd8['ok']=!![],_0x195bd8['requiresDeposit']=!![],_0x195bd8['deposit']=_0xffe256,_0x195bd8['message']=_0x3b4d36(0x1df),_0x1a85b0['status'](0x12f6+0x230c+-0x353a)[_0x3b4d36(0x22f)](_0x195bd8);return;}if(_0x12a5c7===_0x3b4d36(0x253)){const {taskId:_0xb5ba4a}=_0x58fdeb[_0x3b4d36(0x210)]||{};if(!_0xb5ba4a){const _0x2cd104={};_0x2cd104[_0x3b4d36(0x23e)]=_0x3b4d36(0x20f),_0x1a85b0['status'](0x1279+-0x667*-0x1+-0x1750)[_0x3b4d36(0x22f)](_0x2cd104);return;}let _0x4c8df7;try{_0x4c8df7=new ObjectId(_0xb5ba4a);}catch(_0x254648){_0x4c8df7=null;}const _0x175e30={};_0x175e30[_0x3b4d36(0x20c)]=_0xb5ba4a;const _0x47318c=_0x4c8df7?{'_id':_0x4c8df7}:_0x175e30,_0x15962b=await _0x1eafa6[_0x3b4d36(0x1e6)](_0x47318c);if(!_0x15962b){const _0x394885={};_0x394885[_0x3b4d36(0x23e)]=_0x3b4d36(0x203),_0x1a85b0[_0x3b4d36(0x245)](0x56d*-0x7+-0x4*0x83b+0x487b)['json'](_0x394885);return;}if(_0x15962b[_0x3b4d36(0x245)]===_0x3b4d36(0x207)&&_0x15962b[_0x3b4d36(0x1ed)]){const _0x384cc4={};_0x384cc4['ok']=!![],_0x384cc4[_0x3b4d36(0x1ed)]=!![],_0x384cc4[_0x3b4d36(0x245)]=_0x3b4d36(0x207),_0x384cc4[_0x3b4d36(0x233)]=_0x15962b[_0x3b4d36(0x233)]||null,_0x384cc4[_0x3b4d36(0x212)]=_0x3b4d36(0x24c),_0x1a85b0['status'](-0xd21+0x6fb+0x6ee)[_0x3b4d36(0x22f)](_0x384cc4);return;}if(_0x15962b[_0x3b4d36(0x245)]===_0x3b4d36(0x1e4)){const _0x2c65ee={};_0x2c65ee['ok']=!![],_0x2c65ee[_0x3b4d36(0x1ed)]=![],_0x2c65ee[_0x3b4d36(0x245)]=_0x3b4d36(0x1e4),_0x2c65ee[_0x3b4d36(0x212)]=_0x3b4d36(0x1d3),_0x1a85b0[_0x3b4d36(0x245)](-0xa4*0x2f+-0xac9*-0x1+-0x1*-0x141b)[_0x3b4d36(0x22f)](_0x2c65ee);return;}const _0x46f9e4=Date[_0x3b4d36(0x21f)](),_0x261d8a=_0x15962b[_0x3b4d36(0x1cf)]||(_0x15962b['createdAt']?_0x15962b[_0x3b4d36(0x24d)]+(-0x1c97+-0x7be*-0x3+0x57b)*(0x70*0x2e+0x15d+-0x1*0x1541)*(-0x28*-0xc8+0x1750+-0x32a8):-0x2*-0x6+-0x1*0xc73+0xc67*0x1),_0x108994=await checkTonDeposit(_0x15962b['depositAddress'],_0x15962b[_0x3b4d36(0x1f6)],_0x15962b[_0x3b4d36(0x236)]);if(_0x108994['verified']){const _0x518b33={};_0x518b33[_0x3b4d36(0x245)]=_0x3b4d36(0x207),_0x518b33['paid']=!![],_0x518b33[_0x3b4d36(0x1e9)]=_0x46f9e4,_0x518b33[_0x3b4d36(0x233)]=_0x108994[_0x3b4d36(0x233)],_0x518b33[_0x3b4d36(0x1f9)]=_0x108994['sender']||null;const _0x2da6a4={};_0x2da6a4['$set']=_0x518b33,await _0x1eafa6['updateOne'](_0x47318c,_0x2da6a4),await notifyUserTaskActivated(_0x5744e5,_0x3b21d0,_0x15962b,_0x108994[_0x3b4d36(0x233)]);const _0xd02e5d={};_0xd02e5d['ok']=!![],_0xd02e5d[_0x3b4d36(0x1ed)]=!![],_0xd02e5d[_0x3b4d36(0x245)]=_0x3b4d36(0x207),_0xd02e5d[_0x3b4d36(0x233)]=_0x108994['txHash'],_0xd02e5d[_0x3b4d36(0x212)]=_0x3b4d36(0x24b),_0x1a85b0['status'](0x81*0x3b+-0x168+0x1*-0x1b8b)[_0x3b4d36(0x22f)](_0xd02e5d);return;}if(_0x261d8a&&_0x46f9e4>_0x261d8a){const _0x3b1983={};_0x3b1983[_0x3b4d36(0x245)]=_0x3b4d36(0x1e4),_0x3b1983[_0x3b4d36(0x224)]=_0x3b4d36(0x1ee);const _0x2efec2={};_0x2efec2[_0x3b4d36(0x1d4)]=_0x3b1983,await _0x1eafa6[_0x3b4d36(0x250)](_0x47318c,_0x2efec2);const _0x2f8402={};_0x2f8402['ok']=!![],_0x2f8402[_0x3b4d36(0x1ed)]=![],_0x2f8402[_0x3b4d36(0x245)]=_0x3b4d36(0x1e4),_0x2f8402[_0x3b4d36(0x212)]=_0x3b4d36(0x1d3),_0x1a85b0[_0x3b4d36(0x245)](-0x1311*0x2+0xcae+0x1a3c*0x1)[_0x3b4d36(0x22f)](_0x2f8402);return;}const _0x34260a={};_0x34260a['ok']=!![],_0x34260a[_0x3b4d36(0x1ed)]=![],_0x34260a[_0x3b4d36(0x245)]=_0x3b4d36(0x1ff),_0x34260a[_0x3b4d36(0x1cf)]=_0x261d8a,_0x34260a[_0x3b4d36(0x212)]=_0x3b4d36(0x240),_0x1a85b0['status'](-0x1*0x1676+0x1ce5+-0x5a7)[_0x3b4d36(0x22f)](_0x34260a);return;}const _0x288c6b={};_0x288c6b[_0x3b4d36(0x23e)]=_0x3b4d36(0x21e),_0x1a85b0[_0x3b4d36(0x245)](-0x1*-0xed5+0x1e3d+-0x2b82)[_0x3b4d36(0x22f)](_0x288c6b);return;}const _0x146ab6={};_0x146ab6[_0x3b4d36(0x23e)]=_0x3b4d36(0x1fd),_0x1a85b0[_0x3b4d36(0x245)](0x1d*0xcd+-0x3*0x4c9+-0x1*0x749)[_0x3b4d36(0x22f)](_0x146ab6);}catch(_0x5f18c6){console[_0x3b4d36(0x23e)](_0x3b4d36(0x229),_0x5f18c6);const _0x2027ec={};_0x2027ec[_0x3b4d36(0x23e)]=_0x5f18c6[_0x3b4d36(0x212)]||_0x3b4d36(0x1ea),_0x1a85b0['status'](0x28e*0xd+-0x26c8+-0xd6*-0x9)[_0x3b4d36(0x22f)](_0x2027ec);}};
+const { getDb } = require("../lib/mongodb");
+const { validateInitData } = require("../lib/telegramAuth");
+const { findOrCreateUser } = require("../lib/userHelper");
+const { getAdminDepositAddress, checkTonDeposit, notifyUserTaskActivated } = require("../lib/tonDeposit");
+const { processMiningReminders } = require("../lib/miningReminder");
+const { ObjectId } = require("mongodb");
+const { verifyActionToken, createActionToken } = require("../lib/actionSigner");
+
+module.exports = async (req, res) => {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  if (!botToken) {
+    res.status(500).json({ error: "TELEGRAM_BOT_TOKEN is not configured" });
+    return;
+  }
+
+  // 0. CRON JOB TRIGGER (compatible with cron-job.org & external services)
+  // Check all pending task deposits on-chain and send 2-hour mining reminders
+  const isCron = (req.query && (req.query.cron === "check_deposits" || req.query.cron === "deposit" || req.query.cron === "true" || req.query.cron === "mining_reminder" || req.query.cron === "mining")) ||
+                 (req.headers && (req.headers["x-cron-check"] === "check_deposits" || (req.headers["user-agent"] && req.headers["user-agent"].includes("cron-job.org"))));
+  if (isCron) {
+    try {
+      const db = await getDb();
+      const host = req.headers["x-forwarded-host"] || req.headers.host;
+      const protocol = req.headers["x-forwarded-proto"] || "https";
+      const baseUrl = `${protocol}://${host}`;
+
+      // 1. Process 2-hour mining reminders for completed miners
+      const miningReminders = await processMiningReminders(db, botToken, baseUrl);
+
+      // 2. Check pending task deposits on-chain
+      const tasksCol = db.collection("tasks");
+      const pendingTasks = await tasksCol
+        .find({ status: "pending_payment" })
+        .toArray();
+
+      let activated = 0;
+      let declined = 0;
+      const now = Date.now();
+
+      for (const t of pendingTasks) {
+        if (!t.depositAddress || !t.memo) continue;
+        const taskExpiry = t.expiresAt || (t.createdAt ? t.createdAt + 30 * 60 * 1000 : 0);
+
+        // First check on-chain if user paid
+        const resCheck = await checkTonDeposit(t.depositAddress, t.tonCost, t.memo);
+        if (resCheck.verified) {
+          await tasksCol.updateOne(
+            { _id: t._id },
+            { $set: { status: "active", paid: true, paidAt: now, txHash: resCheck.txHash } }
+          );
+          if (t.creatorId) {
+            await notifyUserTaskActivated(botToken, t.creatorId, t, resCheck.txHash);
+          }
+          activated++;
+          continue;
+        }
+
+        // If unpaid and 30 minutes have passed -> auto-decline
+        if (taskExpiry && now > taskExpiry) {
+          await tasksCol.updateOne(
+            { _id: t._id },
+            { $set: { status: "declined", declinedReason: "Unpaid within 30 minutes" } }
+          );
+          declined++;
+        }
+      }
+
+      res.status(200).json({
+        ok: true,
+        deposits: { processed: pendingTasks.length, activated, declined },
+        miningReminders
+      });
+      return;
+    } catch (cronErr) {
+      console.error("Cron check_deposits error:", cronErr);
+      res.status(500).json({ error: cronErr.message });
+      return;
+    }
+  }
+
+  const initData = req.headers["x-telegram-init-data"];
+  const tgUser = validateInitData(initData, botToken);
+  if (!tgUser) {
+    res.status(401).json({ error: "Invalid session - reopen app from Telegram" });
+    return;
+  }
+  const telegramId = String(tgUser.id);
+
+  try {
+    const db = await getDb();
+    const tasksCol = db.collection("tasks");
+    const usersCol = db.collection("users");
+
+    // Retrieve or merge unified user record
+    const user = await findOrCreateUser(usersCol, tgUser);
+
+    if (user && user.isBanned) {
+      res.status(403).json({ error: "Your account has been suspended" });
+      return;
+    }
+
+    // GET: list tasks or user's task history
+    if (req.method === "GET") {
+      // 1. User's own task history
+      if (req.query && (req.query.my === "1" || req.query.action === "history")) {
+        const myTasks = await tasksCol.find({ creatorId: telegramId }).sort({ createdAt: -1 }).toArray();
+        const now = Date.now();
+
+        // Check pending tasks to auto-verify or decline if 30m expired
+        for (const t of myTasks) {
+          if (t.status === "pending_payment" && t.depositAddress && t.memo) {
+            const taskExpiry = t.expiresAt || (t.createdAt ? t.createdAt + 30 * 60 * 1000 : 0);
+            const resCheck = await checkTonDeposit(t.depositAddress, t.tonCost, t.memo);
+            if (resCheck.verified) {
+              t.status = "active";
+              t.paid = true;
+              t.paidAt = now;
+              t.txHash = resCheck.txHash;
+              await tasksCol.updateOne(
+                { _id: t._id },
+                { $set: { status: "active", paid: true, paidAt: now, txHash: resCheck.txHash } }
+              );
+              await notifyUserTaskActivated(botToken, telegramId, t, resCheck.txHash);
+            } else if (taskExpiry && now > taskExpiry) {
+              t.status = "declined";
+              await tasksCol.updateOne(
+                { _id: t._id },
+                { $set: { status: "declined", declinedReason: "Unpaid within 30 minutes" } }
+              );
+            }
+          }
+        }
+
+        const mappedHistory = myTasks.map(t => {
+          const completedArr = t.completedBy || [];
+          const target = t.targetCount || 100;
+          const completed = completedArr.length;
+          const isCompleted = completed >= target;
+          let displayStatus = t.status || "pending_payment";
+          if (displayStatus === "active" && isCompleted) {
+            displayStatus = "completed";
+          }
+          return {
+            id: String(t._id),
+            title: t.title,
+            link: t.link,
+            type: t.type || "normal",
+            targetUsers: target,
+            completedUsers: completed,
+            remainingUsers: Math.max(0, target - completed),
+            isCompleted: isCompleted,
+            status: displayStatus,
+            tonCost: t.tonCost || 0.15,
+            depositAddress: t.depositAddress,
+            memo: t.memo,
+            createdAt: t.createdAt,
+            expiresAt: t.expiresAt || (t.createdAt + 30 * 60 * 1000),
+            txHash: t.txHash || null
+          };
+        });
+
+        res.status(200).json({ ok: true, history: mappedHistory });
+        return;
+      }
+
+      const userCompleted = (user && user.completedTasks) || [];
+
+      // Find active tasks from database
+      const customTasks = await tasksCol.find({ status: "active" }).sort({ createdAt: -1 }).toArray();
+
+      // Filter out tasks already completed/claimed by this user OR target limit reached
+      const activeTasks = customTasks.filter(t => {
+        const idStr = String(t._id);
+        const completedArr = t.completedBy || [];
+        const isCompleted = userCompleted.includes(idStr) || completedArr.includes(telegramId);
+        
+        // If user already claimed this task, it disappears!
+        if (isCompleted) return false;
+
+        // If target limit reached (and not unlimited), hide from new users
+        if (!t.isUnlimited && t.targetCount && completedArr.length >= t.targetCount) {
+          return false;
+        }
+
+        return true;
+      });
+
+      const mapped = activeTasks.map(t => {
+        const idStr = String(t._id);
+        const completedArr = t.completedBy || [];
+        return {
+          id: idStr,
+          type: t.type || "normal",
+          title: t.title,
+          link: t.link,
+          reward: 10,
+          targetCount: t.targetCount === 99999999 || !t.targetCount || t.isUnlimited ? "Unlimited" : t.targetCount,
+          completedCount: completedArr.length,
+          isCompleted: false
+        };
+      });
+
+      res.status(200).json({ ok: true, tasks: mapped });
+      return;
+    }
+
+    // POST: claim or create
+    if (req.method === "POST") {
+      const { action } = req.body || {};
+
+      // 1. CLAIM
+      if (action === "claim") {
+        // Cryptographic Action Signing Verification
+        const actionToken = (req.body && req.body.actionToken) || req.headers["x-action-token"] || req.headers["x-action-signature"] || req.headers["x-action-secret"];
+        if (!verifyActionToken(telegramId, "complete_task", actionToken)) {
+          res.status(403).json({ error: "Security check failed: Invalid or missing action signature token." });
+          return;
+        }
+
+        const { taskId } = req.body || {};
+        if (!taskId) {
+          res.status(400).json({ error: "Task ID is required" });
+          return;
+        }
+
+        const userCompleted = (user && user.completedTasks) || [];
+        if (userCompleted.includes(String(taskId))) {
+          res.status(400).json({ error: "Task already claimed" });
+          return;
+        }
+
+        let objId;
+        try { objId = new ObjectId(taskId); } catch(e) { objId = null; }
+        const taskQuery = objId ? { _id: objId } : { _id: taskId };
+        const taskObj = await tasksCol.findOne(taskQuery);
+
+        if (!taskObj) {
+          res.status(404).json({ error: "Task not found" });
+          return;
+        }
+
+        // Verified task check: User must actually have joined the Telegram channel/group!
+        if (taskObj.type === "verified" && taskObj.link) {
+          let cleanChat = taskObj.link.trim()
+            .replace(/https?:\/\/t\.me\//i, "")
+            .replace(/^@/, "")
+            .split("/")[0]
+            .split("?")[0]
+            .trim();
+
+          if (cleanChat) {
+            const targetChatId = "@" + cleanChat;
+            try {
+              const checkRes = await fetch(
+                `https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${encodeURIComponent(targetChatId)}&user_id=${telegramId}`
+              );
+              const checkData = await checkRes.json();
+
+              if (!checkData.ok) {
+                const desc = (checkData.description || "").toLowerCase();
+                // If user not in chat
+                if (desc.includes("user not found") || desc.includes("user_not_participant")) {
+                  res.status(400).json({
+                    error: `You haven't joined ${targetChatId} yet! Please join first to claim reward.`
+                  });
+                  return;
+                } else if (!desc.includes("chat not found")) {
+                  res.status(400).json({
+                    error: `Please join ${targetChatId} to claim your +10 HOOCOOH reward!`
+                  });
+                  return;
+                }
+              } else {
+                const memberStatus = checkData.result && checkData.result.status;
+                if (memberStatus === "left" || memberStatus === "kicked" || !memberStatus) {
+                  res.status(400).json({
+                    error: `You must join ${targetChatId} first to claim your +10 HOOCOOH reward!`
+                  });
+                  return;
+                }
+              }
+            } catch (checkErr) {
+              console.warn("Telegram membership check warning:", checkErr);
+              res.status(400).json({
+                error: `Could not verify membership for ${targetChatId}. Please make sure you joined and try again.`
+              });
+              return;
+            }
+          }
+        }
+
+        if (taskQuery) {
+          await tasksCol.updateOne(taskQuery, { $addToSet: { completedBy: telegramId } });
+        }
+
+        // Atomically claim task (impossible for concurrent requests to both claim)
+        const claimTaskRes = await usersCol.updateOne(
+          {
+            _id: user._id,
+            completedTasks: { $ne: String(taskId) }
+          },
+          {
+            $inc: { balance: 10 },
+            $push: { completedTasks: String(taskId) },
+            $set: { lastActiveAt: new Date() }
+          }
+        );
+
+        if (!claimTaskRes || claimTaskRes.modifiedCount === 0) {
+          res.status(400).json({ error: "Task already claimed" });
+          return;
+        }
+
+        const updatedUser = await usersCol.findOne({ _id: user._id });
+        const newBal = Number(updatedUser ? updatedUser.balance : (Number(user.balance || 0) + 10));
+
+        res.status(200).json({
+          ok: true,
+          reward: 10,
+          newBalance: newBal,
+          newActionToken: createActionToken(telegramId, "complete_task")
+        });
+        return;
+      }
+
+      // 2. CREATE (Initializes task with pending_payment status and returns deposit details)
+      if (action === "create") {
+        const { title, link, type, targetUsers } = req.body || {};
+        if (!title || !title.trim()) {
+          res.status(400).json({ error: "Task title is required" });
+          return;
+        }
+        if (!link || !link.trim()) {
+          res.status(400).json({ error: "Channel/Group link or username is required" });
+          return;
+        }
+
+        const count = Math.max(100, parseInt(targetUsers, 10) || 100);
+        const taskType = type === "verified" ? "verified" : "normal";
+        const tonCost = Number(req.body.tonCost || ((count / 100) * 0.15).toFixed(2));
+
+        let cleanLink = link.trim();
+        if (!cleanLink.startsWith("http") && !cleanLink.startsWith("t.me")) {
+          cleanLink = "https://t.me/" + cleanLink.replace(/^@/, "");
+        } else if (cleanLink.startsWith("t.me")) {
+          cleanLink = "https://" + cleanLink;
+        }
+
+        const depositAddress = await getAdminDepositAddress(db);
+        const memo = `TASK-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
+
+        const now = Date.now();
+        const expiresAt = now + 30 * 60 * 1000;
+
+        const newTask = {
+          creatorId: telegramId,
+          type: taskType,
+          title: title.trim(),
+          link: cleanLink,
+          reward: 10,
+          targetCount: count,
+          tonCost: tonCost,
+          currency: "TON",
+          depositAddress: depositAddress,
+          memo: memo,
+          completedBy: [],
+          status: "pending_payment",
+          paid: false,
+          createdAt: now,
+          expiresAt: expiresAt
+        };
+
+        const insertRes = await tasksCol.insertOne(newTask);
+        const taskId = String(insertRes.insertedId);
+
+        res.status(200).json({
+          ok: true,
+          requiresDeposit: true,
+          deposit: {
+            taskId: taskId,
+            title: newTask.title,
+            targetUsers: count,
+            tonCost: tonCost,
+            depositAddress: depositAddress,
+            memo: memo,
+            createdAt: now,
+            expiresAt: expiresAt
+          },
+          message: "Please complete the TON deposit to publish your task."
+        });
+        return;
+      }
+
+      // 3. CHECK DEPOSIT (Triggered by client polling, wallet confirmation, or manual check)
+      if (action === "check_deposit") {
+        const { taskId } = req.body || {};
+        if (!taskId) {
+          res.status(400).json({ error: "taskId is required" });
+          return;
+        }
+
+        let objId;
+        try { objId = new ObjectId(taskId); } catch(e) { objId = null; }
+        const taskQuery = objId ? { _id: objId } : { _id: taskId };
+        const task = await tasksCol.findOne(taskQuery);
+
+        if (!task) {
+          res.status(404).json({ error: "Task not found" });
+          return;
+        }
+
+        if (task.status === "active" && task.paid) {
+          res.status(200).json({
+            ok: true,
+            paid: true,
+            status: "active",
+            txHash: task.txHash || null,
+            message: "Task is active and published!"
+          });
+          return;
+        }
+
+        if (task.status === "declined") {
+          res.status(200).json({
+            ok: true,
+            paid: false,
+            status: "declined",
+            message: "Deposit window expired (30 minutes). Task declined."
+          });
+          return;
+        }
+
+        const now = Date.now();
+        const taskExpiry = task.expiresAt || (task.createdAt ? task.createdAt + 30 * 60 * 1000 : 0);
+
+        // Check on-chain deposit
+        const resCheck = await checkTonDeposit(task.depositAddress, task.tonCost, task.memo);
+        if (resCheck.verified) {
+          await tasksCol.updateOne(
+            taskQuery,
+            {
+              $set: {
+                status: "active",
+                paid: true,
+                paidAt: now,
+                txHash: resCheck.txHash,
+                sender: resCheck.sender || null
+              }
+            }
+          );
+
+          await notifyUserTaskActivated(botToken, telegramId, task, resCheck.txHash);
+
+          res.status(200).json({
+            ok: true,
+            paid: true,
+            status: "active",
+            txHash: resCheck.txHash,
+            message: "Payment confirmed! Your task is now active."
+          });
+          return;
+        }
+
+        // If unpaid and 30 minutes expired -> decline
+        if (taskExpiry && now > taskExpiry) {
+          await tasksCol.updateOne(
+            taskQuery,
+            { $set: { status: "declined", declinedReason: "Unpaid within 30 minutes" } }
+          );
+          res.status(200).json({
+            ok: true,
+            paid: false,
+            status: "declined",
+            message: "Deposit window expired (30 minutes). Task declined."
+          });
+          return;
+        }
+
+        res.status(200).json({
+          ok: true,
+          paid: false,
+          status: "pending_payment",
+          expiresAt: taskExpiry,
+          message: "Payment not detected on-chain yet. Please ensure you sent with the exact memo."
+        });
+        return;
+      }
+
+      res.status(400).json({ error: "Unknown action" });
+      return;
+    }
+
+    res.status(405).json({ error: "Method not allowed" });
+  } catch (err) {
+    console.error("tasks.js error:", err);
+    res.status(500).json({ error: err.message || "Server error" });
+  }
+};
