@@ -36,6 +36,23 @@ module.exports = async (req, res) => {
       return;
     }
 
+    const { captchaToken } = req.body || {};
+    if (captchaToken) {
+      const tokensCol = db.collection("captcha_tokens");
+      const uid = String(tgUser.id);
+      const tokenDoc = await tokensCol.findOne({
+        token: captchaToken,
+        userId: { $in: [uid, Number(uid), tgUser.id] },
+        used: false
+      });
+      if (tokenDoc) {
+        await tokensCol.updateOne(
+          { _id: tokenDoc._id },
+          { $set: { used: true, usedAt: Date.now() } }
+        );
+      }
+    }
+
     const minerLevel = Math.max(1, Math.min(10, user.minerLevel || 1));
     const multiplier = getMultiplierForLevel(minerLevel);
     const reward = Math.round(MINE_REWARD * multiplier);

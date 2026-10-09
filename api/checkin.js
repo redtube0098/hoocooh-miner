@@ -42,6 +42,7 @@ module.exports = async (req, res) => {
 
     if (status === "broken") {
       dailyDayIndex = 0;
+      dailyCycle = 1;
     } else if (user.lastCheckinAt) {
       dailyDayIndex += 1;
       if (dailyDayIndex > 6) {

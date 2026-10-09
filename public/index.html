@@ -8031,10 +8031,11 @@
     var c = Math.max(0, Number(coins) || 0);
     return c * COIN_USD;
   }
-  var DAILY_REWARDS = [5, 10, 15, 20, 25, 30, 35]; // Increases by 5 every day up to 35
+  var DAILY_REWARDS = [5, 7, 11, 15, 20, 25, 30]; // 5 to 30 strictly increasing pattern (Day 1: 5, Day 2: 7, ..., Day 7: 30)
 
   function rewardForCycleDay(cycle, dayIndex) {
-    return DAILY_REWARDS[dayIndex] || ((dayIndex + 1) * 5);
+    var idx = (Math.max(0, Number(dayIndex) || 0)) % DAILY_REWARDS.length;
+    return DAILY_REWARDS[idx];
   }
 
   function formatDuration(ms) {
@@ -8791,13 +8792,16 @@
     }).then(handleResponse);
   }
 
-  function apiCollect() {
+  function apiCollect(captchaToken) {
+    var payload = {};
+    if (captchaToken) payload.captchaToken = captchaToken;
     return fetch("/api/collect", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-Telegram-Init-Data": initData
-      }
+      },
+      body: JSON.stringify(payload)
     }).then(function(r) {
       if (r.status === 404) {
         return fetch("/api/collect.js", {
@@ -8805,7 +8809,8 @@
           headers: {
             "Content-Type": "application/json",
             "X-Telegram-Init-Data": initData
-          }
+          },
+          body: JSON.stringify(payload)
         });
       }
       return r;
@@ -9177,51 +9182,67 @@
     var now = Date.now();
     var lastCheckin = user.lastCheckinAt ? Number(user.lastCheckinAt) : 0;
     var status = lastCheckin ? statusFromTimestamp(lastCheckin, now) : "ready";
+    var cycle = Math.max(1, Number(user.dailyCycle) || 1);
+    var dayIdx = Math.max(0, Math.min(6, Number(user.dailyDayIndex) || 0));
+
+    if (status === "broken") {
+      cycle = 1;
+      dayIdx = 0;
+    }
+
+    var baseDayNumber = (cycle - 1) * 7;
 
     for (var i = 0; i < 7; i++) {
       var cell = document.createElement("div");
       cell.className = "day-cell";
-      var reward = rewardForCycleDay(user.dailyCycle, i);
+      var reward = rewardForCycleDay(cycle, i);
+      var currentCellDayNum = baseDayNumber + (i + 1);
 
-      if (i < user.dailyDayIndex) {
+      if (i < dayIdx) {
         cell.classList.add("done");
-        cell.innerHTML = '<span class="icon-mark">✓</span><span>D' + (i + 1) + '</span>';
-      } else if (i === user.dailyDayIndex) {
+        cell.innerHTML = '<span class="icon-mark">✓</span><span>D' + currentCellDayNum + '</span>';
+      } else if (i === dayIdx) {
         if (lastCheckin && status === "waiting") {
           cell.classList.add("done");
-          cell.innerHTML = '<span class="icon-mark">✓</span><span>D' + (i + 1) + '</span>';
+          cell.innerHTML = '<span class="icon-mark">✓</span><span>D' + currentCellDayNum + '</span>';
         } else {
           cell.classList.add("today");
-          cell.innerHTML = '<span class="icon-mark">+' + reward + '</span><span>D' + (i + 1) + '</span>';
+          cell.innerHTML = '<span class="icon-mark">+' + reward + '</span><span>D' + currentCellDayNum + '</span>';
         }
       } else {
-        cell.innerHTML = '<span class="icon-mark">○</span><span>D' + (i + 1) + '</span>';
+        cell.innerHTML = '<span class="icon-mark">○</span><span>D' + currentCellDayNum + '</span>';
       }
       grid.appendChild(cell);
     }
 
-    var displayStreak = lastCheckin ? (user.dailyDayIndex + (status === "waiting" ? 1 : 0)) : 0;
+    var totalCurrentDay = baseDayNumber + dayIdx + 1;
+    var displayStreak = lastCheckin ? (baseDayNumber + dayIdx + (status === "waiting" ? 1 : 0)) : 0;
     if (status === "broken") displayStreak = 0;
-    document.getElementById("streakDayTag").textContent = Math.max(1, (user.dailyDayIndex || 0) + 1);
-    document.getElementById("currentStreakVal").textContent = displayStreak + " day" + (displayStreak === 1 ? "" : "s");
-    document.getElementById("totalEarnedVal").textContent = (user.totalDailyEarned || 0).toLocaleString();
+    var streakDayTag = document.getElementById("streakDayTag");
+    if (streakDayTag) streakDayTag.textContent = totalCurrentDay;
 
-    var currentReward = rewardForCycleDay(user.dailyCycle, user.dailyDayIndex);
+    var currentStreakVal = document.getElementById("currentStreakVal");
+    if (currentStreakVal) currentStreakVal.textContent = displayStreak + " day" + (displayStreak === 1 ? "" : "s");
+
+    var totalEarnedVal = document.getElementById("totalEarnedVal");
+    if (totalEarnedVal) totalEarnedVal.textContent = (user.totalDailyEarned || 0).toLocaleString();
+
+    var currentReward = rewardForCycleDay(cycle, dayIdx);
     var nextRewardValEl = document.getElementById("nextRewardVal");
     var checkinEl = document.getElementById("checkinCountdown");
     var dailyBtn = document.getElementById("dailyCollectBtn");
     var dayRewardLblEl = document.getElementById("dayRewardLbl");
     var dayRewardValEl = document.getElementById("dayRewardVal");
-    if (dayRewardLblEl) dayRewardLblEl.textContent = "DAY " + (user.dailyDayIndex + 1) + " REWARD";
+    if (dayRewardLblEl) dayRewardLblEl.textContent = "DAY " + totalCurrentDay + " REWARD";
     if (dayRewardValEl) dayRewardValEl.textContent = "+" + currentReward;
 
     if (status === "waiting") {
       var DAY_MS = 24 * 60 * 60 * 1000;
       var remaining = Math.max(0, DAY_MS - (now - lastCheckin));
       checkinEl.textContent = formatDuration(remaining);
-      var nextIndex = (user.dailyDayIndex + 1) % 7;
-      var nextCycle = user.dailyDayIndex === 6 ? Math.max(2, (user.dailyCycle || 1) + 1) : (user.dailyCycle || 1);
-      nextRewardValEl.textContent = "+" + rewardForCycleDay(nextCycle, nextIndex);
+      var nextIndex = (dayIdx + 1) % 7;
+      var nextCycle = dayIdx === 6 ? (cycle + 1) : cycle;
+      if (nextRewardValEl) nextRewardValEl.textContent = "+" + rewardForCycleDay(nextCycle, nextIndex);
 
       if (dailyBtn) {
         dailyBtn.disabled = true;
@@ -9229,7 +9250,7 @@
       }
     } else {
       checkinEl.textContent = "Ready now";
-      nextRewardValEl.textContent = "+" + currentReward;
+      if (nextRewardValEl) nextRewardValEl.textContent = "+" + currentReward;
 
       if (dailyBtn) {
         dailyBtn.disabled = false;
@@ -9332,6 +9353,7 @@
     }
     if (puzzleSliderProgress) puzzleSliderProgress.style.width = "0px";
     if (puzzlePieceCanvas) puzzlePieceCanvas.style.transform = "translateX(0px)";
+    renderMining();
   }
 
   if (secCloseBtn1) secCloseBtn1.addEventListener("click", closeSecurityCaptcha);
@@ -9771,6 +9793,25 @@
     if (watchEarnFlowModal) watchEarnFlowModal.classList.add("open");
   }
 
+  function playSponsorAd(title, desc, onFinished) {
+    if (watchFlowPreView) watchFlowPreView.classList.remove("active");
+    if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
+    if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.add("active");
+    if (watchEarnFlowModal) watchEarnFlowModal.classList.add("open");
+
+    var titleEl = document.querySelector("#watchFlowAdPlayingView .ad-mock-title");
+    var descEl = document.querySelector("#watchFlowAdPlayingView .ad-mock-desc");
+    if (titleEl && title) titleEl.textContent = title;
+    if (descEl && desc) descEl.textContent = desc;
+
+    startAdPlayback(function onAdComplete() {
+      if (watchEarnFlowModal) watchEarnFlowModal.classList.remove("open");
+      if (typeof onFinished === "function") {
+        onFinished();
+      }
+    });
+  }
+
   function closeWatchEarnFlowModal() {
     if (watchEarnFlowModal) watchEarnFlowModal.classList.remove("open");
     clearInterval(adPlaybackTimer);
@@ -9783,6 +9824,7 @@
       sheetCollectContinueBtn.disabled = false;
       sheetCollectContinueBtn.innerHTML = '<span>COLLECT & CONTINUE</span>';
     }
+    renderMining();
   }
 
   if (sheetCancelBtn) {
@@ -9928,41 +9970,74 @@
   renderAll();
 
   // Shared Mining Collect Function (Synchronized for Home and Mining tabs)
+  // Flow requested by user:
+  // 1. Click collect -> Button shows "Verifying..."
+  // 2. Play sponsor ad (5s countdown with progress bar)
+  // 3. Puzzle captcha verification
+  // 4. Claim reward and credit balance
   function triggerMiningCollect() {
     var homeBtn = document.getElementById("collectBtn");
     var tabBtn = document.getElementById("mTabCollectBtn");
     var tabBtnTxt = document.getElementById("mTabCollectBtnTxt");
 
+    var now = Date.now();
+    var lastCollected = user.lastMineCollectedAt ? Number(user.lastMineCollectedAt) : 0;
+    var interval = 2 * 60 * 60 * 1000;
+    if (lastCollected && (now - lastCollected) < interval) {
+      showToast("⏳ Mining is still in progress. Not ready to collect yet!");
+      return;
+    }
+
+    // 1. First: button shows "Verifying..."
     if (homeBtn) {
       homeBtn.disabled = true;
-      homeBtn.innerHTML = '<span>Collecting...</span>';
+      homeBtn.innerHTML = '<span>⏳ Verifying...</span>';
     }
     if (tabBtn) {
       tabBtn.disabled = true;
-      if (tabBtnTxt) tabBtnTxt.textContent = "Collecting...";
+      if (tabBtnTxt) tabBtnTxt.textContent = "Verifying...";
     }
 
-    apiCollect().then(function(res){
-      if (!res.ok) {
-        var errText = (res.data && res.data.error) ? res.data.error : ("Error (" + res.status + ")");
-        showToast(errText);
-        renderMining();
-        return;
-      }
-      user.balance = res.data.balance;
-      user.lastMineCollectedAt = res.data.lastMineCollectedAt;
-      if (res.data.minerLevel) {
-        user.minerLevel = res.data.minerLevel;
-        user.level = res.data.minerLevel;
-        try { localStorage.setItem("hoocooh_miner_level", String(res.data.minerLevel)); } catch(e){}
-      }
-      showToast("+" + res.data.reward + " HOOCOOH collected!");
-      renderAll();
-    }).catch(function(err){
-      var msg = (err && err.message) ? err.message : "Connection failed";
-      showToast(msg);
-      renderMining();
-    });
+    setTimeout(function() {
+      // 2. Then: Ads come!
+      playSponsorAd(
+        "HOOCOOH Mining Sponsor",
+        "Watch this short sponsor ad to verify and claim your HOOCOOH mining rewards.",
+        function onAdComplete() {
+          // 3. Then: Puzzle Verification
+          openSecurityCaptcha(function onCaptchaSuccess(verifiedCaptchaToken) {
+            // 4. Then: Reward is given!
+            if (homeBtn) homeBtn.innerHTML = '<span>Collecting...</span>';
+            if (tabBtnTxt) tabBtnTxt.textContent = "Collecting...";
+
+            apiCollect(verifiedCaptchaToken).then(function(res){
+              if (!res.ok) {
+                var errText = (res.data && res.data.error) ? res.data.error : ("Error (" + res.status + ")");
+                showToast(errText);
+                renderMining();
+                return;
+              }
+              user.balance = res.data.balance;
+              user.lastMineCollectedAt = res.data.lastMineCollectedAt;
+              if (res.data.minerLevel) {
+                user.minerLevel = res.data.minerLevel;
+                user.level = res.data.minerLevel;
+                try { localStorage.setItem("hoocooh_miner_level", String(res.data.minerLevel)); } catch(e){}
+              }
+              if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                try { window.Telegram.WebApp.HapticFeedback.notificationOccurred("success"); } catch(e){}
+              }
+              showToast("🎉 +" + res.data.reward + " HOOCOOH collected!");
+              renderAll();
+            }).catch(function(err){
+              var msg = (err && err.message) ? err.message : "Connection failed";
+              showToast(msg);
+              renderMining();
+            });
+          });
+        }
+      );
+    }, 700);
   }
 
   var homeCollectBtn = document.getElementById("collectBtn");
@@ -10312,7 +10387,7 @@
       watchSpinAdActionBtn.disabled = true;
       watchSpinAdActionBtn.textContent = "Loading Ad...";
 
-      startAdPlayback(function onAdComplete() {
+      playSponsorAd("Spin Ticket Sponsor", "Watch this short sponsor ad to claim your free Spin Ticket.", function onAdComplete() {
         openSecurityCaptcha(function(verifiedCaptchaToken) {
           fetch("/api/ads", {
             method: "POST",
