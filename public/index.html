@@ -6240,7 +6240,7 @@
         <div class="watch-icon-box">🎬</div>
         <div class="watch-card-info">
           <div class="watch-card-title">Watch & Earn</div>
-          <div class="watch-card-sub">Earn <strong>+15 HOOCOOH Coins</strong> per ad watched</div>
+          <div class="watch-card-sub">Earn <strong>+10 HOOCOOH Coins</strong> per ad watched</div>
         </div>
       </div>
 
@@ -6269,7 +6269,7 @@
 
       <!-- Action Button with 24h Countdown logic -->
       <button class="watch-ad-btn" id="watchAdBtn" type="button">
-        <span>▶ Watch Ad (+15 HOOCOOH Coins)</span>
+        <span>▶ Watch Ad (+10 HOOCOOH Coins)</span>
       </button>
     </div>
 
@@ -7466,7 +7466,7 @@
               </svg>
             </div>
             <div class="ad-mock-title">HOOCOOH Partner Network</div>
-            <div class="ad-mock-desc">Watch this short message to unlock your +15 HOOCOOH reward.</div>
+            <div class="ad-mock-desc">Watch this short message to unlock your +10 HOOCOOH reward.</div>
           </div>
           <div class="ad-mock-progress-track">
             <div class="ad-mock-progress-fill" id="adMockProgressFill" style="width: 0%;"></div>
@@ -7489,8 +7489,8 @@
         <!-- Reward Card (Click ads / tap bonuses completely removed as user requested) -->
         <div class="watch-flow-reward-card">
           <div class="w-reward-card-lbl">YOU GOT</div>
-          <div class="w-reward-card-val">+15</div>
-          <div class="w-reward-card-sub">Base: +15 HOOCOOH Coins</div>
+          <div class="w-reward-card-val">+10</div>
+          <div class="w-reward-card-sub">Base: +10 HOOCOOH Coins</div>
         </div>
 
         <!-- Progress Status Badge -->
@@ -8510,8 +8510,9 @@
 
     var watchCardTitle = document.querySelector(".watch-card-title");
     if (watchCardTitle) watchCardTitle.textContent = t("watch_earn_title");
+    var curRew = window.WATCH_AD_REWARD || (user && user.watchAdReward) || 10;
     var watchCardSub = document.querySelector(".watch-card-sub");
-    if (watchCardSub) watchCardSub.textContent = t("watch_earn_sub");
+    if (watchCardSub) watchCardSub.innerHTML = t("watch_earn_sub").replace(/\+?15/g, "+" + curRew);
     var watchProgLbl = document.querySelector(".watch-progress-label-row span:first-child");
     if (watchProgLbl) watchProgLbl.textContent = t("daily_progress");
     var watchStatLbl1 = document.querySelector(".watch-stats-grid .watch-stat-box:nth-child(1) .lbl");
@@ -8519,7 +8520,10 @@
     var watchStatLbl2 = document.querySelector(".watch-stats-grid .watch-stat-box:nth-child(2) .lbl");
     if (watchStatLbl2) watchStatLbl2.textContent = t("earned_today");
     var watchAdBtnSpan = document.querySelector("#watchAdBtn span");
-    if (watchAdBtnSpan) watchAdBtnSpan.textContent = t("watch_btn");
+    var realWatchBtn = document.getElementById("watchAdBtn");
+    if (watchAdBtnSpan && realWatchBtn && !realWatchBtn.disabled) {
+      watchAdBtnSpan.textContent = t("watch_btn").replace(/\+?15/g, "+" + curRew);
+    }
 
     var spinBadge = document.querySelector(".spin-card-badge");
     if (spinBadge) spinBadge.textContent = t("spin_badge");
@@ -9340,6 +9344,47 @@
   }
 
   // Watch & Earn Logic
+  window.WATCH_AD_REWARD = 10;
+  function updateWatchAdReward(reward) {
+    var val = parseInt(reward, 10);
+    if (isNaN(val) || val < 1) val = 10;
+    window.WATCH_AD_REWARD = val;
+    if (typeof user === "object" && user) user.watchAdReward = val;
+
+    var watchCardSub = document.querySelector(".watch-card-sub");
+    if (watchCardSub) {
+      if (typeof t === "function" && t("watch_earn_sub")) {
+        watchCardSub.innerHTML = t("watch_earn_sub").replace(/\+?15/g, "+" + val);
+      } else {
+        watchCardSub.innerHTML = 'Earn <strong>+' + val + ' HOOCOOH Coins</strong> per ad watched';
+      }
+    }
+
+    var btn = document.getElementById("watchAdBtn");
+    if (btn && !btn.disabled) {
+      if (typeof t === "function" && t("watch_btn")) {
+        btn.innerHTML = '<span>' + t("watch_btn").replace(/\+?15/g, "+" + val) + '</span>';
+      } else {
+        btn.innerHTML = '<span>▶ Watch Ad (+' + val + ' HOOCOOH Coins)</span>';
+      }
+    }
+
+    var mockDesc = document.querySelector(".ad-mock-desc");
+    if (mockDesc) {
+      mockDesc.textContent = "Watch this short message to unlock your +" + val + " HOOCOOH reward.";
+    }
+
+    var rewardVal = document.querySelector(".w-reward-card-val");
+    if (rewardVal) {
+      rewardVal.textContent = "+" + val;
+    }
+
+    var rewardSub = document.querySelector(".w-reward-card-sub");
+    if (rewardSub) {
+      rewardSub.textContent = "Base: +" + val + " HOOCOOH Coins";
+    }
+  }
+
   function renderAds() {
     var watched = Number(user.adsWatchedToday) || 0;
     var maxAds = 10;
@@ -9365,6 +9410,11 @@
     var btn = document.getElementById("watchAdBtn");
     if (!btn) return;
 
+    var curReward = window.WATCH_AD_REWARD || (user && user.watchAdReward) || 10;
+    var btnDefaultHtml = (typeof t === "function" && t("watch_btn")) 
+      ? ('<span>' + t("watch_btn").replace(/\+?15/g, "+" + curReward) + '</span>')
+      : ('<span>▶ Watch Ad (+' + curReward + ' HOOCOOH Coins)</span>');
+
     var now = Date.now();
     var cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
     var CYCLE_MS = 24 * 60 * 60 * 1000;
@@ -9379,14 +9429,14 @@
       user.adsEarnedToday = 0;
       user.adsCycleStartedAt = null;
       btn.disabled = false;
-      btn.innerHTML = '<span>▶ Watch Ad (+15 HOOCOOH Coins)</span>';
+      btn.innerHTML = btnDefaultHtml;
       if (countEl) countEl.textContent = "0";
       if (fillEl) fillEl.style.width = "0%";
       if (remEl) remEl.textContent = "10";
       if (earnedEl) earnedEl.textContent = "0";
     } else {
       btn.disabled = false;
-      btn.innerHTML = '<span>▶ Watch Ad (+15 HOOCOOH Coins)</span>';
+      btn.innerHTML = btnDefaultHtml;
     }
   }
 
@@ -10203,7 +10253,8 @@
               if (tg && tg.HapticFeedback) {
                 try { tg.HapticFeedback.notificationOccurred("success"); } catch(e) {}
               }
-              showToast("🎉 +15 HOOCOOH Coins added to balance!");
+              var credited = (res.data && res.data.reward) ? res.data.reward : (window.WATCH_AD_REWARD || 10);
+              showToast("🎉 +" + credited + " HOOCOOH Coins added to balance!");
             }).catch(function(err) {
               showToast("Network error. Please try again.");
               renderAds();
@@ -10222,7 +10273,8 @@
   // Image 2 Sheet: "COLLECT & CONTINUE" -> Returns to Image 1 Sheet with updated counts
   if (sheetCollectContinueBtn) {
     sheetCollectContinueBtn.addEventListener("click", function() {
-      showToast("🎉 +15 HOOCOOH Coins added to balance!");
+      var credited = window.WATCH_AD_REWARD || 10;
+      showToast("🎉 +" + credited + " HOOCOOH Coins added to balance!");
       if (tg && tg.HapticFeedback) {
         try { tg.HapticFeedback.notificationOccurred("success"); } catch(e) {}
       }
@@ -10537,8 +10589,12 @@
 
   function loadSpinStatus() {
     fetchSpinDataApi().then(function(res) {
-      if (res.ok && res.data && res.data.spin) {
-        var sp = res.data.spin;
+      if (res.ok && res.data) {
+        if (res.data.ads && res.data.ads.rewardPerAd) {
+          updateWatchAdReward(res.data.ads.rewardPerAd);
+        }
+        if (res.data.spin) {
+          var sp = res.data.spin;
         currentSpinTickets = Number(sp.tickets || 0);
         if (spinTicketsCount) spinTicketsCount.textContent = currentSpinTickets;
 
@@ -12710,6 +12766,9 @@
     Object.assign(user, res.data);
     user.isIdentityVerified = res.data.isIdentityVerified === true;
     user.languageSelected = res.data.languageSelected === true;
+    if (res.data.watchAdReward) {
+      updateWatchAdReward(res.data.watchAdReward);
+    }
     var currentUid = res.data.telegramId || (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
 
     try {

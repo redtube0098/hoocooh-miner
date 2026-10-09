@@ -36,6 +36,8 @@ module.exports = async (req, res) => {
     }
 
     const now = Date.now();
+    const appSetting = await db.collection("settings").findOne({ key: "app_settings" });
+    const currentAdReward = (appSetting && typeof appSetting.watchAdReward === "number" && appSetting.watchAdReward > 0) ? appSetting.watchAdReward : 10;
 
     // 1. GET: Fetch Ads and Spin status
     if (req.method === "GET") {
@@ -70,6 +72,7 @@ module.exports = async (req, res) => {
           remainingToday: Math.max(0, MAX_ADS_PER_DAY - watchedToday),
           earnedToday,
           maxAds: MAX_ADS_PER_DAY,
+          rewardPerAd: currentAdReward,
           nextResetMs: Math.max(0, CYCLE_MS - (now - cycleStart))
         },
         spin: {
@@ -333,8 +336,8 @@ module.exports = async (req, res) => {
     }
 
     watchedToday += 1;
-    earnedToday += AD_REWARD;
-    const newBalance = Number(user.balance || 0) + AD_REWARD;
+    earnedToday += currentAdReward;
+    const newBalance = Number(user.balance || 0) + currentAdReward;
     const totalAds = Number(user.totalAdsWatched || 0) + 1;
 
     await usersCol.updateOne(
@@ -352,7 +355,7 @@ module.exports = async (req, res) => {
 
     res.status(200).json({
       ok: true,
-      reward: AD_REWARD,
+      reward: currentAdReward,
       newBalance,
       adsWatchedToday: watchedToday,
       adsEarnedToday: earnedToday,

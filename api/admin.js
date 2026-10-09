@@ -347,7 +347,18 @@ module.exports = async (req, res) => {
           createdAt: t.createdAt
         }));
 
-        res.status(200).json({ ok: true, tasks: mapped });
+        const appSetting = await db.collection("settings").findOne({ key: "app_settings" });
+        const watchAdReward = (appSetting && typeof appSetting.watchAdReward === "number" && appSetting.watchAdReward > 0) ? appSetting.watchAdReward : 10;
+
+        res.status(200).json({ ok: true, tasks: mapped, watchAdReward });
+        return;
+      }
+
+      // 5. App & Ad Reward Settings
+      if (action === "app_settings" || action === "ad_settings") {
+        const appSetting = await db.collection("settings").findOne({ key: "app_settings" });
+        const watchAdReward = (appSetting && typeof appSetting.watchAdReward === "number" && appSetting.watchAdReward > 0) ? appSetting.watchAdReward : 10;
+        res.status(200).json({ ok: true, watchAdReward });
         return;
       }
 
@@ -837,6 +848,29 @@ module.exports = async (req, res) => {
           ok: true,
           webhookUrl,
           telegramResponse: tgData
+        });
+        return;
+      }
+
+      // 11. Update Watch Ad Reward
+      if (action === "update_ad_reward") {
+        const { reward } = req.body || {};
+        const parsedReward = parseInt(reward, 10);
+        if (isNaN(parsedReward) || parsedReward < 1 || parsedReward > 100000) {
+          res.status(400).json({ error: "Reward must be a positive number between 1 and 100,000" });
+          return;
+        }
+
+        await db.collection("settings").updateOne(
+          { key: "app_settings" },
+          { $set: { watchAdReward: parsedReward, updatedAt: Date.now() } },
+          { upsert: true }
+        );
+
+        res.status(200).json({
+          ok: true,
+          watchAdReward: parsedReward,
+          message: `Watch Ad reward successfully set to ${parsedReward} HOOCOOH Coins!`
         });
         return;
       }

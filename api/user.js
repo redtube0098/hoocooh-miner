@@ -449,7 +449,13 @@ module.exports = async (req, res) => {
         checkin: createActionToken(telegramId, "checkin")
       },
       boundWalletAddress: user.boundWalletAddress || null,
-      botUsername: botUsername
+      botUsername: botUsername,
+      watchAdReward: (await (async () => {
+        try {
+          const s = await db.collection("settings").findOne({ key: "app_settings" });
+          return (s && typeof s.watchAdReward === "number" && s.watchAdReward > 0) ? s.watchAdReward : 10;
+        } catch(e){ return 10; }
+      })())
     });
   } catch (err) {
     console.error("user.js error:", err);

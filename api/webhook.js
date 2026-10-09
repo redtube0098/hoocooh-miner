@@ -1107,6 +1107,32 @@ module.exports = async (req, res) => {
     const isAdmin = senderId && adminIds.has(senderId);
 
     if (isAdmin) {
+      if (command === "/setadreward" || command === "/adreward") {
+        const val = parseInt(parts[1], 10);
+        if (!val || val < 1 || val > 100000) {
+          let curr = 10;
+          if (db) {
+            const s = await db.collection("settings").findOne({ key: "app_settings" });
+            if (s && typeof s.watchAdReward === "number" && s.watchAdReward > 0) curr = s.watchAdReward;
+          }
+          await sendTelegramMsg(botToken, chatId, `🎬 <b>Watch Ad & Earn Reward</b>\n\nCurrent Reward: <b>${curr} HOOCOOH Coins</b>\n\nTo update the reward, send:\n<code>/setadreward 10</code>\n<i>(Enter any number between 1 and 100,000)</i>`);
+          res.status(200).json({ ok: true });
+          return;
+        }
+
+        if (db) {
+          await db.collection("settings").updateOne(
+            { key: "app_settings" },
+            { $set: { watchAdReward: val, updatedAt: Date.now() } },
+            { upsert: true }
+          );
+        }
+
+        await sendTelegramMsg(botToken, chatId, `✅ <b>Watch Ad Reward Updated!</b>\n\nUsers will now receive <b>${val} HOOCOOH Coins</b> per watched ad in the Earn section.`);
+        res.status(200).json({ ok: true, adRewardUpdated: true });
+        return;
+      }
+
       let isAwaitingTask = false;
       if (db) {
         const adminStateDoc = await db.collection("settings").findOne({ key: "admin_state_" + senderId });

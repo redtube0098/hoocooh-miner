@@ -557,7 +557,7 @@
     <button class="tab-btn" data-tab="tabBroadcast">📢 Broadcast</button>
     <button class="tab-btn" data-tab="tabFunds">💰 Funds (+/- Coins)</button>
     <button class="tab-btn" data-tab="tabUsers">👥 Users & Anti-Cheat</button>
-    <button class="tab-btn" data-tab="tabTasks">📋 Tasks (Free Post)</button>
+    <button class="tab-btn" data-tab="tabTasks">📋 Tasks & Ad Reward</button>
     <button class="tab-btn" data-tab="tabBot">🤖 Bot & Webhook</button>
   </nav>
 
@@ -757,6 +757,28 @@
   <!-- TAB 5: TASKS (Admin Free Task Creator)     -->
   <!-- ========================================== -->
   <section class="view-panel" id="tabTasks">
+    <!-- Watch Ad & Earn Reward Setting -->
+    <div class="panel-card" style="margin-bottom: 24px; border-left: 4px solid var(--accent);">
+      <div class="panel-title">
+        <span>🎬 Watch Ad & Earn Reward Setting</span>
+      </div>
+      <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 16px; line-height: 1.5;">
+        Configure how many HOOCOOH Coins users receive for watching an ad in the Earn section (Max 10 ads per day). When updated, users will receive <strong>exactly</strong> this amount.
+      </p>
+      <div style="display: flex; gap: 12px; align-items: flex-end; max-width: 480px; flex-wrap: wrap;">
+        <div class="form-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
+          <label class="form-label">Coins Per Watched Ad</label>
+          <input type="number" id="watchAdRewardInput" class="form-input" min="1" max="100000" placeholder="e.g. 10">
+        </div>
+        <button class="btn-primary" id="saveWatchAdRewardBtn" style="white-space: nowrap; height: 42px;">
+          <span>💾 Save Reward</span>
+        </button>
+      </div>
+      <div id="currentWatchAdRewardText" style="font-size: 12.5px; color: var(--accent); margin-top: 10px; font-weight: 700;">
+        Current Reward: Loading...
+      </div>
+    </div>
+
     <div class="panel-card">
       <div class="panel-title">
         <span>Post New Task (Free for Admin)</span>
@@ -1758,6 +1780,13 @@
     try {
       var data = await apiAdmin("GET", { action: "tasks" });
       if (data.ok) {
+        if (typeof data.watchAdReward === "number") {
+          var rewardInput = document.getElementById("watchAdRewardInput");
+          var rewardText = document.getElementById("currentWatchAdRewardText");
+          if (rewardInput && !rewardInput.value) rewardInput.value = data.watchAdReward;
+          if (rewardText) rewardText.textContent = "Current Reward: " + data.watchAdReward + " HOOCOOH Coins per ad";
+        }
+
         if (!data.tasks || data.tasks.length === 0) {
           box.innerHTML = '<p style="text-align: center; color: var(--text-dim); padding: 20px;">No custom tasks posted yet.</p>';
           return;
@@ -1799,6 +1828,31 @@
     }
   }
   document.getElementById("refreshTasksBtn").addEventListener("click", loadTasks);
+
+  var saveWatchAdRewardBtn = document.getElementById("saveWatchAdRewardBtn");
+  if (saveWatchAdRewardBtn) {
+    saveWatchAdRewardBtn.addEventListener("click", async function(){
+      var input = document.getElementById("watchAdRewardInput");
+      var val = parseInt(input.value, 10);
+      if (isNaN(val) || val < 1 || val > 100000) {
+        alert("Please enter a valid reward amount between 1 and 100,000");
+        return;
+      }
+      saveWatchAdRewardBtn.disabled = true;
+      try {
+        var res = await apiAdmin("POST", null, { action: "update_ad_reward", reward: val });
+        if (res.ok) {
+          showToast("🎉 Watch Ad reward saved: " + val + " Coins!");
+          var rewardText = document.getElementById("currentWatchAdRewardText");
+          if (rewardText) rewardText.textContent = "Current Reward: " + val + " HOOCOOH Coins per ad";
+        }
+      } catch(e) {
+        alert(e.message);
+      } finally {
+        saveWatchAdRewardBtn.disabled = false;
+      }
+    });
+  }
 
   window.deleteTaskAction = async function(id) {
     if (!confirm("Are you sure you want to delete this task?")) return;
