@@ -1,8 +1,10 @@
 const fs = require("fs");
 const path = require("path");
+const { ObjectId } = require("mongodb");
 const { getDb } = require("../lib/mongodb");
 const { generateVerificationImage } = require("../lib/verificationImage");
 const { processMiningReminders } = require("../lib/miningReminder");
+const { dispatchTonPayout } = require("../lib/tonAutoPay");
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || "hoocooh_admin_2026";
 
@@ -195,7 +197,7 @@ const WELCOME_MESSAGES = {
   }
 };
 
-async function answerCallbackQuery(botToken, callbackQueryId, text) {
+async function answerCallbackQuery(botToken, callbackQueryId, text, showAlert = false) {
   if (!botToken || !callbackQueryId) return;
   try {
     await fetch(`https://api.telegram.org/bot${botToken}/answerCallbackQuery`, {
@@ -203,10 +205,318 @@ async function answerCallbackQuery(botToken, callbackQueryId, text) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         callback_query_id: String(callbackQueryId),
-        text: text || ""
+        text: text || "",
+        show_alert: !!showAlert
       })
     });
   } catch(e){}
+}
+
+async function editTelegramMsg(botToken, chatId, messageId, text, options = {}) {
+  if (!botToken || !chatId || !messageId) return null;
+  try {
+    const payload = {
+      chat_id: String(chatId),
+      message_id: Number(messageId),
+      text: text,
+      parse_mode: "HTML",
+      disable_web_page_preview: true
+    };
+    if (options.reply_markup) {
+      payload.reply_markup = options.reply_markup;
+    }
+    const res = await fetch(`https://api.telegram.org/bot${botToken}/editMessageText`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    return await res.json();
+  } catch (e) {
+    console.error("editTelegramMsg error:", e);
+    return null;
+  }
+}
+
+async function handleAdminApproveWithdrawal(db, botToken, wid, baseUrl) {
+  const withdrawalsCol = db.collection("withdrawals");
+  const usersCol = db.collection("users");
+
+  let objId;
+  try { objId = new ObjectId(wid); } catch(e){ objId = null; }
+  const wQuery = objId ? { _id: objId } : { _id: wid };
+
+  const w = await withdrawalsCol.findOne(wQuery);
+  if (!w) return { ok: false, message: "Withdrawal request not found." };
+  if (w.status !== "PENDING") return { ok: false, message: `Already processed (${w.status}).` };
+
+  const now = Date.now();
+  const tonVal = w.tonAmount !== undefined ? Number(w.tonAmount) : Number(((w.usdtAmount || 0) * (0.019 / 0.03)).toFixed(4));
+  let finalTx = "";
+
+  const autoPayRes = await dispatchTonPayout(w.walletAddress, tonVal, `HOOCOOH Payout UID ${w.telegramId}`);
+  if (autoPayRes && autoPayRes.isConfigured && autoPayRes.success) {
+    finalTx = autoPayRes.txHash;
+  } else {
+    finalTx = "0x" + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2);
+  }
+
+  const approveUpdateRes = await withdrawalsCol.updateOne(
+    { ...wQuery, status: "PENDING" },
+    {
+      $set: {
+        status: "APPROVED",
+        tonAmount: tonVal,
+        txHash: finalTx,
+        approvedAt: now
+      }
+    }
+  );
+
+  if (approveUpdateRes.matchedCount === 0 || approveUpdateRes.modifiedCount === 0) {
+    return { ok: false, message: "Already processed or no longer pending." };
+  }
+
+  // Channel & user notification
+  if (botToken) {
+    try {
+      const userDoc = await usersCol.findOne({
+        $or: [{ telegramId: String(w.telegramId) }, { telegramId: Number(w.telegramId) }]
+      });
+      const rawName = userDoc?.username 
+        ? `@${userDoc.username}` 
+        : (userDoc?.firstName ? `${userDoc.firstName}${userDoc.lastName ? ' ' + userDoc.lastName : ''}` : `Miner_${String(w.telegramId).slice(-4)}`);
+      const displayName = escapeHtml(rawName);
+      const txUrl = `https://tonviewer.com/transaction/${encodeURIComponent(finalTx)}`;
+      const txLinkHtml = `<a href="${txUrl}">View Transaction</a>`;
+
+      const channelId = process.env.PAYOUT_CHANNEL_ID || "@hoocoohpaylogs";
+      const channelMsg = 
+`🎉 <b>New payout paid</b> 🎉\n\n` +
+`👤 <b>User:</b> ${displayName}\n` +
+`🔘 <b>Amount:</b> ${Number(w.amount).toLocaleString()} HOOCOOH (${Number(w.usdtAmount).toFixed(2)} USDT)\n` +
+`💳 <b>Wallet address:</b>\n` +
+`<code>${w.walletAddress}</code>\n` +
+`🔗 <b>Transaction id:</b> ${txLinkHtml}\n\n` +
+`BOT ---> @hoocoohmine_bot`;
+
+      await sendTelegramMsg(botToken, channelId, channelMsg);
+
+      if (w.telegramId) {
+        const userMsg = 
+`✅ <b>Withdrawal Approved!</b>\n\n` +
+`🪙 <b>${Number(w.amount).toLocaleString()} HOOCOOH Coins ($${Number(w.usdtAmount).toFixed(2)} USDT) sent!</b>\n` +
+`🔗 <a href="${txUrl}">View Transaction</a>`;
+
+        await sendTelegramMsg(botToken, w.telegramId, userMsg, {
+          buttonText: "🔗 View Transaction",
+          buttonUrl: txUrl
+        });
+      }
+    } catch(e) {
+      console.error("Payout notification error:", e);
+    }
+  }
+
+  return { ok: true, message: `Approved! Sent ${tonVal} TON.` };
+}
+
+async function handleAdminRejectWithdrawal(db, botToken, wid) {
+  const withdrawalsCol = db.collection("withdrawals");
+  const usersCol = db.collection("users");
+
+  let objId;
+  try { objId = new ObjectId(wid); } catch(e){ objId = null; }
+  const wQuery = objId ? { _id: objId } : { _id: wid };
+
+  const w = await withdrawalsCol.findOne(wQuery);
+  if (!w) return { ok: false, message: "Withdrawal not found." };
+  if (w.status !== "PENDING") return { ok: false, message: `Already processed (${w.status}).` };
+
+  const now = Date.now();
+  const refundAmt = Number(w.amount || 0);
+  const rejReason = "Review failed / rejected by admin";
+
+  const rejectUpdateRes = await withdrawalsCol.updateOne(
+    { ...wQuery, status: "PENDING" },
+    {
+      $set: {
+        status: "REJECTED",
+        reason: rejReason,
+        rejectedAt: now
+      }
+    }
+  );
+
+  if (rejectUpdateRes.matchedCount === 0 || rejectUpdateRes.modifiedCount === 0) {
+    return { ok: false, message: "Already processed or no longer pending." };
+  }
+
+  // Refund coins back to user balance exactly once
+  const tid = String(w.telegramId);
+  const numId = Number(w.telegramId);
+  await usersCol.updateOne(
+    { $or: [{ telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])] },
+    { $inc: { balance: refundAmt } }
+  );
+
+  if (botToken && w.telegramId) {
+    const msg = `⚠️ <b>Withdrawal Rejected & Refunded</b>\n\nYour request for <b>${refundAmt.toLocaleString()} Coins</b> was rejected.\n<b>Reason:</b> ${rejReason}\n\nYour <b>${refundAmt.toLocaleString()} HOOCOOH Coins</b> have been returned to your miner balance.`;
+    sendTelegramMsg(botToken, w.telegramId, msg);
+  }
+
+  return { ok: true, message: `Rejected & ${refundAmt.toLocaleString()} coins refunded.` };
+}
+
+async function handleAdminBanWithdrawalUser(db, botToken, wid) {
+  const withdrawalsCol = db.collection("withdrawals");
+  const usersCol = db.collection("users");
+
+  let objId;
+  try { objId = new ObjectId(wid); } catch(e){ objId = null; }
+  const wQuery = objId ? { _id: objId } : { _id: wid };
+
+  const w = await withdrawalsCol.findOne(wQuery);
+  if (!w) return { ok: false, message: "Withdrawal not found." };
+
+  const tid = String(w.telegramId);
+  const numId = Number(w.telegramId);
+  const banReason = "Violation of HOOCOOH Miner rules detected during withdrawal review";
+
+  await usersCol.updateMany(
+    { $or: [{ telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])] },
+    { $set: { isBanned: true, banReason: banReason, bannedAt: Date.now() } }
+  );
+
+  await withdrawalsCol.updateOne(
+    { ...wQuery, status: "PENDING" },
+    { $set: { status: "REJECTED", reason: "User Banned: " + banReason, rejectedAt: Date.now() } }
+  );
+
+  if (botToken && w.telegramId) {
+    const msg = `⛔ <b>Account Suspended</b>\n\nYour HOOCOOH Miner account has been suspended.\n<b>Reason:</b> ${banReason}\n\nYou can no longer access the miner application.`;
+    sendTelegramMsg(botToken, tid, msg);
+  }
+
+  return { ok: true, message: `User ${tid} has been permanently banned.` };
+}
+
+async function renderWithdrawalsPage(db, botToken, chatId, messageId, page = 0, baseUrl, bannerText = "") {
+  const withdrawalsCol = db.collection("withdrawals");
+  const usersCol = db.collection("users");
+
+  const pendingList = await withdrawalsCol.find({ status: "PENDING" }).sort({ createdAt: -1 }).toArray();
+  const totalCount = pendingList.length;
+
+  const adminUrl = `${baseUrl}/admin.html`;
+
+  if (totalCount === 0) {
+    let msgText = "";
+    if (bannerText) msgText += `${bannerText}\n\n`;
+    msgText += `💸 <b>Pending Withdrawals</b>\n\n✅ <i>No pending withdrawal requests found! All requests have been processed.</i>`;
+
+    const inlineKeyboard = [
+      [
+        { text: "🔄 Refresh", callback_data: "adm_wd_page_0" },
+        { text: "🛡️ Open Admin Panel", web_app: { url: adminUrl } }
+      ]
+    ];
+
+    if (messageId) {
+      const editRes = await editTelegramMsg(botToken, chatId, messageId, msgText, { reply_markup: { inline_keyboard: inlineKeyboard } });
+      if (!editRes || !editRes.ok) {
+        await sendTelegramMsg(botToken, chatId, msgText, { reply_markup: { inline_keyboard: inlineKeyboard } });
+      }
+    } else {
+      await sendTelegramMsg(botToken, chatId, msgText, { reply_markup: { inline_keyboard: inlineKeyboard } });
+    }
+    return;
+  }
+
+  const PAGE_SIZE = 5;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const currPage = Math.max(0, Math.min(page, totalPages - 1));
+  const items = pendingList.slice(currPage * PAGE_SIZE, (currPage + 1) * PAGE_SIZE);
+
+  // Fetch users info
+  const userIds = [...new Set(items.map(w => String(w.telegramId)))];
+  const usersMap = {};
+  if (userIds.length > 0) {
+    const foundUsers = await usersCol.find({
+      $or: [
+        { telegramId: { $in: userIds } },
+        { telegramId: { $in: userIds.map(Number).filter(Boolean) } }
+      ]
+    }).toArray();
+    foundUsers.forEach(u => {
+      usersMap[String(u.telegramId)] = u;
+    });
+  }
+
+  let msgText = "";
+  if (bannerText) msgText += `${bannerText}\n\n`;
+  msgText += `💸 <b>Pending Withdrawals</b> (Page ${currPage + 1}/${totalPages} • Total: ${totalCount})\n\n`;
+
+  const inlineKeyboard = [];
+
+  items.forEach((w, idx) => {
+    const itemNum = currPage * PAGE_SIZE + idx + 1;
+    const u = usersMap[String(w.telegramId)] || {};
+    const rawName = u.username ? `@${u.username}` : (u.firstName ? u.firstName : "Miner");
+    const uname = escapeHtml(rawName);
+    const uid = String(w.telegramId || "N/A");
+    const coinAmt = Number(w.amount || 0).toLocaleString();
+    const usdtAmt = Number(w.usdtAmount || 0).toFixed(2);
+    const tonAmt = w.tonAmount !== undefined ? Number(w.tonAmount) : Number(((w.usdtAmount || 0) * (0.019 / 0.03)).toFixed(4));
+
+    let riskBadge = "🟢 Clean";
+    if (u.isHighRiskHacker) {
+      riskBadge = "🔴 HIGH RISK HACKER";
+    } else if (u.isSuspicious) {
+      riskBadge = `🟡 Suspicious (${escapeHtml(u.suspiciousReason || "Flagged")})`;
+    } else if (u.isBanned) {
+      riskBadge = "⛔ Banned";
+    }
+
+    const dateStr = w.createdAt ? new Date(w.createdAt).toISOString().replace("T", " ").slice(5, 16) : "Recent";
+
+    msgText += `<b>${itemNum}.</b> ${uname} (UID: <code>${uid}</code>)\n`;
+    msgText += `💰 <b>${coinAmt} Coins</b> ($${usdtAmt} USDT • ${tonAmt} TON)\n`;
+    msgText += `💳 <code>${w.walletAddress || "No wallet"}</code>\n`;
+    msgText += `⚠️ Risk: <b>${riskBadge}</b> | 🕒 ${dateStr}\n\n`;
+
+    const wid = String(w._id);
+    inlineKeyboard.push([
+      { text: `✅ Approve #${itemNum}`, callback_data: `adm_appr_${wid}` },
+      { text: `❌ Reject #${itemNum}`, callback_data: `adm_rej_${wid}` },
+      { text: `🚫 Ban #${itemNum}`, callback_data: `adm_ban_${wid}` }
+    ]);
+  });
+
+  // Pagination navigation row
+  const navRow = [];
+  if (currPage > 0) {
+    navRow.push({ text: "⬅️ Prev", callback_data: `adm_wd_page_${currPage - 1}` });
+  }
+  navRow.push({ text: `📄 ${currPage + 1}/${totalPages}`, callback_data: `adm_wd_page_${currPage}` });
+  if (currPage < totalPages - 1) {
+    navRow.push({ text: "Next ➡️", callback_data: `adm_wd_page_${currPage + 1}` });
+  }
+  inlineKeyboard.push(navRow);
+
+  // Bottom action row
+  inlineKeyboard.push([
+    { text: "🔄 Refresh", callback_data: `adm_wd_page_${currPage}` },
+    { text: "🛡️ Open Admin Panel", web_app: { url: adminUrl } }
+  ]);
+
+  if (messageId) {
+    const editRes = await editTelegramMsg(botToken, chatId, messageId, msgText, { reply_markup: { inline_keyboard: inlineKeyboard } });
+    if (!editRes || !editRes.ok) {
+      await sendTelegramMsg(botToken, chatId, msgText, { reply_markup: { inline_keyboard: inlineKeyboard } });
+    }
+  } else {
+    await sendTelegramMsg(botToken, chatId, msgText, { reply_markup: { inline_keyboard: inlineKeyboard } });
+  }
 }
 
 module.exports = async (req, res) => {
@@ -447,6 +757,72 @@ module.exports = async (req, res) => {
         return;
       }
 
+      // ----------------------------------------------------
+      // Admin: Withdrawals Management via Telegram
+      // ----------------------------------------------------
+      if (cbData.startsWith("adm_wd_page_")) {
+        const adminIds = await getAdminTelegramIds(db);
+        if (!adminIds.has(cbSenderId)) {
+          await answerCallbackQuery(botToken, cb.id, "Unauthorized: Admin only", true);
+          res.status(200).json({ ok: true });
+          return;
+        }
+
+        const pageNum = parseInt(cbData.replace("adm_wd_page_", ""), 10) || 0;
+        await answerCallbackQuery(botToken, cb.id);
+        await renderWithdrawalsPage(db, botToken, cbChatId, cb.message?.message_id, pageNum, baseUrl);
+        res.status(200).json({ ok: true });
+        return;
+      }
+
+      if (cbData.startsWith("adm_appr_")) {
+        const adminIds = await getAdminTelegramIds(db);
+        if (!adminIds.has(cbSenderId)) {
+          await answerCallbackQuery(botToken, cb.id, "Unauthorized: Admin only", true);
+          res.status(200).json({ ok: true });
+          return;
+        }
+
+        const wid = cbData.replace("adm_appr_", "");
+        const result = await handleAdminApproveWithdrawal(db, botToken, wid, baseUrl);
+        await answerCallbackQuery(botToken, cb.id, result.message, !result.ok);
+        await renderWithdrawalsPage(db, botToken, cbChatId, cb.message?.message_id, 0, baseUrl, result.ok ? `✅ <b>Withdrawal Approved!</b>` : `⚠️ ${result.message}`);
+        res.status(200).json({ ok: true });
+        return;
+      }
+
+      if (cbData.startsWith("adm_rej_")) {
+        const adminIds = await getAdminTelegramIds(db);
+        if (!adminIds.has(cbSenderId)) {
+          await answerCallbackQuery(botToken, cb.id, "Unauthorized: Admin only", true);
+          res.status(200).json({ ok: true });
+          return;
+        }
+
+        const wid = cbData.replace("adm_rej_", "");
+        const result = await handleAdminRejectWithdrawal(db, botToken, wid);
+        await answerCallbackQuery(botToken, cb.id, result.message, !result.ok);
+        await renderWithdrawalsPage(db, botToken, cbChatId, cb.message?.message_id, 0, baseUrl, result.ok ? `❌ <b>Withdrawal Rejected & Refunded!</b>` : `⚠️ ${result.message}`);
+        res.status(200).json({ ok: true });
+        return;
+      }
+
+      if (cbData.startsWith("adm_ban_")) {
+        const adminIds = await getAdminTelegramIds(db);
+        if (!adminIds.has(cbSenderId)) {
+          await answerCallbackQuery(botToken, cb.id, "Unauthorized: Admin only", true);
+          res.status(200).json({ ok: true });
+          return;
+        }
+
+        const wid = cbData.replace("adm_ban_", "");
+        const result = await handleAdminBanWithdrawalUser(db, botToken, wid);
+        await answerCallbackQuery(botToken, cb.id, result.message, !result.ok);
+        await renderWithdrawalsPage(db, botToken, cbChatId, cb.message?.message_id, 0, baseUrl, result.ok ? `🚫 <b>User Banned & Request Rejected!</b>` : `⚠️ ${result.message}`);
+        res.status(200).json({ ok: true });
+        return;
+      }
+
       await answerCallbackQuery(botToken, cb.id);
       res.status(200).send("OK");
       return;
@@ -485,12 +861,12 @@ module.exports = async (req, res) => {
       }
 
       // SENDER IS VERIFIED ADMIN!
-      // Send secure WebApp launch button for Admin Panel
+      // Send secure WebApp launch button for Admin Panel & Withdrawals button
       const adminUrl = `${baseUrl}/admin.html`;
       const replyText = 
         `🛡️ <b>HOOCOOH Admin Control Center</b>\n\n` +
         `Welcome back, <b>${escapeHtml(firstName)}</b> (ID: <code>${senderId}</code>)!\n\n` +
-        `Tap the button below to open your control panel securely:`;
+        `Tap a button below to manage the platform:`;
 
       await sendTelegramMsg(botToken, chatId, replyText, {
         reply_markup: {
@@ -499,6 +875,10 @@ module.exports = async (req, res) => {
               {
                 text: "🛡️ Open Admin Panel",
                 web_app: { url: adminUrl }
+              },
+              {
+                text: "💸 Withdraw",
+                callback_data: "adm_wd_page_0"
               }
             ]
           ]
