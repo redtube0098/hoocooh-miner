@@ -68,7 +68,9 @@ async function sendTelegramMsg(botToken, chatId, text, options = {}) {
       payload.text = text;
     }
 
-    if (options.buttonText && options.buttonUrl) {
+    if (options.reply_markup) {
+      payload.reply_markup = options.reply_markup;
+    } else if (options.buttonText && options.buttonUrl) {
       payload.reply_markup = {
         inline_keyboard: [
           [{ text: options.buttonText, url: options.buttonUrl }]
@@ -438,7 +440,7 @@ module.exports = async (req, res) => {
             const txUrl = `https://tonviewer.com/transaction/${encodeURIComponent(finalTx)}`;
             const txLinkHtml = `<a href="${txUrl}">View Transaction</a>`;
 
-            // 1. Post to Payout Logs Channel
+            // 1. Post to Payout Logs Channel (with BOT ---> @hoocoohmine_bot appended)
             const channelId = process.env.PAYOUT_CHANNEL_ID || "@hoocoohpaylogs";
             const channelMsg = 
 `🎉 <b>New payout paid</b> 🎉\n\n` +
@@ -446,22 +448,22 @@ module.exports = async (req, res) => {
 `🔘 <b>Amount:</b> ${Number(w.amount).toLocaleString()} HOOCOOH (${Number(w.usdtAmount).toFixed(2)} USDT)\n` +
 `💳 <b>Wallet address:</b>\n` +
 `<code>${w.walletAddress}</code>\n` +
-`🔗 <b>Transaction id:</b> ${txLinkHtml}`;
+`🔗 <b>Transaction id:</b> ${txLinkHtml}\n\n` +
+`BOT ---> @hoocoohmine_bot`;
 
             await sendTelegramMsg(botToken, channelId, channelMsg);
 
-            // 2. Send detailed confirmation to the withdrawing user
+            // 2. Send 1:1 exact notification to the withdrawing user (matching media_1791525638939.png)
             if (w.telegramId) {
               const userMsg = 
-`🎉 <b>New payout paid</b> 🎉\n\n` +
-`👤 <b>User:</b> ${displayName} (UID: <code>${w.telegramId}</code>)\n` +
-`🔘 <b>Amount:</b> ${Number(w.amount).toLocaleString()} HOOCOOH (${Number(w.usdtAmount).toFixed(2)} USDT)\n` +
-`💳 <b>Wallet address:</b>\n` +
-`<code>${w.walletAddress}</code>\n` +
-`🔗 <b>Transaction id:</b> ${txLinkHtml}\n\n` +
-`<i>Thank you for mining with HOOCOOH! Proof posted to @hoocoohpaylogs</i>`;
+`✅ <b>Withdrawal Approved!</b>\n\n` +
+`🪙 <b>${Number(w.amount).toLocaleString()} HOOCOOH Coins ($${Number(w.usdtAmount).toFixed(2)} USDT) sent!</b>\n` +
+`🔗 <a href="${txUrl}">View Transaction</a>`;
 
-              await sendTelegramMsg(botToken, w.telegramId, userMsg);
+              await sendTelegramMsg(botToken, w.telegramId, userMsg, {
+                buttonText: "🔗 View Transaction",
+                buttonUrl: txUrl
+              });
             }
           } catch (notifErr) {
             console.error("Payout notification error:", notifErr);

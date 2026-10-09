@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const { getDb } = require("../lib/mongodb");
 const { generateVerificationImage } = require("../lib/verificationImage");
 const { processMiningReminders } = require("../lib/miningReminder");
@@ -63,8 +65,10 @@ async function sendTelegramMsg(botToken, chatId, text, options = {}) {
       try {
         const formData = new FormData();
         formData.append("chat_id", String(chatId));
-        const blob = new Blob([options.photoBuffer], { type: "image/png" });
-        formData.append("photo", blob, `hoocooh_verify_${Date.now()}.png`);
+        const mimeType = options.photoMime || "image/jpeg";
+        const ext = mimeType.includes("png") ? "png" : "jpg";
+        const blob = new Blob([options.photoBuffer], { type: mimeType });
+        formData.append("photo", blob, `hoocooh_${Date.now()}.${ext}`);
         formData.append("caption", text);
         formData.append("parse_mode", "HTML");
         if (options.reply_markup) {
@@ -514,10 +518,20 @@ module.exports = async (req, res) => {
         appUrl += `&tgWebAppStartParam=${encodeURIComponent(startParam)}`;
       }
 
-      const photoUrl = `${baseUrl}/assets/botfather_banner.jpg?v=2`;
+      let welcomePhotoBuf = null;
+      try {
+        const p = path.join(process.cwd(), "public/assets/welcome_banner.jpg");
+        if (fs.existsSync(p)) {
+          welcomePhotoBuf = fs.readFileSync(p);
+        }
+      } catch(e){}
+
+      const photoUrl = `${baseUrl}/assets/welcome_banner.jpg?v=4`;
       const langDict = WELCOME_MESSAGES[userLang] || WELCOME_MESSAGES.en;
 
       await sendTelegramMsg(botToken, chatId, langDict.text, {
+        photoBuffer: welcomePhotoBuf,
+        photoMime: "image/jpeg",
         photoUrl: photoUrl,
         reply_markup: {
           inline_keyboard: [
