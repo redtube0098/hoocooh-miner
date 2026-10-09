@@ -9431,6 +9431,7 @@
     if (puzzleSliderProgress) puzzleSliderProgress.style.width = "0px";
     if (puzzlePieceCanvas) puzzlePieceCanvas.style.transform = "translateX(0px)";
     renderMining();
+    renderDaily();
   }
 
   if (secCloseBtn1) secCloseBtn1.addEventListener("click", closeSecurityCaptcha);
@@ -10129,11 +10130,17 @@
             // Reward is credited only after puzzle verification is solved!
             fetch("/api/ads", {
               method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "X-Telegram-Init-Data": initData
-              },
+              headers: getClientHeaders({ "Content-Type": "application/json" }),
               body: JSON.stringify({ captchaToken: verifiedCaptchaToken })
+            }).then(function(r) {
+              if (r.status === 404) {
+                return fetch("/api/ads.js", {
+                  method: "POST",
+                  headers: getClientHeaders({ "Content-Type": "application/json" }),
+                  body: JSON.stringify({ captchaToken: verifiedCaptchaToken })
+                });
+              }
+              return r;
             }).then(handleResponse).then(function(res) {
               if (!res.ok) {
                 var err = (res.data && res.data.error) ? res.data.error : "Failed to claim reward";

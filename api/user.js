@@ -51,6 +51,7 @@ module.exports = async (req, res) => {
   const prevUid = String(req.headers["x-prev-uid"] || (req.body && req.body.prevUid) || (req.query && req.query.prevUid) || "").trim();
 
   try {
+    const now = Date.now();
     const db = await getDb();
     const users = db.collection("users");
 
@@ -391,8 +392,6 @@ module.exports = async (req, res) => {
     const minerLevelName = LEVEL_NAMES[minerLevel - 1] || "Starter";
 
     const botUsername = await fetchBotUsername(process.env.TELEGRAM_BOT_TOKEN);
-
-    const now = Date.now();
     const CYCLE_MS = 24 * 60 * 60 * 1000;
     let cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
     let watchedToday = Number(user.adsWatchedToday || 0);

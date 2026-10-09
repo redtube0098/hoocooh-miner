@@ -1189,7 +1189,7 @@
                   <code style="font-size: 11.5px; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 6px;" title="${w.walletAddress}">
                     ${w.walletAddress.slice(0, 6)}...${w.walletAddress.slice(-6)}
                   </code>
-                  <button class="btn-secondary" style="padding: 2px 7px; font-size: 11px; cursor: pointer;" onclick="navigator.clipboard.writeText('${w.walletAddress}'); showToast('📋 Address copied!');" title="Copy full address">📋 Copy</button>
+                  <button class="btn-secondary" style="padding: 2px 7px; font-size: 11px; cursor: pointer;" onclick="copyToClipboard('${w.walletAddress}', 'Address copied!')" title="Copy full address">📋 Copy</button>
                 </div>
               </td>
               <td data-label="Date" style="font-size: 11.5px; color: var(--text-dim);">${dateStr}</td>
