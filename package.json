@@ -4,11 +4,15 @@
   "private": true,
   "description": "HOOCOOH Mine Telegram Mini App - Vercel serverless API + MongoDB storage",
   "scripts": {
+    "build": "node scripts/build.js",
     "dev": "vercel dev"
   },
   "dependencies": {
     "@ton/crypto": "^3.3.0",
     "@ton/ton": "^16.3.0",
     "mongodb": "^6.8.0"
+  },
+  "devDependencies": {
+    "javascript-obfuscator": "^5.9.0"
   }
 }
