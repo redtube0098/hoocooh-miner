@@ -254,6 +254,10 @@ module.exports = async (req, res) => {
             currentBalance: Number(u.balance || 0),
             recruitsCount: Number(u.recruitsCount || 0),
             isBanned: !!u.isBanned,
+            isSuspicious: !!u.isSuspicious,
+            suspiciousReason: u.suspiciousReason || "",
+            isHighRiskHacker: !!u.isHighRiskHacker,
+            securityFlag: u.securityFlag || "",
             amount: w.amount,
             usdtAmount: w.usdtAmount,
             tonAmount: w.tonAmount !== undefined ? Number(w.tonAmount) : Number(((w.usdtAmount || 0) * (0.019 / 0.03)).toFixed(4)),
@@ -303,8 +307,15 @@ module.exports = async (req, res) => {
           minerLevel: u.minerLevel || 1,
           recruitsCount: Number(u.recruitsCount || 0),
           refEarnings: Number(u.refEarnings || 0),
+          totalAdsWatched: Number(u.totalAdsWatched || 0),
+          spinTickets: Number(u.spinTickets || 0),
+          spinUnder5sStrikes: Number(u.spinUnder5sStrikes || 0),
           isBanned: !!u.isBanned,
           banReason: u.banReason || "",
+          isSuspicious: !!u.isSuspicious,
+          suspiciousReason: u.suspiciousReason || "",
+          isHighRiskHacker: !!u.isHighRiskHacker,
+          securityFlag: u.securityFlag || "",
           createdAt: u.createdAt || null
         }));
 

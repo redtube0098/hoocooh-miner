@@ -10425,7 +10425,7 @@
       watchSpinAdActionBtn.textContent = "Loading Ad...";
 
       playGigapubAd(
-        function onWatchedSuccess() {
+        function onWatchedSuccess(elapsedMs) {
           // Watched at least 5 seconds! Claim ticket directly
           watchSpinAdActionBtn.textContent = "Claiming Ticket...";
 
@@ -10435,7 +10435,7 @@
               "Content-Type": "application/json",
               "X-Telegram-Init-Data": initData
             },
-            body: JSON.stringify({ action: "spin_watch_ad" })
+            body: JSON.stringify({ action: "spin_watch_ad", watchDurationMs: elapsedMs })
           }).then(handleResponse).then(function(res) {
             watchSpinAdActionBtn.disabled = false;
             watchSpinAdActionBtn.textContent = "🎬 Watch Ad (+1 Ticket)";

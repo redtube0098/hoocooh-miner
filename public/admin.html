@@ -332,6 +332,29 @@
   .status-tag.approved { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
   .status-tag.rejected { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
   .status-tag.banned { background: #ef4444; color: #fff; }
+  .status-tag.suspicious { background: #f59e0b; color: #000; font-weight: 800; border: 1px solid #d97706; }
+  .status-tag.high-risk { background: #dc2626; color: #fff; font-weight: 800; border: 1px solid #b91c1c; }
+
+  .btn-copy-tag {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: var(--text-dim);
+    border-radius: 5px;
+    padding: 2px 7px;
+    font-size: 10.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    line-height: 1.2;
+    vertical-align: middle;
+  }
+  .btn-copy-tag:hover {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
 
   /* User Result Card */
   .user-card {
@@ -878,6 +901,39 @@
     setTimeout(function(){ toastEl.classList.remove("show"); }, 3000);
   }
 
+  window.copyToClipboard = function(text, successMsg) {
+    if (!text || text === "N/A") {
+      showToast("Nothing to copy");
+      return;
+    }
+    var clean = String(text).replace(/^@/, "").trim();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(clean).then(function(){
+        showToast(successMsg || "📋 Copied: " + clean);
+      }).catch(function(){
+        fallbackCopyText(clean, successMsg);
+      });
+    } else {
+      fallbackCopyText(clean, successMsg);
+    }
+  };
+
+  function fallbackCopyText(text, successMsg) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand("copy");
+      showToast(successMsg || "📋 Copied: " + text);
+    } catch(e) {
+      showToast("Could not copy");
+    }
+    document.body.removeChild(ta);
+  }
+
   // Telegram WebApp Auto-Authentication
   var tg = window.Telegram && window.Telegram.WebApp;
   if (tg) {
@@ -1082,6 +1138,13 @@
           var isBannedTag = w.isBanned ? '<span class="status-tag banned" style="margin-left: 4px;">BANNED</span>' : '';
           var tonValStr = (w.tonAmount !== undefined ? Number(w.tonAmount).toFixed(4) : "0.0000");
 
+          var securityBadge = '';
+          if (w.isHighRiskHacker) {
+            securityBadge = `<div style="margin-top: 4px;"><span class="status-tag high-risk" style="font-size: 10px; padding: 2px 7px;">🚨 HIGH RISK (HACKER)</span> ${w.suspiciousReason ? `<div style="font-size: 10px; color: #ef4444; margin-top: 2px;">${w.suspiciousReason}</div>` : ''}</div>`;
+          } else if (w.isSuspicious) {
+            securityBadge = `<div style="margin-top: 4px;"><span class="status-tag suspicious" style="font-size: 10px; padding: 2px 7px;">⚠️ SUSPICIOUS</span> ${w.suspiciousReason ? `<div style="font-size: 10px; color: #f59e0b; margin-top: 2px;">${w.suspiciousReason}</div>` : ''}</div>`;
+          }
+
           var actions = '';
           if (isPending) {
             actions = `
@@ -1100,7 +1163,13 @@
               <td data-label="User">
                 <div>
                   <strong>${w.name}</strong> ${isBannedTag}<br>
-                  <span style="font-size: 11px; color: var(--text-dim);">${w.username} (UID: ${w.telegramId})</span>
+                  <div style="font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 3px;">
+                    <span>${w.username}</span>
+                    ${w.username && w.username !== "N/A" ? `<button type="button" class="btn-copy-tag" onclick="copyToClipboard('${w.username}', 'Username copied!')" title="Copy Username">📋 Copy</button>` : ''}
+                    <span>· UID: <code>${w.telegramId}</code></span>
+                    <button type="button" class="btn-copy-tag" onclick="copyToClipboard('${w.telegramId}', 'UID copied!')" title="Copy UID">📋 Copy</button>
+                  </div>
+                  ${securityBadge}
                 </div>
               </td>
               <td data-label="Coins"><strong>${Number(w.amount).toLocaleString()}</strong></td>
@@ -1480,26 +1549,66 @@
             ? `<img src="${u.photoUrl}" style="width:100%;height:100%;object-fit:cover;">`
             : (u.name.charAt(0) || "M").toUpperCase();
 
+          var secBadge = '';
+          if (u.isHighRiskHacker) {
+            secBadge = `<span class="status-tag high-risk" style="margin-left: 6px;">🚨 HIGH RISK: HACKER</span>`;
+          } else if (u.isSuspicious) {
+            secBadge = `<span class="status-tag suspicious" style="margin-left: 6px;">⚠️ SUSPICIOUS</span>`;
+          } else {
+            secBadge = `<span class="status-tag approved" style="margin-left: 6px;">✅ CLEAN</span>`;
+          }
+
+          var cardBorder = u.isHighRiskHacker ? '#ef4444' : (u.isSuspicious ? '#f59e0b' : 'var(--card-border)');
+          var joinedDateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A';
+
           return `
-            <div class="user-card">
+            <div class="user-card" style="border: 1.5px solid ${cardBorder};">
               <div class="user-card-top">
                 <div class="u-info">
                   <div class="u-avatar">${avatarHtml}</div>
                   <div>
-                    <div class="u-name">${u.name} ${isBanned ? '<span class="status-tag banned" style="margin-left: 6px;">SUSPENDED</span>' : '<span class="status-tag approved" style="margin-left: 6px;">ACTIVE</span>'}</div>
-                    <div class="u-uid">${u.username} · UID: <code>${u.telegramId}</code></div>
+                    <div class="u-name">
+                      <strong>${u.name}</strong> 
+                      ${isBanned ? '<span class="status-tag banned" style="margin-left: 6px;">SUSPENDED</span>' : ''}
+                      ${secBadge}
+                    </div>
+                    <div class="u-uid" style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 3px;">
+                      <span>${u.username}</span>
+                      ${u.username && u.username !== "N/A" ? `<button type="button" class="btn-copy-tag" onclick="copyToClipboard('${u.username}', 'Username copied!')" title="Copy Username">📋 Copy</button>` : ''}
+                      <span>· UID: <code>${u.telegramId}</code></span>
+                      <button type="button" class="btn-copy-tag" onclick="copyToClipboard('${u.telegramId}', 'UID copied!')" title="Copy UID">📋 Copy</button>
+                    </div>
                   </div>
                 </div>
                 <div>${banBtn}</div>
               </div>
-              <div class="u-stats">
+
+              ${(u.isHighRiskHacker || u.isSuspicious) && u.suspiciousReason ? `
+                <div style="font-size: 12px; color: ${u.isHighRiskHacker ? '#ef4444' : '#f59e0b'}; background: ${u.isHighRiskHacker ? 'rgba(239, 68, 68, 0.12)' : 'rgba(245, 158, 11, 0.12)'}; padding: 8px 12px; border-radius: 8px; border: 1px solid ${u.isHighRiskHacker ? 'rgba(239, 68, 68, 0.3)' : 'rgba(245, 158, 11, 0.3)'};">
+                  <b>⚠️ Security Flag Reason:</b> ${u.suspiciousReason}
+                </div>
+              ` : ''}
+
+              <div class="u-stats" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));">
                 <div class="u-stat-box">
                   <div class="s-lbl">Balance</div>
                   <div class="s-val accent">${Number(u.balance).toLocaleString()} Coins</div>
                 </div>
                 <div class="u-stat-box">
-                  <div class="s-lbl">Level</div>
+                  <div class="s-lbl">Miner Level</div>
                   <div class="s-val">Lv.${u.minerLevel}</div>
+                </div>
+                <div class="u-stat-box">
+                  <div class="s-lbl">Total Ads Watched</div>
+                  <div class="s-val">${u.totalAdsWatched || 0}</div>
+                </div>
+                <div class="u-stat-box">
+                  <div class="s-lbl">Spin Tickets</div>
+                  <div class="s-val">${u.spinTickets || 0}</div>
+                </div>
+                <div class="u-stat-box">
+                  <div class="s-lbl">Sub-5s Strikes</div>
+                  <div class="s-val" style="color: ${u.spinUnder5sStrikes >= 5 ? '#f59e0b' : 'inherit'};">${u.spinUnder5sStrikes || 0} / 5</div>
                 </div>
                 <div class="u-stat-box">
                   <div class="s-lbl">Invited Friends</div>
@@ -1508,6 +1617,10 @@
                 <div class="u-stat-box">
                   <div class="s-lbl">Ref Earnings</div>
                   <div class="s-val">${Number(u.refEarnings).toLocaleString()}</div>
+                </div>
+                <div class="u-stat-box">
+                  <div class="s-lbl">Joined Date</div>
+                  <div class="s-val" style="font-size: 12px;">${joinedDateStr}</div>
                 </div>
               </div>
               ${isBanned && u.banReason ? `<div style="font-size: 12px; color: var(--danger); background: rgba(239, 68, 68, 0.1); padding: 8px 12px; border-radius: 8px;"><b>Suspension Reason:</b> ${u.banReason}</div>` : ''}

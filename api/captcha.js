@@ -48,30 +48,24 @@ module.exports = async (req, res) => {
 
     const now = Date.now();
 
-    // Helper to permanently suspend account on automated tamper / bypass detection
-    async function triggerPermanentBan(reason) {
-      const banReason = `Permanent suspension: ${reason}`;
+    // Helper to permanently flag account as HIGH RISK / Hacker instead of auto-banning
+    async function markHighRiskHacker(reason) {
+      const updateData = {
+        isHighRiskHacker: true,
+        isSuspicious: true,
+        securityFlag: "HIGH RISK (Hacker / Automated Script)",
+        suspiciousReason: reason,
+        flaggedAt: now
+      };
       if (user) {
         await usersCol.updateOne(
           { _id: user._id },
-          {
-            $set: {
-              isBanned: true,
-              bannedAt: now,
-              banReason
-            }
-          }
+          { $set: updateData }
         );
       } else {
         await usersCol.updateOne(
           { telegramId: uid },
-          {
-            $set: {
-              isBanned: true,
-              bannedAt: now,
-              banReason
-            }
-          },
+          { $set: updateData },
           { upsert: true }
         );
       }
@@ -121,10 +115,9 @@ module.exports = async (req, res) => {
       if (!challenge) {
         const strikes = Number(user && user.captchaStrikes ? user.captchaStrikes : 0) + 1;
         if (strikes >= 4) {
-          await triggerPermanentBan("Repeated automated challenge replay / brute force attempts");
-          res.status(403).json({
-            error: "Your account has been permanently suspended due to automated bypass attempts.",
-            isBanned: true
+          await markHighRiskHacker("Repeated automated challenge replay / brute force attempts");
+          res.status(400).json({
+            error: "Verification failed. Repeated invalid challenge attempts."
           });
           return;
         }
@@ -152,10 +145,9 @@ module.exports = async (req, res) => {
       if (elapsed < 220) {
         const strikes = Number(user && user.captchaStrikes ? user.captchaStrikes : 0) + 1;
         if (strikes >= 3) {
-          await triggerPermanentBan("Sub-human reaction time / automated solver detected");
-          res.status(403).json({
-            error: "Your account has been permanently suspended due to automated bot activity.",
-            isBanned: true
+          await markHighRiskHacker("Sub-human reaction time / automated 2Captcha solver detected");
+          res.status(400).json({
+            error: "Solving too fast. Human slide interaction required."
           });
           return;
         }
@@ -168,10 +160,9 @@ module.exports = async (req, res) => {
       if (!Array.isArray(trail) || trail.length < 3) {
         const strikes = Number(user && user.captchaStrikes ? user.captchaStrikes : 0) + 1;
         if (strikes >= 3) {
-          await triggerPermanentBan("Synthetic touch event / headless script tampering detected");
-          res.status(403).json({
-            error: "Your account has been permanently suspended due to automated script tampering.",
-            isBanned: true
+          await markHighRiskHacker("Synthetic touch event / headless script tampering detected");
+          res.status(400).json({
+            error: "Natural touch trajectory required. Please slide naturally."
           });
           return;
         }
@@ -185,10 +176,9 @@ module.exports = async (req, res) => {
       if (diff > 22) {
         const failCount = Number(user && user.captchaFailures ? user.captchaFailures : 0) + 1;
         if (failCount >= 8) {
-          await triggerPermanentBan("Excessive rapid puzzle failures / automated solver spam");
-          res.status(403).json({
-            error: "Your account has been permanently suspended due to excessive failed attempts.",
-            isBanned: true
+          await markHighRiskHacker("Excessive rapid puzzle failures / automated solver spam");
+          res.status(400).json({
+            error: "Too many failed attempts. Try again later."
           });
           return;
         }

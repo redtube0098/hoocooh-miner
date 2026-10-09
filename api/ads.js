@@ -198,6 +198,23 @@ module.exports = async (req, res) => {
 
     // 4A. ACTION: WATCH AD FOR SPIN TICKET (Up to 6 per 10 hours via Gigapub Ad)
     if (action === "spin_watch_ad") {
+      const { watchDurationMs } = req.body || {};
+      const duration = Number(watchDurationMs) || 0;
+
+      // Check sub-5s watch attempt:
+      if (duration < 5000) {
+        const strikes = Number(user.spinUnder5sStrikes || 0) + 1;
+        const updateData = { spinUnder5sStrikes: strikes };
+        if (strikes >= 5) {
+          updateData.isSuspicious = true;
+          updateData.suspiciousReason = "Repeated ad watch under 5 seconds (5+ times)";
+          updateData.suspiciousFlaggedAt = now;
+        }
+        await usersCol.updateOne({ _id: user._id }, { $set: updateData });
+        res.status(400).json({ error: "Ad was skipped! You must watch at least 5 seconds to receive your ticket." });
+        return;
+      }
+
       let spinCycleStart = user.spinAdsCycleStartedAt ? Number(user.spinAdsCycleStartedAt) : 0;
       let spinWatchedToday = Number(user.spinAdsWatchedToday || 0);
 
