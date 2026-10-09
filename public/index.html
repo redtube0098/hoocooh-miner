@@ -7276,10 +7276,13 @@
 
           <!-- Field 2: TON ADDRESS -->
           <div class="form-group" style="margin-bottom: 12px;">
-            <label class="form-label" style="margin-bottom: 6px; font-size: 11px; letter-spacing: 0.6px; color: var(--text-dim);">WITHDRAWAL ADDRESS (TON)</label>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="form-label" style="font-size: 11px; letter-spacing: 0.6px; color: var(--text-dim); margin-bottom: 0;">WITHDRAWAL ADDRESS (TON)</label>
+              <span id="withdrawWalletLockBadge" style="display: none; font-size: 10px; font-weight: 700; background: rgba(32, 184, 163, 0.15); color: var(--accent); padding: 2px 7px; border-radius: 6px; border: 1px solid rgba(32, 184, 163, 0.3);">🔒 LOCKED WALLET</span>
+            </div>
             <input type="text" class="withdraw-address-field" id="withdrawAddressInput" placeholder="UQ... or EQ..." spellcheck="false" autocomplete="off" required>
-            <div style="font-size: 10.5px; font-weight: 600; color: var(--text-dim); margin-top: 4px;">
-              Enter your 48-character TON wallet address.
+            <div id="withdrawWalletHint" style="font-size: 10.5px; font-weight: 600; color: var(--text-dim); margin-top: 4px;">
+              Enter your 48-character TON wallet address. It will be permanently locked on your first withdrawal.
             </div>
           </div>
 
@@ -12103,6 +12106,9 @@
           user.balance = res.data.balance;
           renderBalance();
         }
+        if (res.data.boundWalletAddress) {
+          user.boundWalletAddress = res.data.boundWalletAddress;
+        }
         renderWallet();
       }
     }).catch(function(err) {
@@ -12292,7 +12298,34 @@
       withdrawAdActionBtn.innerHTML = '<span>▶ Watch Ad & Continue</span>';
     }
     if (withdrawAmountInput) withdrawAmountInput.value = "";
-    if (withdrawAddressInput) withdrawAddressInput.value = "";
+
+    var lockBadge = document.getElementById("withdrawWalletLockBadge");
+    var hintEl = document.getElementById("withdrawWalletHint");
+
+    if (user.boundWalletAddress) {
+      if (withdrawAddressInput) {
+        withdrawAddressInput.value = user.boundWalletAddress;
+        withdrawAddressInput.readOnly = true;
+        withdrawAddressInput.style.opacity = "0.85";
+        withdrawAddressInput.style.cursor = "not-allowed";
+        withdrawAddressInput.style.background = "rgba(32, 184, 163, 0.08)";
+        withdrawAddressInput.style.borderColor = "rgba(32, 184, 163, 0.4)";
+      }
+      if (lockBadge) lockBadge.style.display = "inline-block";
+      if (hintEl) hintEl.innerHTML = "🔒 <i>Wallet permanently locked to your account. No need to re-enter.</i>";
+    } else {
+      if (withdrawAddressInput) {
+        withdrawAddressInput.value = "";
+        withdrawAddressInput.readOnly = false;
+        withdrawAddressInput.style.opacity = "1";
+        withdrawAddressInput.style.cursor = "text";
+        withdrawAddressInput.style.background = "";
+        withdrawAddressInput.style.borderColor = "";
+      }
+      if (lockBadge) lockBadge.style.display = "none";
+      if (hintEl) hintEl.innerHTML = "Enter your 48-character TON wallet address. It will be permanently locked on your first withdrawal.";
+    }
+
     if (withdrawFeedbackBox) {
       withdrawFeedbackBox.style.display = "none";
       withdrawFeedbackBox.textContent = "";
@@ -12387,7 +12420,7 @@
   if (confirmWithdrawBtn) {
     confirmWithdrawBtn.addEventListener("click", function() {
       var amt = parseInt(withdrawAmountInput ? withdrawAmountInput.value : 0, 10);
-      var addr = withdrawAddressInput ? withdrawAddressInput.value.trim() : "";
+      var addr = user.boundWalletAddress ? user.boundWalletAddress : (withdrawAddressInput ? withdrawAddressInput.value.trim() : "");
 
       if (isNaN(amt) || amt < 1000) {
         if (withdrawFeedbackBox) {
@@ -12408,7 +12441,7 @@
         return;
       }
 
-      if (!isValidTonAddress(addr)) {
+      if (!user.boundWalletAddress && !isValidTonAddress(addr)) {
         if (withdrawFeedbackBox) {
           withdrawFeedbackBox.style.display = "block";
           withdrawFeedbackBox.className = "verify-feedback-box error";
@@ -12441,6 +12474,9 @@
           }
 
           user.balance = res.data.newBalance;
+          if (res.data.boundWalletAddress) {
+            user.boundWalletAddress = res.data.boundWalletAddress;
+          }
           renderBalance();
           loadWalletData();
 

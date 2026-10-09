@@ -1643,6 +1643,13 @@
                   <div class="s-lbl">Joined Date</div>
                   <div class="s-val" style="font-size: 12px;">${joinedDateStr}</div>
                 </div>
+                <div class="u-stat-box" style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                  <div>
+                    <div class="s-lbl">🔒 Locked TON Wallet</div>
+                    <div class="s-val" style="font-size: 12px; font-family: monospace; color: var(--accent);">${u.boundWalletAddress || 'None (Not locked yet)'}</div>
+                  </div>
+                  ${u.boundWalletAddress ? `<button type="button" class="btn-copy-tag" onclick="copyToClipboard('${u.boundWalletAddress}', 'Locked wallet address copied!')" title="Copy Wallet">📋 Copy</button>` : ''}
+                </div>
               </div>
               ${isBanned && u.banReason ? `<div style="font-size: 12px; color: var(--danger); background: rgba(239, 68, 68, 0.1); padding: 8px 12px; border-radius: 8px;"><b>Suspension Reason:</b> ${u.banReason}</div>` : ''}
             </div>

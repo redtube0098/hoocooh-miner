@@ -65,6 +65,17 @@ module.exports = async (req, res) => {
         createdAt: t.createdAt
       }));
 
+      // Check and retrieve locked/bound wallet address
+      let boundWallet = user.boundWalletAddress || null;
+      if (!boundWallet) {
+        const prevTx = await withdrawalsCol.findOne({ telegramId }, { sort: { createdAt: -1 } });
+        if (prevTx && prevTx.walletAddress) {
+          boundWallet = prevTx.walletAddress;
+          await usersCol.updateOne({ _id: user._id }, { $set: { boundWalletAddress: boundWallet, walletBoundAt: Date.now() } });
+          user.boundWalletAddress = boundWallet;
+        }
+      }
+
       const recruits = Number(user.recruitsCount || 0);
       const balance = Number(user.balance || 0);
       const usdtEquivalent = Number(calculateCoinsUsdt(balance).toFixed(2));
@@ -76,6 +87,7 @@ module.exports = async (req, res) => {
         coinRate: COIN_RATE,
         recruitsCount: recruits,
         totalMined: Math.round(balance + (Number(user.totalDailyEarned) || 0) + (Number(user.refEarnings) || 0)),
+        boundWalletAddress: boundWallet,
         transactions: mappedTxs
       });
       return;
@@ -130,16 +142,50 @@ module.exports = async (req, res) => {
           return;
         }
 
-        const cleanAddress = (walletAddress || "").trim();
-        const isTon = /^(UQ|EQ|kQ|0Q)[A-Za-z0-9_-]{46}$/.test(cleanAddress) || /^(-1|0):[0-9a-fA-F]{64}$/.test(cleanAddress);
-        if (!isTon) {
-          res.status(400).json({ error: "Invalid TON address! Address must be 48 characters starting with UQ or EQ" });
-          return;
+        let cleanAddress = "";
+        const now = Date.now();
+
+        // Wallet Lock Logic:
+        // Once a wallet address is used, it is permanently locked to the account.
+        // Subsequent withdrawals automatically use this locked wallet address without requiring re-entry.
+        if (user.boundWalletAddress) {
+          cleanAddress = user.boundWalletAddress;
+          const inputAddr = (walletAddress || "").trim();
+          if (inputAddr && inputAddr !== user.boundWalletAddress) {
+            res.status(400).json({
+              error: `Your account is permanently locked to TON address: ${user.boundWalletAddress}. All withdrawals are sent to this address.`
+            });
+            return;
+          }
+        } else {
+          // Check if previously had a withdrawal
+          const prevTx = await withdrawalsCol.findOne({ telegramId }, { sort: { createdAt: -1 } });
+          if (prevTx && prevTx.walletAddress) {
+            cleanAddress = prevTx.walletAddress;
+            await usersCol.updateOne(
+              { _id: user._id },
+              { $set: { boundWalletAddress: cleanAddress, walletBoundAt: now } }
+            );
+            user.boundWalletAddress = cleanAddress;
+          } else {
+            // First withdrawal: validate and lock address permanently
+            cleanAddress = (walletAddress || "").trim();
+            const isTon = /^(UQ|EQ|kQ|0Q)[A-Za-z0-9_-]{46}$/.test(cleanAddress) || /^(-1|0):[0-9a-fA-F]{64}$/.test(cleanAddress);
+            if (!isTon) {
+              res.status(400).json({ error: "Invalid TON address! Address must be 48 characters starting with UQ or EQ" });
+              return;
+            }
+            await usersCol.updateOne(
+              { _id: user._id },
+              { $set: { boundWalletAddress: cleanAddress, walletBoundAt: now } }
+            );
+            user.boundWalletAddress = cleanAddress;
+          }
         }
+
         const usdtVal = Number(calculateCoinsUsdt(numAmount).toFixed(4));
         const tonVal = Number((usdtVal * TON_PER_USD).toFixed(6));
         const newBal = currentBal - numAmount;
-        const now = Date.now();
 
         // Deduct from user balance
         await usersCol.updateOne(
@@ -166,6 +212,7 @@ module.exports = async (req, res) => {
           ok: true,
           message: `⏳ Withdrawal request of ${numAmount.toLocaleString()} Coins ($${usdtVal.toFixed(2)} USDT) submitted for review!`,
           newBalance: newBal,
+          boundWalletAddress: cleanAddress,
           transaction: {
             id: String(insertRes.insertedId),
             ...txDoc

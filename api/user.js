@@ -448,6 +448,7 @@ module.exports = async (req, res) => {
         complete_task: createActionToken(telegramId, "complete_task"),
         checkin: createActionToken(telegramId, "checkin")
       },
+      boundWalletAddress: user.boundWalletAddress || null,
       botUsername: botUsername
     });
   } catch (err) {

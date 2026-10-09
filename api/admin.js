@@ -323,6 +323,7 @@ module.exports = async (req, res) => {
           deviceViolationsCount: Number(u.deviceViolationsCount || 0),
           penaltyNotice: u.penaltyNotice || "",
           registeredIp: u.registeredIp || u.lastIp || "N/A",
+          boundWalletAddress: u.boundWalletAddress || null,
           createdAt: u.createdAt || null
         }));
 
