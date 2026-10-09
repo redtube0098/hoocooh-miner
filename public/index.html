@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+<script src="https://ad.gigapub.tech/script?id=8547"></script>
 <style>
   :root {
     --bg: #eff5f5;
@@ -9733,7 +9734,7 @@
   // ========================================================
   // REAL ADSGRAM INTEGRATION (Block ID: int-52852)
   // Fullscreen Ads with 9-Second Minimum Watch Enforcement:
-  // - If user skips under 9s: show "❌ Skip dawa hoice tai reward pabe na!"
+  // - If user skips under 9s: show "❌ Ad was skipped! You must watch at least 9 seconds to receive the reward."
   // - If user watches >= 9s: open Security Puzzle Verification
   // - Reward is only given and miner only started after puzzle is solved!
   // ========================================================
@@ -9770,13 +9771,13 @@
       var elapsedMs = Date.now() - adStartTime;
       // 9-Second Minimum Rule:
       if (elapsedMs < 9000) {
-        showToast("❌ Skip dawa hoice tai reward pabe na! (Must watch at least 9 seconds)");
+        showToast("❌ Ad was skipped! You must watch at least 9 seconds to receive the reward.");
         if (typeof onSkippedOrFailed === "function") onSkippedOrFailed("skipped_under_9s");
         return;
       }
 
       if (!result || result.done !== true) {
-        showToast("❌ Skip dawa hoice tai reward pabe na!");
+        showToast("❌ Ad was skipped! You must watch at least 9 seconds to receive the reward.");
         if (typeof onSkippedOrFailed === "function") onSkippedOrFailed("not_done");
         return;
       }
@@ -9788,13 +9789,54 @@
     }).catch(function(err) {
       var elapsedMs = Date.now() - adStartTime;
       if (elapsedMs < 9000) {
-        showToast("❌ Skip dawa hoice tai reward pabe na! (Must watch at least 9 seconds)");
+        showToast("❌ Ad was skipped! You must watch at least 9 seconds to receive the reward.");
       } else {
         var errDesc = (err && err.description) ? err.description : "Ad closed or not finished";
         showToast("❌ Ad was not completed: " + errDesc);
       }
       if (typeof onSkippedOrFailed === "function") onSkippedOrFailed(err);
     });
+  }
+
+  // ========================================================
+  // GIGAPUB ADS INTEGRATION (Script ID: 8547)
+  // For Spin & Earn Tickets (Max 6 tickets per 10 hours)
+  // - Minimum 5-second watch rule.
+  // - If skipped before 5 seconds: reject ticket and show:
+  //   "❌ Ad was skipped! You must watch at least 5 seconds to receive your ticket."
+  // - If watched >= 5 seconds: grant +1 Spin Ticket immediately!
+  // ========================================================
+  function playGigapubAd(onSuccess, onError) {
+    if (typeof window.showGiga !== "function") {
+      showToast("⏳ Ad network is loading. Please try again in a few seconds.");
+      if (typeof onError === "function") onError("showGiga_unavailable");
+      return;
+    }
+
+    var adStartTime = Date.now();
+    window.showGiga()
+      .then(function() {
+        var elapsedMs = Date.now() - adStartTime;
+        if (elapsedMs < 5000) {
+          showToast("❌ Ad was skipped! You must watch at least 5 seconds to receive your ticket.");
+          if (typeof onError === "function") onError("skipped_under_5s");
+          return;
+        }
+
+        if (typeof onSuccess === "function") {
+          onSuccess(elapsedMs);
+        }
+      })
+      .catch(function(err) {
+        var elapsedMs = Date.now() - adStartTime;
+        if (elapsedMs < 5000) {
+          showToast("❌ Ad was skipped! You must watch at least 5 seconds to receive your ticket.");
+        } else {
+          var msg = (err && err.message) ? err.message : "Ad was closed or interrupted.";
+          showToast("❌ Ad was not completed: " + msg);
+        }
+        if (typeof onError === "function") onError(err);
+      });
   }
 
   function updateWatchSheetView1() {
@@ -10370,30 +10412,30 @@
     });
   }
 
-  // WATCH AD FOR SPIN TICKET
+  // WATCH AD FOR SPIN TICKET (Gigapub Ads - 5s minimum watch rule)
   if (watchSpinAdActionBtn) {
     watchSpinAdActionBtn.addEventListener("click", function() {
+      var spinWatchedToday = Number(user.spinAdsWatchedToday) || 0;
+      if (spinWatchedToday >= 6) {
+        showToast("Limit of 6 tickets reached! Next tickets available in 10 hours.");
+        return;
+      }
+
       watchSpinAdActionBtn.disabled = true;
       watchSpinAdActionBtn.textContent = "Loading Ad...";
 
-      playSponsorAd("Spin Ticket Sponsor", "Watch this short sponsor ad to claim your free Spin Ticket.", function onAdComplete() {
-        openSecurityCaptcha(function(verifiedCaptchaToken) {
+      playGigapubAd(
+        function onWatchedSuccess() {
+          // Watched at least 5 seconds! Claim ticket directly
+          watchSpinAdActionBtn.textContent = "Claiming Ticket...";
+
           fetch("/api/ads", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               "X-Telegram-Init-Data": initData
             },
-            body: JSON.stringify({ action: "spin_watch_ad", captchaToken: verifiedCaptchaToken })
-          }).then(function(r) {
-            if (r.status === 404) {
-              return fetch("/api/ads.js", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", "X-Telegram-Init-Data": initData },
-                body: JSON.stringify({ action: "spin_watch_ad", captchaToken: verifiedCaptchaToken })
-              });
-            }
-            return r;
+            body: JSON.stringify({ action: "spin_watch_ad" })
           }).then(handleResponse).then(function(res) {
             watchSpinAdActionBtn.disabled = false;
             watchSpinAdActionBtn.textContent = "🎬 Watch Ad (+1 Ticket)";
@@ -10406,15 +10448,24 @@
 
             showToast("🎟️ +1 Spin Ticket received successfully!");
             currentSpinTickets = Number(res.data.spinTickets || 0);
+            user.spinTickets = currentSpinTickets;
+            user.spinAdsWatchedToday = res.data.spinAdsWatchedToday;
             if (spinTicketsCount) spinTicketsCount.textContent = currentSpinTickets;
             loadSpinStatus();
+            if (tg && tg.HapticFeedback) {
+              try { tg.HapticFeedback.notificationOccurred("success"); } catch(e){}
+            }
           }).catch(function(err) {
             watchSpinAdActionBtn.disabled = false;
             watchSpinAdActionBtn.textContent = "🎬 Watch Ad (+1 Ticket)";
             showToast(err.message || "Network issue");
           });
-        });
-      });
+        },
+        function onSkippedOrFailed() {
+          watchSpinAdActionBtn.disabled = false;
+          watchSpinAdActionBtn.textContent = "🎬 Watch Ad (+1 Ticket)";
+        }
+      );
     });
   }
 

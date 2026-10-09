@@ -196,36 +196,7 @@ module.exports = async (req, res) => {
       return;
     }
 
-    // 4. AD WATCH VERIFICATION (Both for Spin Ticket Ad & Regular Ad)
-    const { captchaToken } = req.body || {};
-    if (!captchaToken) {
-      res.status(403).json({ error: "Security verification required. Please solve the puzzle." });
-      return;
-    }
-
-    const tokenDoc = await tokensCol.findOne({
-      token: captchaToken,
-      userId: { $in: [uid, Number(uid), tgUser.id] },
-      used: false
-    });
-
-    if (!tokenDoc) {
-      res.status(403).json({ error: "Invalid or expired verification. Please solve the puzzle again." });
-      return;
-    }
-
-    if (now - Number(tokenDoc.createdAt || 0) > 90 * 1000) {
-      res.status(403).json({ error: "Verification expired. Please try again." });
-      return;
-    }
-
-    // Burn token
-    await tokensCol.updateOne(
-      { _id: tokenDoc._id },
-      { $set: { used: true, usedAt: now } }
-    );
-
-    // 4A. ACTION: WATCH AD FOR SPIN TICKET (Up to 6 per 10 hours)
+    // 4A. ACTION: WATCH AD FOR SPIN TICKET (Up to 6 per 10 hours via Gigapub Ad)
     if (action === "spin_watch_ad") {
       let spinCycleStart = user.spinAdsCycleStartedAt ? Number(user.spinAdsCycleStartedAt) : 0;
       let spinWatchedToday = Number(user.spinAdsWatchedToday || 0);
@@ -280,7 +251,34 @@ module.exports = async (req, res) => {
       return;
     }
 
-    // 4B. ACTION: REGULAR WATCH & EARN (+15 Coins)
+    // 4B. ACTION: REGULAR WATCH & EARN (+15 Coins) - Requires Puzzle Captcha Verification
+    const { captchaToken } = req.body || {};
+    if (!captchaToken) {
+      res.status(403).json({ error: "Security verification required. Please solve the puzzle." });
+      return;
+    }
+
+    const tokenDoc = await tokensCol.findOne({
+      token: captchaToken,
+      userId: { $in: [uid, Number(uid), tgUser.id] },
+      used: false
+    });
+
+    if (!tokenDoc) {
+      res.status(403).json({ error: "Invalid or expired verification. Please solve the puzzle again." });
+      return;
+    }
+
+    if (now - Number(tokenDoc.createdAt || 0) > 90 * 1000) {
+      res.status(403).json({ error: "Verification expired. Please try again." });
+      return;
+    }
+
+    // Burn token
+    await tokensCol.updateOne(
+      { _id: tokenDoc._id },
+      { $set: { used: true, usedAt: now } }
+    );
     let cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
     let watchedToday = Number(user.adsWatchedToday || 0);
     let earnedToday = Number(user.adsEarnedToday || 0);
