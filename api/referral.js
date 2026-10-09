@@ -147,15 +147,26 @@ module.exports = async (req, res) => {
           return;
         }
 
-        const newBal = (Number(user.balance) || 0) + mConfig.reward;
-        const newClaimed = [...userClaimedMilestones, mConfig.id];
-
-        await usersCol.updateOne(
-          { _id: user._id },
+        // Atomically claim milestone (impossible for concurrent requests to both claim)
+        const claimMRes = await usersCol.updateOne(
           {
-            $set: { balance: newBal, claimedMilestones: newClaimed }
+            _id: user._id,
+            claimedMilestones: { $ne: mConfig.id }
+          },
+          {
+            $inc: { balance: mConfig.reward },
+            $push: { claimedMilestones: mConfig.id }
           }
         );
+
+        if (!claimMRes || claimMRes.modifiedCount === 0) {
+          res.status(400).json({ error: "Milestone already claimed" });
+          return;
+        }
+
+        const updatedUser = await usersCol.findOne({ _id: user._id });
+        const newBal = Number(updatedUser ? updatedUser.balance : ((Number(user.balance) || 0) + mConfig.reward));
+        const newClaimed = (updatedUser && updatedUser.claimedMilestones) ? updatedUser.claimedMilestones : [...userClaimedMilestones, mConfig.id];
 
         res.status(200).json({
           ok: true,

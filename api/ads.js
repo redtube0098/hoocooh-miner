@@ -137,18 +137,25 @@ module.exports = async (req, res) => {
         }
       }
 
-      const newBalance = Number(user.balance || 0) + reward;
-      const newTickets = tickets - 1;
-
-      await usersCol.updateOne(
-        { _id: user._id },
+      // Atomically decrement 1 ticket and add reward (impossible to double-claim on spam clicks)
+      const spinRes = await usersCol.updateOne(
+        { _id: user._id, spinTickets: { $gte: 1 } },
         {
-          $set: {
-            balance: newBalance,
-            spinTickets: newTickets
+          $inc: {
+            spinTickets: -1,
+            balance: reward
           }
         }
       );
+
+      if (!spinRes || spinRes.modifiedCount === 0) {
+        res.status(400).json({ error: "No tickets remaining or spin in progress." });
+        return;
+      }
+
+      const updatedUser = await usersCol.findOne({ _id: user._id });
+      const newBalance = Number(updatedUser ? updatedUser.balance : 0);
+      const newTickets = Number(updatedUser ? updatedUser.spinTickets : 0);
 
       res.status(200).json({
         ok: true,
@@ -288,27 +295,21 @@ module.exports = async (req, res) => {
       return;
     }
 
-    const tokenDoc = await tokensCol.findOne({
-      token: captchaToken,
-      userId: { $in: [uid, Number(uid), tgUser.id] },
-      used: false
-    });
-
-    if (!tokenDoc) {
-      res.status(403).json({ error: "Invalid or expired verification. Please solve the puzzle again." });
-      return;
-    }
-
-    if (now - Number(tokenDoc.createdAt || 0) > 90 * 1000) {
-      res.status(403).json({ error: "Verification expired. Please try again." });
-      return;
-    }
-
-    // Burn token
-    await tokensCol.updateOne(
-      { _id: tokenDoc._id },
+    // Atomically burn token (impossible for duplicate concurrent clicks to claim twice)
+    const burnTokenRes = await tokensCol.updateOne(
+      {
+        token: captchaToken,
+        userId: { $in: [uid, Number(uid), tgUser.id] },
+        used: false,
+        createdAt: { $gte: now - 90 * 1000 }
+      },
       { $set: { used: true, usedAt: now } }
     );
+
+    if (!burnTokenRes || burnTokenRes.modifiedCount === 0) {
+      res.status(403).json({ error: "Invalid, expired, or already used verification. Please solve the puzzle again." });
+      return;
+    }
     let cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
     let watchedToday = Number(user.adsWatchedToday || 0);
     let earnedToday = Number(user.adsEarnedToday || 0);

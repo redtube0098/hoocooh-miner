@@ -293,16 +293,25 @@ module.exports = async (req, res) => {
           await tasksCol.updateOne(taskQuery, { $addToSet: { completedBy: telegramId } });
         }
 
-        const currentBal = Number(user.balance || 0);
-        const newBal = currentBal + 10;
-
-        await usersCol.updateOne(
-          { _id: user._id },
+        // Atomically claim task (impossible for concurrent requests to both claim)
+        const claimTaskRes = await usersCol.updateOne(
           {
-            $set: { balance: newBal },
-            $addToSet: { completedTasks: String(taskId) }
+            _id: user._id,
+            completedTasks: { $ne: String(taskId) }
+          },
+          {
+            $inc: { balance: 10 },
+            $push: { completedTasks: String(taskId) }
           }
         );
+
+        if (!claimTaskRes || claimTaskRes.modifiedCount === 0) {
+          res.status(400).json({ error: "Task already claimed" });
+          return;
+        }
+
+        const updatedUser = await usersCol.findOne({ _id: user._id });
+        const newBal = Number(updatedUser ? updatedUser.balance : (Number(user.balance || 0) + 10));
 
         res.status(200).json({
           ok: true,

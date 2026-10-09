@@ -12371,14 +12371,27 @@
     });
   }
 
-  // Step 1: Watch Ad & Continue -> Shows "Loading Ad..." -> transitions to Step 2
+  // Step 1: Watch Ad & Continue -> Plays AdsGram Fullscreen Ad -> transitions to Step 2
   if (withdrawAdActionBtn) {
     withdrawAdActionBtn.addEventListener("click", function() {
+      if (withdrawAdActionBtn.disabled) return;
       withdrawAdActionBtn.disabled = true;
-      withdrawAdActionBtn.innerHTML = '<span>🎬 Loading Ad...</span>';
-      setTimeout(function() {
-        setWithdrawStep(2);
-      }, 1500);
+      withdrawAdActionBtn.innerHTML = '<span>🎬 Playing Ad...</span>';
+
+      playAdsgramFullscreenAd(
+        function onWatchedSuccess() {
+          withdrawAdActionBtn.disabled = false;
+          withdrawAdActionBtn.innerHTML = '<span>▶ Watch Ad & Continue</span>';
+          setWithdrawStep(2);
+        },
+        function onSkippedOrFailed(reason) {
+          withdrawAdActionBtn.disabled = false;
+          withdrawAdActionBtn.innerHTML = '<span>▶ Watch Ad & Continue</span>';
+          if (reason !== "barrier_busy") {
+            showToast("⚠️ Ad skipped! You must watch at least 9 seconds to proceed with withdrawal.");
+          }
+        }
+      );
     });
   }
 

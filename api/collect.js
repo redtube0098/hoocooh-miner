@@ -53,22 +53,21 @@ module.exports = async (req, res) => {
 
     const tokensCol = db.collection("captcha_tokens");
     const uid = String(tgUser.id);
-    const tokenDoc = await tokensCol.findOne({
-      token: String(captchaToken),
-      userId: { $in: [uid, Number(uid), tgUser.id] },
-      used: false
-    });
 
-    if (!tokenDoc) {
-      res.status(400).json({ error: "Invalid or expired verification token. Please verify again." });
-      return;
-    }
-
-    // Mark single-use token as used immediately
-    await tokensCol.updateOne(
-      { _id: tokenDoc._id },
+    // Atomically burn single-use captcha token (impossible for concurrent requests to both succeed)
+    const burnTokenRes = await tokensCol.updateOne(
+      {
+        token: String(captchaToken),
+        userId: { $in: [uid, Number(uid), tgUser.id] },
+        used: false
+      },
       { $set: { used: true, usedAt: Date.now() } }
     );
+
+    if (!burnTokenRes || burnTokenRes.modifiedCount === 0) {
+      res.status(400).json({ error: "Invalid, expired, or already used verification token. Please verify again." });
+      return;
+    }
 
     const minerLevel = Math.max(1, Math.min(10, user.minerLevel || 1));
     const multiplier = getMultiplierForLevel(minerLevel);

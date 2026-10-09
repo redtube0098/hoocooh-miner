@@ -47,22 +47,20 @@ module.exports = async (req, res) => {
     }
 
     const tokensCol = db.collection("captcha_tokens");
-    const tokenDoc = await tokensCol.findOne({
-      token: String(captchaToken),
-      userId: { $in: [uid, Number(uid), tgUser.id] },
-      used: false
-    });
-
-    if (!tokenDoc) {
-      res.status(400).json({ error: "Invalid or expired verification. Please solve the puzzle again." });
-      return;
-    }
-
-    // Burn token
-    await tokensCol.updateOne(
-      { _id: tokenDoc._id },
+    // Atomically burn single-use captcha token (impossible for concurrent requests to both succeed)
+    const burnTokenRes = await tokensCol.updateOne(
+      {
+        token: String(captchaToken),
+        userId: { $in: [uid, Number(uid), tgUser.id] },
+        used: false
+      },
       { $set: { used: true, usedAt: Date.now() } }
     );
+
+    if (!burnTokenRes || burnTokenRes.modifiedCount === 0) {
+      res.status(400).json({ error: "Invalid, expired, or already used verification token. Please solve the puzzle again." });
+      return;
+    }
 
     // 2. Cryptographic Action Signing Verification
     const actionToken = (req.body && req.body.actionToken) || req.headers["x-action-token"] || req.headers["x-action-signature"] || req.headers["x-action-secret"];
