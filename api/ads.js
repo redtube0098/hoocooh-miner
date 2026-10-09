@@ -5,7 +5,8 @@ const { findOrCreateUser } = require("../lib/userHelper");
 const MAX_ADS_PER_DAY = 10;
 const AD_REWARD = 15;
 const MAX_SPIN_ADS_PER_DAY = 6;
-const CYCLE_MS = 24 * 60 * 60 * 1000;
+const CYCLE_MS = 24 * 60 * 60 * 1000; // 24 hours for daily ads
+const SPIN_CYCLE_MS = 10 * 60 * 60 * 1000; // 10 hours for 6 spin tickets reload
 
 module.exports = async (req, res) => {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -48,7 +49,7 @@ module.exports = async (req, res) => {
 
       let spinCycleStart = user.spinAdsCycleStartedAt ? Number(user.spinAdsCycleStartedAt) : 0;
       let spinWatchedToday = Number(user.spinAdsWatchedToday || 0);
-      if (!spinCycleStart || (now - spinCycleStart >= CYCLE_MS)) {
+      if (!spinCycleStart || (now - spinCycleStart >= SPIN_CYCLE_MS)) {
         spinWatchedToday = 0;
         spinCycleStart = now;
       }
@@ -75,7 +76,7 @@ module.exports = async (req, res) => {
           watchedToday: spinWatchedToday,
           remainingToday: Math.max(0, MAX_SPIN_ADS_PER_DAY - spinWatchedToday),
           maxAds: MAX_SPIN_ADS_PER_DAY,
-          nextResetMs: Math.max(0, CYCLE_MS - (now - spinCycleStart)),
+          nextResetMs: Math.max(0, SPIN_CYCLE_MS - (now - spinCycleStart)),
           verifiedRecruitsCount,
           totalValidRef: verifiedRecruitsCount,
           claimedRefTickets,
@@ -224,20 +225,20 @@ module.exports = async (req, res) => {
       { $set: { used: true, usedAt: now } }
     );
 
-    // 4A. ACTION: WATCH AD FOR SPIN TICKET (Up to 6 per 24 hours)
+    // 4A. ACTION: WATCH AD FOR SPIN TICKET (Up to 6 per 10 hours)
     if (action === "spin_watch_ad") {
       let spinCycleStart = user.spinAdsCycleStartedAt ? Number(user.spinAdsCycleStartedAt) : 0;
       let spinWatchedToday = Number(user.spinAdsWatchedToday || 0);
 
-      if (!spinCycleStart || (now - spinCycleStart >= CYCLE_MS)) {
+      if (!spinCycleStart || (now - spinCycleStart >= SPIN_CYCLE_MS)) {
         spinWatchedToday = 0;
         spinCycleStart = now;
       }
 
       if (spinWatchedToday >= MAX_SPIN_ADS_PER_DAY) {
-        const remainingMs = Math.max(0, CYCLE_MS - (now - spinCycleStart));
+        const remainingMs = Math.max(0, SPIN_CYCLE_MS - (now - spinCycleStart));
         res.status(400).json({
-          error: "Daily limit of 6 tickets reached! Next tickets available in 24 hours.",
+          error: "Limit of 6 tickets reached! Next tickets available in 10 hours.",
           remainingMs,
           spinWatchedToday,
           maxAds: MAX_SPIN_ADS_PER_DAY
@@ -249,16 +250,22 @@ module.exports = async (req, res) => {
       const newTickets = Number(user.spinTickets || 0) + 1;
       const totalAds = Number(user.totalAdsWatched || 0) + 1;
 
+      const isCompleted = (spinWatchedToday >= MAX_SPIN_ADS_PER_DAY);
+      const updatePayload = {
+        spinTickets: newTickets,
+        spinAdsWatchedToday: spinWatchedToday,
+        spinAdsCycleStartedAt: spinCycleStart,
+        totalAdsWatched: totalAds
+      };
+
+      if (isCompleted) {
+        updatePayload.spinCycleCompletedAt = now;
+        updatePayload.spinReminderSent = false;
+      }
+
       await usersCol.updateOne(
         { _id: user._id },
-        {
-          $set: {
-            spinTickets: newTickets,
-            spinAdsWatchedToday: spinWatchedToday,
-            spinAdsCycleStartedAt: spinCycleStart,
-            totalAdsWatched: totalAds
-          }
-        }
+        { $set: updatePayload }
       );
 
       res.status(200).json({

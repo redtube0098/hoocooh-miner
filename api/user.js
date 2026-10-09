@@ -262,8 +262,11 @@ module.exports = async (req, res) => {
               }
             );
 
-            // Notify inviter via Telegram bot matching media_1791524423871.png
-            notifyInviterReferralSuccess(process.env.TELEGRAM_BOT_TOKEN, inviter, user).catch(() => {});
+            // Notify inviter via Telegram bot with Open HOOCOOH Mine button
+            const reqProto = req.headers["x-forwarded-proto"] || "https";
+            const reqHost = req.headers["x-forwarded-host"] || req.headers.host;
+            const userBaseUrl = reqHost ? `${reqProto}://${reqHost}` : "";
+            notifyInviterReferralSuccess(process.env.TELEGRAM_BOT_TOKEN, inviter, user, userBaseUrl).catch(() => {});
 
             referralRewardGiven = true;
           }

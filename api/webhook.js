@@ -242,14 +242,18 @@ module.exports = async (req, res) => {
     if (setup === "1" || setWebhook === "1" || action === "set") {
       try {
         const webhookUrl = `${baseUrl}/api/webhook`;
-        const tgRes = await fetch(
-          `https://api.telegram.org/bot${botToken}/setWebhook?url=${encodeURIComponent(webhookUrl)}&drop_pending_updates=true`
-        );
+        const secretToken = (process.env.TELEGRAM_WEBHOOK_SECRET || process.env.WEBHOOK_SECRET || "").trim();
+        let tgApiUrl = `https://api.telegram.org/bot${botToken}/setWebhook?url=${encodeURIComponent(webhookUrl)}&drop_pending_updates=true`;
+        if (secretToken && /^[A-Za-z0-9_-]{1,256}$/.test(secretToken)) {
+          tgApiUrl += `&secret_token=${encodeURIComponent(secretToken)}`;
+        }
+        const tgRes = await fetch(tgApiUrl);
         const tgData = await tgRes.json();
         res.status(200).json({
           ok: true,
           message: "Telegram Webhook set successfully!",
           webhookUrl,
+          hasSecretToken: Boolean(secretToken),
           telegramResponse: tgData
         });
         return;
@@ -317,10 +321,13 @@ module.exports = async (req, res) => {
       dbAdmins = Array.from(adminSet);
     } catch(e){}
 
+    const configuredSecret = (process.env.TELEGRAM_WEBHOOK_SECRET || process.env.WEBHOOK_SECRET || "").trim();
+
     res.status(200).json({
       ok: true,
       service: "HOOCOOH Telegram Webhook",
       hasBotToken: !!botToken,
+      hasWebhookSecret: Boolean(configuredSecret),
       registeredAdminIds: dbAdmins,
       help: {
         setupWebhook: `${baseUrl}/api/webhook?setup=1`,
@@ -334,6 +341,17 @@ module.exports = async (req, res) => {
   // POST: Telegram Webhook Update Handler
   // ==========================================
   if (req.method === "POST") {
+    // Secret Token Security: verify X-Telegram-Bot-Api-Secret-Token if secret is configured
+    const configuredSecret = (process.env.TELEGRAM_WEBHOOK_SECRET || process.env.WEBHOOK_SECRET || "").trim();
+    if (configuredSecret) {
+      const incomingSecret = req.headers["x-telegram-bot-api-secret-token"] || "";
+      if (incomingSecret !== configuredSecret) {
+        console.warn("Unauthorized webhook call: X-Telegram-Bot-Api-Secret-Token mismatch");
+        res.status(401).json({ error: "Unauthorized: Invalid Telegram webhook secret" });
+        return;
+      }
+    }
+
     let update = req.body;
     if (typeof update === "string") {
       try { update = JSON.parse(update); } catch(e){}
