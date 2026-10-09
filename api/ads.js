@@ -200,14 +200,17 @@ module.exports = async (req, res) => {
     if (action === "spin_watch_ad") {
       const { watchDurationMs } = req.body || {};
       const duration = Number(watchDurationMs) || 0;
+      const lastWatchedAt = Number(user.lastSpinAdWatchedAt || 0);
+      const timeSinceLast = (lastWatchedAt > 0) ? (now - lastWatchedAt) : 999999;
 
-      // Check sub-5s watch attempt:
-      if (duration < 5000) {
+      // Normal users who skip ads in the app do NOT call this API (they receive no reward and no strikes).
+      // Only automated scripts or bots trying to bypass the 5s watch rule to claim rewards hit this check:
+      if (duration < 5000 || timeSinceLast < 5000) {
         const strikes = Number(user.spinUnder5sStrikes || 0) + 1;
         const updateData = { spinUnder5sStrikes: strikes };
         if (strikes >= 5) {
           updateData.isSuspicious = true;
-          updateData.suspiciousReason = "Repeated ad watch under 5 seconds (5+ times)";
+          updateData.suspiciousReason = "Attempted to exploit reward claims under 5 seconds (5+ times)";
           updateData.suspiciousFlaggedAt = now;
         }
         await usersCol.updateOne({ _id: user._id }, { $set: updateData });
@@ -243,7 +246,8 @@ module.exports = async (req, res) => {
         spinTickets: newTickets,
         spinAdsWatchedToday: spinWatchedToday,
         spinAdsCycleStartedAt: spinCycleStart,
-        totalAdsWatched: totalAds
+        totalAdsWatched: totalAds,
+        lastSpinAdWatchedAt: now
       };
 
       if (isCompleted) {
