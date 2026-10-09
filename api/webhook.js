@@ -521,6 +521,15 @@ module.exports = async (req, res) => {
         if (db) {
           const u = await db.collection("users").findOne({ telegramId: senderId });
           if (u) {
+            if (u.isBanned) {
+              const banMsg = 
+                `🚫 <b>Access Denied: Account Suspended</b>\n\n` +
+                `Your account has been permanently suspended due to security violation or automated script tampering.\n\n` +
+                `<i>Reason: ${escapeHtml(u.banReason || "Security violation detected")}</i>`;
+              await sendTelegramMsg(botToken, chatId, banMsg);
+              res.status(200).json({ ok: true, banned: true });
+              return;
+            }
             if (u.language) userLang = u.language;
             if (u.languageSelected === true) hasSelected = true;
           }

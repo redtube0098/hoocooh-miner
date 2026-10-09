@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 <style>
   :root {
     --bg: #eff5f5;
@@ -9544,10 +9545,12 @@
   }
 
   // Slider Drag Interactions (Mobile Touch + Mouse)
-  function onSliderStart(clientX) {
+  var dragStartY = 0;
+  function onSliderStart(clientX, clientY) {
     if (isCaptchaSolving || !currentChallenge) return;
     isDraggingSlider = true;
     dragStartX = clientX;
+    dragStartY = clientY || 0;
     dragStartTime = Date.now();
     dragTrail = [{ x: 0, y: 0, t: 0 }];
     maxSliderX = (puzzleSliderTrack.clientWidth || 320) - 52 - 4;
@@ -9577,7 +9580,8 @@
 
     var elapsed = Date.now() - dragStartTime;
     if (dragTrail.length === 0 || elapsed - dragTrail[dragTrail.length - 1].t >= 15) {
-      dragTrail.push({ x: Math.round(deltaX), y: 0, t: elapsed });
+      var dy = Math.round((clientY || 0) - dragStartY);
+      dragTrail.push({ x: Math.round(deltaX), y: dy, t: elapsed });
     }
   }
 
@@ -9682,7 +9686,7 @@
   if (puzzleSliderHandle) {
     puzzleSliderHandle.addEventListener("touchstart", function(e) {
       if (e.touches && e.touches[0]) {
-        onSliderStart(e.touches[0].clientX);
+        onSliderStart(e.touches[0].clientX, e.touches[0].clientY);
       }
     }, { passive: true });
 
@@ -9697,7 +9701,7 @@
     }, { passive: true });
 
     puzzleSliderHandle.addEventListener("mousedown", function(e) {
-      onSliderStart(e.clientX);
+      onSliderStart(e.clientX, e.clientY);
     });
 
     window.addEventListener("mousemove", function(e) {
@@ -9727,40 +9731,70 @@
   var adPlaybackTimer = null;
 
   // ========================================================
-  // AD PROVIDER HOOK (Adsgram / Monetag / Telegram Ads SDK)
-  // Apatoto 5-second placeholder simulation kora holo.
-  // Pore real Ads SDK add korar somoi eikhane SDK call korlei hobe!
+  // REAL ADSGRAM INTEGRATION (Block ID: int-52852)
+  // Fullscreen Ads with 9-Second Minimum Watch Enforcement:
+  // - If user skips under 9s: show "❌ Skip dawa hoice tai reward pabe na!"
+  // - If user watches >= 9s: open Security Puzzle Verification
+  // - Reward is only given and miner only started after puzzle is solved!
   // ========================================================
-  function startAdPlayback(onFinished) {
-    var duration = 5; // 5 seconds ad simulation
-    var elapsed = 0;
-    var fillEl = document.getElementById("adMockProgressFill");
-    var secEl = document.getElementById("adSecondsLeft");
-    var statusEl = document.getElementById("adPlayerStatusText");
-
-    if (fillEl) fillEl.style.width = "0%";
-    if (secEl) secEl.textContent = duration;
-    if (statusEl) statusEl.textContent = "Playing sponsor ad... Verification unlocks upon completion.";
-
-    clearInterval(adPlaybackTimer);
-    adPlaybackTimer = setInterval(function() {
-      elapsed++;
-      var remaining = Math.max(0, duration - elapsed);
-      var pct = Math.min(100, (elapsed / duration) * 100);
-
-      if (secEl) secEl.textContent = remaining;
-      if (fillEl) fillEl.style.width = pct + "%";
-
-      if (elapsed >= duration) {
-        clearInterval(adPlaybackTimer);
-        if (statusEl) statusEl.textContent = "Ad completed! Opening verification...";
-        setTimeout(function() {
-          if (typeof onFinished === "function") {
-            onFinished();
-          }
-        }, 500);
+  var ADSGRAM_BLOCK_ID = "int-52852";
+  var adsgramController = null;
+  function getAdsgramController() {
+    if (!adsgramController && window.Adsgram) {
+      try {
+        adsgramController = window.Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
+      } catch (e) {
+        console.warn("Adsgram init error:", e);
       }
-    }, 1000);
+    }
+    return adsgramController;
+  }
+
+  function playAdsgramFullscreenAd(onWatchedSuccess, onSkippedOrFailed) {
+    var controller = getAdsgramController();
+    if (!controller && window.Adsgram) {
+      try {
+        adsgramController = window.Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
+        controller = adsgramController;
+      } catch(e){}
+    }
+
+    if (!controller) {
+      showToast("⏳ Ad network is initializing... Please try again in a few seconds.");
+      if (typeof onSkippedOrFailed === "function") onSkippedOrFailed("controller_unavailable");
+      return;
+    }
+
+    var adStartTime = Date.now();
+    controller.show().then(function(result) {
+      var elapsedMs = Date.now() - adStartTime;
+      // 9-Second Minimum Rule:
+      if (elapsedMs < 9000) {
+        showToast("❌ Skip dawa hoice tai reward pabe na! (Must watch at least 9 seconds)");
+        if (typeof onSkippedOrFailed === "function") onSkippedOrFailed("skipped_under_9s");
+        return;
+      }
+
+      if (!result || result.done !== true) {
+        showToast("❌ Skip dawa hoice tai reward pabe na!");
+        if (typeof onSkippedOrFailed === "function") onSkippedOrFailed("not_done");
+        return;
+      }
+
+      // Ad completed and watched >= 9 seconds!
+      if (typeof onWatchedSuccess === "function") {
+        onWatchedSuccess(result, elapsedMs);
+      }
+    }).catch(function(err) {
+      var elapsedMs = Date.now() - adStartTime;
+      if (elapsedMs < 9000) {
+        showToast("❌ Skip dawa hoice tai reward pabe na! (Must watch at least 9 seconds)");
+      } else {
+        var errDesc = (err && err.description) ? err.description : "Ad closed or not finished";
+        showToast("❌ Ad was not completed: " + errDesc);
+      }
+      if (typeof onSkippedOrFailed === "function") onSkippedOrFailed(err);
+    });
   }
 
   function updateWatchSheetView1() {
@@ -9791,25 +9825,6 @@
     if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
     if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
     if (watchEarnFlowModal) watchEarnFlowModal.classList.add("open");
-  }
-
-  function playSponsorAd(title, desc, onFinished) {
-    if (watchFlowPreView) watchFlowPreView.classList.remove("active");
-    if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
-    if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.add("active");
-    if (watchEarnFlowModal) watchEarnFlowModal.classList.add("open");
-
-    var titleEl = document.querySelector("#watchFlowAdPlayingView .ad-mock-title");
-    var descEl = document.querySelector("#watchFlowAdPlayingView .ad-mock-desc");
-    if (titleEl && title) titleEl.textContent = title;
-    if (descEl && desc) descEl.textContent = desc;
-
-    startAdPlayback(function onAdComplete() {
-      if (watchEarnFlowModal) watchEarnFlowModal.classList.remove("open");
-      if (typeof onFinished === "function") {
-        onFinished();
-      }
-    });
   }
 
   function closeWatchEarnFlowModal() {
@@ -9848,7 +9863,7 @@
     });
   }
 
-  // Image 1 Sheet Primary Button: "▶ Watch Ad & Earn" -> Plays Ad first -> Then triggers Verification Captcha
+  // Image 1 Sheet Primary Button: "▶ Watch Ad & Earn" -> Plays AdsGram Fullscreen Ad -> Then Puzzle Verification
   if (sheetStartAdBtn) {
     sheetStartAdBtn.addEventListener("click", function() {
       var watched = Number(user.adsWatchedToday) || 0;
@@ -9861,78 +9876,53 @@
         return;
       }
 
-      // 1. Switch to Ad Playing View (ad gap / placeholder)
-      if (watchFlowPreView) watchFlowPreView.classList.remove("active");
-      if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
-      if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.add("active");
+      sheetStartAdBtn.disabled = true;
+      sheetStartAdBtn.innerHTML = '<span>⏳ Playing Ad...</span>';
 
-      // 2. Start Ad Playback
-      startAdPlayback(function onAdComplete() {
-        // 3. Ad is finished! Now open the security verification before reward
-        openSecurityCaptcha(function(verifiedCaptchaToken) {
-          // Immediately credit reward into DB and user balance!
-          fetch("/api/ads", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Telegram-Init-Data": initData
-            },
-            body: JSON.stringify({ captchaToken: verifiedCaptchaToken })
-          }).then(function(r) {
-            if (r.status === 404) {
-              return fetch("/api/ads.js", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "X-Telegram-Init-Data": initData
-                },
-                body: JSON.stringify({ captchaToken: verifiedCaptchaToken })
-              });
-            }
-            return r;
-          }).then(handleResponse).then(function(res) {
-            if (!res.ok) {
-              var err = (res.data && res.data.error) ? res.data.error : "Failed to claim reward";
-              showToast(err);
-              updateWatchSheetView1();
-              if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
-              if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
-              if (watchFlowPreView) watchFlowPreView.classList.add("active");
-              return;
-            }
+      playAdsgramFullscreenAd(
+        function onWatchedSuccess() {
+          // Watched at least 9 seconds! Close sheet and launch Security Puzzle Verification
+          closeWatchEarnFlowModal();
+          openSecurityCaptcha(function(verifiedCaptchaToken) {
+            // Reward is credited only after puzzle verification is solved!
+            fetch("/api/ads", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Telegram-Init-Data": initData
+              },
+              body: JSON.stringify({ captchaToken: verifiedCaptchaToken })
+            }).then(handleResponse).then(function(res) {
+              if (!res.ok) {
+                var err = (res.data && res.data.error) ? res.data.error : "Failed to claim reward";
+                showToast(err);
+                renderAds();
+                return;
+              }
 
-            // Successfully credited in DB & UI!
-            user.balance = res.data.newBalance;
-            user.adsWatchedToday = res.data.adsWatchedToday;
-            user.adsEarnedToday = res.data.adsEarnedToday;
-            user.adsCycleStartedAt = res.data.adsCycleStartedAt;
+              // Successfully credited in DB & UI!
+              user.balance = res.data.newBalance;
+              user.adsWatchedToday = res.data.adsWatchedToday;
+              user.adsEarnedToday = res.data.adsEarnedToday;
+              user.adsCycleStartedAt = res.data.adsCycleStartedAt;
 
-            renderBalance();
-            renderAds();
-            if (tg && tg.HapticFeedback) {
-              try { tg.HapticFeedback.notificationOccurred("success"); } catch(e) {}
-            }
-
-            // 4. Show Image 2: Reward Claimed!
-            if (watchFlowPreView) watchFlowPreView.classList.remove("active");
-            if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
-            if (watchFlowSuccessView) watchFlowSuccessView.classList.add("active");
-            if (sheetSuccessWatchedEl) {
-              sheetSuccessWatchedEl.textContent = user.adsWatchedToday;
-            }
-            if (sheetCollectContinueBtn) {
-              sheetCollectContinueBtn.disabled = false;
-              sheetCollectContinueBtn.innerHTML = '<span>COLLECT & CONTINUE</span>';
-            }
-          }).catch(function(err) {
-            showToast("Network error. Please try again.");
-            updateWatchSheetView1();
-            if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
-            if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
-            if (watchFlowPreView) watchFlowPreView.classList.add("active");
+              renderBalance();
+              renderAds();
+              if (tg && tg.HapticFeedback) {
+                try { tg.HapticFeedback.notificationOccurred("success"); } catch(e) {}
+              }
+              showToast("🎉 +15 HOOCOOH Coins added to balance!");
+            }).catch(function(err) {
+              showToast("Network error. Please try again.");
+              renderAds();
+            });
           });
-        });
-      });
+        },
+        function onSkippedOrFailed() {
+          sheetStartAdBtn.disabled = false;
+          sheetStartAdBtn.innerHTML = '<span>▶ Watch Ad & Earn</span>';
+        }
+      );
     });
   }
 
@@ -9944,7 +9934,6 @@
         try { tg.HapticFeedback.notificationOccurred("success"); } catch(e) {}
       }
 
-      // Switch smoothly back to Image 1 View (continuous up to 10 times daily!)
       updateWatchSheetView1();
       if (watchFlowSuccessView) watchFlowSuccessView.classList.remove("active");
       if (watchFlowAdPlayingView) watchFlowAdPlayingView.classList.remove("active");
@@ -9972,9 +9961,9 @@
   // Shared Mining Collect Function (Synchronized for Home and Mining tabs)
   // Flow requested by user:
   // 1. Click collect -> Button shows "Verifying..."
-  // 2. Play sponsor ad (5s countdown with progress bar)
+  // 2. In "Verifying..." state, push AdsGram Ad (must watch >= 9s)
   // 3. Puzzle captcha verification
-  // 4. Claim reward and credit balance
+  // 4. Claim reward, credit balance, and turn miner ON (2-hour timer)
   function triggerMiningCollect() {
     var homeBtn = document.getElementById("collectBtn");
     var tabBtn = document.getElementById("mTabCollectBtn");
@@ -9998,46 +9987,46 @@
       if (tabBtnTxt) tabBtnTxt.textContent = "Verifying...";
     }
 
-    setTimeout(function() {
-      // 2. Then: Ads come!
-      playSponsorAd(
-        "HOOCOOH Mining Sponsor",
-        "Watch this short sponsor ad to verify and claim your HOOCOOH mining rewards.",
-        function onAdComplete() {
-          // 3. Then: Puzzle Verification
-          openSecurityCaptcha(function onCaptchaSuccess(verifiedCaptchaToken) {
-            // 4. Then: Reward is given!
-            if (homeBtn) homeBtn.innerHTML = '<span>Collecting...</span>';
-            if (tabBtnTxt) tabBtnTxt.textContent = "Collecting...";
+    // 2. Then: In "Verifying..." state, push AdsGram ad!
+    playAdsgramFullscreenAd(
+      function onWatchedSuccess() {
+        // 3. Ad watched >= 9s! Now open Puzzle Verification
+        openSecurityCaptcha(function onCaptchaSuccess(verifiedCaptchaToken) {
+          // 4. Puzzle solved! Collect reward and start 2-hour miner
+          if (homeBtn) homeBtn.innerHTML = '<span>Collecting...</span>';
+          if (tabBtnTxt) tabBtnTxt.textContent = "Collecting...";
 
-            apiCollect(verifiedCaptchaToken).then(function(res){
-              if (!res.ok) {
-                var errText = (res.data && res.data.error) ? res.data.error : ("Error (" + res.status + ")");
-                showToast(errText);
-                renderMining();
-                return;
-              }
-              user.balance = res.data.balance;
-              user.lastMineCollectedAt = res.data.lastMineCollectedAt;
-              if (res.data.minerLevel) {
-                user.minerLevel = res.data.minerLevel;
-                user.level = res.data.minerLevel;
-                try { localStorage.setItem("hoocooh_miner_level", String(res.data.minerLevel)); } catch(e){}
-              }
-              if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
-                try { window.Telegram.WebApp.HapticFeedback.notificationOccurred("success"); } catch(e){}
-              }
-              showToast("🎉 +" + res.data.reward + " HOOCOOH collected!");
-              renderAll();
-            }).catch(function(err){
-              var msg = (err && err.message) ? err.message : "Connection failed";
-              showToast(msg);
+          apiCollect(verifiedCaptchaToken).then(function(res){
+            if (!res.ok) {
+              var errText = (res.data && res.data.error) ? res.data.error : ("Error (" + res.status + ")");
+              showToast(errText);
               renderMining();
-            });
+              return;
+            }
+            user.balance = res.data.balance;
+            user.lastMineCollectedAt = res.data.lastMineCollectedAt;
+            if (res.data.minerLevel) {
+              user.minerLevel = res.data.minerLevel;
+              user.level = res.data.minerLevel;
+              try { localStorage.setItem("hoocooh_miner_level", String(res.data.minerLevel)); } catch(e){}
+            }
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+              try { window.Telegram.WebApp.HapticFeedback.notificationOccurred("success"); } catch(e){}
+            }
+            showToast("🎉 +" + res.data.reward + " HOOCOOH collected! Mining started.");
+            renderAll();
+          }).catch(function(err){
+            var msg = (err && err.message) ? err.message : "Connection failed";
+            showToast(msg);
+            renderMining();
           });
-        }
-      );
-    }, 700);
+        });
+      },
+      function onSkippedOrFailed() {
+        // Skipped under 9 seconds or closed early: Miner will NOT turn on!
+        renderMining();
+      }
+    );
   }
 
   var homeCollectBtn = document.getElementById("collectBtn");
