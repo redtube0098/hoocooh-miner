@@ -3,6 +3,7 @@ const { validateInitData } = require("../lib/telegramAuth");
 const { findOrCreateUser, findUserById } = require("../lib/userHelper");
 const { mineIsReady, dailyStatus, MINE_INTERVAL_MS, LEVEL_NAMES, getMultiplierForLevel } = require("../lib/gameLogic");
 const { generateVerificationImage } = require("../lib/verificationImage");
+const { notifyInviterReferralSuccess } = require("../lib/miningReminder");
 
 let cachedBotUsername = null;
 async function fetchBotUsername(token) {
@@ -261,6 +262,9 @@ module.exports = async (req, res) => {
               }
             );
 
+            // Notify inviter via Telegram bot matching media_1791524423871.png
+            notifyInviterReferralSuccess(process.env.TELEGRAM_BOT_TOKEN, inviter, user).catch(() => {});
+
             referralRewardGiven = true;
           }
         }
@@ -331,6 +335,9 @@ module.exports = async (req, res) => {
                 }
               }
             );
+
+            // Notify inviter via Telegram bot matching media_1791524423871.png
+            notifyInviterReferralSuccess(process.env.TELEGRAM_BOT_TOKEN, inviter, user).catch(() => {});
           } else {
             // Unverified: simply record referredBy. Inviter gets NOTHING until verification!
             await users.updateOne(
