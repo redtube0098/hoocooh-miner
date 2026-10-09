@@ -1,6 +1,7 @@
 const { getDb } = require("../lib/mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
 const { findOrCreateUser } = require("../lib/userHelper");
+const { verifyActionToken, createActionToken } = require("../lib/actionSigner");
 
 const MAX_ADS_PER_DAY = 10;
 const AD_REWARD = 15;
@@ -198,6 +199,13 @@ module.exports = async (req, res) => {
 
     // 4A. ACTION: WATCH AD FOR SPIN TICKET (Up to 6 per 10 hours via Gigapub Ad)
     if (action === "spin_watch_ad") {
+      // Cryptographic Action Signing Verification
+      const actionToken = (req.body && req.body.actionToken) || req.headers["x-action-token"] || req.headers["x-action-signature"] || req.headers["x-action-secret"];
+      if (!verifyActionToken(uid, "spin_watch_ad", actionToken)) {
+        res.status(403).json({ error: "Security check failed: Invalid or missing action signature token." });
+        return;
+      }
+
       const { watchDurationMs } = req.body || {};
       const duration = Number(watchDurationMs) || 0;
       const lastWatchedAt = Number(user.lastSpinAdWatchedAt || 0);
@@ -267,6 +275,7 @@ module.exports = async (req, res) => {
         spinAdsWatchedToday: spinWatchedToday,
         remainingToday: MAX_SPIN_ADS_PER_DAY - spinWatchedToday,
         maxAds: MAX_SPIN_ADS_PER_DAY,
+        newActionToken: createActionToken(uid, "spin_watch_ad"),
         message: "🎟️ +1 Spin Ticket added!"
       });
       return;

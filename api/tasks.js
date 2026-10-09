@@ -4,6 +4,7 @@ const { findOrCreateUser } = require("../lib/userHelper");
 const { getAdminDepositAddress, checkTonDeposit, notifyUserTaskActivated } = require("../lib/tonDeposit");
 const { processMiningReminders } = require("../lib/miningReminder");
 const { ObjectId } = require("mongodb");
+const { verifyActionToken, createActionToken } = require("../lib/actionSigner");
 
 module.exports = async (req, res) => {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -209,6 +210,13 @@ module.exports = async (req, res) => {
 
       // 1. CLAIM
       if (action === "claim") {
+        // Cryptographic Action Signing Verification
+        const actionToken = (req.body && req.body.actionToken) || req.headers["x-action-token"] || req.headers["x-action-signature"] || req.headers["x-action-secret"];
+        if (!verifyActionToken(telegramId, "complete_task", actionToken)) {
+          res.status(403).json({ error: "Security check failed: Invalid or missing action signature token." });
+          return;
+        }
+
         const { taskId } = req.body || {};
         if (!taskId) {
           res.status(400).json({ error: "Task ID is required" });
@@ -296,7 +304,12 @@ module.exports = async (req, res) => {
           }
         );
 
-        res.status(200).json({ ok: true, reward: 10, newBalance: newBal });
+        res.status(200).json({
+          ok: true,
+          reward: 10,
+          newBalance: newBal,
+          newActionToken: createActionToken(telegramId, "complete_task")
+        });
         return;
       }
 

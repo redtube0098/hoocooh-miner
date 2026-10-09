@@ -4,6 +4,7 @@ const { findOrCreateUser, findUserById } = require("../lib/userHelper");
 const { mineIsReady, dailyStatus, MINE_INTERVAL_MS, LEVEL_NAMES, getMultiplierForLevel } = require("../lib/gameLogic");
 const { generateVerificationImage } = require("../lib/verificationImage");
 const { notifyInviterReferralSuccess } = require("../lib/miningReminder");
+const { createActionToken } = require("../lib/actionSigner");
 
 let cachedBotUsername = null;
 async function fetchBotUsername(token) {
@@ -442,6 +443,11 @@ module.exports = async (req, res) => {
       referralRewarded: user.referralRewarded === true,
       penaltyNotice: user.penaltyNotice || null,
       deviceViolationsCount: Number(user.deviceViolationsCount || 0),
+      actionTokens: {
+        mine: createActionToken(telegramId, "mine"),
+        spin_watch_ad: createActionToken(telegramId, "spin_watch_ad"),
+        complete_task: createActionToken(telegramId, "complete_task")
+      },
       botUsername: botUsername
     });
   } catch (err) {

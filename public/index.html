@@ -13,6 +13,7 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 <script src="https://ad.gigapub.tech/script?id=8547"></script>
+<script type="text/javascript" src="https://cdn.tgads.space/assets/js/adexium-widget.min.js"></script>
 <style>
   :root {
     --bg: #eff5f5;
@@ -8845,29 +8846,36 @@
     }).then(handleResponse);
   }
 
+  // Cryptographic Action Signing Tokens
+  var currentActionTokens = {
+    mine: "",
+    spin_watch_ad: "",
+    complete_task: ""
+  };
+
   function apiCollect(captchaToken) {
     var payload = {};
     if (captchaToken) payload.captchaToken = captchaToken;
+    if (currentActionTokens.mine) payload.actionToken = currentActionTokens.mine;
     return fetch("/api/collect", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Telegram-Init-Data": initData
-      },
+      headers: getClientHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify(payload)
     }).then(function(r) {
       if (r.status === 404) {
         return fetch("/api/collect.js", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Telegram-Init-Data": initData
-          },
+          headers: getClientHeaders({ "Content-Type": "application/json" }),
           body: JSON.stringify(payload)
         });
       }
       return r;
-    }).then(handleResponse);
+    }).then(handleResponse).then(function(res) {
+      if (res.data && res.data.newActionToken) {
+        currentActionTokens.mine = res.data.newActionToken;
+      }
+      return res;
+    });
   }
 
   function apiUpgrade() {
@@ -9799,6 +9807,75 @@
   // - If user watches >= 9s: open Security Puzzle Verification
   // - Reward is only given and miner only started after puzzle is solved!
   // ========================================================
+  // ========================================================
+  // GLOBAL AD BARRIER & MUTUAL EXCLUSION LOCK
+  // Ensures only 1 ad plays at a time across all SDKs (AdsGram, Gigapub, Adexium).
+  // No ad runs in the background while another is active!
+  // ========================================================
+  window.AdBarrier = {
+    activeAd: null, // "adsgram" | "gigapub" | "adexium"
+
+    acquire: function(name) {
+      if (this.activeAd) {
+        console.warn("[AdBarrier] Blocked '" + name + "' because '" + this.activeAd + "' is currently active.");
+        return false;
+      }
+      this.activeAd = name;
+      console.log("[AdBarrier] Lock ACQUIRED by " + name);
+      return true;
+    },
+
+    release: function(name) {
+      if (!name || this.activeAd === name) {
+        console.log("[AdBarrier] Lock RELEASED by " + (name || this.activeAd));
+        this.activeAd = null;
+      }
+    },
+
+    isBusy: function() {
+      return !!this.activeAd;
+    }
+  };
+
+  // ========================================================
+  // ADEXIUM INTERSTITIAL / BANNER WIDGET INTEGRATION
+  // WID: 9e948d5e-d29e-4815-9a23-9895e39562fa
+  // Runs on app startup / autoMode while respecting AdBarrier
+  // ========================================================
+  var adexiumWidgetInstance = null;
+  function initAdexiumWidget() {
+    if (typeof AdexiumWidget !== "function") {
+      setTimeout(initAdexiumWidget, 1500);
+      return;
+    }
+    if (adexiumWidgetInstance) return;
+
+    try {
+      adexiumWidgetInstance = new AdexiumWidget({
+        wid: '9e948d5e-d29e-4815-9a23-9895e39562fa',
+        adFormat: 'interstitial'
+      });
+
+      // Auto-trigger on load only if no other ad is active
+      setTimeout(function() {
+        if (!window.AdBarrier.isBusy() && adexiumWidgetInstance && typeof adexiumWidgetInstance.autoMode === "function") {
+          if (window.AdBarrier.acquire("adexium")) {
+            try {
+              adexiumWidgetInstance.autoMode();
+            } catch(e) {
+              console.warn("adexium autoMode error:", e);
+            }
+            setTimeout(function() {
+              window.AdBarrier.release("adexium");
+            }, 10000);
+          }
+        }
+      }, 2500);
+    } catch(err) {
+      console.warn("Adexium widget init error:", err);
+    }
+  }
+
   var ADSGRAM_BLOCK_ID = "int-52852";
   var adsgramController = null;
   function getAdsgramController() {
@@ -9813,6 +9890,12 @@
   }
 
   function playAdsgramFullscreenAd(onWatchedSuccess, onSkippedOrFailed) {
+    if (!window.AdBarrier.acquire("adsgram")) {
+      showToast("⚠️ Another ad is currently active. Please wait.");
+      if (typeof onSkippedOrFailed === "function") onSkippedOrFailed("barrier_busy");
+      return;
+    }
+
     var controller = getAdsgramController();
     if (!controller && window.Adsgram) {
       try {
@@ -9822,6 +9905,7 @@
     }
 
     if (!controller) {
+      window.AdBarrier.release("adsgram");
       showToast("⏳ Ad network is initializing... Please try again in a few seconds.");
       if (typeof onSkippedOrFailed === "function") onSkippedOrFailed("controller_unavailable");
       return;
@@ -9829,6 +9913,7 @@
 
     var adStartTime = Date.now();
     controller.show().then(function(result) {
+      window.AdBarrier.release("adsgram");
       var elapsedMs = Date.now() - adStartTime;
       // 9-Second Minimum Rule:
       if (elapsedMs < 9000) {
@@ -9848,6 +9933,7 @@
         onWatchedSuccess(result, elapsedMs);
       }
     }).catch(function(err) {
+      window.AdBarrier.release("adsgram");
       var elapsedMs = Date.now() - adStartTime;
       if (elapsedMs < 9000) {
         showToast("❌ Ad was skipped! You must watch at least 9 seconds to receive the reward.");
@@ -9868,7 +9954,14 @@
   // - If watched >= 5 seconds: grant +1 Spin Ticket immediately!
   // ========================================================
   function playGigapubAd(onSuccess, onError) {
+    if (!window.AdBarrier.acquire("gigapub")) {
+      showToast("⚠️ Another ad is currently active. Please wait.");
+      if (typeof onError === "function") onError("barrier_busy");
+      return;
+    }
+
     if (typeof window.showGiga !== "function") {
+      window.AdBarrier.release("gigapub");
       showToast("⏳ Ad network is loading. Please try again in a few seconds.");
       if (typeof onError === "function") onError("showGiga_unavailable");
       return;
@@ -9877,6 +9970,7 @@
     var adStartTime = Date.now();
     window.showGiga()
       .then(function() {
+        window.AdBarrier.release("gigapub");
         var elapsedMs = Date.now() - adStartTime;
         if (elapsedMs < 5000) {
           showToast("❌ Ad was skipped! You must watch at least 5 seconds to receive your ticket.");
@@ -9889,6 +9983,7 @@
         }
       })
       .catch(function(err) {
+        window.AdBarrier.release("gigapub");
         var elapsedMs = Date.now() - adStartTime;
         if (elapsedMs < 5000) {
           showToast("❌ Ad was skipped! You must watch at least 5 seconds to receive your ticket.");
@@ -10492,11 +10587,12 @@
 
           fetch("/api/ads", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Telegram-Init-Data": initData
-            },
-            body: JSON.stringify({ action: "spin_watch_ad", watchDurationMs: elapsedMs })
+            headers: getClientHeaders({ "Content-Type": "application/json" }),
+            body: JSON.stringify({
+              action: "spin_watch_ad",
+              watchDurationMs: elapsedMs,
+              actionToken: currentActionTokens.spin_watch_ad
+            })
           }).then(handleResponse).then(function(res) {
             watchSpinAdActionBtn.disabled = false;
             watchSpinAdActionBtn.textContent = "🎬 Watch Ad (+1 Ticket)";
@@ -10505,6 +10601,10 @@
               var err = (res.data && res.data.error) ? res.data.error : "Could not claim ticket";
               showToast(err);
               return;
+            }
+
+            if (res.data && res.data.newActionToken) {
+              currentActionTokens.spin_watch_ad = res.data.newActionToken;
             }
 
             showToast("🎟️ +1 Spin Ticket received successfully!");
@@ -10628,26 +10728,29 @@
   }
 
   function claimTaskApi(taskId) {
+    var pData = { action: "claim", taskId: taskId };
+    if (currentActionTokens.complete_task) {
+      pData.actionToken = currentActionTokens.complete_task;
+    }
     return fetch("/api/tasks", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Telegram-Init-Data": initData
-      },
-      body: JSON.stringify({ action: "claim", taskId: taskId })
+      headers: getClientHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify(pData)
     }).then(function(r) {
       if (r.status === 404) {
         return fetch("/api/tasks.js", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Telegram-Init-Data": initData
-          },
-          body: JSON.stringify({ action: "claim", taskId: taskId })
+          headers: getClientHeaders({ "Content-Type": "application/json" }),
+          body: JSON.stringify(pData)
         });
       }
       return r;
-    }).then(handleResponse);
+    }).then(handleResponse).then(function(res) {
+      if (res.data && res.data.newActionToken) {
+        currentActionTokens.complete_task = res.data.newActionToken;
+      }
+      return res;
+    });
   }
 
   function createTaskApi(taskPayload) {
@@ -12329,6 +12432,7 @@
   }
 
   function onAppReady() {
+    initAdexiumWidget();
     var currentUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
     if (user.isIdentityVerified === true || isUserLocallyVerified()) {
       if (idVerifyModal) idVerifyModal.style.display = "none";
@@ -12431,6 +12535,10 @@
         localStorage.setItem("hoocooh_registered_uid", String(currentUid));
       }
     } catch(e){}
+
+    if (res.data.actionTokens) {
+      Object.assign(currentActionTokens, res.data.actionTokens);
+    }
 
     if (res.data.penaltyNotice) {
       setTimeout(function() {

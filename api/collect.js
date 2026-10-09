@@ -2,6 +2,7 @@ const { getDb } = require("../lib/mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
 const { findOrCreateUser } = require("../lib/userHelper");
 const { mineIsReady, MINE_REWARD, getMultiplierForLevel } = require("../lib/gameLogic");
+const { verifyActionToken, createActionToken } = require("../lib/actionSigner");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
@@ -20,6 +21,7 @@ module.exports = async (req, res) => {
     res.status(401).json({ error: "Invalid session - reopen app from Telegram" });
     return;
   }
+  const telegramId = String(tgUser.id);
 
   try {
     const db = await getDb();
@@ -28,6 +30,13 @@ module.exports = async (req, res) => {
 
     if (user && user.isBanned) {
       res.status(403).json({ error: "Your account has been suspended" });
+      return;
+    }
+
+    // Cryptographic Action Signing Verification
+    const actionToken = (req.body && req.body.actionToken) || req.headers["x-action-token"] || req.headers["x-action-signature"] || req.headers["x-action-secret"];
+    if (!verifyActionToken(telegramId, "mine", actionToken)) {
+      res.status(403).json({ error: "Security check failed: Invalid or missing action signature token." });
       return;
     }
 
@@ -79,7 +88,8 @@ module.exports = async (req, res) => {
       reward: reward,
       multiplier: multiplier,
       minerLevel: minerLevel,
-      level: minerLevel
+      level: minerLevel,
+      newActionToken: createActionToken(telegramId, "mine")
     });
   } catch (err) {
     console.error("collect.js error:", err);
