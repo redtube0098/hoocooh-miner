@@ -10640,10 +10640,11 @@
           }
         }
       }
-    }).catch(function(err) {
-      console.warn("loadSpinStatus error:", err);
-    });
-  }
+    }
+  }).catch(function(err) {
+    console.warn("loadSpinStatus error:", err);
+  });
+}
 
   function openSpinWheelModal() {
     drawLuckyWheel();
