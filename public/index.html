@@ -10262,11 +10262,17 @@
     var tabBtn = document.getElementById("mTabCollectBtn");
     var tabBtnTxt = document.getElementById("mTabCollectBtnTxt");
 
+    if (window._isMiningClaimLocked) {
+      showToast("⏳ Claim in progress. Please wait a moment.");
+      return;
+    }
+
     var now = Date.now();
     var lastCollected = user.lastMineCollectedAt ? Number(user.lastMineCollectedAt) : 0;
     var interval = 2 * 60 * 60 * 1000;
     if (lastCollected && (now - lastCollected) < interval) {
       showToast("⏳ Mining is still in progress. Not ready to collect yet!");
+      renderMining();
       return;
     }
 
@@ -10285,12 +10291,18 @@
       function onWatchedSuccess() {
         // 3. Ad watched >= 9s! Now open Puzzle Verification
         openSecurityCaptcha(function onCaptchaSuccess(verifiedCaptchaToken) {
-          // 4. Puzzle solved! Collect reward and start 2-hour miner
-          if (homeBtn) homeBtn.innerHTML = '<span>Collecting...</span>';
-          if (tabBtnTxt) tabBtnTxt.textContent = "Collecting...";
+          if (window._isMiningClaimLocked) return;
+          window._isMiningClaimLocked = true;
+
+          // 4. INSTANT OPTIMISTIC LOCK & COUNTDOWN (Zero-delay timer appearance):
+          var prevLastCollected = user.lastMineCollectedAt;
+          user.lastMineCollectedAt = Date.now();
+          renderMining(); // Instantly activates countdown clock and disables buttons in 0ms!
 
           apiCollect(verifiedCaptchaToken).then(function(res){
+            window._isMiningClaimLocked = false;
             if (!res.ok) {
+              user.lastMineCollectedAt = prevLastCollected; // rollback on server error
               var errText = (res.data && res.data.error) ? res.data.error : ("Error (" + res.status + ")");
               showToast(errText);
               renderMining();
@@ -10309,6 +10321,8 @@
             showToast("🎉 +" + res.data.reward + " HOOCOOH collected! Mining started.");
             renderAll();
           }).catch(function(err){
+            window._isMiningClaimLocked = false;
+            user.lastMineCollectedAt = prevLastCollected;
             var msg = (err && err.message) ? err.message : "Connection failed";
             showToast(msg);
             renderMining();
@@ -10316,6 +10330,7 @@
         });
       },
       function onSkippedOrFailed() {
+        window._isMiningClaimLocked = false;
         // Skipped under 9 seconds or closed early: Miner will NOT turn on!
         renderMining();
       },
@@ -10382,6 +10397,8 @@
   var dailyBtn = document.getElementById("dailyCollectBtn");
   if (dailyBtn) {
     dailyBtn.addEventListener("click", function(){
+      if (dailyBtn.disabled || window._isCheckinLocked) return;
+      window._isCheckinLocked = true;
       dailyBtn.disabled = true;
       dailyBtn.innerHTML = '<span>Claiming...</span>';
 
@@ -10394,6 +10411,7 @@
 
             // Step 3: Puzzle solved! Claim reward
             apiCheckin(verifiedCaptchaToken).then(function(res){
+              window._isCheckinLocked = false;
               dailyBtn.disabled = false;
               if (!res.ok) {
                 var errText = (res.data && res.data.error) ? res.data.error : ("Error (" + res.status + ")");
@@ -10410,6 +10428,7 @@
               showToast("🎉 +" + res.data.reward + " HOOCOOH Bonus Reward claimed!");
               renderAll();
             }).catch(function(err){
+              window._isCheckinLocked = false;
               dailyBtn.disabled = false;
               var msg = (err && err.message) ? err.message : "Connection failed";
               showToast(msg);
@@ -10418,6 +10437,7 @@
           });
         },
         function onAdFailed(err) {
+          window._isCheckinLocked = false;
           dailyBtn.disabled = false;
           renderDaily();
         }
@@ -10684,6 +10704,7 @@
   // WATCH AD FOR SPIN TICKET (Gigapub Ads - 5s minimum watch rule)
   if (watchSpinAdActionBtn) {
     watchSpinAdActionBtn.addEventListener("click", function() {
+      if (watchSpinAdActionBtn.disabled) return;
       var spinWatchedToday = Number(user.spinAdsWatchedToday) || 0;
       if (spinWatchedToday >= 6) {
         showToast("Limit of 6 tickets reached! Next tickets available in 10 hours.");
@@ -10746,6 +10767,7 @@
   // CLAIM REFERRAL TICKETS
   if (claimRefTicketsBtn) {
     claimRefTicketsBtn.addEventListener("click", function() {
+      if (claimRefTicketsBtn.disabled) return;
       claimRefTicketsBtn.disabled = true;
       claimRefTicketsBtn.textContent = "Claiming...";
 

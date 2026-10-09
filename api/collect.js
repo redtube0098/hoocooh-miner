@@ -74,12 +74,33 @@ module.exports = async (req, res) => {
     const reward = Math.round(MINE_REWARD * multiplier);
 
     const now = Date.now();
-    const newBalance = (Number(user.balance) || 0) + reward;
+    const mineIntervalMs = 2 * 60 * 60 * 1000;
+    const cutoffTime = now - mineIntervalMs;
 
-    await users.updateOne(
-      { _id: user._id },
-      { $set: { balance: newBalance, lastMineCollectedAt: now, mineReminderSent: false } }
+    // ATOMIC CONDITIONAL CLAIM:
+    // Mathematically impossible for concurrent requests or double clicks to claim twice
+    const collectRes = await users.updateOne(
+      {
+        _id: user._id,
+        $or: [
+          { lastMineCollectedAt: { $exists: false } },
+          { lastMineCollectedAt: null },
+          { lastMineCollectedAt: { $lte: cutoffTime } }
+        ]
+      },
+      {
+        $inc: { balance: reward },
+        $set: { lastMineCollectedAt: now, mineReminderSent: false }
+      }
     );
+
+    if (!collectRes || collectRes.modifiedCount === 0) {
+      res.status(400).json({ error: "Mining is already active or was just collected! Please wait until 2 hours are up.", mineReady: false });
+      return;
+    }
+
+    const updatedUser = await users.findOne({ _id: user._id });
+    const newBalance = Number(updatedUser ? updatedUser.balance : ((Number(user.balance) || 0) + reward));
 
     res.status(200).json({
       balance: newBalance,
