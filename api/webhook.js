@@ -5,6 +5,7 @@ const { getDb } = require("../lib/mongodb");
 const { generateVerificationImage } = require("../lib/verificationImage");
 const { processMiningReminders } = require("../lib/miningReminder");
 const { dispatchTonPayout } = require("../lib/tonAutoPay");
+const { purgeExpiredBannedUsers } = require("../lib/userHelper");
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || "hoocooh_admin_2026";
 
@@ -384,7 +385,16 @@ async function handleAdminBanWithdrawalUser(db, botToken, wid) {
 
   await usersCol.updateMany(
     { $or: [{ telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])] },
-    { $set: { isBanned: true, banReason: banReason, bannedAt: Date.now() } }
+    {
+      $set: {
+        isBanned: true,
+        banReason: banReason,
+        bannedAt: Date.now(),
+        bannedAtDate: new Date(),
+        dataPurged: false
+      },
+      $unset: { lastActiveAt: "" }
+    }
   );
 
   await withdrawalsCol.updateOne(
@@ -393,7 +403,7 @@ async function handleAdminBanWithdrawalUser(db, botToken, wid) {
   );
 
   if (botToken && w.telegramId) {
-    const msg = `⛔ <b>Account Suspended</b>\n\nYour HOOCOOH Miner account has been suspended.\n<b>Reason:</b> ${banReason}\n\nYou can no longer access the miner application.`;
+    const msg = `⛔ <b>Account Suspended</b>\n\nYour HOOCOOH Miner account has been suspended.\n<b>Reason:</b> ${banReason}\n\n<i>⚠️ Notice: If this suspension is not lifted within 7 days, all your account progress, coins, and referrals will be permanently deleted while account remains suspended.</i>`;
     sendTelegramMsg(botToken, tid, msg);
   }
 
@@ -1130,6 +1140,62 @@ module.exports = async (req, res) => {
 
         await sendTelegramMsg(botToken, chatId, `✅ <b>Watch Ad Reward Updated!</b>\n\nUsers will now receive <b>${val} HOOCOOH Coins</b> per watched ad in the Earn section.`);
         res.status(200).json({ ok: true, adRewardUpdated: true });
+        return;
+      }
+
+      if (command === "/unban") {
+        const targetUid = parts[1] ? parts[1].trim() : "";
+        if (!targetUid) {
+          await sendTelegramMsg(botToken, chatId, `ℹ️ <b>Unban User Command</b>\n\nUsage:\n<code>/unban &lt;telegramId&gt;</code>\n\nExample:\n<code>/unban 123456789</code>`);
+          res.status(200).json({ ok: true });
+          return;
+        }
+
+        const tid = String(targetUid);
+        const numId = Number(targetUid);
+        const usersCol = db ? db.collection("users") : null;
+
+        if (!usersCol) {
+          res.status(500).json({ error: "Database not connected" });
+          return;
+        }
+
+        const targetUser = await usersCol.findOne({
+          $or: [{ telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])]
+        });
+
+        if (!targetUser) {
+          await sendTelegramMsg(botToken, chatId, `❌ User with ID <code>${escapeHtml(tid)}</code> not found in database.`);
+          res.status(200).json({ ok: true });
+          return;
+        }
+
+        const wasPurged = !!targetUser.dataPurged;
+
+        await usersCol.updateMany(
+          { $or: [{ telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])] },
+          {
+            $set: {
+              isBanned: false,
+              banReason: null,
+              unbannedAt: Date.now(),
+              bannedAt: null,
+              bannedAtDate: null,
+              dataPurged: false,
+              lastActiveAt: new Date()
+            }
+          }
+        );
+
+        let replyMsg = `✅ <b>User Unbanned Successfully!</b>\n\nUser ID: <code>${tid}</code>\nSuspension has been lifted.`;
+        if (wasPurged) {
+          replyMsg += `\n\n⚠️ <i>Note: This user was banned for over 7 days, so their previous balance and stats were permanently wiped. They will start fresh.</i>`;
+        } else {
+          replyMsg += `\n\n✨ <i>User's original data and balance remain fully intact.</i>`;
+        }
+
+        await sendTelegramMsg(botToken, chatId, replyMsg);
+        res.status(200).json({ ok: true, unbanned: true });
         return;
       }
 

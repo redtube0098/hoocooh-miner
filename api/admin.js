@@ -2,6 +2,7 @@ const { getDb } = require("../lib/mongodb");
 const { ObjectId } = require("mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
 const { dispatchTonPayout } = require("../lib/tonAutoPay");
+const { purgeExpiredBannedUsers } = require("../lib/userHelper");
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || "hoocooh_admin_2026";
 
@@ -175,8 +176,11 @@ module.exports = async (req, res) => {
 
       // 1. Stats
       if (action === "stats") {
+        await purgeExpiredBannedUsers(db).catch(() => {});
         const totalUsers = await usersCol.countDocuments({});
         const bannedUsers = await usersCol.countDocuments({ isBanned: true });
+        const bannedPurged = await usersCol.countDocuments({ isBanned: true, dataPurged: true });
+        const bannedGrace = await usersCol.countDocuments({ isBanned: true, dataPurged: { $ne: true } });
         const pendingW = await withdrawalsCol.countDocuments({ status: "PENDING" });
         const approvedW = await withdrawalsCol.countDocuments({ status: "APPROVED" });
 
@@ -211,6 +215,8 @@ module.exports = async (req, res) => {
           activeUsers60d,
           ttlDays: 60,
           bannedUsers,
+          bannedPurged,
+          bannedGrace,
           pendingWithdrawals: pendingW,
           totalPendingUsdt: Number(totalPendingUsdt.toFixed(2)),
           totalPendingTon: Number(totalPendingTon.toFixed(4)),
@@ -330,6 +336,9 @@ module.exports = async (req, res) => {
           penaltyNotice: u.penaltyNotice || "",
           registeredIp: u.registeredIp || u.lastIp || "N/A",
           boundWalletAddress: u.boundWalletAddress || null,
+          bannedAt: u.bannedAt || null,
+          dataPurged: !!u.dataPurged,
+          purgedAt: u.purgedAt || null,
           createdAt: u.createdAt || null
         }));
 
@@ -608,7 +617,16 @@ module.exports = async (req, res) => {
 
         await usersCol.updateMany(
           { $or: [{ telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])] },
-          { $set: { isBanned: true, banReason: banReason, bannedAt: Date.now() } }
+          {
+            $set: {
+              isBanned: true,
+              banReason: banReason,
+              bannedAt: Date.now(),
+              bannedAtDate: new Date(),
+              dataPurged: false
+            },
+            $unset: { lastActiveAt: "" }
+          }
         );
 
         // If from withdrawal, reject it only if still PENDING
@@ -624,7 +642,7 @@ module.exports = async (req, res) => {
 
         // Notify banned user
         if (botToken) {
-          const msg = `⛔ <b>Account Suspended</b>\n\nYour HOOCOOH Miner account has been suspended.\n<b>Reason:</b> ${banReason}\n\nYou can no longer access the miner application.`;
+          const msg = `⛔ <b>Account Suspended</b>\n\nYour HOOCOOH Miner account has been suspended.\n<b>Reason:</b> ${banReason}\n\n<i>⚠️ Notice: If this suspension is not lifted within 7 days, all your account progress, coins, and referrals will be permanently deleted while account remains suspended.</i>`;
           sendTelegramMsg(botToken, tid, msg);
         }
 
@@ -645,7 +663,17 @@ module.exports = async (req, res) => {
 
         await usersCol.updateMany(
           { $or: [{ telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])] },
-          { $set: { isBanned: false, banReason: null, unbannedAt: Date.now() } }
+          {
+            $set: {
+              isBanned: false,
+              banReason: null,
+              unbannedAt: Date.now(),
+              bannedAt: null,
+              bannedAtDate: null,
+              dataPurged: false,
+              lastActiveAt: new Date()
+            }
+          }
         );
 
         // Notify user
