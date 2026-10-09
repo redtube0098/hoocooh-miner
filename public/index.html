@@ -9951,7 +9951,10 @@
     return adsgramController;
   }
 
-  function playAdsgramFullscreenAd(onWatchedSuccess, onSkippedOrFailed) {
+  function playAdsgramFullscreenAd(onWatchedSuccess, onSkippedOrFailed, minWatchSeconds) {
+    var minSec = (typeof minWatchSeconds === "number" && minWatchSeconds > 0) ? minWatchSeconds : 9;
+    var minMs = minSec * 1000;
+
     if (!window.AdBarrier.acquire("adsgram")) {
       showToast("⚠️ Another ad is currently active. Please wait.");
       if (typeof onSkippedOrFailed === "function") onSkippedOrFailed("barrier_busy");
@@ -9978,9 +9981,17 @@
       window.AdBarrier.release("adsgram");
       var elapsedMs = Date.now() - adStartTime;
 
+      if (elapsedMs < minMs) {
+        if (minSec === 4) {
+          showToast("⚠️ Ad skipped! You must watch at least 4 seconds to proceed with withdrawal.");
+        } else {
+          showToast("❌ Ad was skipped! You must watch at least " + minSec + " seconds to receive the reward.");
+        }
+        if (typeof onSkippedOrFailed === "function") onSkippedOrFailed("skipped_under_" + minSec + "s");
+        return;
+      }
+
       console.log("[Adsgram] Ad completed successfully. elapsedMs:", elapsedMs, "result:", result);
-      // In AdsGram SDK, controller.show() resolves ONLY when user views the ad to completion (onComplete / onReward).
-      // If user aborted or clicked skip before finish, AdsGram SDK rejects with state: 'skip'.
       if (typeof onWatchedSuccess === "function") {
         onWatchedSuccess(result, elapsedMs);
       }
@@ -9989,34 +10000,37 @@
       var elapsedMs = Date.now() - adStartTime;
       console.warn("[Adsgram] Ad catch/error, elapsedMs:", elapsedMs, "err:", err);
 
-      // Check if the ad was actually watched to completion (e.g. anti-fraud notSuitable or destroyed after watching)
-      var isCompleted = false;
-      if (err) {
-        if (err.done === true) isCompleted = true;
-        if (err.state === "destroy" && elapsedMs >= 4000) isCompleted = true;
-        if (typeof err.description === "string" && err.description.indexOf("viewed to the end") !== -1) isCompleted = true;
-      }
-
-      if (isCompleted) {
-        console.log("[Adsgram] Treated as completed:", err);
-        if (typeof onWatchedSuccess === "function") {
-          onWatchedSuccess(err, elapsedMs);
+      if (elapsedMs >= minMs) {
+        if (err && (err.done === true || err.state === "destroy" || (typeof err.description === "string" && err.description.indexOf("viewed to the end") !== -1))) {
+          console.log("[Adsgram] Completed after " + elapsedMs + "ms:", err);
+          if (typeof onWatchedSuccess === "function") {
+            onWatchedSuccess(err, elapsedMs);
+          }
+          return;
         }
-        return;
       }
 
-      var isSkip = false;
-      if (err && (err.state === "skip" || (err.description && String(err.description).toLowerCase().indexOf("skip") !== -1))) {
-        isSkip = true;
-      }
-
-      if (isSkip) {
-        showToast("⚠️ Ad was skipped! Please finish watching the ad.");
-        if (typeof onSkippedOrFailed === "function") onSkippedOrFailed("skipped");
+      if (elapsedMs < minMs) {
+        if (minSec === 4) {
+          showToast("⚠️ Ad skipped! You must watch at least 4 seconds to proceed with withdrawal.");
+        } else {
+          showToast("❌ Ad was skipped! You must watch at least " + minSec + " seconds to receive the reward.");
+        }
+        if (typeof onSkippedOrFailed === "function") onSkippedOrFailed("skipped_under_" + minSec + "s");
       } else {
-        var errDesc = (err && err.description) ? err.description : "Ad closed or not finished";
-        showToast("❌ " + errDesc);
-        if (typeof onSkippedOrFailed === "function") onSkippedOrFailed(err);
+        var isSkip = false;
+        if (err && (err.state === "skip" || (err.description && String(err.description).toLowerCase().indexOf("skip") !== -1))) {
+          isSkip = true;
+        }
+
+        if (isSkip) {
+          showToast("⚠️ Ad was skipped! Please finish watching the ad.");
+          if (typeof onSkippedOrFailed === "function") onSkippedOrFailed("skipped");
+        } else {
+          var errDesc = (err && err.description) ? err.description : "Ad closed or not finished";
+          showToast("❌ " + errDesc);
+          if (typeof onSkippedOrFailed === "function") onSkippedOrFailed(err);
+        }
       }
     });
   }
@@ -10024,6 +10038,7 @@
   // ========================================================
   // GIGAPUB ADS INTEGRATION (Script ID: 8547)
   // For Spin & Earn Tickets (Max 6 tickets per 10 hours)
+  // - 5-Second Minimum Watch Rule
   // ========================================================
   function playGigapubAd(onSuccess, onError) {
     if (!window.AdBarrier.acquire("gigapub")) {
@@ -10044,6 +10059,11 @@
       .then(function() {
         window.AdBarrier.release("gigapub");
         var elapsedMs = Date.now() - adStartTime;
+        if (elapsedMs < 5000) {
+          showToast("❌ Ad was skipped! You must watch at least 5 seconds to receive your ticket.");
+          if (typeof onError === "function") onError("skipped_under_5s");
+          return;
+        }
         var effectiveMs = Math.max(elapsedMs, 5200);
 
         if (typeof onSuccess === "function") {
@@ -10053,8 +10073,12 @@
       .catch(function(err) {
         window.AdBarrier.release("gigapub");
         var elapsedMs = Date.now() - adStartTime;
-        var msg = (err && err.message) ? err.message : "Ad was closed or interrupted.";
-        showToast("❌ Ad was not completed: " + msg);
+        if (elapsedMs < 5000) {
+          showToast("❌ Ad was skipped! You must watch at least 5 seconds to receive your ticket.");
+        } else {
+          var msg = (err && err.message) ? err.message : "Ad was closed or interrupted.";
+          showToast("❌ Ad was not completed: " + msg);
+        }
         if (typeof onError === "function") onError(err);
       });
   }
@@ -10189,7 +10213,8 @@
         function onSkippedOrFailed() {
           sheetStartAdBtn.disabled = false;
           sheetStartAdBtn.innerHTML = '<span>▶ Watch Ad & Earn</span>';
-        }
+        },
+        9 // 9-Second minimum watch rule
       );
     });
   }
@@ -10293,7 +10318,8 @@
       function onSkippedOrFailed() {
         // Skipped under 9 seconds or closed early: Miner will NOT turn on!
         renderMining();
-      }
+      },
+      9 // 9-Second minimum watch rule
     );
   }
 
@@ -12403,10 +12429,11 @@
         function onSkippedOrFailed(reason) {
           withdrawAdActionBtn.disabled = false;
           withdrawAdActionBtn.innerHTML = '<span>▶ Watch Ad & Continue</span>';
-          if (reason === "skipped") {
-            showToast("⚠️ Ad was skipped! Please finish watching the ad to proceed with withdrawal.");
+          if (reason === "skipped" || reason === "skipped_under_4s") {
+            showToast("⚠️ Ad skipped! You must watch at least 4 seconds to proceed with withdrawal.");
           }
-        }
+        },
+        4 // 4-Second minimum watch rule for withdrawal
       );
     });
   }
