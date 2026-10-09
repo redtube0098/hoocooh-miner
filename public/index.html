@@ -3800,7 +3800,33 @@
     font-weight: 700;
     color: #134e4a;
     margin-top: 2px;
-    margin-bottom: 18px;
+    margin-bottom: 12px;
+  }
+  .vault-sealed-pill {
+    background: rgba(4, 47, 46, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #042f2e;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 14px;
+    line-height: 1.35;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .vault-sealed-pill.unlocked {
+    background: rgba(5, 150, 105, 0.15);
+    border-color: rgba(5, 150, 105, 0.4);
+    color: #065f46;
+  }
+  .vault-sealed-icon {
+    font-size: 13px;
+    flex-shrink: 0;
   }
   .vault-withdraw-btn {
     position: relative;
@@ -3823,9 +3849,26 @@
     transition: all 0.2s ease;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
   }
+  .vault-withdraw-btn.sealed {
+    background: rgba(255, 255, 255, 0.35);
+    color: #115e59;
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.88;
+  }
+  .vault-withdraw-btn.unlocked {
+    background: rgba(255, 255, 255, 0.85);
+    color: #042f2e;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
   .vault-withdraw-btn:active {
     background: rgba(255, 255, 255, 0.75);
     transform: scale(0.98);
+  }
+  .vault-withdraw-btn.sealed:active {
+    transform: none;
   }
 
   /* Two Stats Cards (Referrals, Total Mined) */
@@ -6677,8 +6720,12 @@
       </div>
       <div class="vault-coin-label">HOOCOOH Coins</div>
       <div class="vault-usd-amount" id="walletVaultUsd">≈ $0.00 USDT</div>
-      <button class="vault-withdraw-btn" id="openWithdrawModalBtn" type="button">
-        <span>💸 Withdraw USDT</span>
+      <div class="vault-sealed-pill" id="vaultSealedPill">
+        <span class="vault-sealed-icon" id="vaultSealedIcon">🔒</span>
+        <span id="vaultSealedText"><strong>Vault Sealed</strong> — Mine 1,000 more HOOCOOH to withdraw</span>
+      </div>
+      <button class="vault-withdraw-btn sealed" id="openWithdrawModalBtn" type="button">
+        <span id="vaultWithdrawBtnText">Vault Sealed</span>
       </button>
     </div>
 
@@ -7178,10 +7225,10 @@
           <div class="form-group" style="margin-bottom: 14px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
               <label class="form-label" style="margin-bottom: 0; font-size: 11px; letter-spacing: 0.6px; color: var(--text-dim);">AMOUNT (HOOCOOH COINS)</label>
-              <span style="font-size: 11.5px; font-weight: 800; color: #0d9488;">Min: 100</span>
+              <span style="font-size: 11.5px; font-weight: 800; color: #0d9488;">Min: 1,000</span>
             </div>
             <div class="withdraw-input-box">
-              <input type="number" class="withdraw-amount-field" id="withdrawAmountInput" placeholder="0" min="100" step="1">
+              <input type="number" class="withdraw-amount-field" id="withdrawAmountInput" placeholder="Min 1,000" min="1000" step="1">
               <button type="button" class="withdraw-inline-max-btn" id="withdrawMaxBtn">MAX</button>
             </div>
             <div class="withdraw-convert-preview">
@@ -11729,6 +11776,40 @@
     var usdtVal = coinsToUsd(bal).toFixed(2);
     if (vaultUsdEl) vaultUsdEl.textContent = "≈ $" + usdtVal + " USDT";
 
+    // Dynamic Vault Sealed / Unlocked state (Min: 1,000 Coins)
+    var vaultPillEl = document.getElementById("vaultSealedPill");
+    var vaultIconEl = document.getElementById("vaultSealedIcon");
+    var vaultTextEl = document.getElementById("vaultSealedText");
+    var withdrawBtnTextEl = document.getElementById("vaultWithdrawBtnText");
+    var withdrawBtnEl = document.getElementById("openWithdrawModalBtn");
+
+    var minThreshold = 1000;
+    if (bal < minThreshold) {
+      var remaining = Math.max(0, minThreshold - bal);
+      var formattedRem = Math.ceil(remaining).toLocaleString();
+      if (vaultPillEl) vaultPillEl.classList.remove("unlocked");
+      if (vaultIconEl) vaultIconEl.textContent = "🔒";
+      if (vaultTextEl) {
+        vaultTextEl.innerHTML = "<strong>Vault Sealed</strong> — Mine " + formattedRem + " more HOOCOOH to withdraw";
+      }
+      if (withdrawBtnTextEl) withdrawBtnTextEl.textContent = "Vault Sealed";
+      if (withdrawBtnEl) {
+        withdrawBtnEl.classList.remove("unlocked");
+        withdrawBtnEl.classList.add("sealed");
+      }
+    } else {
+      if (vaultPillEl) vaultPillEl.classList.add("unlocked");
+      if (vaultIconEl) vaultIconEl.textContent = "🔓";
+      if (vaultTextEl) {
+        vaultTextEl.innerHTML = "<strong>Vault Unlocked</strong> — Ready to withdraw!";
+      }
+      if (withdrawBtnTextEl) withdrawBtnTextEl.textContent = "💎 Withdraw USDT";
+      if (withdrawBtnEl) {
+        withdrawBtnEl.classList.remove("sealed");
+        withdrawBtnEl.classList.add("unlocked");
+      }
+    }
+
     // 4. Two Stats Cards (Referrals, Total Mined)
     var recruitsEl = document.getElementById("walletStatReferrals");
     if (recruitsEl) {
@@ -11852,6 +11933,12 @@
   }
 
   function openWithdrawModal() {
+    var bal = Number(user.balance) || 0;
+    if (bal < 1000) {
+      var remaining = Math.max(0, 1000 - bal);
+      showToast("🔒 Vault Sealed! Mine " + Math.ceil(remaining).toLocaleString() + " more HOOCOOH to withdraw.");
+      return;
+    }
     setWithdrawStep(1);
     if (withdrawAdActionBtn) {
       withdrawAdActionBtn.disabled = false;
@@ -11955,11 +12042,11 @@
       var amt = parseInt(withdrawAmountInput ? withdrawAmountInput.value : 0, 10);
       var addr = withdrawAddressInput ? withdrawAddressInput.value.trim() : "";
 
-      if (isNaN(amt) || amt < 100) {
+      if (isNaN(amt) || amt < 1000) {
         if (withdrawFeedbackBox) {
           withdrawFeedbackBox.style.display = "block";
           withdrawFeedbackBox.className = "verify-feedback-box error";
-          withdrawFeedbackBox.textContent = "⚠️ Minimum withdrawal is 100 HOOCOOH Coins.";
+          withdrawFeedbackBox.textContent = "⚠️ Minimum withdrawal is 1,000 HOOCOOH Coins.";
         }
         return;
       }

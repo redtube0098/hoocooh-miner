@@ -117,8 +117,8 @@ module.exports = async (req, res) => {
         await tokensCol.updateOne({ _id: validToken._id }, { $set: { used: true, usedAt: Date.now() } });
 
         const numAmount = parseInt(amount, 10);
-        if (isNaN(numAmount) || numAmount < 100) {
-          res.status(400).json({ error: "Minimum withdrawal amount is 100 HOOCOOH Coins" });
+        if (isNaN(numAmount) || numAmount < 1000) {
+          res.status(400).json({ error: "Minimum withdrawal amount is 1,000 HOOCOOH Coins" });
           return;
         }
 
