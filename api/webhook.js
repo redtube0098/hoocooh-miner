@@ -519,6 +519,105 @@ async function renderWithdrawalsPage(db, botToken, chatId, messageId, page = 0, 
   }
 }
 
+async function renderTasksPage(db, botToken, chatId, messageId, page = 0, baseUrl, bannerText = "") {
+  const tasksCol = db.collection("tasks");
+
+  const allTasks = await tasksCol.find({}).sort({ createdAt: -1 }).toArray();
+  const totalCount = allTasks.length;
+  const adminUrl = `${baseUrl}/admin.html`;
+
+  if (totalCount === 0) {
+    let msgText = "";
+    if (bannerText) msgText += `${bannerText}\n\n`;
+    msgText += `📋 <b>Platform Tasks</b>\n\n<i>No tasks found in the system.</i>\n\nTap <b>➕ Add Task</b> below to create a new task!`;
+
+    const inlineKeyboard = [
+      [
+        { text: "➕ Add Task", callback_data: "adm_task_prompt" },
+        { text: "🔄 Refresh", callback_data: "adm_tasks_page_0" }
+      ],
+      [
+        { text: "💸 Withdraw", callback_data: "adm_wd_page_0" },
+        { text: "🛡️ Open Admin Panel", web_app: { url: adminUrl } }
+      ]
+    ];
+
+    if (messageId) {
+      const editRes = await editTelegramMsg(botToken, chatId, messageId, msgText, { reply_markup: { inline_keyboard: inlineKeyboard } });
+      if (!editRes || !editRes.ok) {
+        await sendTelegramMsg(botToken, chatId, msgText, { reply_markup: { inline_keyboard: inlineKeyboard } });
+      }
+    } else {
+      await sendTelegramMsg(botToken, chatId, msgText, { reply_markup: { inline_keyboard: inlineKeyboard } });
+    }
+    return;
+  }
+
+  const PAGE_SIZE = 5;
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const currPage = Math.max(0, Math.min(page, totalPages - 1));
+  const items = allTasks.slice(currPage * PAGE_SIZE, (currPage + 1) * PAGE_SIZE);
+
+  let msgText = "";
+  if (bannerText) {
+    msgText += `${bannerText}\n\n`;
+  }
+  msgText += `📋 <b>Platform Tasks (Total: ${totalCount})</b>\n`;
+  msgText += `<i>Page ${currPage + 1} of ${totalPages} (Showing 5 per page)</i>\n`;
+  msgText += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+  const inlineKeyboard = [];
+
+  items.forEach((t, idx) => {
+    const itemNum = (currPage * PAGE_SIZE) + idx + 1;
+    const completedArr = t.completedBy || [];
+    const completedCount = completedArr.length;
+    const targetDisplay = t.isUnlimited || !t.targetCount || t.targetCount === 99999999 ? "Unlimited" : t.targetCount;
+    const rewardVal = t.reward || 10;
+    const statusVal = t.status || "active";
+    const statusIcon = statusVal === "active" ? "🟢" : "⚪";
+
+    msgText += `<b>#${itemNum} | ${escapeHtml(t.title || "Untitled Task")}</b>\n`;
+    msgText += `🔗 <a href="${t.link || "#"}">${escapeHtml(t.link || "No Link")}</a>\n`;
+    msgText += `🎯 <b>Target:</b> ${targetDisplay} | 👥 <b>Done:</b> ${completedCount}\n`;
+    msgText += `🎁 <b>Reward:</b> ${rewardVal} Coins | ${statusIcon} <b>Status:</b> ${statusVal}\n\n`;
+
+    inlineKeyboard.push([
+      { text: `🗑️ Delete #${itemNum}`, callback_data: `adm_task_del_${t._id}` }
+    ]);
+  });
+
+  // Navigation row
+  const navRow = [];
+  if (currPage > 0) {
+    navRow.push({ text: "⬅️ Prev", callback_data: `adm_tasks_page_${currPage - 1}` });
+  }
+  navRow.push({ text: `📄 ${currPage + 1}/${totalPages}`, callback_data: `adm_tasks_page_${currPage}` });
+  if (currPage < totalPages - 1) {
+    navRow.push({ text: "Next ➡️", callback_data: `adm_tasks_page_${currPage + 1}` });
+  }
+  inlineKeyboard.push(navRow);
+
+  // Bottom action buttons
+  inlineKeyboard.push([
+    { text: "➕ Add Task", callback_data: "adm_task_prompt" },
+    { text: "🔄 Refresh", callback_data: `adm_tasks_page_${currPage}` }
+  ]);
+  inlineKeyboard.push([
+    { text: "💸 Withdraw", callback_data: "adm_wd_page_0" },
+    { text: "🛡️ Open Admin Panel", web_app: { url: adminUrl } }
+  ]);
+
+  if (messageId) {
+    const editRes = await editTelegramMsg(botToken, chatId, messageId, msgText, { reply_markup: { inline_keyboard: inlineKeyboard } });
+    if (!editRes || !editRes.ok) {
+      await sendTelegramMsg(botToken, chatId, msgText, { reply_markup: { inline_keyboard: inlineKeyboard } });
+    }
+  } else {
+    await sendTelegramMsg(botToken, chatId, msgText, { reply_markup: { inline_keyboard: inlineKeyboard } });
+  }
+}
+
 module.exports = async (req, res) => {
   // CORS / Preflight
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -823,6 +922,106 @@ module.exports = async (req, res) => {
         return;
       }
 
+      // ----------------------------------------------------
+      // Admin: Tasks Management via Telegram
+      // ----------------------------------------------------
+      if (cbData.startsWith("adm_tasks_page_")) {
+        const adminIds = await getAdminTelegramIds(db);
+        if (!adminIds.has(cbSenderId)) {
+          await answerCallbackQuery(botToken, cb.id, "Unauthorized: Admin only", true);
+          res.status(200).json({ ok: true });
+          return;
+        }
+
+        const pageNum = parseInt(cbData.replace("adm_tasks_page_", ""), 10) || 0;
+        await answerCallbackQuery(botToken, cb.id);
+        await renderTasksPage(db, botToken, cbChatId, cb.message?.message_id, pageNum, baseUrl);
+        res.status(200).json({ ok: true });
+        return;
+      }
+
+      if (cbData === "adm_task_prompt") {
+        const adminIds = await getAdminTelegramIds(db);
+        if (!adminIds.has(cbSenderId)) {
+          await answerCallbackQuery(botToken, cb.id, "Unauthorized: Admin only", true);
+          res.status(200).json({ ok: true });
+          return;
+        }
+
+        if (db) {
+          await db.collection("settings").updateOne(
+            { key: "admin_state_" + cbSenderId },
+            { $set: { state: "awaiting_task", updatedAt: Date.now() } },
+            { upsert: true }
+          );
+        }
+
+        const promptText = 
+          `➕ <b>Add New Task to HOOCOOH Miner</b>\n\n` +
+          `Send your task details in this format:\n` +
+          `<code>Title | Link</code>\n\n` +
+          `Or with a custom target user limit:\n` +
+          `<code>Title | Link | TargetCount</code>\n\n` +
+          `<b>Examples:</b>\n` +
+          `• <code>Join Official Telegram | https://t.me/hoocoohminer</code>\n` +
+          `• <code>Subscribe YouTube | https://youtube.com/@channel | 500</code>\n\n` +
+          `<i>Reward is fixed at 10 HOOCOOH Coins. Once created, it is live immediately for all miners!</i>`;
+
+        await answerCallbackQuery(botToken, cb.id);
+        await sendTelegramMsg(botToken, cbChatId, promptText, {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                { text: "❌ Cancel", callback_data: "adm_task_cancel" }
+              ]
+            ]
+          }
+        });
+        res.status(200).json({ ok: true });
+        return;
+      }
+
+      if (cbData === "adm_task_cancel") {
+        const adminIds = await getAdminTelegramIds(db);
+        if (!adminIds.has(cbSenderId)) {
+          await answerCallbackQuery(botToken, cb.id, "Unauthorized: Admin only", true);
+          res.status(200).json({ ok: true });
+          return;
+        }
+
+        if (db) {
+          await db.collection("settings").deleteOne({ key: "admin_state_" + cbSenderId });
+        }
+
+        await answerCallbackQuery(botToken, cb.id, "Cancelled");
+        await renderTasksPage(db, botToken, cbChatId, cb.message?.message_id, 0, baseUrl, "❌ <i>Task creation was cancelled.</i>");
+        res.status(200).json({ ok: true });
+        return;
+      }
+
+      if (cbData.startsWith("adm_task_del_")) {
+        const adminIds = await getAdminTelegramIds(db);
+        if (!adminIds.has(cbSenderId)) {
+          await answerCallbackQuery(botToken, cb.id, "Unauthorized: Admin only", true);
+          res.status(200).json({ ok: true });
+          return;
+        }
+
+        const taskId = cbData.replace("adm_task_del_", "");
+        let objId;
+        try { objId = new ObjectId(taskId); } catch(e){ objId = null; }
+        const tQuery = objId ? { _id: objId } : { _id: taskId };
+
+        if (db) {
+          await db.collection("tasks").deleteOne(tQuery);
+        }
+
+        await answerCallbackQuery(botToken, cb.id, "Task deleted successfully!");
+        await renderTasksPage(db, botToken, cbChatId, cb.message?.message_id, 0, baseUrl, "🗑️ <b>Task was deleted successfully!</b>");
+        res.status(200).json({ ok: true });
+        return;
+      }
+
       await answerCallbackQuery(botToken, cb.id);
       res.status(200).send("OK");
       return;
@@ -880,6 +1079,16 @@ module.exports = async (req, res) => {
                 text: "💸 Withdraw",
                 callback_data: "adm_wd_page_0"
               }
+            ],
+            [
+              {
+                text: "📋 Tasks",
+                callback_data: "adm_tasks_page_0"
+              },
+              {
+                text: "➕ Add Task",
+                callback_data: "adm_task_prompt"
+              }
             ]
           ]
         }
@@ -887,6 +1096,157 @@ module.exports = async (req, res) => {
 
       res.status(200).json({ ok: true, sent: true });
       return;
+    }
+
+    // ----------------------------------------------------
+    // Admin Text Actions (Task Creation & Direct Inputs)
+    // ----------------------------------------------------
+    let db = null;
+    try { db = await getDb(); } catch(e){}
+    const adminIds = await getAdminTelegramIds(db);
+    const isAdmin = senderId && adminIds.has(senderId);
+
+    if (isAdmin) {
+      let isAwaitingTask = false;
+      if (db) {
+        const adminStateDoc = await db.collection("settings").findOne({ key: "admin_state_" + senderId });
+        if (adminStateDoc && adminStateDoc.state === "awaiting_task") {
+          isAwaitingTask = true;
+        }
+      }
+
+      const isAddTaskCmd = command === "/addtask";
+      const hasPipe = text.includes("|");
+
+      if (isAddTaskCmd || isAwaitingTask || (hasPipe && (text.includes("http") || text.includes("t.me")))) {
+        let rawInput = text;
+        if (isAddTaskCmd) {
+          rawInput = text.replace(/^\/addtask\s*/i, "").trim();
+        }
+
+        if (!rawInput && isAddTaskCmd) {
+          const promptText = 
+            `➕ <b>Add New Task to HOOCOOH Miner</b>\n\n` +
+            `Send your task details in this format:\n` +
+            `<code>Title | Link</code>\n\n` +
+            `Or with a custom target user limit:\n` +
+            `<code>Title | Link | TargetCount</code>\n\n` +
+            `<b>Examples:</b>\n` +
+            `• <code>Join Official Telegram | https://t.me/hoocoohminer</code>\n` +
+            `• <code>Subscribe YouTube | https://youtube.com/@channel | 500</code>\n\n` +
+            `<i>Reward is fixed at 10 HOOCOOH Coins. Once created, it is live immediately for all miners!</i>`;
+
+          await sendTelegramMsg(botToken, chatId, promptText, {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  { text: "❌ Cancel", callback_data: "adm_task_cancel" }
+                ]
+              ]
+            }
+          });
+
+          if (db) {
+            await db.collection("settings").updateOne(
+              { key: "admin_state_" + senderId },
+              { $set: { state: "awaiting_task", updatedAt: Date.now() } },
+              { upsert: true }
+            );
+          }
+
+          res.status(200).json({ ok: true, promptSent: true });
+          return;
+        }
+
+        const pipeParts = rawInput.split("|").map(s => s.trim()).filter(Boolean);
+        if (pipeParts.length >= 2) {
+          const taskTitle = pipeParts[0];
+          let taskLink = pipeParts[1];
+          const targetPart = pipeParts[2] ? pipeParts[2].toLowerCase() : "unlimited";
+
+          let isUnlimited = targetPart === "unlimited" || targetPart === "all" || !pipeParts[2];
+          let targetUsers = 99999999;
+          if (!isUnlimited) {
+            const parsedNum = parseInt(targetPart, 10);
+            if (!isNaN(parsedNum) && parsedNum > 0) {
+              targetUsers = parsedNum;
+            } else {
+              isUnlimited = true;
+            }
+          }
+
+          if (!taskLink.startsWith("http") && !taskLink.startsWith("t.me")) {
+            taskLink = "https://t.me/" + taskLink.replace(/^@/, "");
+          } else if (taskLink.startsWith("t.me")) {
+            taskLink = "https://" + taskLink;
+          }
+
+          const newTask = {
+            creatorId: "admin",
+            type: "normal",
+            title: taskTitle,
+            link: taskLink,
+            reward: 10,
+            targetCount: isUnlimited ? 99999999 : targetUsers,
+            isUnlimited: isUnlimited,
+            completedBy: [],
+            status: "active",
+            createdAt: Date.now()
+          };
+
+          if (db) {
+            await db.collection("tasks").insertOne(newTask);
+            await db.collection("settings").deleteOne({ key: "admin_state_" + senderId });
+          }
+
+          const successMsg = 
+            `✅ <b>Task Created Successfully!</b>\n\n` +
+            `📌 <b>Title:</b> ${escapeHtml(taskTitle)}\n` +
+            `🔗 <b>Link:</b> <a href="${taskLink}">${escapeHtml(taskLink)}</a>\n` +
+            `🎯 <b>Target:</b> ${isUnlimited ? "Unlimited" : targetUsers} users\n` +
+            `🎁 <b>Reward:</b> 10 HOOCOOH Coins\n` +
+            `⚡ <b>Status:</b> Active (Live in Task list for all miners)`;
+
+          await sendTelegramMsg(botToken, chatId, successMsg, {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  { text: "📋 View Tasks", callback_data: "adm_tasks_page_0" },
+                  { text: "➕ Add Another", callback_data: "adm_task_prompt" }
+                ],
+                [
+                  { text: "💸 Withdraw", callback_data: "adm_wd_page_0" },
+                  { text: "🛡️ Admin Panel", web_app: { url: `${baseUrl}/admin.html` } }
+                ]
+              ]
+            }
+          });
+
+          res.status(200).json({ ok: true, taskCreated: true });
+          return;
+        } else if (isAwaitingTask) {
+          const errMsg = 
+            `⚠️ <b>Invalid Task Format!</b>\n\n` +
+            `Please separate Title and Link using a vertical bar (<code>|</code>).\n\n` +
+            `<b>Format:</b>\n` +
+            `<code>Title | Link</code>\n\n` +
+            `<b>Example:</b>\n` +
+            `<code>Join Telegram | https://t.me/hoocoohminer</code>`;
+
+          await sendTelegramMsg(botToken, chatId, errMsg, {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  { text: "❌ Cancel", callback_data: "adm_task_cancel" }
+                ]
+              ]
+            }
+          });
+
+          res.status(200).json({ ok: true, invalidFormat: true });
+          return;
+        }
+      }
     }
 
     // ----------------------------------------------------
