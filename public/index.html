@@ -8674,7 +8674,42 @@
     });
   }
 
+  function isTermsLocallyAccepted(uid) {
+    if (user && user.termsAccepted === true) return true;
+    try {
+      if (localStorage.getItem("hoocooh_terms_accepted_global") === "true") return true;
+      if (localStorage.getItem("hoocooh_terms_accepted_all") === "true") return true;
+      if (localStorage.getItem("hoocooh_terms_accepted_me") === "true") return true;
+      if (uid && localStorage.getItem("hoocooh_terms_accepted_" + uid) === "true") return true;
+      var storedUid = localStorage.getItem("hoocooh_registered_uid");
+      if (storedUid && localStorage.getItem("hoocooh_terms_accepted_" + storedUid) === "true") return true;
+    } catch(e){}
+    return false;
+  }
+
+  function markTermsLocallyAccepted(uid) {
+    if (user) user.termsAccepted = true;
+    try {
+      localStorage.setItem("hoocooh_terms_accepted_global", "true");
+      localStorage.setItem("hoocooh_terms_accepted_all", "true");
+      localStorage.setItem("hoocooh_terms_accepted_me", "true");
+      if (uid && uid !== "me") {
+        localStorage.setItem("hoocooh_terms_accepted_" + uid, "true");
+      }
+      var storedUid = localStorage.getItem("hoocooh_registered_uid");
+      if (storedUid && storedUid !== "me") {
+        localStorage.setItem("hoocooh_terms_accepted_" + storedUid, "true");
+      }
+    } catch(e){}
+  }
+
   function openTermsModal() {
+    var currentUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+    if (user.termsAccepted === true || isTermsLocallyAccepted(currentUid)) {
+      var tmEl = document.getElementById("termsModal");
+      if (tmEl) tmEl.style.display = "none";
+      return;
+    }
     var tm = document.getElementById("termsModal");
     if (!tm) return;
     tm.style.display = "flex";
@@ -8693,13 +8728,9 @@
   }
 
   function checkTermsPrompt() {
-    var tgUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
-    var localAccepted = false;
-    try {
-      localAccepted = localStorage.getItem("hoocooh_terms_accepted_" + tgUid) === "true";
-    } catch(e){}
-
-    if ((user && user.termsAccepted === true) || localAccepted) {
+    var currentUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+    if (user.termsAccepted === true || isTermsLocallyAccepted(currentUid)) {
+      closeTermsModal();
       return;
     }
     openTermsModal();
@@ -8712,22 +8743,19 @@
       btn.disabled = true;
       btn.innerHTML = '<span>Processing...</span>';
 
-      user.termsAccepted = true;
-      var tgUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
-      try {
-        localStorage.setItem("hoocooh_terms_accepted_" + tgUid, "true");
-      } catch(e){}
+      var currentUid = (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+      markTermsLocallyAccepted(currentUid);
 
       if (typeof apiPost === "function") {
         apiPost({ action: "accept_terms" }).catch(function(){});
       }
 
       showToast("✅ Terms & Conditions Accepted");
+      closeTermsModal();
       setTimeout(function(){
-        closeTermsModal();
         btn.disabled = false;
         btn.innerHTML = '<span>Agree & Continue</span>';
-      }, 200);
+      }, 300);
     });
   }
 
@@ -12679,8 +12707,10 @@
       try { localLang = localStorage.getItem("hoocooh_lang_selected_" + currentUid) === "true"; } catch(e){}
       if (user.languageSelected !== true && !localLang) {
         openLanguageModal();
-      } else if (user.termsAccepted !== true) {
+      } else if (!user.termsAccepted && !isTermsLocallyAccepted(currentUid)) {
         openTermsModal();
+      } else {
+        closeTermsModal();
       }
     } else {
       openIdentityVerifyModal();
@@ -12703,6 +12733,10 @@
   setupIdentityVerifyModal();
   setupLanguageModal();
   setupTermsModal();
+  var preCheckUid = localStorage.getItem("hoocooh_registered_uid") || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
+  if (isTermsLocallyAccepted(preCheckUid)) {
+    user.termsAccepted = true;
+  }
   applyLanguage(currentLang);
 
   // Load Tasks, Referrals & Wallet on startup
@@ -12801,13 +12835,10 @@
       } catch(e){}
     }
 
-    var localAccepted = false;
-    try {
-      localAccepted = localStorage.getItem("hoocooh_terms_accepted_" + currentUid) === "true";
-    } catch(e){}
-    user.termsAccepted = (res.data.termsAccepted === true) || localAccepted;
-    if (res.data.termsAccepted === true && !localAccepted) {
-      try { localStorage.setItem("hoocooh_terms_accepted_" + currentUid, "true"); } catch(e){}
+    if (res.data.termsAccepted === true || isTermsLocallyAccepted(currentUid)) {
+      user.termsAccepted = true;
+      markTermsLocallyAccepted(currentUid);
+      closeTermsModal();
     }
     if (res.data.language) {
       user.language = res.data.language;

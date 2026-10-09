@@ -103,7 +103,12 @@ module.exports = async (req, res) => {
         return;
       }
       if (action === "accept_terms") {
-        await users.updateOne({ _id: user._id }, { $set: { termsAccepted: true, termsAcceptedAt: Date.now() } });
+        const tid = String(user.telegramId);
+        const numId = Number(user.telegramId);
+        await users.updateMany(
+          { $or: [{ _id: user._id }, { telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])] },
+          { $set: { termsAccepted: true, termsAcceptedAt: Date.now() } }
+        );
         res.status(200).json({ ok: true, termsAccepted: true });
         return;
       }
