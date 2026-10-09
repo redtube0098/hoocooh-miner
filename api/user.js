@@ -446,7 +446,8 @@ module.exports = async (req, res) => {
       actionTokens: {
         mine: createActionToken(telegramId, "mine"),
         spin_watch_ad: createActionToken(telegramId, "spin_watch_ad"),
-        complete_task: createActionToken(telegramId, "complete_task")
+        complete_task: createActionToken(telegramId, "complete_task"),
+        checkin: createActionToken(telegramId, "checkin")
       },
       botUsername: botUsername
     });

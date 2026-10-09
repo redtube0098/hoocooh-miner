@@ -2,6 +2,7 @@ const { getDb } = require("../lib/mongodb");
 const { validateInitData } = require("../lib/telegramAuth");
 const { findOrCreateUser } = require("../lib/userHelper");
 const { dailyStatus, rewardForCycleDay } = require("../lib/gameLogic");
+const { verifyActionToken, createActionToken } = require("../lib/actionSigner");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
@@ -20,6 +21,7 @@ module.exports = async (req, res) => {
     res.status(401).json({ error: "Invalid session - reopen app from Telegram" });
     return;
   }
+  const uid = String(tgUser.id);
 
   try {
     const db = await getDb();
@@ -34,6 +36,38 @@ module.exports = async (req, res) => {
     const status = dailyStatus(user.lastCheckinAt);
     if (status === "waiting") {
       res.status(400).json({ error: "Already checked in today", status });
+      return;
+    }
+
+    // 1. Puzzle Captcha Verification (Required after watching Monetag Ad)
+    const { captchaToken } = req.body || {};
+    if (!captchaToken) {
+      res.status(400).json({ error: "Security puzzle verification required! Please solve the puzzle." });
+      return;
+    }
+
+    const tokensCol = db.collection("captcha_tokens");
+    const tokenDoc = await tokensCol.findOne({
+      token: String(captchaToken),
+      userId: { $in: [uid, Number(uid), tgUser.id] },
+      used: false
+    });
+
+    if (!tokenDoc) {
+      res.status(400).json({ error: "Invalid or expired verification. Please solve the puzzle again." });
+      return;
+    }
+
+    // Burn token
+    await tokensCol.updateOne(
+      { _id: tokenDoc._id },
+      { $set: { used: true, usedAt: Date.now() } }
+    );
+
+    // 2. Cryptographic Action Signing Verification
+    const actionToken = (req.body && req.body.actionToken) || req.headers["x-action-token"] || req.headers["x-action-signature"] || req.headers["x-action-secret"];
+    if (!verifyActionToken(uid, "checkin", actionToken)) {
+      res.status(403).json({ error: "Security check failed: Invalid or missing action signature token." });
       return;
     }
 
@@ -76,7 +110,8 @@ module.exports = async (req, res) => {
       lastCheckinAt: now,
       totalDailyEarned: newTotal,
       reward,
-      level: user.minerLevel || 1
+      level: user.minerLevel || 1,
+      newActionToken: createActionToken(uid, "checkin")
     });
   } catch (err) {
     console.error("checkin.js error:", err);

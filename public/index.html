@@ -14,6 +14,7 @@
 <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 <script src="https://ad.gigapub.tech/script?id=8547"></script>
 <script type="text/javascript" src="https://cdn.tgads.space/assets/js/adexium-widget.min.js"></script>
+<script src="https://libtl.com/sdk.js" data-zone="11990345" data-sdk="show_11990345"></script>
 <style>
   :root {
     --bg: #eff5f5;
@@ -8850,7 +8851,8 @@
   var currentActionTokens = {
     mine: "",
     spin_watch_ad: "",
-    complete_task: ""
+    complete_task: "",
+    checkin: ""
   };
 
   function apiCollect(captchaToken) {
@@ -8899,25 +8901,29 @@
     }).then(handleResponse);
   }
 
-  function apiCheckin() {
+  function apiCheckin(captchaToken) {
+    var payload = {};
+    if (captchaToken) payload.captchaToken = captchaToken;
+    if (currentActionTokens.checkin) payload.actionToken = currentActionTokens.checkin;
     return fetch("/api/checkin", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Telegram-Init-Data": initData
-      }
+      headers: getClientHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify(payload)
     }).then(function(r) {
       if (r.status === 404) {
         return fetch("/api/checkin.js", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Telegram-Init-Data": initData
-          }
+          headers: getClientHeaders({ "Content-Type": "application/json" }),
+          body: JSON.stringify(payload)
         });
       }
       return r;
-    }).then(handleResponse);
+    }).then(handleResponse).then(function(res) {
+      if (res.data && res.data.newActionToken) {
+        currentActionTokens.checkin = res.data.newActionToken;
+      }
+      return res;
+    });
   }
 
   function statusFromTimestamp(lastCheckinAt, now) {
@@ -9876,6 +9882,44 @@
     }
   }
 
+  // ========================================================
+  // MONETAG REWARDED INTERSTITIAL ADS (Zone: 11990345)
+  // Exclusively for Weekly / Daily Check-in Bonus
+  // Protected with AdBarrier to ensure no ad overlap
+  // ========================================================
+  function playMonetagAd(onSuccess, onError) {
+    if (!window.AdBarrier.acquire("monetag")) {
+      showToast("⚠️ Another ad is currently active. Please wait.");
+      if (typeof onError === "function") onError("barrier_busy");
+      return;
+    }
+
+    if (typeof window.show_11990345 !== "function") {
+      window.AdBarrier.release("monetag");
+      showToast("⏳ Ad is loading. Please try again in a few moments.");
+      if (typeof onError === "function") onError("show_11990345_unavailable");
+      return;
+    }
+
+    try {
+      window.show_11990345()
+        .then(function() {
+          window.AdBarrier.release("monetag");
+          if (typeof onSuccess === "function") onSuccess();
+        })
+        .catch(function(err) {
+          window.AdBarrier.release("monetag");
+          console.warn("Monetag ad closed or error:", err);
+          showToast("❌ Ad was not completed.");
+          if (typeof onError === "function") onError(err);
+        });
+    } catch(err) {
+      window.AdBarrier.release("monetag");
+      console.warn("Monetag invocation error:", err);
+      if (typeof onError === "function") onError(err);
+    }
+  }
+
   var ADSGRAM_BLOCK_ID = "int-52852";
   var adsgramController = null;
   function getAdsgramController() {
@@ -10282,33 +10326,50 @@
     });
   }
 
-  // Dedicated Collect Daily Reward Action
+  // Dedicated Collect Weekly / Daily Reward Action (Monetag Ad -> Puzzle Captcha -> Reward Claim)
   var dailyBtn = document.getElementById("dailyCollectBtn");
   if (dailyBtn) {
     dailyBtn.addEventListener("click", function(){
       dailyBtn.disabled = true;
       dailyBtn.innerHTML = '<span>Claiming...</span>';
 
-      apiCheckin().then(function(res){
-        if (!res.ok) {
-          var errText = (res.data && res.data.error) ? res.data.error : ("Error (" + res.status + ")");
-          showToast(errText);
+      playMonetagAd(
+        function onWatchedSuccess() {
+          // Step 2: Ad watched! Now open Puzzle Captcha Verification
+          openSecurityCaptcha(function onCaptchaSuccess(verifiedCaptchaToken) {
+            dailyBtn.disabled = true;
+            dailyBtn.innerHTML = '<span>Claiming...</span>';
+
+            // Step 3: Puzzle solved! Claim reward
+            apiCheckin(verifiedCaptchaToken).then(function(res){
+              dailyBtn.disabled = false;
+              if (!res.ok) {
+                var errText = (res.data && res.data.error) ? res.data.error : ("Error (" + res.status + ")");
+                showToast(errText);
+                renderDaily();
+                return;
+              }
+              user.balance = res.data.balance;
+              user.dailyCycle = res.data.dailyCycle;
+              user.dailyDayIndex = res.data.dailyDayIndex;
+              user.lastCheckinAt = res.data.lastCheckinAt;
+              user.totalDailyEarned = res.data.totalDailyEarned;
+              if (res.data.level) user.level = res.data.level;
+              showToast("🎉 +" + res.data.reward + " HOOCOOH Bonus Reward claimed!");
+              renderAll();
+            }).catch(function(err){
+              dailyBtn.disabled = false;
+              var msg = (err && err.message) ? err.message : "Connection failed";
+              showToast(msg);
+              renderDaily();
+            });
+          });
+        },
+        function onAdFailed(err) {
+          dailyBtn.disabled = false;
           renderDaily();
-          return;
         }
-        user.balance = res.data.balance;
-        user.dailyCycle = res.data.dailyCycle;
-        user.dailyDayIndex = res.data.dailyDayIndex;
-        user.lastCheckinAt = res.data.lastCheckinAt;
-        user.totalDailyEarned = res.data.totalDailyEarned;
-        if (res.data.level) user.level = res.data.level;
-        showToast("+" + res.data.reward + " HOOCOOH Daily Reward claimed!");
-        renderAll();
-      }).catch(function(err){
-        var msg = (err && err.message) ? err.message : "Connection failed";
-        showToast(msg);
-        renderDaily();
-      });
+      );
     });
   }
 
