@@ -1205,10 +1205,14 @@
   }
 
   // Withdrawal Actions attached to window
+  var isActionProcessing = false;
+
   window.approveWithdrawal = async function(id, tonAmount, walletAddr) {
+    if (isActionProcessing) return;
     var confirmMsg = `⚡ Confirm Auto-Payout & Approval?\n\n💎 Amount: ${tonAmount ? tonAmount + ' TON' : ''}\n📍 Destination: ${walletAddr || ''}\n\nClick OK to automatically pay & confirm on-chain!`;
     if (!confirm(confirmMsg)) return;
 
+    isActionProcessing = true;
     showToast("⏳ Processing Auto-Pay...");
     try {
       var res = await apiAdmin("POST", null, { action: "approve_withdrawal", withdrawalId: id });
@@ -1225,33 +1229,53 @@
       }
     } catch(e) {
       alert("❌ " + (e.message || e));
+    } finally {
+      isActionProcessing = false;
     }
   };
 
   window.rejectWithdrawal = async function(id) {
+    if (isActionProcessing) return;
     var reason = prompt("Enter rejection reason (User will receive this & coins will be refunded):", "Suspicious multi-account or bot activity");
     if (!reason) return;
+
+    isActionProcessing = true;
     try {
       var res = await apiAdmin("POST", null, { action: "reject_withdrawal", withdrawalId: id, reason: reason });
       if (res.ok) {
         showToast("⚠️ Withdrawal rejected and coins refunded.");
         loadWithdrawals();
         loadStats();
+      } else {
+        alert("⚠️ " + (res.error || "Rejection failed"));
       }
-    } catch(e){ alert(e.message); }
+    } catch(e){
+      alert("❌ " + (e.message || e));
+    } finally {
+      isActionProcessing = false;
+    }
   };
 
   window.banUserFromW = async function(uid, wId) {
+    if (isActionProcessing) return;
     var reason = prompt(`Permanently suspend user UID ${uid}? User will never be able to open or use the miner:`, "Cheating / Termux / Multi-Account violation");
     if (!reason) return;
+
+    isActionProcessing = true;
     try {
       var res = await apiAdmin("POST", null, { action: "ban_user", telegramId: uid, reason: reason, withdrawalId: wId });
       if (res.ok) {
         showToast(`⛔ User ${uid} has been suspended!`);
         loadWithdrawals();
         loadStats();
+      } else {
+        alert("⚠️ " + (res.error || "Ban action failed"));
       }
-    } catch(e){ alert(e.message); }
+    } catch(e){
+      alert("❌ " + (e.message || e));
+    } finally {
+      isActionProcessing = false;
+    }
   };
 
   // Bulk Auto-Pay Queue State

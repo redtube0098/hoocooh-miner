@@ -407,6 +407,11 @@ module.exports = async (req, res) => {
           return;
         }
 
+        if (w.status !== "PENDING") {
+          res.status(400).json({ error: `Withdrawal has already been processed (Current status: ${w.status}). Cannot approve again.` });
+          return;
+        }
+
         const now = Date.now();
         const tonVal = w.tonAmount !== undefined ? Number(w.tonAmount) : Number(((w.usdtAmount || 0) * (0.019 / 0.03)).toFixed(4));
         let finalTx = txHash ? txHash.trim() : "";
@@ -432,14 +437,23 @@ module.exports = async (req, res) => {
           }
         }
 
-        await withdrawalsCol.updateOne(wQuery, {
-          $set: {
-            status: "APPROVED",
-            tonAmount: tonVal,
-            txHash: finalTx,
-            approvedAt: now
+        // Atomically update withdrawal ONLY if it is still PENDING
+        const approveUpdateRes = await withdrawalsCol.updateOne(
+          { ...wQuery, status: "PENDING" },
+          {
+            $set: {
+              status: "APPROVED",
+              tonAmount: tonVal,
+              txHash: finalTx,
+              approvedAt: now
+            }
           }
-        });
+        );
+
+        if (approveUpdateRes.matchedCount === 0 || approveUpdateRes.modifiedCount === 0) {
+          res.status(400).json({ error: "Withdrawal has already been processed or is no longer pending." });
+          return;
+        }
 
         // Notify Payout Channel (@hoocoohpaylogs) and User via Telegram Bot
         if (botToken) {
@@ -500,7 +514,7 @@ module.exports = async (req, res) => {
         return;
       }
 
-      // 2. Reject Withdrawal (Refunds coins back to user balance!)
+      // 2. Reject Withdrawal (Refunds coins back to user balance exactly once!)
       if (action === "reject_withdrawal") {
         const { withdrawalId, reason } = req.body || {};
         if (!withdrawalId) {
@@ -518,20 +532,34 @@ module.exports = async (req, res) => {
           return;
         }
 
+        if (w.status !== "PENDING") {
+          res.status(400).json({ error: `Withdrawal has already been processed (Current status: ${w.status}). Cannot refund again.` });
+          return;
+        }
+
         const now = Date.now();
         const refundAmt = Number(w.amount || 0);
         const rejReason = (reason || "Review failed / suspicious activity").trim();
 
-        // Update withdrawal
-        await withdrawalsCol.updateOne(wQuery, {
-          $set: {
-            status: "REJECTED",
-            reason: rejReason,
-            rejectedAt: now
+        // Atomically update withdrawal ONLY if it is still PENDING
+        const rejectUpdateRes = await withdrawalsCol.updateOne(
+          { ...wQuery, status: "PENDING" },
+          {
+            $set: {
+              status: "REJECTED",
+              reason: rejReason,
+              rejectedAt: now
+            }
           }
-        });
+        );
 
-        // Refund coins to user
+        // If another concurrent request already processed this withdrawal, abort refund
+        if (rejectUpdateRes.matchedCount === 0 || rejectUpdateRes.modifiedCount === 0) {
+          res.status(400).json({ error: "Withdrawal has already been processed or is no longer pending." });
+          return;
+        }
+
+        // Refund coins to user EXACTLY ONCE
         const tid = String(w.telegramId);
         const numId = Number(w.telegramId);
         await usersCol.updateOne(
@@ -566,12 +594,13 @@ module.exports = async (req, res) => {
           { $set: { isBanned: true, banReason: banReason, bannedAt: Date.now() } }
         );
 
-        // If from withdrawal, reject it
+        // If from withdrawal, reject it only if still PENDING
         if (withdrawalId) {
           let objId;
           try { objId = new ObjectId(withdrawalId); } catch(e){ objId = null; }
+          const targetWQuery = objId ? { _id: objId } : { _id: withdrawalId };
           await withdrawalsCol.updateOne(
-            objId ? { _id: objId } : { _id: withdrawalId },
+            { ...targetWQuery, status: "PENDING" },
             { $set: { status: "REJECTED", reason: "User Banned: " + banReason, rejectedAt: Date.now() } }
           );
         }
