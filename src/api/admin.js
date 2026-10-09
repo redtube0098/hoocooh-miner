@@ -1,0 +1,950 @@
+const { getDb } = require("../lib/mongodb");
+const { ObjectId } = require("mongodb");
+const { validateInitData } = require("../lib/telegramAuth");
+const { dispatchTonPayout } = require("../lib/tonAutoPay");
+const { purgeExpiredBannedUsers } = require("../lib/userHelper");
+
+const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || "hoocooh_admin_2026";
+
+async function getAdminTelegramIds(db) {
+  const ids = new Set();
+  if (process.env.ADMIN_TELEGRAM_ID) {
+    process.env.ADMIN_TELEGRAM_ID.split(",").forEach(id => {
+      const trimmed = id.trim();
+      if (trimmed) ids.add(trimmed);
+    });
+  }
+  try {
+    if (db) {
+      const setting = await db.collection("settings").findOne({ key: "bot_settings" });
+      if (setting && setting.adminTelegramId) {
+        String(setting.adminTelegramId).split(",").forEach(id => {
+          const trimmed = id.trim();
+          if (trimmed) ids.add(trimmed);
+        });
+      }
+      const adminDocs = await db.collection("admins").find({}).toArray();
+      adminDocs.forEach(doc => {
+        if (doc.telegramId) ids.add(String(doc.telegramId).trim());
+      });
+    }
+  } catch (e) {
+    console.error("Error reading admin IDs from DB:", e);
+  }
+  return ids;
+}
+
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function checkAdminAuth(req) {
+  const headerKey = req.headers["x-admin-key"];
+  const bodyKey = req.body && req.body.adminKey;
+  const queryKey = req.query && req.query.adminKey;
+  const key = headerKey || bodyKey || queryKey;
+  return key && String(key).trim() === String(ADMIN_SECRET).trim();
+}
+
+async function sendTelegramMsg(botToken, chatId, text, options = {}) {
+  if (!botToken || !chatId) return false;
+  try {
+    const payload = {
+      chat_id: String(chatId),
+      parse_mode: "HTML",
+      disable_web_page_preview: false
+    };
+
+    let url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+    if (options.photoUrl) {
+      url = `https://api.telegram.org/bot${botToken}/sendPhoto`;
+      payload.photo = options.photoUrl;
+      payload.caption = text;
+    } else {
+      payload.text = text;
+    }
+
+    if (options.reply_markup) {
+      payload.reply_markup = options.reply_markup;
+    } else if (options.buttonText && options.buttonUrl) {
+      payload.reply_markup = {
+        inline_keyboard: [
+          [{ text: options.buttonText, url: options.buttonUrl }]
+        ]
+      };
+    }
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    return data.ok;
+  } catch (e) {
+    return false;
+  }
+}
+
+module.exports = async (req, res) => {
+  // CORS / Options preflight
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type,x-admin-key");
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
+  }
+
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+
+  // ========================================================
+  // Telegram WebApp Auto-Authentication (Via initData)
+  // Allows the owner to open /admin.html inside Telegram without entering password!
+  // Strictly rejects unauthorized Telegram users!
+  // ========================================================
+  if (req.method === "POST" && req.body && req.body.action === "auth_init_data") {
+    const { initData } = req.body;
+    if (!initData) {
+      res.status(400).json({ ok: false, error: "Missing Telegram initData" });
+      return;
+    }
+    if (!botToken) {
+      res.status(500).json({ ok: false, error: "TELEGRAM_BOT_TOKEN is not configured in Vercel" });
+      return;
+    }
+
+    const tgUser = validateInitData(initData, botToken);
+    if (!tgUser || !tgUser.id) {
+      res.status(401).json({ ok: false, error: "Invalid or expired Telegram authentication signature." });
+      return;
+    }
+
+    try {
+      const db = await getDb();
+      const adminIds = await getAdminTelegramIds(db);
+      const senderId = String(tgUser.id);
+
+      if (!adminIds.has(senderId)) {
+        res.status(403).json({
+          ok: false,
+          error: "ACCESS_DENIED_NOT_ADMIN",
+          message: `Telegram ID ${senderId} is not registered as an Administrator.`
+        });
+        return;
+      }
+
+      // Verified Admin! Return temporary adminKey for frontend API sessions
+      res.status(200).json({
+        ok: true,
+        authorized: true,
+        adminKey: ADMIN_SECRET,
+        user: {
+          id: tgUser.id,
+          username: tgUser.username || "",
+          firstName: tgUser.first_name || ""
+        }
+      });
+      return;
+    } catch (err) {
+      res.status(500).json({ ok: false, error: err.message });
+      return;
+    }
+  }
+
+  if (!checkAdminAuth(req)) {
+    res.status(401).json({ error: "Unauthorized: Invalid Admin Secret Key" });
+    return;
+  }
+
+  try {
+    const db = await getDb();
+    const usersCol = db.collection("users");
+    const withdrawalsCol = db.collection("withdrawals");
+    const tasksCol = db.collection("tasks");
+
+    // ==========================================
+    // GET Requests: Stats, Withdrawals, Users, Tasks
+    // ==========================================
+    if (req.method === "GET") {
+      const action = req.query.action || "stats";
+
+      // 1. Stats
+      if (action === "stats") {
+        await purgeExpiredBannedUsers(db).catch(() => {});
+        const totalUsers = await usersCol.countDocuments({});
+        const bannedUsers = await usersCol.countDocuments({ isBanned: true });
+        const bannedPurged = await usersCol.countDocuments({ isBanned: true, dataPurged: true });
+        const bannedGrace = await usersCol.countDocuments({ isBanned: true, dataPurged: { $ne: true } });
+        const pendingW = await withdrawalsCol.countDocuments({ status: "PENDING" });
+        const approvedW = await withdrawalsCol.countDocuments({ status: "APPROVED" });
+
+        const balAgg = await usersCol.aggregate([
+          { $group: { _id: null, totalCoins: { $sum: "$balance" } } }
+        ]).toArray();
+        const totalCoins = balAgg[0] ? balAgg[0].totalCoins : 0;
+
+        const TON_PER_USD = 0.019 / 0.03; // 3 cents = 0.019 TON
+
+        const paidAgg = await withdrawalsCol.aggregate([
+          { $match: { status: "APPROVED" } },
+          { $group: { _id: null, totalUsdt: { $sum: "$usdtAmount" }, totalTon: { $sum: { $ifNull: ["$tonAmount", { $multiply: ["$usdtAmount", TON_PER_USD] }] } } } }
+        ]).toArray();
+        const totalPaidUsdt = paidAgg[0] ? paidAgg[0].totalUsdt : 0;
+        const totalPaidTon = paidAgg[0] ? paidAgg[0].totalTon : (totalPaidUsdt * TON_PER_USD);
+
+        const pendingUsdtAgg = await withdrawalsCol.aggregate([
+          { $match: { status: "PENDING" } },
+          { $group: { _id: null, totalUsdt: { $sum: "$usdtAmount" }, totalTon: { $sum: { $ifNull: ["$tonAmount", { $multiply: ["$usdtAmount", TON_PER_USD] }] } } } }
+        ]).toArray();
+        const totalPendingUsdt = pendingUsdtAgg[0] ? pendingUsdtAgg[0].totalUsdt : 0;
+        const totalPendingTon = pendingUsdtAgg[0] ? pendingUsdtAgg[0].totalTon : (totalPendingUsdt * TON_PER_USD);
+
+        const activeUsers60d = await usersCol.countDocuments({
+          lastActiveAt: { $gte: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) }
+        });
+
+        res.status(200).json({
+          ok: true,
+          totalUsers,
+          activeUsers60d,
+          ttlDays: 60,
+          bannedUsers,
+          bannedPurged,
+          bannedGrace,
+          pendingWithdrawals: pendingW,
+          totalPendingUsdt: Number(totalPendingUsdt.toFixed(2)),
+          totalPendingTon: Number(totalPendingTon.toFixed(4)),
+          approvedWithdrawals: approvedW,
+          totalCoinsInCirculation: Math.round(totalCoins),
+          totalPaidUsdt: Number(totalPaidUsdt.toFixed(2)),
+          totalPaidTon: Number(totalPaidTon.toFixed(4))
+        });
+        return;
+      }
+
+      // 2. Withdrawals List
+      if (action === "withdrawals") {
+        const filter = {};
+        if (req.query.status && req.query.status !== "ALL") {
+          filter.status = req.query.status.toUpperCase();
+        }
+
+        const rawList = await withdrawalsCol
+          .find(filter)
+          .sort({ createdAt: -1 })
+          .limit(100)
+          .toArray();
+
+        // Attach user info
+        const userIds = [...new Set(rawList.map(w => String(w.telegramId)))];
+        const usersMap = {};
+        if (userIds.length > 0) {
+          const foundUsers = await usersCol.find({
+            $or: [
+              { telegramId: { $in: userIds } },
+              { telegramId: { $in: userIds.map(Number).filter(Boolean) } }
+            ]
+          }).toArray();
+          foundUsers.forEach(u => {
+            usersMap[String(u.telegramId)] = u;
+          });
+        }
+
+        const list = rawList.map(w => {
+          const u = usersMap[String(w.telegramId)] || {};
+          return {
+            id: String(w._id),
+            telegramId: w.telegramId,
+            username: u.username ? ("@" + u.username) : "N/A",
+            name: (u.firstName || "") + (u.lastName ? " " + u.lastName : "") || "Miner",
+            currentBalance: Number(u.balance || 0),
+            recruitsCount: Number(u.recruitsCount || 0),
+            isBanned: !!u.isBanned,
+            isSuspicious: !!u.isSuspicious,
+            suspiciousReason: u.suspiciousReason || "",
+            isHighRiskHacker: !!u.isHighRiskHacker,
+            securityFlag: u.securityFlag || "",
+            isSuspendedMultipleAccount: !!u.isSuspendedMultipleAccount,
+            deviceViolationsCount: Number(u.deviceViolationsCount || 0),
+            registeredIp: u.registeredIp || u.lastIp || "",
+            amount: w.amount,
+            usdtAmount: w.usdtAmount,
+            tonAmount: w.tonAmount !== undefined ? Number(w.tonAmount) : Number(((w.usdtAmount || 0) * (0.019 / 0.03)).toFixed(4)),
+            walletAddress: w.walletAddress,
+            network: w.network || "TON",
+            status: w.status || "PENDING",
+            txHash: w.txHash || "",
+            createdAt: w.createdAt,
+            approvedAt: w.approvedAt,
+            rejectedAt: w.rejectedAt,
+            reason: w.reason || ""
+          };
+        });
+
+        res.status(200).json({ ok: true, withdrawals: list });
+        return;
+      }
+
+      // 3. Search User (UID or Username)
+      if (action === "search_user") {
+        const q = String(req.query.q || "").trim();
+        if (!q) {
+          res.status(400).json({ error: "Search query required" });
+          return;
+        }
+
+        const cleanUsername = q.replace(/^@/, "");
+        const numId = Number(q);
+
+        const query = {
+          $or: [
+            { telegramId: q },
+            ...(numId ? [{ telegramId: numId }] : []),
+            { username: { $regex: cleanUsername, $options: "i" } },
+            { firstName: { $regex: q, $options: "i" } }
+          ]
+        };
+
+        const found = await usersCol.find(query).limit(20).toArray();
+        const mapped = found.map(u => ({
+          id: String(u._id),
+          telegramId: String(u.telegramId),
+          name: (u.firstName || "") + (u.lastName ? " " + u.lastName : "") || "Miner",
+          username: u.username ? ("@" + u.username) : "N/A",
+          photoUrl: u.photoUrl || "",
+          balance: Number(u.balance || 0),
+          minerLevel: u.minerLevel || 1,
+          recruitsCount: Number(u.recruitsCount || 0),
+          refEarnings: Number(u.refEarnings || 0),
+          totalAdsWatched: Number(u.totalAdsWatched || 0),
+          spinTickets: Number(u.spinTickets || 0),
+          spinUnder5sStrikes: Number(u.spinUnder5sStrikes || 0),
+          isBanned: !!u.isBanned,
+          banReason: u.banReason || "",
+          isSuspicious: !!u.isSuspicious,
+          suspiciousReason: u.suspiciousReason || "",
+          isHighRiskHacker: !!u.isHighRiskHacker,
+          securityFlag: u.securityFlag || "",
+          isSuspendedMultipleAccount: !!u.isSuspendedMultipleAccount,
+          deviceViolationsCount: Number(u.deviceViolationsCount || 0),
+          penaltyNotice: u.penaltyNotice || "",
+          registeredIp: u.registeredIp || u.lastIp || "N/A",
+          boundWalletAddress: u.boundWalletAddress || null,
+          bannedAt: u.bannedAt || null,
+          dataPurged: !!u.dataPurged,
+          purgedAt: u.purgedAt || null,
+          createdAt: u.createdAt || null
+        }));
+
+        res.status(200).json({ ok: true, users: mapped });
+        return;
+      }
+
+      // 4. Tasks List
+      if (action === "tasks") {
+        const customTasks = await tasksCol.find({}).sort({ createdAt: -1 }).toArray();
+        const mapped = customTasks.map(t => ({
+          id: String(t._id),
+          title: t.title,
+          link: t.link,
+          type: t.type || "normal",
+          reward: 10,
+          targetCount: t.targetCount === 99999999 || !t.targetCount ? "Unlimited" : t.targetCount,
+          completedCount: (t.completedBy || []).length,
+          status: t.status || "active",
+          creatorId: t.creatorId,
+          createdAt: t.createdAt
+        }));
+
+        const appSetting = await db.collection("settings").findOne({ key: "app_settings" });
+        const watchAdReward = (appSetting && typeof appSetting.watchAdReward === "number" && appSetting.watchAdReward > 0) ? appSetting.watchAdReward : 10;
+
+        res.status(200).json({ ok: true, tasks: mapped, watchAdReward });
+        return;
+      }
+
+      // 5. App & Ad Reward Settings
+      if (action === "app_settings" || action === "ad_settings") {
+        const appSetting = await db.collection("settings").findOne({ key: "app_settings" });
+        const watchAdReward = (appSetting && typeof appSetting.watchAdReward === "number" && appSetting.watchAdReward > 0) ? appSetting.watchAdReward : 10;
+        res.status(200).json({ ok: true, watchAdReward });
+        return;
+      }
+
+      // 5. Bot & Webhook Settings
+      if (action === "bot_settings") {
+        const host = req.headers["x-forwarded-host"] || req.headers.host;
+        const protocol = req.headers["x-forwarded-proto"] || "https";
+        const webhookUrl = `${protocol}://${host}/api/webhook`;
+        const setting = await db.collection("settings").findOne({ key: "bot_settings" });
+        const adminIds = await getAdminTelegramIds(db);
+
+        let webhookInfo = null;
+        if (botToken) {
+          try {
+            const whRes = await fetch(`https://api.telegram.org/bot${botToken}/getWebhookInfo`);
+            webhookInfo = await whRes.json();
+          } catch(e){}
+        }
+
+        res.status(200).json({
+          ok: true,
+          hasBotToken: !!botToken,
+          webhookUrl,
+          webhookInfo,
+          envAdminId: process.env.ADMIN_TELEGRAM_ID || null,
+          dbAdminId: setting ? setting.adminTelegramId : null,
+          registeredAdmins: Array.from(adminIds)
+        });
+        return;
+      }
+
+      res.status(400).json({ error: "Unknown GET action" });
+      return;
+    }
+
+    // ==========================================
+    // POST Requests: Actions (Approve, Reject, Ban, Unban, Funds, Broadcast, Tasks)
+    // ==========================================
+    if (req.method === "POST") {
+      const { action } = req.body || {};
+
+      // 1. Approve Withdrawal
+      if (action === "approve_withdrawal") {
+        const { withdrawalId, txHash } = req.body || {};
+        if (!withdrawalId) {
+          res.status(400).json({ error: "withdrawalId required" });
+          return;
+        }
+
+        let objId;
+        try { objId = new ObjectId(withdrawalId); } catch(e){ objId = null; }
+        const wQuery = objId ? { _id: objId } : { _id: withdrawalId };
+
+        const w = await withdrawalsCol.findOne(wQuery);
+        if (!w) {
+          res.status(404).json({ error: "Withdrawal not found" });
+          return;
+        }
+
+        if (w.status !== "PENDING") {
+          res.status(400).json({ error: `Withdrawal has already been processed (Current status: ${w.status}). Cannot approve again.` });
+          return;
+        }
+
+        const now = Date.now();
+        const tonVal = w.tonAmount !== undefined ? Number(w.tonAmount) : Number(((w.usdtAmount || 0) * (0.019 / 0.03)).toFixed(4));
+        let finalTx = txHash ? txHash.trim() : "";
+        let autoPaySuccess = false;
+        let autoPayMsg = "";
+
+        // If no manual TxHash provided, try automated TON payout dispatcher
+        if (!finalTx) {
+          const autoPayRes = await dispatchTonPayout(w.walletAddress, tonVal, `HOOCOOH Payout UID ${w.telegramId}`);
+          if (autoPayRes.isConfigured) {
+            if (!autoPayRes.success) {
+              res.status(400).json({
+                error: `Auto-pay halted: ${autoPayRes.message || autoPayRes.error}`
+              });
+              return;
+            }
+            finalTx = autoPayRes.txHash;
+            autoPaySuccess = true;
+            autoPayMsg = autoPayRes.message || "On-chain transfer dispatched";
+          } else {
+            finalTx = "0x" + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2);
+            autoPayMsg = "Auto-pay env variables (TON_AUTO_PAY / TON_WALLET_MNEMONIC) not active. Approved manually.";
+          }
+        }
+
+        // Atomically update withdrawal ONLY if it is still PENDING
+        const approveUpdateRes = await withdrawalsCol.updateOne(
+          { ...wQuery, status: "PENDING" },
+          {
+            $set: {
+              status: "APPROVED",
+              tonAmount: tonVal,
+              txHash: finalTx,
+              approvedAt: now
+            }
+          }
+        );
+
+        if (approveUpdateRes.matchedCount === 0 || approveUpdateRes.modifiedCount === 0) {
+          res.status(400).json({ error: "Withdrawal has already been processed or is no longer pending." });
+          return;
+        }
+
+        // Notify Payout Channel (@hoocoohpaylogs) and User via Telegram Bot
+        if (botToken) {
+          try {
+            const userDoc = await usersCol.findOne({
+              $or: [
+                { telegramId: String(w.telegramId) },
+                { telegramId: Number(w.telegramId) }
+              ]
+            });
+
+            const rawName = userDoc?.username 
+              ? `@${userDoc.username}` 
+              : (userDoc?.firstName ? `${userDoc.firstName}${userDoc.lastName ? ' ' + userDoc.lastName : ''}` : `Miner_${String(w.telegramId).slice(-4)}`);
+            const displayName = escapeHtml(rawName);
+
+            const txUrl = `https://tonviewer.com/transaction/${encodeURIComponent(finalTx)}`;
+            const txLinkHtml = `<a href="${txUrl}">View Transaction</a>`;
+
+            // 1. Post to Payout Logs Channel (with BOT ---> @hoocoohmine_bot appended)
+            const channelId = process.env.PAYOUT_CHANNEL_ID || "@hoocoohpaylogs";
+            const channelMsg = 
+`🎉 <b>New payout paid</b> 🎉\n\n` +
+`👤 <b>User:</b> ${displayName}\n` +
+`🔘 <b>Amount:</b> ${Number(w.amount).toLocaleString()} HOOCOOH (${Number(w.usdtAmount).toFixed(2)} USDT)\n` +
+`💳 <b>Wallet address:</b>\n` +
+`<code>${w.walletAddress}</code>\n` +
+`🔗 <b>Transaction id:</b> ${txLinkHtml}\n\n` +
+`BOT ---> @hoocoohmine_bot`;
+
+            await sendTelegramMsg(botToken, channelId, channelMsg);
+
+            // 2. Send 1:1 exact notification to the withdrawing user (matching media_1791525638939.png)
+            if (w.telegramId) {
+              const userMsg = 
+`✅ <b>Withdrawal Approved!</b>\n\n` +
+`🪙 <b>${Number(w.amount).toLocaleString()} HOOCOOH Coins ($${Number(w.usdtAmount).toFixed(2)} USDT) sent!</b>\n` +
+`🔗 <a href="${txUrl}">View Transaction</a>`;
+
+              await sendTelegramMsg(botToken, w.telegramId, userMsg, {
+                buttonText: "🔗 View Transaction",
+                buttonUrl: txUrl
+              });
+            }
+          } catch (notifErr) {
+            console.error("Payout notification error:", notifErr);
+          }
+        }
+
+        res.status(200).json({ 
+          ok: true, 
+          message: `Withdrawal of ${tonVal} TON approved successfully!`, 
+          tonAmount: tonVal, 
+          txHash: finalTx,
+          autoPaySuccess,
+          autoPayMsg
+        });
+        return;
+      }
+
+      // 2. Reject Withdrawal (Refunds coins back to user balance exactly once!)
+      if (action === "reject_withdrawal") {
+        const { withdrawalId, reason } = req.body || {};
+        if (!withdrawalId) {
+          res.status(400).json({ error: "withdrawalId required" });
+          return;
+        }
+
+        let objId;
+        try { objId = new ObjectId(withdrawalId); } catch(e){ objId = null; }
+        const wQuery = objId ? { _id: objId } : { _id: withdrawalId };
+
+        const w = await withdrawalsCol.findOne(wQuery);
+        if (!w) {
+          res.status(404).json({ error: "Withdrawal not found" });
+          return;
+        }
+
+        if (w.status !== "PENDING") {
+          res.status(400).json({ error: `Withdrawal has already been processed (Current status: ${w.status}). Cannot refund again.` });
+          return;
+        }
+
+        const now = Date.now();
+        const refundAmt = Number(w.amount || 0);
+        const rejReason = (reason || "Review failed / suspicious activity").trim();
+
+        // Atomically update withdrawal ONLY if it is still PENDING
+        const rejectUpdateRes = await withdrawalsCol.updateOne(
+          { ...wQuery, status: "PENDING" },
+          {
+            $set: {
+              status: "REJECTED",
+              reason: rejReason,
+              rejectedAt: now
+            }
+          }
+        );
+
+        // If another concurrent request already processed this withdrawal, abort refund
+        if (rejectUpdateRes.matchedCount === 0 || rejectUpdateRes.modifiedCount === 0) {
+          res.status(400).json({ error: "Withdrawal has already been processed or is no longer pending." });
+          return;
+        }
+
+        // Refund coins to user EXACTLY ONCE
+        const tid = String(w.telegramId);
+        const numId = Number(w.telegramId);
+        await usersCol.updateOne(
+          { $or: [{ telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])] },
+          { $inc: { balance: refundAmt } }
+        );
+
+        // Notify user via Telegram Bot
+        if (botToken && w.telegramId) {
+          const msg = `⚠️ <b>Withdrawal Rejected & Refunded</b>\n\nYour request for <b>${refundAmt.toLocaleString()} Coins</b> was rejected.\n<b>Reason:</b> ${rejReason}\n\nYour <b>${refundAmt.toLocaleString()} HOOCOOH Coins</b> have been returned to your miner balance.`;
+          sendTelegramMsg(botToken, w.telegramId, msg);
+        }
+
+        res.status(200).json({ ok: true, message: `Withdrawal rejected and ${refundAmt.toLocaleString()} coins refunded to user.` });
+        return;
+      }
+
+      // 3. Ban User (and optionally reject pending withdrawal)
+      if (action === "ban_user") {
+        const { telegramId, reason, withdrawalId } = req.body || {};
+        if (!telegramId) {
+          res.status(400).json({ error: "telegramId required" });
+          return;
+        }
+
+        const tid = String(telegramId);
+        const numId = Number(telegramId);
+        const banReason = (reason || "Violation of HOOCOOH Miner rules & anti-cheat policies").trim();
+
+        await usersCol.updateMany(
+          { $or: [{ telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])] },
+          {
+            $set: {
+              isBanned: true,
+              banReason: banReason,
+              bannedAt: Date.now(),
+              bannedAtDate: new Date(),
+              dataPurged: false
+            },
+            $unset: { lastActiveAt: "" }
+          }
+        );
+
+        // If from withdrawal, reject it only if still PENDING
+        if (withdrawalId) {
+          let objId;
+          try { objId = new ObjectId(withdrawalId); } catch(e){ objId = null; }
+          const targetWQuery = objId ? { _id: objId } : { _id: withdrawalId };
+          await withdrawalsCol.updateOne(
+            { ...targetWQuery, status: "PENDING" },
+            { $set: { status: "REJECTED", reason: "User Banned: " + banReason, rejectedAt: Date.now() } }
+          );
+        }
+
+        // Notify banned user
+        if (botToken) {
+          const msg = `⛔ <b>Account Suspended</b>\n\nYour HOOCOOH Miner account has been suspended.\n<b>Reason:</b> ${banReason}\n\n<i>⚠️ Notice: If this suspension is not lifted within 7 days, all your account progress, coins, and referrals will be permanently deleted while account remains suspended.</i>`;
+          sendTelegramMsg(botToken, tid, msg);
+        }
+
+        res.status(200).json({ ok: true, message: `User ${tid} has been permanently banned.` });
+        return;
+      }
+
+      // 4. Unban User
+      if (action === "unban_user") {
+        const { telegramId } = req.body || {};
+        if (!telegramId) {
+          res.status(400).json({ error: "telegramId required" });
+          return;
+        }
+
+        const tid = String(telegramId);
+        const numId = Number(telegramId);
+
+        await usersCol.updateMany(
+          { $or: [{ telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])] },
+          {
+            $set: {
+              isBanned: false,
+              banReason: null,
+              unbannedAt: Date.now(),
+              bannedAt: null,
+              bannedAtDate: null,
+              dataPurged: false,
+              lastActiveAt: new Date()
+            }
+          }
+        );
+
+        // Notify user
+        if (botToken) {
+          const msg = `✅ <b>Account Restored!</b>\n\nYour suspension has been lifted. You can now reopen and continue mining on HOOCOOH Miner.`;
+          sendTelegramMsg(botToken, tid, msg);
+        }
+
+        res.status(200).json({ ok: true, message: `User ${tid} has been unbanned successfully.` });
+        return;
+      }
+
+      // 4b. Clear Security / Suspicious Flag
+      if (action === "clear_suspicious") {
+        const { telegramId } = req.body || {};
+        if (!telegramId) {
+          res.status(400).json({ error: "telegramId required" });
+          return;
+        }
+
+        const tid = String(telegramId);
+        const numId = Number(telegramId);
+
+        await usersCol.updateMany(
+          { $or: [{ telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])] },
+          {
+            $unset: {
+              isSuspicious: "",
+              suspiciousReason: "",
+              isHighRiskHacker: "",
+              securityFlag: "",
+              lastSuspiciousAt: "",
+              spinUnder5sStrikes: ""
+            }
+          }
+        );
+
+        res.status(200).json({ ok: true, message: `Security/Suspicious flag cleared for user ${tid}.` });
+        return;
+      }
+
+      // 5. Update Funds (Add or Deduct coins)
+      if (action === "update_funds") {
+        const { telegramId, delta, note } = req.body || {};
+        if (!telegramId || delta === undefined) {
+          res.status(400).json({ error: "telegramId and delta required" });
+          return;
+        }
+
+        const numDelta = parseInt(delta, 10);
+        if (isNaN(numDelta) || numDelta === 0) {
+          res.status(400).json({ error: "Delta must be a non-zero integer" });
+          return;
+        }
+
+        const tid = String(telegramId);
+        const numId = Number(telegramId);
+
+        const targetUser = await usersCol.findOne({
+          $or: [{ telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])]
+        });
+
+        if (!targetUser) {
+          res.status(404).json({ error: "User not found" });
+          return;
+        }
+
+        const currentBal = Number(targetUser.balance || 0);
+        const newBal = Math.max(0, currentBal + numDelta);
+
+        await usersCol.updateOne(
+          { _id: targetUser._id },
+          { $set: { balance: newBal } }
+        );
+
+        // Notify user if added/deducted
+        if (botToken) {
+          const sign = numDelta > 0 ? "+" : "";
+          const msg = `💰 <b>Balance Adjustment by Admin</b>\n\nYour balance was adjusted by: <b>${sign}${numDelta.toLocaleString()} HOOCOOH Coins</b>\n<b>New Balance:</b> ${newBal.toLocaleString()} Coins\n${note ? ("<b>Note:</b> " + note) : ""}`;
+          sendTelegramMsg(botToken, tid, msg);
+        }
+
+        res.status(200).json({
+          ok: true,
+          previousBalance: currentBal,
+          newBalance: newBal,
+          delta: numDelta,
+          message: `Balance updated: ${currentBal.toLocaleString()} -> ${newBal.toLocaleString()} Coins.`
+        });
+        return;
+      }
+
+      // 6. Broadcast to All Users
+      if (action === "broadcast") {
+        const { message, photoUrl, buttonText, buttonUrl } = req.body || {};
+        if (!message || !message.trim()) {
+          res.status(400).json({ error: "Message is required" });
+          return;
+        }
+
+        if (!botToken) {
+          res.status(500).json({ error: "TELEGRAM_BOT_TOKEN is not set" });
+          return;
+        }
+
+        const allUsers = await usersCol.find({}, { projection: { telegramId: 1 } }).toArray();
+        const total = allUsers.length;
+
+        // Perform async broadcast in batches
+        let sentCount = 0;
+        let failCount = 0;
+
+        for (const u of allUsers) {
+          const tid = u.telegramId;
+          if (!tid) continue;
+          const ok = await sendTelegramMsg(botToken, tid, message.trim(), {
+            photoUrl: (photoUrl || "").trim() || null,
+            buttonText: (buttonText || "").trim() || null,
+            buttonUrl: (buttonUrl || "").trim() || null
+          });
+          if (ok) sentCount++;
+          else failCount++;
+
+          // Respect Telegram 30 msgs/sec limits: 35ms pause
+          await new Promise(r => setTimeout(r, 35));
+        }
+
+        res.status(200).json({
+          ok: true,
+          message: `Broadcast finished: ${sentCount} sent, ${failCount} failed.`,
+          sentCount,
+          failCount,
+          totalUsers: total
+        });
+        return;
+      }
+
+      // 7. Create Task (Admin can post for free, set limit or unlimited, reward fixed at 10)
+      if (action === "create_task") {
+        const { title, link, type, targetUsers, isUnlimited } = req.body || {};
+        if (!title || !title.trim()) {
+          res.status(400).json({ error: "Task title is required" });
+          return;
+        }
+        if (!link || !link.trim()) {
+          res.status(400).json({ error: "Link is required" });
+          return;
+        }
+
+        let cleanLink = link.trim();
+        if (!cleanLink.startsWith("http") && !cleanLink.startsWith("t.me")) {
+          cleanLink = "https://t.me/" + cleanLink.replace(/^@/, "");
+        } else if (cleanLink.startsWith("t.me")) {
+          cleanLink = "https://" + cleanLink;
+        }
+
+        const taskType = type === "verified" ? "verified" : "normal";
+        const finalCount = isUnlimited ? 99999999 : (Math.max(1, parseInt(targetUsers, 10) || 100));
+
+        const newTask = {
+          creatorId: "admin",
+          type: taskType,
+          title: title.trim(),
+          link: cleanLink,
+          reward: 10, // Strictly fixed at 10 HOOCOOH Coins as required!
+          targetCount: finalCount,
+          isUnlimited: !!isUnlimited,
+          completedBy: [],
+          status: "active",
+          createdAt: Date.now()
+        };
+
+        const insRes = await tasksCol.insertOne(newTask);
+
+        res.status(200).json({
+          ok: true,
+          task: { id: String(insRes.insertedId), ...newTask },
+          message: `Task successfully created! Target: ${isUnlimited ? 'Unlimited' : finalCount} users, Reward: 10 HOOCOOH Coins.`
+        });
+        return;
+      }
+
+      // 8. Delete / Disable Task
+      if (action === "delete_task") {
+        const { taskId } = req.body || {};
+        if (!taskId) {
+          res.status(400).json({ error: "taskId is required" });
+          return;
+        }
+
+        let objId;
+        try { objId = new ObjectId(taskId); } catch(e){ objId = null; }
+        const tQuery = objId ? { _id: objId } : { _id: taskId };
+
+        await tasksCol.deleteOne(tQuery);
+
+        res.status(200).json({ ok: true, message: "Task deleted successfully." });
+        return;
+      }
+
+      // 9. Set Admin Telegram ID
+      if (action === "set_admin_telegram_id") {
+        const { adminTelegramId } = req.body || {};
+        if (!adminTelegramId || !String(adminTelegramId).trim()) {
+          res.status(400).json({ error: "adminTelegramId is required" });
+          return;
+        }
+        await db.collection("settings").updateOne(
+          { key: "bot_settings" },
+          { $set: { adminTelegramId: String(adminTelegramId).trim(), updatedAt: Date.now() } },
+          { upsert: true }
+        );
+        res.status(200).json({
+          ok: true,
+          message: `Admin Telegram ID successfully set to: ${String(adminTelegramId).trim()}`
+        });
+        return;
+      }
+
+      // 10. Register Webhook with Telegram API
+      if (action === "set_webhook") {
+        if (!botToken) {
+          res.status(500).json({ error: "TELEGRAM_BOT_TOKEN is not configured in environment variables" });
+          return;
+        }
+        const host = req.headers["x-forwarded-host"] || req.headers.host;
+        const protocol = req.headers["x-forwarded-proto"] || "https";
+        const webhookUrl = `${protocol}://${host}/api/webhook`;
+
+        const tgRes = await fetch(
+          `https://api.telegram.org/bot${botToken}/setWebhook?url=${encodeURIComponent(webhookUrl)}&drop_pending_updates=true`
+        );
+        const tgData = await tgRes.json();
+        res.status(200).json({
+          ok: true,
+          webhookUrl,
+          telegramResponse: tgData
+        });
+        return;
+      }
+
+      // 11. Update Watch Ad Reward
+      if (action === "update_ad_reward") {
+        const { reward } = req.body || {};
+        const parsedReward = parseInt(reward, 10);
+        if (isNaN(parsedReward) || parsedReward < 1 || parsedReward > 100000) {
+          res.status(400).json({ error: "Reward must be a positive number between 1 and 100,000" });
+          return;
+        }
+
+        await db.collection("settings").updateOne(
+          { key: "app_settings" },
+          { $set: { watchAdReward: parsedReward, updatedAt: Date.now() } },
+          { upsert: true }
+        );
+
+        res.status(200).json({
+          ok: true,
+          watchAdReward: parsedReward,
+          message: `Watch Ad reward successfully set to ${parsedReward} HOOCOOH Coins!`
+        });
+        return;
+      }
+
+      res.status(400).json({ error: "Unknown POST action" });
+      return;
+    }
+
+    res.status(405).json({ error: "Method not allowed" });
+  } catch (err) {
+    console.error("admin.js error:", err);
+    res.status(500).json({ error: err.message || "Server error" });
+  }
+};
