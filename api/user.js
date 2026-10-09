@@ -143,6 +143,7 @@ module.exports = async (req, res) => {
           userId: telegramId,
           code: codeStr,
           createdAt: now,
+          createdAtDate: new Date(),
           expiresAt,
           used: false
         });
@@ -405,6 +406,8 @@ module.exports = async (req, res) => {
         $set: { adsWatchedToday: 0, adsEarnedToday: 0, adsCycleStartedAt: null }
       });
     }
+
+    users.updateOne({ _id: user._id }, { $set: { lastActiveAt: new Date() } }).catch(() => {});
 
     res.status(200).json({
       telegramId: user.telegramId,

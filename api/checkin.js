@@ -96,7 +96,8 @@ module.exports = async (req, res) => {
           dailyCycle,
           dailyDayIndex,
           lastCheckinAt: now,
-          totalDailyEarned: newTotal
+          totalDailyEarned: newTotal,
+          lastActiveAt: new Date()
         }
       }
     );

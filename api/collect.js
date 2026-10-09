@@ -90,7 +90,7 @@ module.exports = async (req, res) => {
       },
       {
         $inc: { balance: reward },
-        $set: { lastMineCollectedAt: now, mineReminderSent: false }
+        $set: { lastMineCollectedAt: now, mineReminderSent: false, lastActiveAt: new Date() }
       }
     );
 

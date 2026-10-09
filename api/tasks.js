@@ -301,7 +301,8 @@ module.exports = async (req, res) => {
           },
           {
             $inc: { balance: 10 },
-            $push: { completedTasks: String(taskId) }
+            $push: { completedTasks: String(taskId) },
+            $set: { lastActiveAt: new Date() }
           }
         );
 

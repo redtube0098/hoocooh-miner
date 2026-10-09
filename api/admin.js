@@ -201,9 +201,15 @@ module.exports = async (req, res) => {
         const totalPendingUsdt = pendingUsdtAgg[0] ? pendingUsdtAgg[0].totalUsdt : 0;
         const totalPendingTon = pendingUsdtAgg[0] ? pendingUsdtAgg[0].totalTon : (totalPendingUsdt * TON_PER_USD);
 
+        const activeUsers60d = await usersCol.countDocuments({
+          lastActiveAt: { $gte: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) }
+        });
+
         res.status(200).json({
           ok: true,
           totalUsers,
+          activeUsers60d,
+          ttlDays: 60,
           bannedUsers,
           pendingWithdrawals: pendingW,
           totalPendingUsdt: Number(totalPendingUsdt.toFixed(2)),

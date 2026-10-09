@@ -265,7 +265,8 @@ module.exports = async (req, res) => {
         spinAdsWatchedToday: spinWatchedToday,
         spinAdsCycleStartedAt: spinCycleStart,
         totalAdsWatched: totalAds,
-        lastSpinAdWatchedAt: now
+        lastSpinAdWatchedAt: now,
+        lastActiveAt: new Date()
       };
 
       if (isCompleted) {
@@ -348,7 +349,8 @@ module.exports = async (req, res) => {
           adsWatchedToday: watchedToday,
           adsEarnedToday: earnedToday,
           adsCycleStartedAt: cycleStart,
-          totalAdsWatched: totalAds
+          totalAdsWatched: totalAds,
+          lastActiveAt: new Date()
         }
       }
     );

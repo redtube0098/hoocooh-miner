@@ -56,7 +56,7 @@ module.exports = async (req, res) => {
 
     await users.updateOne(
       { _id: user._id },
-      { $set: { balance: newBal, minerLevel: newLevel } }
+      { $set: { balance: newBal, minerLevel: newLevel, lastActiveAt: new Date() } }
     );
 
     const newMultiplier = getMultiplierForLevel(newLevel);

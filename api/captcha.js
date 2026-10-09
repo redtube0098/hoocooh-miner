@@ -84,6 +84,7 @@ module.exports = async (req, res) => {
         targetX,
         targetY,
         createdAt: now,
+        createdAtDate: new Date(),
         used: false
       });
 
@@ -203,6 +204,7 @@ module.exports = async (req, res) => {
         token: captchaToken,
         userId: uid,
         createdAt: now,
+        createdAtDate: new Date(),
         used: false
       });
 

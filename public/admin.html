@@ -891,6 +891,16 @@
         </button>
       </div>
 
+      <!-- Storage & TTL Optimization Policy -->
+      <div style="background: rgba(32, 184, 163, 0.05); border: 1px solid rgba(32, 184, 163, 0.2); border-radius: 14px; padding: 18px; margin-bottom: 22px;">
+        <h4 style="font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 8px;">⚡ Database Storage & TTL Policy (100k+ Scale)</h4>
+        <div style="font-size: 13px; color: var(--text-dim); line-height: 1.6;">
+          • <strong>2-Month Inactivity Auto-Reset:</strong> Accounts inactive for 60 consecutive days are automatically purged. If they return after 2 months, a fresh account is opened.<br>
+          • <strong>Active User Balances Protected:</strong> All active users retain 100% of their balance; every login or claim resets the 60-day safety timer.<br>
+          • <strong>Ephemeral Token Purge:</strong> Captcha tokens and challenge nonces expire automatically after 10 minutes to guarantee MongoDB stays far below 512MB even with 100,000+ players.
+        </div>
+      </div>
+
       <!-- Guide / Security Info -->
       <div style="background: rgba(245, 158, 11, 0.06); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 12px; padding: 14px 18px; font-size: 13px; color: #f59e0b; line-height: 1.6;">
         🛡️ <strong>Stealth / Anti-Detection Mode:</strong>
@@ -1103,7 +1113,8 @@
     try {
       var data = await apiAdmin("GET", { action: "stats" });
       if (data.ok) {
-        document.getElementById("statTotalUsers").textContent = (data.totalUsers || 0).toLocaleString();
+        var active60d = (data.activeUsers60d !== undefined ? data.activeUsers60d : (data.totalUsers || 0));
+        document.getElementById("statTotalUsers").innerHTML = `${(data.totalUsers || 0).toLocaleString()} <span style="font-size: 11px; color: var(--text-dim); display: block; margin-top: 2px;">Active (60d): <strong style="color: var(--accent);">${active60d.toLocaleString()}</strong></span>`;
         document.getElementById("statPendingW").textContent = (data.pendingWithdrawals || 0).toLocaleString();
         
         var pendingUsdtStr = "$" + (data.totalPendingUsdt || 0).toFixed(2);

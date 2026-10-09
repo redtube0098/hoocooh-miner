@@ -190,7 +190,7 @@ module.exports = async (req, res) => {
         // Deduct from user balance
         await usersCol.updateOne(
           { _id: user._id },
-          { $set: { balance: newBal } }
+          { $set: { balance: newBal, lastActiveAt: new Date() } }
         );
 
         // Record withdrawal transaction in MongoDB with PENDING status
