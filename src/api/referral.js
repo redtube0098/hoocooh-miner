@@ -64,33 +64,41 @@ module.exports = async (req, res) => {
         }
       }
 
-      // Real Top Miners from Database
+      // Real Top Miners from Database: strictly based on Home 2-Hour Mining!
       const dbMiners = await usersCol
-        .find({})
-        .sort({ balance: -1 })
+        .find({
+          $or: [
+            { totalMinedCoins: { $gt: 0 } },
+            { lastMineCollectedAt: { $ne: null } }
+          ]
+        })
+        .sort({ totalMinedCoins: -1, minerLevel: -1, totalMinedClaims: -1, balance: -1 })
         .limit(100)
         .toArray();
 
       const topMiners = dbMiners.map((u, idx) => {
         const displayName = u.firstName ? (u.firstName + (u.lastName ? " " + u.lastName : "")) : (u.username || "Miner");
+        const minedScore = Number(u.totalMinedCoins !== undefined ? u.totalMinedCoins : (u.lastMineCollectedAt ? 25 : 0));
         return {
           rank: idx + 1,
           telegramId: String(u.telegramId),
           name: displayName,
           username: u.username ? ("@" + u.username) : "",
-          score: Math.round(Number(u.balance || 0)),
+          score: Math.round(minedScore),
           minerLevel: u.minerLevel || 1,
           avatarText: displayName.slice(0, 2).toUpperCase()
         };
       });
 
-      // User's real Miner rank
-      const userBal = Number(user.balance || 0);
+      // User's real Miner rank (based purely on 2-hour home cloud mining)
+      const userMined = Number(user.totalMinedCoins !== undefined ? user.totalMinedCoins : (user.lastMineCollectedAt ? 25 : 0));
       let minerRank = null;
-      const higherBal = await usersCol.countDocuments({ balance: { $gt: userBal } });
-      const exactMinerRank = higherBal + 1;
-      if (exactMinerRank <= 100) {
-        minerRank = exactMinerRank;
+      if (userMined > 0 || user.lastMineCollectedAt) {
+        const higherMined = await usersCol.countDocuments({ totalMinedCoins: { $gt: userMined } });
+        const exactMinerRank = higherMined + 1;
+        if (exactMinerRank <= 100) {
+          minerRank = exactMinerRank;
+        }
       }
 
       // Real Milestones

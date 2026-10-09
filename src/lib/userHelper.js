@@ -143,6 +143,8 @@ async function findOrCreateUser(usersCol, tgUser, meta = {}) {
       photoUrl: tgUser.photo_url || "",
       balance: 0,
       minerLevel: 1,
+      totalMinedCoins: 0,
+      totalMinedClaims: 0,
       lastMineCollectedAt: null,
       mineReminderSent: false,
       dailyCycle: 1,
@@ -175,6 +177,8 @@ async function findOrCreateUser(usersCol, tgUser, meta = {}) {
   if (matchingUsers.length > 1) {
     let maxBalance = Number(primaryUser.balance) || 0;
     let maxLevel = Number(primaryUser.minerLevel) || 1;
+    let maxMinedCoins = Number(primaryUser.totalMinedCoins) || 0;
+    let maxMinedClaims = Number(primaryUser.totalMinedClaims) || 0;
     let maxRecruits = Number(primaryUser.recruitsCount) || 0;
     let maxRefEarnings = Number(primaryUser.refEarnings) || 0;
     let maxDailyEarned = Number(primaryUser.totalDailyEarned) || 0;
@@ -190,6 +194,8 @@ async function findOrCreateUser(usersCol, tgUser, meta = {}) {
       const other = matchingUsers[i];
       if ((Number(other.balance) || 0) > maxBalance) maxBalance = Number(other.balance);
       if ((Number(other.minerLevel) || 1) > maxLevel) maxLevel = Number(other.minerLevel);
+      if ((Number(other.totalMinedCoins) || 0) > maxMinedCoins) maxMinedCoins = Number(other.totalMinedCoins);
+      if ((Number(other.totalMinedClaims) || 0) > maxMinedClaims) maxMinedClaims = Number(other.totalMinedClaims);
       if ((Number(other.recruitsCount) || 0) > maxRecruits) maxRecruits = Number(other.recruitsCount);
       if ((Number(other.refEarnings) || 0) > maxRefEarnings) maxRefEarnings = Number(other.refEarnings);
       if ((Number(other.totalDailyEarned) || 0) > maxDailyEarned) maxDailyEarned = Number(other.totalDailyEarned);
@@ -240,6 +246,8 @@ async function findOrCreateUser(usersCol, tgUser, meta = {}) {
 
     primaryUser.balance = maxBalance;
     primaryUser.minerLevel = maxLevel;
+    primaryUser.totalMinedCoins = maxMinedCoins;
+    primaryUser.totalMinedClaims = maxMinedClaims;
     primaryUser.recruitsCount = maxRecruits;
     primaryUser.refEarnings = maxRefEarnings;
     primaryUser.totalDailyEarned = maxDailyEarned;
@@ -256,6 +264,8 @@ async function findOrCreateUser(usersCol, tgUser, meta = {}) {
   const updateFields = { telegramId: telegramId, lastActiveAt: new Date() };
   if (primaryUser.balance !== undefined) updateFields.balance = primaryUser.balance;
   if (primaryUser.minerLevel !== undefined) updateFields.minerLevel = primaryUser.minerLevel;
+  if (primaryUser.totalMinedCoins !== undefined) updateFields.totalMinedCoins = primaryUser.totalMinedCoins;
+  if (primaryUser.totalMinedClaims !== undefined) updateFields.totalMinedClaims = primaryUser.totalMinedClaims;
   if (primaryUser.lastMineCollectedAt !== undefined) updateFields.lastMineCollectedAt = primaryUser.lastMineCollectedAt;
   if (primaryUser.lastCheckinAt !== undefined) updateFields.lastCheckinAt = primaryUser.lastCheckinAt;
   if (primaryUser.recruitsCount !== undefined) updateFields.recruitsCount = primaryUser.recruitsCount;
@@ -434,6 +444,8 @@ async function purgeSingleBannedUser(usersCol, db, user) {
         purgedAtDate: new Date(),
         balance: 0,
         minerLevel: 1,
+        totalMinedCoins: 0,
+        totalMinedClaims: 0,
         recruitsCount: 0,
         refEarnings: 0,
         claimedMilestones: [],

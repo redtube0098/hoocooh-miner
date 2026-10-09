@@ -89,7 +89,11 @@ module.exports = async (req, res) => {
         ]
       },
       {
-        $inc: { balance: reward },
+        $inc: {
+          balance: reward,
+          totalMinedCoins: reward,
+          totalMinedClaims: 1
+        },
         $set: { lastMineCollectedAt: now, mineReminderSent: false, lastActiveAt: new Date() }
       }
     );
