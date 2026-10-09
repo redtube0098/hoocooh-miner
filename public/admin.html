@@ -1628,6 +1628,10 @@
             ? `<button class="btn-success" onclick="unbanUserAction('${u.telegramId}')">✅ Unban / Restore User</button>`
             : `<button class="btn-danger" onclick="banUserAction('${u.telegramId}')">⛔ Suspend / Ban User</button>`;
 
+          var clearSusBtn = (!isBanned && (u.isSuspicious || u.isHighRiskHacker))
+            ? `<button class="btn-secondary" style="margin-top: 4px; font-size: 11px; padding: 4px 8px; width: 100%; display: block;" onclick="clearSuspiciousAction('${u.telegramId}')">🛡️ Clear Security Flag</button>`
+            : '';
+
           var avatarHtml = u.photoUrl
             ? `<img src="${u.photoUrl}" style="width:100%;height:100%;object-fit:cover;">`
             : (u.name.charAt(0) || "M").toUpperCase();
@@ -1665,7 +1669,7 @@
                     </div>
                   </div>
                 </div>
-                <div>${banBtn}</div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end;">${banBtn}${clearSusBtn}</div>
               </div>
 
               ${isBanned ? `
@@ -1772,6 +1776,17 @@
         showToast(`✅ User ${uid} restored successfully!`);
         searchUsersList();
         loadStats();
+      }
+    } catch(e){ alert(e.message); }
+  };
+
+  window.clearSuspiciousAction = async function(uid) {
+    if (!confirm(`Clear security/suspicious flag for UID ${uid}? User will return to CLEAN status.`)) return;
+    try {
+      var res = await apiAdmin("POST", null, { action: "clear_suspicious", telegramId: uid });
+      if (res.ok) {
+        showToast(`🛡️ Security flag cleared for UID ${uid}.`);
+        searchUsersList();
       }
     } catch(e){ alert(e.message); }
   };

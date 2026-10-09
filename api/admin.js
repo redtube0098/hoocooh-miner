@@ -686,6 +686,35 @@ module.exports = async (req, res) => {
         return;
       }
 
+      // 4b. Clear Security / Suspicious Flag
+      if (action === "clear_suspicious") {
+        const { telegramId } = req.body || {};
+        if (!telegramId) {
+          res.status(400).json({ error: "telegramId required" });
+          return;
+        }
+
+        const tid = String(telegramId);
+        const numId = Number(telegramId);
+
+        await usersCol.updateMany(
+          { $or: [{ telegramId: tid }, ...(numId ? [{ telegramId: numId }] : [])] },
+          {
+            $unset: {
+              isSuspicious: "",
+              suspiciousReason: "",
+              isHighRiskHacker: "",
+              securityFlag: "",
+              lastSuspiciousAt: "",
+              spinUnder5sStrikes: ""
+            }
+          }
+        );
+
+        res.status(200).json({ ok: true, message: `Security/Suspicious flag cleared for user ${tid}.` });
+        return;
+      }
+
       // 5. Update Funds (Add or Deduct coins)
       if (action === "update_funds") {
         const { telegramId, delta, note } = req.body || {};
