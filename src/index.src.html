@@ -12,9 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
-<script src="https://ad.gigapub.tech/script?id=8547"></script>
 <script type="text/javascript" src="https://cdn.tgads.space/assets/js/adexium-widget.min.js"></script>
-<script src="https://libtl.com/sdk.js" data-zone="11990345" data-sdk="show_11990345"></script>
 <style>
   :root {
     --bg: #eff5f5;
@@ -1097,25 +1095,48 @@
     color: #8ee2d5;
   }
 
-  /* Spin & Earn Card - Unique Cosmic Indigo-Purple Color */
+  /* Spin & Earn Card - Matched with Watch Ads & Earn Emerald-Teal Theme */
   .spin-card {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
+    background: radial-gradient(circle at 85% 25%, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0) 55%), linear-gradient(135deg, #8eedde 0%, #5fe1cc 50%, #46dac5 100%);
     border-radius: 22px;
     padding: 16px 18px;
-    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.28);
+    box-shadow: 0 8px 24px rgba(32, 184, 163, 0.22);
     position: relative;
     overflow: hidden;
-    color: #ffffff;
+    color: #082d26;
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-bottom: 6px;
+  }
+  /* Shimmer Shine Sweep Animation */
+  .spin-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -80%;
+    width: 60%;
+    height: 200%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 25%,
+      rgba(255, 255, 255, 0.45) 50%,
+      rgba(255, 255, 255, 0.08) 75%,
+      transparent 100%
+    );
+    transform: rotate(25deg);
+    pointer-events: none;
+    animation: watchCardShine 4.5s ease-in-out infinite;
+    animation-delay: 1.8s;
   }
   .spin-card-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    position: relative;
+    z-index: 1;
   }
   .spin-card-info {
     flex: 1;
@@ -1129,29 +1150,32 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
     padding: 3px 8px;
     border-radius: 100px;
-    color: #ffffff;
+    color: #0a3d33;
     margin-bottom: 4px;
   }
   .spin-card-title {
     font-size: 19px;
     font-weight: 800;
     line-height: 1.15;
-    color: #ffffff;
+    color: #082d26;
     letter-spacing: -0.3px;
   }
   .spin-card-sub {
     font-size: 11px;
-    font-weight: 500;
-    color: #e0e7ff;
+    font-weight: 600;
+    color: #0e443a;
     line-height: 1.35;
     margin-top: 3px;
   }
   .spin-now-btn {
     background: #ffffff;
-    color: #4338ca;
+    color: #108e7b;
     border: none;
     border-radius: 100px;
     padding: 10px 18px;
@@ -1159,7 +1183,7 @@
     font-weight: 800;
     letter-spacing: 0.2px;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -1171,18 +1195,19 @@
     transform: scale(0.95);
   }
   [data-theme="dark"] .spin-card {
-    background: linear-gradient(135deg, #4338ca 0%, #312e81 60%, #1e1b4b 100%);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    background: radial-gradient(circle at 85% 25%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 55%), linear-gradient(135deg, #1f7265 0%, #135248 50%, #0c3831 100%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   }
   [data-theme="dark"] .spin-card-title { color: #ffffff; }
-  [data-theme="dark"] .spin-card-sub { color: #c7d2fe; }
+  [data-theme="dark"] .spin-card-sub { color: #8ee2d5; }
   [data-theme="dark"] .spin-card-badge {
-    background: rgba(255, 255, 255, 0.2);
-    color: #e0e7ff;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #8ee2d5;
   }
   [data-theme="dark"] .spin-now-btn {
     background: #ffffff;
-    color: #3730a3;
+    color: #0f8573;
   }
 
   /* Tasks Header & Tabs */
@@ -9899,11 +9924,11 @@
   // ========================================================
   // ========================================================
   // GLOBAL AD BARRIER & MUTUAL EXCLUSION LOCK
-  // Ensures only 1 ad plays at a time across all SDKs (AdsGram, Gigapub, Adexium).
+  // Ensures only 1 ad plays at a time across all SDKs (Adsgram, Adexium).
   // No ad runs in the background while another is active!
   // ========================================================
   window.AdBarrier = {
-    activeAd: null, // "adsgram" | "gigapub" | "adexium" | "monetag"
+    activeAd: null, // "adsgram" | "adexium"
     lockTime: 0,
 
     acquire: function(name) {
@@ -9981,59 +10006,31 @@
   }
 
   // ========================================================
-  // MONETAG REWARDED INTERSTITIAL ADS (Zone: 11990345)
-  // Exclusively for Weekly / Daily Check-in Bonus
+  // REAL ADSGRAM INTEGRATION
+  // Main Interstitial Block: int-52852 (Earn, Mining, Daily Check-in, Withdraw)
+  // Spin Ticket Block: 53118 (Lucky Wheel Spin Tickets)
   // Protected with AdBarrier to ensure no ad overlap
   // ========================================================
-  function playMonetagAd(onSuccess, onError) {
-    if (!window.AdBarrier.acquire("monetag")) {
-      showToast("⚠️ Another ad is currently active. Please wait.");
-      if (typeof onError === "function") onError("barrier_busy");
-      return;
-    }
+  var ADSGRAM_MAIN_BLOCK_ID = "int-52852";
+  var ADSGRAM_SPIN_BLOCK_ID = "53118";
+  var adsgramControllers = {};
 
-    if (typeof window.show_11990345 !== "function") {
-      window.AdBarrier.release("monetag");
-      showToast("⏳ Ad is loading. Please try again in a few moments.");
-      if (typeof onError === "function") onError("show_11990345_unavailable");
-      return;
-    }
-
-    try {
-      window.show_11990345()
-        .then(function() {
-          window.AdBarrier.release("monetag");
-          if (typeof onSuccess === "function") onSuccess();
-        })
-        .catch(function(err) {
-          window.AdBarrier.release("monetag");
-          console.warn("Monetag ad closed or error:", err);
-          showToast("❌ Ad was not completed.");
-          if (typeof onError === "function") onError(err);
-        });
-    } catch(err) {
-      window.AdBarrier.release("monetag");
-      console.warn("Monetag invocation error:", err);
-      if (typeof onError === "function") onError(err);
-    }
-  }
-
-  var ADSGRAM_BLOCK_ID = "int-52852";
-  var adsgramController = null;
-  function getAdsgramController() {
-    if (!adsgramController && window.Adsgram) {
+  function getAdsgramController(blockId) {
+    var bid = String(blockId || ADSGRAM_MAIN_BLOCK_ID);
+    if (!adsgramControllers[bid] && window.Adsgram) {
       try {
-        adsgramController = window.Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
+        adsgramControllers[bid] = window.Adsgram.init({ blockId: bid });
       } catch (e) {
-        console.warn("Adsgram init error:", e);
+        console.warn("Adsgram init error for " + bid + ":", e);
       }
     }
-    return adsgramController;
+    return adsgramControllers[bid];
   }
 
-  function playAdsgramFullscreenAd(onWatchedSuccess, onSkippedOrFailed, minWatchSeconds) {
+  function playAdsgramFullscreenAd(onWatchedSuccess, onSkippedOrFailed, minWatchSeconds, customBlockId) {
     var minSec = (typeof minWatchSeconds === "number" && minWatchSeconds > 0) ? minWatchSeconds : 9;
     var minMs = minSec * 1000;
+    var targetBlockId = String(customBlockId || ADSGRAM_MAIN_BLOCK_ID);
 
     if (!window.AdBarrier.acquire("adsgram")) {
       showToast("⚠️ Another ad is currently active. Please wait.");
@@ -10041,11 +10038,11 @@
       return;
     }
 
-    var controller = getAdsgramController();
+    var controller = getAdsgramController(targetBlockId);
     if (!controller && window.Adsgram) {
       try {
-        adsgramController = window.Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
-        controller = adsgramController;
+        controller = window.Adsgram.init({ blockId: targetBlockId });
+        adsgramControllers[targetBlockId] = controller;
       } catch(e){}
     }
 
@@ -10064,6 +10061,8 @@
       if (elapsedMs < minMs) {
         if (minSec === 4) {
           showToast("⚠️ Ad skipped! You must watch at least 4 seconds to proceed with withdrawal.");
+        } else if (minSec === 5) {
+          showToast("❌ Ad was skipped! You must watch at least 5 seconds to receive your ticket.");
         } else {
           showToast("❌ Ad was skipped! You must watch at least " + minSec + " seconds to receive the reward.");
         }
@@ -10071,7 +10070,7 @@
         return;
       }
 
-      console.log("[Adsgram] Ad completed successfully. elapsedMs:", elapsedMs, "result:", result);
+      console.log("[Adsgram] Ad completed successfully. blockId:", targetBlockId, "elapsedMs:", elapsedMs, "result:", result);
       if (typeof onWatchedSuccess === "function") {
         onWatchedSuccess(result, elapsedMs);
       }
@@ -10093,6 +10092,8 @@
       if (elapsedMs < minMs) {
         if (minSec === 4) {
           showToast("⚠️ Ad skipped! You must watch at least 4 seconds to proceed with withdrawal.");
+        } else if (minSec === 5) {
+          showToast("❌ Ad was skipped! You must watch at least 5 seconds to receive your ticket.");
         } else {
           showToast("❌ Ad was skipped! You must watch at least " + minSec + " seconds to receive the reward.");
         }
@@ -10113,54 +10114,6 @@
         }
       }
     });
-  }
-
-  // ========================================================
-  // GIGAPUB ADS INTEGRATION (Script ID: 8547)
-  // For Spin & Earn Tickets (Max 6 tickets per 10 hours)
-  // - 5-Second Minimum Watch Rule
-  // ========================================================
-  function playGigapubAd(onSuccess, onError) {
-    if (!window.AdBarrier.acquire("gigapub")) {
-      showToast("⚠️ Another ad is currently active. Please wait.");
-      if (typeof onError === "function") onError("barrier_busy");
-      return;
-    }
-
-    if (typeof window.showGiga !== "function") {
-      window.AdBarrier.release("gigapub");
-      showToast("⏳ Ad network is loading. Please try again in a few seconds.");
-      if (typeof onError === "function") onError("showGiga_unavailable");
-      return;
-    }
-
-    var adStartTime = Date.now();
-    window.showGiga()
-      .then(function() {
-        window.AdBarrier.release("gigapub");
-        var elapsedMs = Date.now() - adStartTime;
-        if (elapsedMs < 5000) {
-          showToast("❌ Ad was skipped! You must watch at least 5 seconds to receive your ticket.");
-          if (typeof onError === "function") onError("skipped_under_5s");
-          return;
-        }
-        var effectiveMs = Math.max(elapsedMs, 5200);
-
-        if (typeof onSuccess === "function") {
-          onSuccess(effectiveMs);
-        }
-      })
-      .catch(function(err) {
-        window.AdBarrier.release("gigapub");
-        var elapsedMs = Date.now() - adStartTime;
-        if (elapsedMs < 5000) {
-          showToast("❌ Ad was skipped! You must watch at least 5 seconds to receive your ticket.");
-        } else {
-          var msg = (err && err.message) ? err.message : "Ad was closed or interrupted.";
-          showToast("❌ Ad was not completed: " + msg);
-        }
-        if (typeof onError === "function") onError(err);
-      });
   }
 
   function updateWatchSheetView1() {
@@ -10488,7 +10441,7 @@
     });
   }
 
-  // Dedicated Collect Weekly / Daily Reward Action (Monetag Ad -> Puzzle Captcha -> Reward Claim)
+  // Dedicated Collect Weekly / Daily Reward Action (Adsgram Ad -> Puzzle Captcha -> Reward Claim)
   var dailyBtn = document.getElementById("dailyCollectBtn");
   if (dailyBtn) {
     dailyBtn.addEventListener("click", function(){
@@ -10497,7 +10450,7 @@
       dailyBtn.disabled = true;
       dailyBtn.innerHTML = '<span>Claiming...</span>';
 
-      playMonetagAd(
+      playAdsgramFullscreenAd(
         function onWatchedSuccess() {
           // Step 2: Ad watched! Now open Puzzle Captcha Verification
           openSecurityCaptcha(function onCaptchaSuccess(verifiedCaptchaToken) {
@@ -10535,7 +10488,8 @@
           window._isCheckinLocked = false;
           dailyBtn.disabled = false;
           renderDaily();
-        }
+        },
+        9 // 9-second watch rule
       );
     });
   }
@@ -10801,7 +10755,7 @@
     });
   }
 
-  // WATCH AD FOR SPIN TICKET (Gigapub Ads - 5s minimum watch rule)
+  // WATCH AD FOR SPIN TICKET (Adsgram Ads - Block ID: 53118 - 5s minimum watch rule)
   if (watchSpinAdActionBtn) {
     watchSpinAdActionBtn.addEventListener("click", function() {
       if (watchSpinAdActionBtn.disabled) return;
@@ -10814,8 +10768,8 @@
       watchSpinAdActionBtn.disabled = true;
       watchSpinAdActionBtn.textContent = "Loading Ad...";
 
-      playGigapubAd(
-        function onWatchedSuccess(elapsedMs) {
+      playAdsgramFullscreenAd(
+        function onWatchedSuccess(res, elapsedMs) {
           // Watched at least 5 seconds! Claim ticket directly
           watchSpinAdActionBtn.textContent = "Claiming Ticket...";
 
@@ -10824,7 +10778,7 @@
             headers: getClientHeaders({ "Content-Type": "application/json" }),
             body: JSON.stringify({
               action: "spin_watch_ad",
-              watchDurationMs: elapsedMs,
+              watchDurationMs: elapsedMs || 5000,
               actionToken: currentActionTokens.spin_watch_ad
             })
           }).then(handleResponse).then(function(res) {
@@ -10859,7 +10813,9 @@
         function onSkippedOrFailed() {
           watchSpinAdActionBtn.disabled = false;
           watchSpinAdActionBtn.textContent = "🎬 Watch Ad (+1 Ticket)";
-        }
+        },
+        5, // 5-Second minimum watch rule
+        ADSGRAM_SPIN_BLOCK_ID // Block ID: "53118"
       );
     });
   }
