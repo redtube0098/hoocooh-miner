@@ -486,6 +486,24 @@ module.exports = async (req, res) => {
         return;
       }
 
+      // 4. CANCEL UNPAID PENDING TASK DRAFT
+      if (action === "cancel_task") {
+        const { taskId } = req.body || {};
+        if (taskId) {
+          let objId;
+          try { objId = new ObjectId(taskId); } catch(e) { objId = null; }
+          const taskQuery = objId ? { _id: objId } : { _id: taskId };
+          await tasksCol.deleteOne({
+            ...taskQuery,
+            creatorId: telegramId,
+            paid: { $ne: true },
+            status: "pending_payment"
+          });
+        }
+        res.status(200).json({ ok: true, message: "Unpaid task draft removed." });
+        return;
+      }
+
       res.status(400).json({ error: "Unknown action" });
       return;
     }

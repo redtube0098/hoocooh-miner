@@ -11714,7 +11714,15 @@
     }
   }
 
-  function closeTaskDepositModal() {
+  function closeTaskDepositModal(isCancelledByUser) {
+    if (isCancelledByUser && currentDepositData && currentDepositData.taskId) {
+      var draftId = currentDepositData.taskId;
+      fetch("/api/tasks", {
+        method: "POST",
+        headers: getClientHeaders({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ action: "cancel_task", taskId: draftId })
+      }).catch(function(){});
+    }
     stopDepositPolling();
     currentDepositData = null;
     if (taskDepositModal) taskDepositModal.classList.remove("open");
@@ -11746,7 +11754,7 @@
         showToast("🎉 TON Deposit received! Task is now LIVE!");
 
         setTimeout(function() {
-          closeTaskDepositModal();
+          closeTaskDepositModal(false);
           loadTasks();
         }, 1800);
       } else if (res.data && res.data.status === "declined") {
@@ -11769,13 +11777,15 @@
   }
 
   if (closeTaskDepositModalBtn) {
-    closeTaskDepositModalBtn.addEventListener("click", closeTaskDepositModal);
+    closeTaskDepositModalBtn.addEventListener("click", function() {
+      closeTaskDepositModal(true);
+    });
   }
 
   if (taskDepositModal) {
     taskDepositModal.addEventListener("click", function(e) {
       if (e.target === taskDepositModal) {
-        closeTaskDepositModal();
+        closeTaskDepositModal(true);
       }
     });
   }

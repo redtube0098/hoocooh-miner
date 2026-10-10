@@ -346,9 +346,25 @@ module.exports = async (req, res) => {
         return;
       }
 
-      // 4. Tasks List
+      // 4. Tasks List (Strictly show active/paid tasks - exclude unpaid, cancelled, or pending payment tasks)
       if (action === "tasks") {
-        const customTasks = await tasksCol.find({}).sort({ createdAt: -1 }).toArray();
+        // Auto-cleanup any abandoned unpaid/cancelled task drafts created by non-admins
+        tasksCol.deleteMany({
+          paid: { $ne: true },
+          creatorId: { $ne: "admin" },
+          status: { $in: ["pending_payment", "declined", "cancelled"] }
+        }).catch(() => {});
+
+        const customTasks = await tasksCol
+          .find({
+            status: { $nin: ["pending_payment", "declined", "cancelled"] },
+            $or: [
+              { creatorId: "admin" },
+              { paid: true }
+            ]
+          })
+          .sort({ createdAt: -1 })
+          .toArray();
         const mapped = customTasks.map(t => ({
           id: String(t._id),
           title: t.title,
