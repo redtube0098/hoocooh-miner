@@ -8066,11 +8066,13 @@
     });
   }
 
-  // Rate calculation (1 Coin = $0.00003 USD)
+  // Rate calculation (1 Coin = $0.00003 USD default, dynamically set by Admin)
   var COIN_USD = 0.00003;
+  window.COIN_USD = 0.00003;
   function coinsToUsd(coins) {
     var c = Math.max(0, Number(coins) || 0);
-    return c * COIN_USD;
+    var rate = (typeof window.COIN_USD === "number" && window.COIN_USD > 0) ? window.COIN_USD : COIN_USD;
+    return c * rate;
   }
   var DAILY_REWARDS = [5, 7, 11, 15, 20, 25, 30]; // 5 to 30 strictly increasing pattern (Day 1: 5, Day 2: 7, ..., Day 7: 30)
 
@@ -10245,20 +10247,25 @@
 
       playAdsgramFullscreenAd(
         function onWatchedSuccess() {
-          // Watched at least 9 seconds! Close sheet and launch Security Puzzle Verification
+          // Watched at least 9 seconds! Close sheet
           closeWatchEarnFlowModal();
-          openSecurityCaptcha(function(verifiedCaptchaToken) {
-            // Reward is credited only after puzzle verification is solved!
+
+          var requiresCaptcha = ((watched + 1) % 3 === 0);
+
+          function claimAdReward(captchaToken) {
+            var bodyPayload = {};
+            if (captchaToken) bodyPayload.captchaToken = captchaToken;
+
             fetch("/api/ads", {
               method: "POST",
               headers: getClientHeaders({ "Content-Type": "application/json" }),
-              body: JSON.stringify({ captchaToken: verifiedCaptchaToken })
+              body: JSON.stringify(bodyPayload)
             }).then(function(r) {
               if (r.status === 404) {
                 return fetch("/api/ads.js", {
                   method: "POST",
                   headers: getClientHeaders({ "Content-Type": "application/json" }),
-                  body: JSON.stringify({ captchaToken: verifiedCaptchaToken })
+                  body: JSON.stringify(bodyPayload)
                 });
               }
               return r;
@@ -10287,7 +10294,15 @@
               showToast("Network error. Please try again.");
               renderAds();
             });
-          });
+          }
+
+          if (requiresCaptcha) {
+            openSecurityCaptcha(function(verifiedCaptchaToken) {
+              claimAdReward(verifiedCaptchaToken);
+            });
+          } else {
+            claimAdReward(null);
+          }
         },
         function onSkippedOrFailed() {
           sheetStartAdBtn.disabled = false;
@@ -12251,6 +12266,10 @@
     return fetchWalletApi().then(function(res) {
       if (res.ok && res.data) {
         walletData = res.data;
+        if (typeof res.data.coinRate === "number" && res.data.coinRate > 0) {
+          COIN_USD = res.data.coinRate;
+          window.COIN_USD = res.data.coinRate;
+        }
         if (typeof res.data.balance === "number") {
           user.balance = res.data.balance;
           renderBalance();
@@ -12803,6 +12822,10 @@
     user.languageSelected = res.data.languageSelected === true;
     if (res.data.watchAdReward) {
       updateWatchAdReward(res.data.watchAdReward);
+    }
+    if (typeof res.data.coinRate === "number" && res.data.coinRate > 0) {
+      COIN_USD = res.data.coinRate;
+      window.COIN_USD = res.data.coinRate;
     }
     var currentUid = res.data.telegramId || (user && user.telegramId) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || "me";
 

@@ -557,7 +557,7 @@
     <button class="tab-btn" data-tab="tabBroadcast">📢 Broadcast</button>
     <button class="tab-btn" data-tab="tabFunds">💰 Funds (+/- Coins)</button>
     <button class="tab-btn" data-tab="tabUsers">👥 Users & Anti-Cheat</button>
-    <button class="tab-btn" data-tab="tabTasks">📋 Tasks & Ad Reward</button>
+    <button class="tab-btn" data-tab="tabTasks">📋 Tasks & Economy</button>
     <button class="tab-btn" data-tab="tabBot">🤖 Bot & Webhook</button>
   </nav>
 
@@ -754,9 +754,36 @@
   </section>
 
   <!-- ========================================== -->
-  <!-- TAB 5: TASKS (Admin Free Task Creator)     -->
+  <!-- TAB 5: TASKS & ECONOMY                     -->
   <!-- ========================================== -->
   <section class="view-panel" id="tabTasks">
+    <!-- HOOCOOH Coin Price ($ USD Rate) Setting -->
+    <div class="panel-card" style="margin-bottom: 24px; border-left: 4px solid #10b981;">
+      <div class="panel-title">
+        <span>🪙 HOOCOOH Coin Price ($ USD Rate) Setting</span>
+      </div>
+      <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 16px; line-height: 1.5;">
+        Configure the exchange price for 1 HOOCOOH Coin in USD/USDT. When updated, users' balance values, wallet vault estimates, and on-chain withdrawal calculations will dynamically adapt to this rate in real-time.
+      </p>
+      <div style="display: flex; gap: 12px; align-items: flex-end; max-width: 520px; flex-wrap: wrap;">
+        <div class="form-group" style="flex: 1; min-width: 220px; margin-bottom: 0;">
+          <label class="form-label">Price Per 1 Coin ($ USD)</label>
+          <input type="number" id="coinPriceInput" class="form-input" step="0.000001" min="0.000001" max="1000" placeholder="e.g. 0.000030">
+        </div>
+        <button class="btn-success" id="saveCoinPriceBtn" style="white-space: nowrap; height: 42px;">
+          <span>💾 Save Coin Price</span>
+        </button>
+      </div>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; align-items: center;">
+        <div id="currentCoinPriceText" style="font-size: 12.5px; color: #10b981; font-weight: 700;">
+          Current Price: Loading...
+        </div>
+        <div id="coinPricePreviewText" style="font-size: 12px; color: var(--text-dim);">
+          (1,000 Coins = $0.030 USDT | 100,000 Coins = $3.00 USDT)
+        </div>
+      </div>
+    </div>
+
     <!-- Watch Ad & Earn Reward Setting -->
     <div class="panel-card" style="margin-bottom: 24px; border-left: 4px solid var(--accent);">
       <div class="panel-title">
@@ -1844,6 +1871,17 @@
           if (rewardText) rewardText.textContent = "Current Reward: " + data.watchAdReward + " HOOCOOH Coins per ad";
         }
 
+        if (typeof data.coinPriceUsd === "number") {
+          var priceInput = document.getElementById("coinPriceInput");
+          var priceText = document.getElementById("currentCoinPriceText");
+          var previewText = document.getElementById("coinPricePreviewText");
+          if (priceInput && !priceInput.value) priceInput.value = data.coinPriceUsd;
+          if (priceText) priceText.textContent = "Current Price: $" + Number(data.coinPriceUsd).toFixed(6) + " USD per coin";
+          if (previewText) {
+            previewText.textContent = "(1,000 Coins = $" + (1000 * data.coinPriceUsd).toFixed(3) + " USDT | 100,000 Coins = $" + (100000 * data.coinPriceUsd).toFixed(2) + " USDT)";
+          }
+        }
+
         if (!data.tasks || data.tasks.length === 0) {
           box.innerHTML = '<p style="text-align: center; color: var(--text-dim); padding: 20px;">No custom tasks posted yet.</p>';
           return;
@@ -1885,6 +1923,48 @@
     }
   }
   document.getElementById("refreshTasksBtn").addEventListener("click", loadTasks);
+
+  // Live preview for Coin Price input
+  var coinPriceInputEl = document.getElementById("coinPriceInput");
+  if (coinPriceInputEl) {
+    coinPriceInputEl.addEventListener("input", function() {
+      var val = parseFloat(coinPriceInputEl.value);
+      var previewText = document.getElementById("coinPricePreviewText");
+      if (previewText) {
+        if (!isNaN(val) && val > 0) {
+          previewText.textContent = "(1,000 Coins = $" + (1000 * val).toFixed(3) + " USDT | 100,000 Coins = $" + (100000 * val).toFixed(2) + " USDT)";
+        } else {
+          previewText.textContent = "(Enter a valid price above to preview)";
+        }
+      }
+    });
+  }
+
+  // Save Coin Price
+  var saveCoinPriceBtn = document.getElementById("saveCoinPriceBtn");
+  if (saveCoinPriceBtn) {
+    saveCoinPriceBtn.addEventListener("click", async function() {
+      var input = document.getElementById("coinPriceInput");
+      var val = parseFloat(input.value);
+      if (isNaN(val) || val <= 0 || val > 1000) {
+        alert("Please enter a valid positive coin price (e.g. 0.000030)");
+        return;
+      }
+      saveCoinPriceBtn.disabled = true;
+      try {
+        var res = await apiAdmin("POST", null, { action: "update_coin_price", coinPrice: val });
+        if (res.ok) {
+          showToast("🎉 Coin price saved: $" + val.toFixed(6) + " USD!");
+          var priceText = document.getElementById("currentCoinPriceText");
+          if (priceText) priceText.textContent = "Current Price: $" + val.toFixed(6) + " USD per coin";
+        }
+      } catch(e) {
+        alert(e.message);
+      } finally {
+        saveCoinPriceBtn.disabled = false;
+      }
+    });
+  }
 
   var saveWatchAdRewardBtn = document.getElementById("saveWatchAdRewardBtn");
   if (saveWatchAdRewardBtn) {

@@ -364,8 +364,9 @@ module.exports = async (req, res) => {
 
         const appSetting = await db.collection("settings").findOne({ key: "app_settings" });
         const watchAdReward = (appSetting && typeof appSetting.watchAdReward === "number" && appSetting.watchAdReward > 0) ? appSetting.watchAdReward : 10;
+        const coinPriceUsd = (appSetting && typeof appSetting.coinPriceUsd === "number" && appSetting.coinPriceUsd > 0) ? appSetting.coinPriceUsd : 0.00003;
 
-        res.status(200).json({ ok: true, tasks: mapped, watchAdReward });
+        res.status(200).json({ ok: true, tasks: mapped, watchAdReward, coinPriceUsd });
         return;
       }
 
@@ -373,7 +374,8 @@ module.exports = async (req, res) => {
       if (action === "app_settings" || action === "ad_settings") {
         const appSetting = await db.collection("settings").findOne({ key: "app_settings" });
         const watchAdReward = (appSetting && typeof appSetting.watchAdReward === "number" && appSetting.watchAdReward > 0) ? appSetting.watchAdReward : 10;
-        res.status(200).json({ ok: true, watchAdReward });
+        const coinPriceUsd = (appSetting && typeof appSetting.coinPriceUsd === "number" && appSetting.coinPriceUsd > 0) ? appSetting.coinPriceUsd : 0.00003;
+        res.status(200).json({ ok: true, watchAdReward, coinPriceUsd });
         return;
       }
 
@@ -934,6 +936,29 @@ module.exports = async (req, res) => {
           ok: true,
           watchAdReward: parsedReward,
           message: `Watch Ad reward successfully set to ${parsedReward} HOOCOOH Coins!`
+        });
+        return;
+      }
+
+      // 12. Update HOOCOOH Coin Price ($ USD Rate)
+      if (action === "update_coin_price") {
+        const { coinPrice } = req.body || {};
+        const parsedPrice = parseFloat(coinPrice);
+        if (isNaN(parsedPrice) || parsedPrice <= 0 || parsedPrice > 1000) {
+          res.status(400).json({ error: "Coin price must be a valid positive number (e.g. 0.00003)" });
+          return;
+        }
+
+        await db.collection("settings").updateOne(
+          { key: "app_settings" },
+          { $set: { coinPriceUsd: parsedPrice, updatedAt: Date.now() } },
+          { upsert: true }
+        );
+
+        res.status(200).json({
+          ok: true,
+          coinPriceUsd: parsedPrice,
+          message: `HOOCOOH Coin price successfully set to $${parsedPrice} USD per coin!`
         });
         return;
       }

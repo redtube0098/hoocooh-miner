@@ -3,12 +3,22 @@ const { validateInitData } = require("../lib/telegramAuth");
 const { findOrCreateUser } = require("../lib/userHelper");
 const crypto = require("crypto");
 
-// Base rate: 1 HOOCOOH Coin = $0.00003 USD
+// Base rate fallback: 1 HOOCOOH Coin = $0.00003 USD
 const COIN_RATE = 0.00003;
 
-function calculateCoinsUsdt(coins) {
+async function getCoinRate(db) {
+  try {
+    const s = await db.collection("settings").findOne({ key: "app_settings" });
+    if (s && typeof s.coinPriceUsd === "number" && s.coinPriceUsd > 0) {
+      return s.coinPriceUsd;
+    }
+  } catch (e) {}
+  return COIN_RATE;
+}
+
+function calculateCoinsUsdt(coins, rate = COIN_RATE) {
   const c = Math.max(0, Number(coins) || 0);
-  return c * COIN_RATE;
+  return c * rate;
 }
 
 // Conversion rate: 3 cents ($0.03 USD) = 0.019 TON
@@ -76,15 +86,16 @@ module.exports = async (req, res) => {
         }
       }
 
+      const activeCoinRate = await getCoinRate(db);
       const recruits = Number(user.recruitsCount || 0);
       const balance = Number(user.balance || 0);
-      const usdtEquivalent = Number(calculateCoinsUsdt(balance).toFixed(2));
+      const usdtEquivalent = Number(calculateCoinsUsdt(balance, activeCoinRate).toFixed(2));
 
       res.status(200).json({
         ok: true,
         balance,
         usdtEquivalent,
-        coinRate: COIN_RATE,
+        coinRate: activeCoinRate,
         recruitsCount: recruits,
         totalMined: Math.round(balance + (Number(user.totalDailyEarned) || 0) + (Number(user.refEarnings) || 0)),
         boundWalletAddress: boundWallet,
@@ -183,7 +194,8 @@ module.exports = async (req, res) => {
           }
         }
 
-        const usdtVal = Number(calculateCoinsUsdt(numAmount).toFixed(4));
+        const activeCoinRate = await getCoinRate(db);
+        const usdtVal = Number(calculateCoinsUsdt(numAmount, activeCoinRate).toFixed(4));
         const tonVal = Number((usdtVal * TON_PER_USD).toFixed(6));
         const newBal = currentBal - numAmount;
 

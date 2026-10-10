@@ -463,6 +463,12 @@ module.exports = async (req, res) => {
           const s = await db.collection("settings").findOne({ key: "app_settings" });
           return (s && typeof s.watchAdReward === "number" && s.watchAdReward > 0) ? s.watchAdReward : 10;
         } catch(e){ return 10; }
+      })()),
+      coinRate: (await (async () => {
+        try {
+          const s = await db.collection("settings").findOne({ key: "app_settings" });
+          return (s && typeof s.coinPriceUsd === "number" && s.coinPriceUsd > 0) ? s.coinPriceUsd : 0.00003;
+        } catch(e){ return 0.00003; }
       })())
     });
   } catch (err) {

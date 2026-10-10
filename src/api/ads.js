@@ -73,6 +73,7 @@ module.exports = async (req, res) => {
           earnedToday,
           maxAds: MAX_ADS_PER_DAY,
           rewardPerAd: currentAdReward,
+          requiresCaptcha: ((watchedToday + 1) % 3 === 0),
           nextResetMs: Math.max(0, CYCLE_MS - (now - cycleStart))
         },
         spin: {
@@ -292,28 +293,7 @@ module.exports = async (req, res) => {
       return;
     }
 
-    // 4B. ACTION: REGULAR WATCH & EARN (+15 Coins) - Requires Puzzle Captcha Verification
-    const { captchaToken } = req.body || {};
-    if (!captchaToken) {
-      res.status(403).json({ error: "Security verification required. Please solve the puzzle." });
-      return;
-    }
-
-    // Atomically burn token (impossible for duplicate concurrent clicks to claim twice)
-    const burnTokenRes = await tokensCol.updateOne(
-      {
-        token: captchaToken,
-        userId: { $in: [uid, Number(uid), tgUser.id] },
-        used: false,
-        createdAt: { $gte: now - 90 * 1000 }
-      },
-      { $set: { used: true, usedAt: now } }
-    );
-
-    if (!burnTokenRes || burnTokenRes.modifiedCount === 0) {
-      res.status(403).json({ error: "Invalid, expired, or already used verification. Please solve the puzzle again." });
-      return;
-    }
+    // 4B. ACTION: REGULAR WATCH & EARN (Earn Tab Ads)
     let cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
     let watchedToday = Number(user.adsWatchedToday || 0);
     let earnedToday = Number(user.adsEarnedToday || 0);
@@ -334,6 +314,32 @@ module.exports = async (req, res) => {
         adsCycleStartedAt: cycleStart
       });
       return;
+    }
+
+    // Puzzle Captcha Verification: required only once every 3 completed ads (e.g. ad #3, #6, #9)
+    const requiresCaptcha = ((watchedToday + 1) % 3 === 0);
+    if (requiresCaptcha) {
+      const { captchaToken } = req.body || {};
+      if (!captchaToken) {
+        res.status(403).json({ error: "Security verification required. Please solve the puzzle." });
+        return;
+      }
+
+      // Atomically burn token (impossible for duplicate concurrent clicks to claim twice)
+      const burnTokenRes = await tokensCol.updateOne(
+        {
+          token: captchaToken,
+          userId: { $in: [uid, Number(uid), tgUser.id] },
+          used: false,
+          createdAt: { $gte: now - 90 * 1000 }
+        },
+        { $set: { used: true, usedAt: now } }
+      );
+
+      if (!burnTokenRes || burnTokenRes.modifiedCount === 0) {
+        res.status(403).json({ error: "Invalid, expired, or already used verification. Please solve the puzzle again." });
+        return;
+      }
     }
 
     watchedToday += 1;
@@ -363,7 +369,8 @@ module.exports = async (req, res) => {
       adsEarnedToday: earnedToday,
       adsCycleStartedAt: cycleStart,
       remainingToday: MAX_ADS_PER_DAY - watchedToday,
-      maxAds: MAX_ADS_PER_DAY
+      maxAds: MAX_ADS_PER_DAY,
+      requiresNextCaptcha: ((watchedToday + 1) % 3 === 0)
     });
   } catch (err) {
     console.error("ads.js error:", err);
