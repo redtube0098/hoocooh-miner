@@ -1716,6 +1716,11 @@
     var cardBorder = riskScore >= 80 ? '#ef4444' : (u.isSuspicious ? '#f59e0b' : 'var(--card-border)');
     var joinedDateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A';
 
+    var profileUrl = u.username && u.username !== "N/A" 
+      ? `https://t.me/${u.username.replace(/^@/, '')}` 
+      : `tg://user?id=${u.telegramId}`;
+    var nameLinkHtml = `<a href="${profileUrl}" target="_blank" style="color: inherit; text-decoration: none;" title="Open Telegram Profile"><strong>${u.name}</strong> 🔗</a>`;
+
     return `
       <div class="user-card" style="border: 1.5px solid ${cardBorder};">
         <div class="user-card-top">
@@ -1723,7 +1728,7 @@
             <div class="u-avatar">${avatarHtml}</div>
             <div>
               <div class="u-name">
-                <strong>${u.name}</strong> 
+                ${nameLinkHtml}
                 ${banBadge}
                 ${riskBadge}
                 ${secBadge}

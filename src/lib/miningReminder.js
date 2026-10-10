@@ -53,19 +53,41 @@ async function sendTelegramMsg(botToken, chatId, text, options = {}) {
 async function notifyInviterReferralSuccess(botToken, inviter, recruitUser, customBaseUrl) {
   if (!botToken || !inviter || !inviter.telegramId || !recruitUser) return false;
   try {
-    const rawName = recruitUser.firstName
-      ? `${recruitUser.firstName}${recruitUser.lastName ? ' ' + recruitUser.lastName : ''}`
-      : (recruitUser.username ? `@${recruitUser.username}` : "A friend");
-    const recruitName = escapeHtml(rawName.trim());
+    const rawFirst = (recruitUser.firstName || recruitUser.first_name || "").trim();
+    const rawLast = (recruitUser.lastName || recruitUser.last_name || "").trim();
+    const fullName = (rawFirst + (rawLast ? " " + rawLast : "")).trim();
+
+    const cleanUsername = recruitUser.username ? String(recruitUser.username).replace(/^@/, "").trim() : "";
+    const recruitUid = String(recruitUser.telegramId || recruitUser.id || "").trim();
+
+    // Telegram profile link: opens profile and shows user ID
+    const profileUrl = cleanUsername
+      ? `https://t.me/${cleanUsername}`
+      : (recruitUid ? `tg://user?id=${recruitUid}` : "");
+
+    let userLinkHtml = "";
+
+    if (fullName) {
+      // User has a name: ONLY the name part is written as a clickable link
+      const escapedName = escapeHtml(fullName);
+      userLinkHtml = profileUrl ? `<a href="${profileUrl}">${escapedName}</a>` : `<b>${escapedName}</b>`;
+    } else if (cleanUsername) {
+      // No name, but has username: link the username
+      userLinkHtml = profileUrl ? `<a href="${profileUrl}">@${escapeHtml(cleanUsername)}</a>` : `@${escapeHtml(cleanUsername)}`;
+    } else {
+      // No name: normally just show their UID
+      const uidText = recruitUid || "Unknown";
+      userLinkHtml = profileUrl ? `<a href="${profileUrl}">UID: ${uidText}</a>` : `UID: <code>${uidText}</code>`;
+    }
 
     const inviterLang = inviter.language || "en";
 
-    let msg = `🎉 <b>Congratulations!</b>\n\n<b>${recruitName}</b> joined the bot using your referral link!\n\nYou got <b>+100 HOOCOOH Coins</b> 🪙.`;
+    let msg = `🎉 <b>Congratulations!</b>\n\n${userLinkHtml} joined the bot using your referral link!\n\nYou got <b>+100 HOOCOOH Coins</b> 🪙.`;
 
     if (inviterLang === "ru") {
-      msg = `🎉 <b>Поздравляем!</b>\n\n<b>${recruitName}</b> присоединился к боту по вашей реферальной ссылке!\n\nВы получили <b>+100 HOOCOOH Coins</b> 🪙.`;
+      msg = `🎉 <b>Поздравляем!</b>\n\n${userLinkHtml} присоединился к боту по вашей реферальной ссылке!\n\nВы получили <b>+100 HOOCOOH Coins</b> 🪙.`;
     } else if (inviterLang === "ar") {
-      msg = `🎉 <b>تهانينا!</b>\n\nانضم <b>${recruitName}</b> إلى البوت باستخدام رابط الإحالة الخاص بك!\n\nلقد حصلت على <b>+100 عملة HOOCOOH</b> 🪙.`;
+      msg = `🎉 <b>تهانينا!</b>\n\nانضم ${userLinkHtml} إلى البوت باستخدام رابط الإحالة الخاص بك!\n\nلقد حصلت على <b>+100 عملة HOOCOOH</b> 🪙.`;
     }
 
     const base = getBaseUrl(customBaseUrl);
