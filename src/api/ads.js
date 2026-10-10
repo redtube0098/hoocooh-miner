@@ -223,17 +223,23 @@ module.exports = async (req, res) => {
       const timeSinceLast = (lastWatchedAt > 0) ? (now - lastWatchedAt) : 999999;
 
       // Normal users who skip ads in the app do NOT call this API (they receive no reward and no strikes).
-      // Only automated scripts or bots trying to bypass the 5s watch rule to claim rewards hit this check:
+      // Only automated scripts or exploit attempts trying to claim ticket into balance under 5s hit this check:
       if (duration < 5000 || timeSinceLast < 5000) {
         const strikes = Number(user.spinUnder5sStrikes || 0) + 1;
-        const updateData = { spinUnder5sStrikes: strikes };
-        if (strikes >= 5) {
-          updateData.isSuspicious = true;
-          updateData.suspiciousReason = "Attempted to exploit reward claims under 5 seconds (5+ times)";
-          updateData.suspiciousFlaggedAt = now;
-        }
+        const updateData = {
+          spinUnder5sStrikes: strikes,
+          isSuspicious: true,
+          securityFlag: "RED_FLAG_SPIN_SKIP_EXPLOIT",
+          suspiciousReason: `Skipped spin ad under 5s (${(duration / 1000).toFixed(1)}s elapsed) while attempting to credit spin ticket into balance.`,
+          lastSuspiciousAt: now
+        };
         await usersCol.updateOne({ _id: user._id }, { $set: updateData });
-        res.status(400).json({ error: "Ad was skipped! You must watch at least 5 seconds to receive your ticket." });
+        res.status(403).json({
+          error: "🚨 Security Warning: Spin ad was skipped under 5 seconds! Ticket claim rejected/revoked from balance and your account has been RED-FLAGGED.",
+          flagged: true,
+          revoked: true,
+          correctTickets: Number(user.spinTickets || 0)
+        });
         return;
       }
 
@@ -300,20 +306,22 @@ module.exports = async (req, res) => {
     const timeSinceLast = (lastWatchedAt > 0) ? (now - lastWatchedAt) : 999999;
 
     // Strict 9-Second Watch Rule Anti-Cheat Enforcement:
-    // If user skipped the ad before 9 seconds (or sent claim faster than 9 seconds):
+    // If user skipped the ad before 9 seconds while attempting to claim coins into balance:
     if (duration < 9000 || timeSinceLast < 9000) {
       const strikes = Number(user.adSkipUnder9sStrikes || 0) + 1;
       const updateData = {
         adSkipUnder9sStrikes: strikes,
         isSuspicious: true,
         securityFlag: "RED_FLAG_AD_SKIP_EXPLOIT",
-        suspiciousReason: `Skipped Watch & Earn ad under 9s (${(duration / 1000).toFixed(1)}s elapsed). Exploiting reward without viewing full ad.`,
+        suspiciousReason: `Skipped Watch & Earn ad under 9s (${(duration / 1000).toFixed(1)}s elapsed) while attempting to credit coins into balance.`,
         lastSuspiciousAt: now
       };
       await usersCol.updateOne({ _id: user._id }, { $set: updateData });
       res.status(403).json({
-        error: "Security Alert: Ad was skipped under 9 seconds! Reward claim rejected and your account has been flagged.",
-        flagged: true
+        error: "🚨 Security Warning: Ad was skipped under 9 seconds! Coin reward rejected/revoked from balance and your account has been RED-FLAGGED.",
+        flagged: true,
+        revoked: true,
+        correctBalance: Number(user.balance || 0)
       });
       return;
     }

@@ -10230,6 +10230,11 @@
                 showToast(err);
                 if (res.data && res.data.flagged) {
                   user.isSuspicious = true;
+                  if (typeof res.data.correctBalance === "number") {
+                    user.balance = res.data.correctBalance;
+                    renderBalance();
+                  }
+                  alert("🚨 SECURITY WARNING:\n\nYou skipped the advertisement before 9 seconds but attempted to claim coins into your balance!\n\nThis unauthorized reward has been revoked and your account has been RED-FLAGGED for fraud review.");
                 }
                 renderAds();
                 return;
@@ -10796,6 +10801,15 @@
             if (!res.ok) {
               var err = (res.data && res.data.error) ? res.data.error : "Could not claim ticket";
               showToast(err);
+              if (res.data && res.data.flagged) {
+                user.isSuspicious = true;
+                if (typeof res.data.correctTickets === "number") {
+                  currentSpinTickets = res.data.correctTickets;
+                  user.spinTickets = currentSpinTickets;
+                  if (spinTicketsCount) spinTicketsCount.textContent = currentSpinTickets;
+                }
+                alert("🚨 SECURITY WARNING:\n\nYou skipped the ad before 5 seconds but attempted to claim a spin ticket into your balance!\n\nThis unauthorized ticket has been revoked and your account has been RED-FLAGGED for fraud review.");
+              }
               return;
             }
 
