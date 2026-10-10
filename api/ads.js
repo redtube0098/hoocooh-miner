@@ -294,6 +294,30 @@ module.exports = async (req, res) => {
     }
 
     // 4B. ACTION: REGULAR WATCH & EARN (Earn Tab Ads)
+    const { watchDurationMs } = req.body || {};
+    const duration = Number(watchDurationMs) || 0;
+    const lastWatchedAt = Number(user.lastWatchAdAt || 0);
+    const timeSinceLast = (lastWatchedAt > 0) ? (now - lastWatchedAt) : 999999;
+
+    // Strict 9-Second Watch Rule Anti-Cheat Enforcement:
+    // If user skipped the ad before 9 seconds (or sent claim faster than 9 seconds):
+    if (duration < 9000 || timeSinceLast < 9000) {
+      const strikes = Number(user.adSkipUnder9sStrikes || 0) + 1;
+      const updateData = {
+        adSkipUnder9sStrikes: strikes,
+        isSuspicious: true,
+        securityFlag: "RED_FLAG_AD_SKIP_EXPLOIT",
+        suspiciousReason: `Skipped Watch & Earn ad under 9s (${(duration / 1000).toFixed(1)}s elapsed). Exploiting reward without viewing full ad.`,
+        lastSuspiciousAt: now
+      };
+      await usersCol.updateOne({ _id: user._id }, { $set: updateData });
+      res.status(403).json({
+        error: "Security Alert: Ad was skipped under 9 seconds! Reward claim rejected and your account has been flagged.",
+        flagged: true
+      });
+      return;
+    }
+
     let cycleStart = user.adsCycleStartedAt ? Number(user.adsCycleStartedAt) : 0;
     let watchedToday = Number(user.adsWatchedToday || 0);
     let earnedToday = Number(user.adsEarnedToday || 0);
@@ -356,6 +380,7 @@ module.exports = async (req, res) => {
           adsEarnedToday: earnedToday,
           adsCycleStartedAt: cycleStart,
           totalAdsWatched: totalAds,
+          lastWatchAdAt: now,
           lastActiveAt: new Date()
         }
       }
