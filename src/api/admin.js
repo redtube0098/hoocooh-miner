@@ -91,6 +91,67 @@ async function sendTelegramMsg(botToken, chatId, text, options = {}) {
   }
 }
 
+function calculateFraudRiskScore(u) {
+  if (!u) return 0;
+  if (u.isBanned) return 100;
+
+  let score = 0;
+
+  // 1. Critical hacker / automated script tampering (Instantly high risk)
+  if (u.isHighRiskHacker) {
+    score += 85;
+  }
+
+  // 2. Severe security flag (e.g. ad skip exploit or headless tamper)
+  const secFlag = String(u.securityFlag || "");
+  if (secFlag.includes("RED_FLAG") || secFlag.includes("HIGH RISK") || secFlag.includes("EXPLOIT")) {
+    score += 45;
+  }
+
+  // 3. Negative coin balance penalty (penalized exploit attempt)
+  if (Number(u.balance || 0) < 0) {
+    score += 50;
+  }
+
+  // 4. Multi-account detection
+  if (u.isSuspendedMultipleAccount) {
+    score += 45;
+  }
+  const devStrikes = Number(u.deviceViolationsCount || 0);
+  if (devStrikes >= 2) {
+    score += 40;
+  } else if (devStrikes === 1) {
+    score += 20;
+  }
+
+  // 5. Ad skip exploit strikes (< 9s video skip attempts)
+  const adSkipStrikes = Number(u.adSkipUnder9sStrikes || 0);
+  if (adSkipStrikes >= 2) {
+    score += 35;
+  } else if (adSkipStrikes === 1) {
+    score += 20;
+  }
+
+  // 6. Rapid spin under 5s strikes
+  const spinStrikes = Number(u.spinUnder5sStrikes || 0);
+  if (spinStrikes >= 5) {
+    score += 30;
+  } else if (spinStrikes >= 3) {
+    score += 15;
+  }
+
+  // 7. General suspicious flag or reason
+  if (u.isSuspicious) {
+    score += 25;
+  }
+  const susReason = String(u.suspiciousReason || "").toLowerCase();
+  if (susReason.includes("tamper") || susReason.includes("bot") || susReason.includes("hack") || susReason.includes("exploit") || susReason.includes("script")) {
+    score += 30;
+  }
+
+  return Math.min(100, Math.max(0, score));
+}
+
 module.exports = async (req, res) => {
   // CORS / Options preflight
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -209,6 +270,19 @@ module.exports = async (req, res) => {
           lastActiveAt: { $gte: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) }
         });
 
+        // Count unbanned users matching High Fraud Risk criteria (80% - 100%)
+        const highRiskUnbannedCount = await usersCol.countDocuments({
+          isBanned: { $ne: true },
+          $or: [
+            { isHighRiskHacker: true },
+            { balance: { $lt: 0 } },
+            { isSuspendedMultipleAccount: true },
+            { securityFlag: { $regex: "RED_FLAG|HIGH RISK|EXPLOIT", $options: "i" } },
+            { deviceViolationsCount: { $gte: 2 } },
+            { adSkipUnder9sStrikes: { $gte: 2 } }
+          ]
+        });
+
         res.status(200).json({
           ok: true,
           totalUsers,
@@ -217,6 +291,7 @@ module.exports = async (req, res) => {
           bannedUsers,
           bannedPurged,
           bannedGrace,
+          highRiskUnbannedCount,
           pendingWithdrawals: pendingW,
           totalPendingUsdt: Number(totalPendingUsdt.toFixed(2)),
           totalPendingTon: Number(totalPendingTon.toFixed(4)),
@@ -325,6 +400,8 @@ module.exports = async (req, res) => {
           totalAdsWatched: Number(u.totalAdsWatched || 0),
           spinTickets: Number(u.spinTickets || 0),
           spinUnder5sStrikes: Number(u.spinUnder5sStrikes || 0),
+          adSkipUnder9sStrikes: Number(u.adSkipUnder9sStrikes || 0),
+          fraudRiskScore: calculateFraudRiskScore(u),
           isBanned: !!u.isBanned,
           banReason: u.banReason || "",
           isSuspicious: !!u.isSuspicious,
@@ -343,6 +420,67 @@ module.exports = async (req, res) => {
         }));
 
         res.status(200).json({ ok: true, users: mapped });
+        return;
+      }
+
+      // 3b. High Risk Users List (Fraud Risk Score 80% - 100%)
+      if (action === "high_risk_users") {
+        const candidates = await usersCol.find({
+          $or: [
+            { isHighRiskHacker: true },
+            { balance: { $lt: 0 } },
+            { isSuspendedMultipleAccount: true },
+            { isSuspicious: true },
+            { deviceViolationsCount: { $gt: 0 } },
+            { adSkipUnder9sStrikes: { $gt: 0 } },
+            { spinUnder5sStrikes: { $gte: 3 } },
+            { securityFlag: { $exists: true, $ne: "" } },
+            { suspiciousReason: { $regex: "tamper|bot|hack|exploit|script", $options: "i" } }
+          ]
+        }).sort({ balance: 1 }).limit(200).toArray();
+
+        const mapped = candidates.map(u => ({
+          id: String(u._id),
+          telegramId: String(u.telegramId),
+          name: (u.firstName || "") + (u.lastName ? " " + u.lastName : "") || "Miner",
+          username: u.username ? ("@" + u.username) : "N/A",
+          photoUrl: u.photoUrl || "",
+          balance: Number(u.balance || 0),
+          minerLevel: u.minerLevel || 1,
+          recruitsCount: Number(u.recruitsCount || 0),
+          refEarnings: Number(u.refEarnings || 0),
+          totalAdsWatched: Number(u.totalAdsWatched || 0),
+          spinTickets: Number(u.spinTickets || 0),
+          spinUnder5sStrikes: Number(u.spinUnder5sStrikes || 0),
+          adSkipUnder9sStrikes: Number(u.adSkipUnder9sStrikes || 0),
+          fraudRiskScore: calculateFraudRiskScore(u),
+          isBanned: !!u.isBanned,
+          banReason: u.banReason || "",
+          isSuspicious: !!u.isSuspicious,
+          suspiciousReason: u.suspiciousReason || "",
+          isHighRiskHacker: !!u.isHighRiskHacker,
+          securityFlag: u.securityFlag || "",
+          isSuspendedMultipleAccount: !!u.isSuspendedMultipleAccount,
+          deviceViolationsCount: Number(u.deviceViolationsCount || 0),
+          penaltyNotice: u.penaltyNotice || "",
+          registeredIp: u.registeredIp || u.lastIp || "N/A",
+          boundWalletAddress: u.boundWalletAddress || null,
+          bannedAt: u.bannedAt || null,
+          dataPurged: !!u.dataPurged,
+          purgedAt: u.purgedAt || null,
+          createdAt: u.createdAt || null
+        })).filter(u => u.fraudRiskScore >= 80 && u.fraudRiskScore <= 100);
+
+        const unbannedCount = mapped.filter(u => !u.isBanned).length;
+        const bannedCount = mapped.filter(u => u.isBanned).length;
+
+        res.status(200).json({
+          ok: true,
+          users: mapped,
+          totalHighRisk: mapped.length,
+          unbannedCount,
+          bannedCount
+        });
         return;
       }
 
@@ -665,6 +803,87 @@ module.exports = async (req, res) => {
         }
 
         res.status(200).json({ ok: true, message: `User ${tid} has been permanently banned.` });
+        return;
+      }
+
+      // 3b. Bulk Ban High Fraud Risk (80% - 100%) Users
+      if (action === "bulk_ban_high_risk") {
+        const candidates = await usersCol.find({
+          isBanned: { $ne: true },
+          $or: [
+            { isHighRiskHacker: true },
+            { balance: { $lt: 0 } },
+            { isSuspendedMultipleAccount: true },
+            { isSuspicious: true },
+            { deviceViolationsCount: { $gt: 0 } },
+            { adSkipUnder9sStrikes: { $gt: 0 } },
+            { spinUnder5sStrikes: { $gte: 3 } },
+            { securityFlag: { $exists: true, $ne: "" } },
+            { suspiciousReason: { $regex: "tamper|bot|hack|exploit|script", $options: "i" } }
+          ]
+        }).toArray();
+
+        // Strictly target users whose fraud risk score is between 80% and 100%
+        const highRiskUsers = candidates.filter(u => {
+          const score = calculateFraudRiskScore(u);
+          return score >= 80 && score <= 100;
+        });
+
+        if (highRiskUsers.length === 0) {
+          res.status(200).json({
+            ok: true,
+            bannedCount: 0,
+            message: "No active users found with High Fraud Risk (80%-100%). All clean users are protected!"
+          });
+          return;
+        }
+
+        const targetIds = highRiskUsers.map(u => u._id);
+        const banTimestamp = Date.now();
+        const banDate = new Date();
+        const banReason = "Permanent ban: High Fraud Risk Score (80%-100%) detected (automated bot/tampering/multi-account exploit)";
+
+        const banResult = await usersCol.updateMany(
+          { _id: { $in: targetIds }, isBanned: { $ne: true } },
+          {
+            $set: {
+              isBanned: true,
+              banReason: banReason,
+              bannedAt: banTimestamp,
+              bannedAtDate: banDate,
+              dataPurged: false
+            },
+            $unset: { lastActiveAt: "" }
+          }
+        );
+
+        // Reject any pending withdrawals from these high-risk users
+        const tgIds = highRiskUsers.map(u => String(u.telegramId)).filter(Boolean);
+        if (tgIds.length > 0) {
+          await withdrawalsCol.updateMany(
+            {
+              status: "PENDING",
+              $or: [
+                { telegramId: { $in: tgIds } },
+                { telegramId: { $in: tgIds.map(Number).filter(Boolean) } }
+              ]
+            },
+            {
+              $set: {
+                status: "REJECTED",
+                reason: "User Banned: " + banReason,
+                rejectedAt: banTimestamp
+              }
+            }
+          ).catch(() => {});
+        }
+
+        res.status(200).json({
+          ok: true,
+          bannedCount: banResult.modifiedCount,
+          totalEligible: highRiskUsers.length,
+          message: `Successfully banned ${banResult.modifiedCount} high fraud risk user(s) (Score 80%-100%). Clean users were not affected.`
+        });
         return;
       }
 

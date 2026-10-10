@@ -736,7 +736,38 @@
   <!-- ========================================== -->
   <!-- TAB 4: USERS (Search, Ban & Unban)         -->
   <!-- ========================================== -->
+  <!-- ========================================== -->
+  <!-- TAB 4: USERS (Search, Ban & Unban)         -->
+  <!-- ========================================== -->
   <section class="view-panel" id="tabUsers">
+    <!-- High Fraud Risk (80% - 100%) Management Card -->
+    <div class="panel-card" style="border: 1.5px solid rgba(239, 68, 68, 0.45); background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(15, 23, 42, 0.6)); margin-bottom: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 12px;">
+        <div style="flex: 1; min-width: 280px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 24px;">🚨</span>
+            <span style="font-size: 18px; font-weight: 800; color: #ef4444;">High Fraud Risk Management (80% – 100%)</span>
+            <span id="highRiskUnbannedBadge" style="background: #ef4444; color: #fff; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 10px;">0 Detected</span>
+          </div>
+          <p style="font-size: 13px; color: var(--text-dim); margin-top: 6px; margin-bottom: 0; line-height: 1.5;">
+            Detects automated tamper scripts, bot bypassers, video ad skippers (&lt;9s), and multi-account violators scored from 0% to 100%. One-click action strictly bans miners with <strong>80%–100%</strong> score. All clean miners (&lt;80%) remain 100% protected.
+          </p>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <button class="btn-secondary" id="loadHighRiskUsersBtn" style="font-size: 13px; padding: 10px 16px; font-weight: 700;">
+            🔍 View 80%–100% Users
+          </button>
+          <button class="btn-danger" id="bulkBanHighRiskBtn" style="font-size: 13px; padding: 10px 18px; font-weight: 800; background: #ef4444; color: #fff; box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);">
+            🚨 Ban All High Risk (80%–100%)
+          </button>
+        </div>
+      </div>
+      <div id="highRiskStatsSub" style="font-size: 12.5px; color: #fca5a5; display: flex; gap: 20px; flex-wrap: wrap; border-top: 1px solid rgba(239, 68, 68, 0.2); padding-top: 10px;">
+        <span>⚠️ Active Unbanned High-Risk: <strong id="highRiskCountTxt" style="color: #fff;">0</strong> miners</span>
+        <span>🛡️ Clean &amp; Low-Risk Miners (&lt;80%): <strong style="color: #10b981;">Protected &amp; Untouched</strong></span>
+      </div>
+    </div>
+
     <div class="panel-card">
       <div class="panel-title">
         <span>Search Users, Inspect & Ban / Unban</span>
@@ -748,7 +779,7 @@
       </div>
 
       <div id="usersSearchResults">
-        <p style="text-align: center; color: var(--text-dim); padding: 30px;">Type a username or UID above to search user records.</p>
+        <p style="text-align: center; color: var(--text-dim); padding: 30px;">Type a username or UID above or click "View 80%–100% Users" to inspect records.</p>
       </div>
     </div>
   </section>
@@ -1127,6 +1158,7 @@
       if (target === "tabWithdrawals") loadWithdrawals();
       if (target === "tabTasks") loadTasks();
       if (target === "tabBot") loadBotSettings();
+      if (target === "tabUsers") checkHighRiskStats();
     });
   });
 
@@ -1135,7 +1167,6 @@
     loadWithdrawals();
   }
 
-  // 1. Stats
   // 1. Stats
   async function loadStats() {
     try {
@@ -1161,6 +1192,13 @@
         var bannedEl = document.getElementById("statBannedUsers");
         if (bannedEl) {
           bannedEl.innerHTML = `${bTotal.toLocaleString()} <span style="font-size: 11px; color: var(--text-dim); display: block; margin-top: 2px;">Purged (>7d): <strong style="color: #ef4444;">${bPurged.toLocaleString()}</strong> · Grace: <strong style="color: #f59e0b;">${bGrace.toLocaleString()}</strong></span>`;
+        }
+
+        if (data.highRiskUnbannedCount !== undefined) {
+          var hrBadge = document.getElementById("highRiskUnbannedBadge");
+          if (hrBadge) hrBadge.textContent = data.highRiskUnbannedCount + " Detected";
+          var hrTxt = document.getElementById("highRiskCountTxt");
+          if (hrTxt) hrTxt.textContent = data.highRiskUnbannedCount;
         }
 
         var badge = document.getElementById("pendingCountBadge");
@@ -1619,11 +1657,258 @@
     } catch(e){ alert(e.message); }
   }
 
-  // 5. Users Search & Anti-Cheat Ban/Unban
+  // 5. Users Search & Anti-Cheat Ban/Unban & High Fraud Risk (80%-100%) Management
   document.getElementById("usersSearchBtn").addEventListener("click", searchUsersList);
   document.getElementById("usersSearchInput").addEventListener("keypress", function(e){
     if (e.key === "Enter") searchUsersList();
   });
+
+  function buildUserCardHtml(u) {
+    var isBanned = !!u.isBanned;
+    var isPurged = !!u.dataPurged;
+    var banTime = u.bannedAt ? Number(u.bannedAt) : Date.now();
+    var msPassed = Date.now() - banTime;
+    var daysPassed = msPassed / (86400000);
+    var daysRemaining = Math.max(0, Math.ceil(7 - daysPassed));
+
+    var banBadge = '';
+    if (isBanned) {
+      if (isPurged) {
+        banBadge = '<span class="status-tag banned" style="background: #dc2626; color: #fff; margin-left: 6px;">🗑️ DATA PURGED (>7d)</span>';
+      } else {
+        banBadge = `<span class="status-tag banned" style="margin-left: 6px;">SUSPENDED (${daysRemaining}d grace)</span>`;
+      }
+    }
+
+    var banBtn = isBanned
+      ? `<button class="btn-success" onclick="unbanUserAction('${u.telegramId}')">✅ Unban / Restore User</button>`
+      : `<button class="btn-danger" onclick="banUserAction('${u.telegramId}')">⛔ Suspend / Ban User</button>`;
+
+    var clearSusBtn = (!isBanned && (u.isSuspicious || u.isHighRiskHacker || (u.fraudRiskScore || 0) > 0))
+      ? `<button class="btn-secondary" style="margin-top: 4px; font-size: 11px; padding: 4px 8px; width: 100%; display: block;" onclick="clearSuspiciousAction('${u.telegramId}')">🛡️ Clear Security Flag</button>`
+      : '';
+
+    var avatarHtml = u.photoUrl
+      ? `<img src="${u.photoUrl}" style="width:100%;height:100%;object-fit:cover;">`
+      : (u.name.charAt(0) || "M").toUpperCase();
+
+    var riskScore = typeof u.fraudRiskScore === "number" ? u.fraudRiskScore : (isBanned ? 100 : (u.isHighRiskHacker ? 85 : 0));
+    var riskBadge = '';
+    if (riskScore >= 80) {
+      riskBadge = `<span class="status-tag" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.5); font-weight: 800; margin-left: 6px;">🚨 ${riskScore}% FRAUD RISK</span>`;
+    } else if (riskScore >= 40) {
+      riskBadge = `<span class="status-tag" style="background: rgba(245, 158, 11, 0.18); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); font-weight: 700; margin-left: 6px;">⚠️ ${riskScore}% MED RISK</span>`;
+    } else {
+      riskBadge = `<span class="status-tag" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.35); font-weight: 700; margin-left: 6px;">✅ ${riskScore}% SAFE</span>`;
+    }
+
+    var secBadge = '';
+    if (u.isHighRiskHacker) {
+      secBadge = `<span class="status-tag high-risk" style="margin-left: 6px;">🚨 HIGH RISK: HACKER</span>`;
+    } else if (u.isSuspicious) {
+      secBadge = `<span class="status-tag suspicious" style="margin-left: 6px;">⚠️ SUSPICIOUS</span>`;
+    } else if (u.isSuspendedMultipleAccount) {
+      secBadge = `<span class="status-tag banned" style="margin-left: 6px;">🚫 MULTI-ACCOUNT</span>`;
+    } else {
+      secBadge = `<span class="status-tag approved" style="margin-left: 6px;">✅ CLEAN</span>`;
+    }
+
+    var cardBorder = riskScore >= 80 ? '#ef4444' : (u.isSuspicious ? '#f59e0b' : 'var(--card-border)');
+    var joinedDateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A';
+
+    return `
+      <div class="user-card" style="border: 1.5px solid ${cardBorder};">
+        <div class="user-card-top">
+          <div class="u-info">
+            <div class="u-avatar">${avatarHtml}</div>
+            <div>
+              <div class="u-name">
+                <strong>${u.name}</strong> 
+                ${banBadge}
+                ${riskBadge}
+                ${secBadge}
+              </div>
+              <div class="u-uid" style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 3px;">
+                <span>${u.username}</span>
+                ${u.username && u.username !== "N/A" ? `<button type="button" class="btn-copy-tag" onclick="copyToClipboard('${u.username}', 'Username copied!')" title="Copy Username">📋 Copy</button>` : ''}
+                <span>· UID: <code>${u.telegramId}</code></span>
+                <button type="button" class="btn-copy-tag" onclick="copyToClipboard('${u.telegramId}', 'UID copied!')" title="Copy UID">📋 Copy</button>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: flex-end;">${banBtn}${clearSusBtn}</div>
+        </div>
+
+        ${isBanned ? `
+          <div style="font-size: 12px; color: ${isPurged ? '#ef4444' : '#f59e0b'}; background: ${isPurged ? 'rgba(239, 68, 68, 0.12)' : 'rgba(245, 158, 11, 0.12)'}; padding: 10px 14px; border-radius: 8px; border: 1px solid ${isPurged ? 'rgba(239, 68, 68, 0.35)' : 'rgba(245, 158, 11, 0.35)'}; margin-bottom: 8px;">
+            ${isPurged 
+              ? `<b>🗑️ Permanent Data Purge Executed:</b> This account was suspended for more than 7 days without being unbanned. All balances, mined coins, tasks, and referral progression were permanently wiped from the database. Account suspension remains active permanently.`
+              : `<b>⏳ 7-Day Auto-Purge Policy:</b> Banned for ${Math.floor(daysPassed)} day(s). <b>${daysRemaining} day(s) remaining</b> to unban. If not unbanned within 7 days, all user coins and progression data will be permanently wiped from the database while suspension remains permanent.`
+            }
+            ${u.purgedAt ? `<div style="margin-top: 4px; color: var(--text-dim); font-size: 11px;">Purged on: ${new Date(u.purgedAt).toLocaleString()}</div>` : ''}
+          </div>
+        ` : ''}
+
+        ${(u.isHighRiskHacker || u.isSuspicious) && u.suspiciousReason ? `
+          <div style="font-size: 12px; color: ${u.isHighRiskHacker ? '#ef4444' : '#f59e0b'}; background: ${u.isHighRiskHacker ? 'rgba(239, 68, 68, 0.12)' : 'rgba(245, 158, 11, 0.12)'}; padding: 8px 12px; border-radius: 8px; border: 1px solid ${u.isHighRiskHacker ? 'rgba(239, 68, 68, 0.3)' : 'rgba(245, 158, 11, 0.3)'}; margin-bottom: 8px;">
+            <b>⚠️ Security Flag Reason:</b> ${u.suspiciousReason}
+          </div>
+        ` : ''}
+
+        ${u.penaltyNotice ? `
+          <div style="font-size: 12px; color: #ef4444; background: rgba(239, 68, 68, 0.12); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3); margin-bottom: 8px;">
+            <b>⚠️ Device Penalty Applied:</b> ${u.penaltyNotice}
+          </div>
+        ` : ''}
+
+        <div class="u-stats" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));">
+          <div class="u-stat-box" style="border: 1.5px solid ${riskScore >= 80 ? 'rgba(239, 68, 68, 0.5)' : (riskScore >= 40 ? 'rgba(245, 158, 11, 0.3)' : 'rgba(16, 185, 129, 0.3)')};">
+            <div class="s-lbl">Fraud Risk Score</div>
+            <div class="s-val" style="color: ${riskScore >= 80 ? '#ef4444' : (riskScore >= 40 ? '#f59e0b' : '#10b981')}; font-weight: 800;">${riskScore}%</div>
+          </div>
+          <div class="u-stat-box">
+            <div class="s-lbl">Balance</div>
+            <div class="s-val accent" style="color: ${u.balance < 0 ? '#ef4444' : 'inherit'};">${Number(u.balance).toLocaleString()} Coins</div>
+          </div>
+          <div class="u-stat-box">
+            <div class="s-lbl">Miner Level</div>
+            <div class="s-val">Lv.${u.minerLevel}</div>
+          </div>
+          <div class="u-stat-box">
+            <div class="s-lbl">Total Ads Watched</div>
+            <div class="s-val">${u.totalAdsWatched || 0}</div>
+          </div>
+          <div class="u-stat-box">
+            <div class="s-lbl">Ad Skip Strikes</div>
+            <div class="s-val" style="color: ${(u.adSkipUnder9sStrikes || 0) > 0 ? '#ef4444' : 'inherit'};">${u.adSkipUnder9sStrikes || 0}</div>
+          </div>
+          <div class="u-stat-box">
+            <div class="s-lbl">Spin Tickets</div>
+            <div class="s-val">${u.spinTickets || 0}</div>
+          </div>
+          <div class="u-stat-box">
+            <div class="s-lbl">Sub-5s Strikes</div>
+            <div class="s-val" style="color: ${u.spinUnder5sStrikes >= 5 ? '#f59e0b' : 'inherit'};">${u.spinUnder5sStrikes || 0} / 5</div>
+          </div>
+          <div class="u-stat-box">
+            <div class="s-lbl">Multi-Acc Strikes</div>
+            <div class="s-val" style="color: ${u.deviceViolationsCount > 0 ? '#ef4444' : 'inherit'};">${u.deviceViolationsCount || 0}</div>
+          </div>
+          <div class="u-stat-box">
+            <div class="s-lbl">Invited Friends</div>
+            <div class="s-val">${u.recruitsCount}</div>
+          </div>
+          <div class="u-stat-box">
+            <div class="s-lbl">Ref Earnings</div>
+            <div class="s-val">${Number(u.refEarnings).toLocaleString()}</div>
+          </div>
+          <div class="u-stat-box">
+            <div class="s-lbl">Registered IP</div>
+            <div class="s-val" style="font-size: 11px;">${u.registeredIp || 'N/A'}</div>
+          </div>
+          <div class="u-stat-box">
+            <div class="s-lbl">Joined Date</div>
+            <div class="s-val" style="font-size: 12px;">${joinedDateStr}</div>
+          </div>
+          <div class="u-stat-box" style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <div>
+              <div class="s-lbl">🔒 Locked TON Wallet</div>
+              <div class="s-val" style="font-size: 12px; font-family: monospace; color: var(--accent);">${u.boundWalletAddress || 'None (Not locked yet)'}</div>
+            </div>
+            ${u.boundWalletAddress ? `<button type="button" class="btn-copy-tag" onclick="copyToClipboard('${u.boundWalletAddress}', 'Locked wallet address copied!')" title="Copy Wallet">📋 Copy</button>` : ''}
+          </div>
+        </div>
+        ${isBanned && u.banReason ? `<div style="font-size: 12px; color: var(--danger); background: rgba(239, 68, 68, 0.1); padding: 8px 12px; border-radius: 8px;"><b>Suspension Reason:</b> ${u.banReason}</div>` : ''}
+      </div>
+    `;
+  }
+
+  async function checkHighRiskStats() {
+    try {
+      var data = await apiAdmin("GET", { action: "high_risk_users" });
+      if (data.ok) {
+        var unbanned = data.unbannedCount || 0;
+        var badge = document.getElementById("highRiskUnbannedBadge");
+        if (badge) badge.textContent = unbanned + " Detected";
+        var txt = document.getElementById("highRiskCountTxt");
+        if (txt) txt.textContent = unbanned;
+      }
+    } catch(e){}
+  }
+
+  async function loadHighRiskUsers() {
+    var resultsBox = document.getElementById("usersSearchResults");
+    resultsBox.innerHTML = '<p style="text-align: center; color: var(--text-dim); padding: 20px;">Scanning database for 80%–100% High Fraud Risk miners...</p>';
+    try {
+      var data = await apiAdmin("GET", { action: "high_risk_users" });
+      if (data.ok && data.users) {
+        var unbanned = data.unbannedCount || 0;
+        var badge = document.getElementById("highRiskUnbannedBadge");
+        if (badge) badge.textContent = unbanned + " Detected";
+        var txt = document.getElementById("highRiskCountTxt");
+        if (txt) txt.textContent = unbanned;
+
+        if (data.users.length === 0) {
+          resultsBox.innerHTML = `
+            <div style="text-align: center; padding: 36px; background: rgba(16, 185, 129, 0.08); border-radius: 14px; border: 1px solid rgba(16, 185, 129, 0.3);">
+              <span style="font-size: 32px;">🛡️</span>
+              <h4 style="color: #10b981; margin: 10px 0 6px;">Zero High Fraud Risk Detected!</h4>
+              <p style="color: var(--text-dim); font-size: 13px; margin: 0;">No active users with Fraud Risk Score between 80% and 100% currently exist. All miners are safe.</p>
+            </div>
+          `;
+          return;
+        }
+
+        resultsBox.innerHTML = `
+          <div style="margin-bottom: 14px; padding: 10px 14px; background: rgba(239, 68, 68, 0.12); border-radius: 10px; border: 1px solid rgba(239, 68, 68, 0.3); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <span style="color: #ef4444; font-weight: 700; font-size: 13px;">🚨 Showing ${data.users.length} High Fraud Risk (80%–100%) Accounts (${unbanned} unbanned, ${data.bannedCount || 0} already suspended)</span>
+          </div>
+          ` + data.users.map(buildUserCardHtml).join("");
+      } else {
+        resultsBox.innerHTML = `<p style="text-align: center; color: var(--danger); padding: 20px;">Failed to load: ${data.error || "Unknown error"}</p>`;
+      }
+    } catch(err) {
+      resultsBox.innerHTML = `<p style="text-align: center; color: var(--danger); padding: 20px;">Error: ${err.message}</p>`;
+    }
+  }
+
+  var loadHighRiskUsersBtn = document.getElementById("loadHighRiskUsersBtn");
+  if (loadHighRiskUsersBtn) {
+    loadHighRiskUsersBtn.addEventListener("click", loadHighRiskUsers);
+  }
+
+  var bulkBanHighRiskBtn = document.getElementById("bulkBanHighRiskBtn");
+  if (bulkBanHighRiskBtn) {
+    bulkBanHighRiskBtn.addEventListener("click", async function(){
+      var promptMsg = "🚨 WARNING: PERMANENT BULK BAN (80% - 100% FRAUD RISK ONLY)\n\n" +
+        "Are you sure you want to ban ALL accounts with a High Fraud Risk score between 80% and 100%?\n\n" +
+        "• Strictly targets bot bypassers, headless tamper scripts, rapid sub-9s ad skippers, and multi-account violators.\n" +
+        "• All clean miners and users with <80% risk score are completely SAFE and will NOT be touched.\n\n" +
+        "Proceed with 1-click bulk ban?";
+
+      if (!confirm(promptMsg)) return;
+
+      bulkBanHighRiskBtn.disabled = true;
+      bulkBanHighRiskBtn.innerHTML = "<span>⏳ Executing Bulk Ban...</span>";
+
+      try {
+        var res = await apiAdmin("POST", null, { action: "bulk_ban_high_risk" });
+        if (res.ok) {
+          alert(res.message || `Successfully banned ${res.bannedCount} high risk user(s)!`);
+          showToast(`🚨 Banned ${res.bannedCount} high fraud risk users!`);
+          loadHighRiskUsers();
+          loadStats();
+        } else {
+          alert("Bulk ban failed: " + (res.error || "Unknown error"));
+        }
+      } catch(err) {
+        alert("Error executing bulk ban: " + (err.message || err));
+      } finally {
+        bulkBanHighRiskBtn.disabled = false;
+        bulkBanHighRiskBtn.innerHTML = "<span>🚨 Ban All High Risk (80%–100%)</span>";
+      }
+    });
+  }
 
   async function searchUsersList() {
     var q = (document.getElementById("usersSearchInput").value || "").trim();
@@ -1634,146 +1919,7 @@
     try {
       var data = await apiAdmin("GET", { action: "search_user", q: q });
       if (data.ok && data.users && data.users.length > 0) {
-        resultsBox.innerHTML = data.users.map(function(u){
-          var isBanned = !!u.isBanned;
-          var isPurged = !!u.dataPurged;
-          var banTime = u.bannedAt ? Number(u.bannedAt) : Date.now();
-          var msPassed = Date.now() - banTime;
-          var daysPassed = msPassed / (86400000);
-          var daysRemaining = Math.max(0, Math.ceil(7 - daysPassed));
-
-          var banBadge = '';
-          if (isBanned) {
-            if (isPurged) {
-              banBadge = '<span class="status-tag banned" style="background: #dc2626; color: #fff; margin-left: 6px;">🗑️ DATA PURGED (>7d)</span>';
-            } else {
-              banBadge = `<span class="status-tag banned" style="margin-left: 6px;">SUSPENDED (${daysRemaining}d grace)</span>`;
-            }
-          }
-
-          var banBtn = isBanned
-            ? `<button class="btn-success" onclick="unbanUserAction('${u.telegramId}')">✅ Unban / Restore User</button>`
-            : `<button class="btn-danger" onclick="banUserAction('${u.telegramId}')">⛔ Suspend / Ban User</button>`;
-
-          var clearSusBtn = (!isBanned && (u.isSuspicious || u.isHighRiskHacker))
-            ? `<button class="btn-secondary" style="margin-top: 4px; font-size: 11px; padding: 4px 8px; width: 100%; display: block;" onclick="clearSuspiciousAction('${u.telegramId}')">🛡️ Clear Security Flag</button>`
-            : '';
-
-          var avatarHtml = u.photoUrl
-            ? `<img src="${u.photoUrl}" style="width:100%;height:100%;object-fit:cover;">`
-            : (u.name.charAt(0) || "M").toUpperCase();
-
-          var secBadge = '';
-          if (u.isHighRiskHacker) {
-            secBadge = `<span class="status-tag high-risk" style="margin-left: 6px;">🚨 HIGH RISK: HACKER</span>`;
-          } else if (u.isSuspicious) {
-            secBadge = `<span class="status-tag suspicious" style="margin-left: 6px;">⚠️ SUSPICIOUS</span>`;
-          } else if (u.isSuspendedMultipleAccount) {
-            secBadge = `<span class="status-tag banned" style="margin-left: 6px;">🚫 MULTI-ACCOUNT</span>`;
-          } else {
-            secBadge = `<span class="status-tag approved" style="margin-left: 6px;">✅ CLEAN</span>`;
-          }
-
-          var cardBorder = u.isHighRiskHacker ? '#ef4444' : (u.isSuspendedMultipleAccount ? '#ef4444' : (u.isSuspicious ? '#f59e0b' : 'var(--card-border)'));
-          var joinedDateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A';
-
-          return `
-            <div class="user-card" style="border: 1.5px solid ${cardBorder};">
-              <div class="user-card-top">
-                <div class="u-info">
-                  <div class="u-avatar">${avatarHtml}</div>
-                  <div>
-                    <div class="u-name">
-                      <strong>${u.name}</strong> 
-                      ${banBadge}
-                      ${secBadge}
-                    </div>
-                    <div class="u-uid" style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 3px;">
-                      <span>${u.username}</span>
-                      ${u.username && u.username !== "N/A" ? `<button type="button" class="btn-copy-tag" onclick="copyToClipboard('${u.username}', 'Username copied!')" title="Copy Username">📋 Copy</button>` : ''}
-                      <span>· UID: <code>${u.telegramId}</code></span>
-                      <button type="button" class="btn-copy-tag" onclick="copyToClipboard('${u.telegramId}', 'UID copied!')" title="Copy UID">📋 Copy</button>
-                    </div>
-                  </div>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-end;">${banBtn}${clearSusBtn}</div>
-              </div>
-
-              ${isBanned ? `
-                <div style="font-size: 12px; color: ${isPurged ? '#ef4444' : '#f59e0b'}; background: ${isPurged ? 'rgba(239, 68, 68, 0.12)' : 'rgba(245, 158, 11, 0.12)'}; padding: 10px 14px; border-radius: 8px; border: 1px solid ${isPurged ? 'rgba(239, 68, 68, 0.35)' : 'rgba(245, 158, 11, 0.35)'}; margin-bottom: 8px;">
-                  ${isPurged 
-                    ? `<b>🗑️ Permanent Data Purge Executed:</b> This account was suspended for more than 7 days without being unbanned. All balances, mined coins, tasks, and referral progression were permanently wiped from the database. Account suspension remains active permanently.`
-                    : `<b>⏳ 7-Day Auto-Purge Policy:</b> Banned for ${Math.floor(daysPassed)} day(s). <b>${daysRemaining} day(s) remaining</b> to unban. If not unbanned within 7 days, all user coins and progression data will be permanently wiped from the database while suspension remains permanent.`
-                  }
-                  ${u.purgedAt ? `<div style="margin-top: 4px; color: var(--text-dim); font-size: 11px;">Purged on: ${new Date(u.purgedAt).toLocaleString()}</div>` : ''}
-                </div>
-              ` : ''}
-
-              ${(u.isHighRiskHacker || u.isSuspicious) && u.suspiciousReason ? `
-                <div style="font-size: 12px; color: ${u.isHighRiskHacker ? '#ef4444' : '#f59e0b'}; background: ${u.isHighRiskHacker ? 'rgba(239, 68, 68, 0.12)' : 'rgba(245, 158, 11, 0.12)'}; padding: 8px 12px; border-radius: 8px; border: 1px solid ${u.isHighRiskHacker ? 'rgba(239, 68, 68, 0.3)' : 'rgba(245, 158, 11, 0.3)'}; margin-bottom: 8px;">
-                  <b>⚠️ Security Flag Reason:</b> ${u.suspiciousReason}
-                </div>
-              ` : ''}
-
-              ${u.penaltyNotice ? `
-                <div style="font-size: 12px; color: #ef4444; background: rgba(239, 68, 68, 0.12); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3); margin-bottom: 8px;">
-                  <b>⚠️ Device Penalty Applied:</b> ${u.penaltyNotice}
-                </div>
-              ` : ''}
-
-              <div class="u-stats" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));">
-                <div class="u-stat-box">
-                  <div class="s-lbl">Balance</div>
-                  <div class="s-val accent" style="color: ${u.balance < 0 ? '#ef4444' : 'inherit'};">${Number(u.balance).toLocaleString()} Coins</div>
-                </div>
-                <div class="u-stat-box">
-                  <div class="s-lbl">Miner Level</div>
-                  <div class="s-val">Lv.${u.minerLevel}</div>
-                </div>
-                <div class="u-stat-box">
-                  <div class="s-lbl">Total Ads Watched</div>
-                  <div class="s-val">${u.totalAdsWatched || 0}</div>
-                </div>
-                <div class="u-stat-box">
-                  <div class="s-lbl">Spin Tickets</div>
-                  <div class="s-val">${u.spinTickets || 0}</div>
-                </div>
-                <div class="u-stat-box">
-                  <div class="s-lbl">Sub-5s Strikes</div>
-                  <div class="s-val" style="color: ${u.spinUnder5sStrikes >= 5 ? '#f59e0b' : 'inherit'};">${u.spinUnder5sStrikes || 0} / 5</div>
-                </div>
-                <div class="u-stat-box">
-                  <div class="s-lbl">Multi-Acc Strikes</div>
-                  <div class="s-val" style="color: ${u.deviceViolationsCount > 0 ? '#ef4444' : 'inherit'};">${u.deviceViolationsCount || 0}</div>
-                </div>
-                <div class="u-stat-box">
-                  <div class="s-lbl">Invited Friends</div>
-                  <div class="s-val">${u.recruitsCount}</div>
-                </div>
-                <div class="u-stat-box">
-                  <div class="s-lbl">Ref Earnings</div>
-                  <div class="s-val">${Number(u.refEarnings).toLocaleString()}</div>
-                </div>
-                <div class="u-stat-box">
-                  <div class="s-lbl">Registered IP</div>
-                  <div class="s-val" style="font-size: 11px;">${u.registeredIp || 'N/A'}</div>
-                </div>
-                <div class="u-stat-box">
-                  <div class="s-lbl">Joined Date</div>
-                  <div class="s-val" style="font-size: 12px;">${joinedDateStr}</div>
-                </div>
-                <div class="u-stat-box" style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                  <div>
-                    <div class="s-lbl">🔒 Locked TON Wallet</div>
-                    <div class="s-val" style="font-size: 12px; font-family: monospace; color: var(--accent);">${u.boundWalletAddress || 'None (Not locked yet)'}</div>
-                  </div>
-                  ${u.boundWalletAddress ? `<button type="button" class="btn-copy-tag" onclick="copyToClipboard('${u.boundWalletAddress}', 'Locked wallet address copied!')" title="Copy Wallet">📋 Copy</button>` : ''}
-                </div>
-              </div>
-              ${isBanned && u.banReason ? `<div style="font-size: 12px; color: var(--danger); background: rgba(239, 68, 68, 0.1); padding: 8px 12px; border-radius: 8px;"><b>Suspension Reason:</b> ${u.banReason}</div>` : ''}
-            </div>
-          `;
-        }).join("");
+        resultsBox.innerHTML = data.users.map(buildUserCardHtml).join("");
       } else {
         resultsBox.innerHTML = `<p style="text-align: center; color: var(--text-dim); padding: 30px;">No users found matching "${q}".</p>`;
       }
